@@ -24,9 +24,10 @@ describe('Ma Plot Test Suite', function() {
                 .get('/maplot')
                 .end(function(err, res) {
                     if (err) return done(err);
-                    assert.equal('OK', res.body.message)
-                    assert.equal(20429, res.body.plot_list.length)
-                    assert.equal('DNAJC6|9829', res.body.plot_list[0].title)
+                    var transfer_object = res.body;
+                    assert.equal('OK', transfer_object.message)
+                    assert.equal(20429, transfer_object.data.plot_list.length)
+                    assert.equal('DNAJC6|9829', transfer_object.data.plot_list[0].title)
                     done()
                 })
         })

@@ -25,6 +25,7 @@ router.get('/', function(req, res, next) {
     }
     pool.query('CALL `needleplot.aachange`(?)', [gene], function(err, rows, fields) {
         if (err) throw err;
+
         if (rows[0].length == 0) {
             transfer_object.status = 1001;
             transfer_object.message = 'No Data Found';
@@ -35,6 +36,13 @@ router.get('/', function(req, res, next) {
         //    res.json(transfer_object);
         pool.query('CALL `needleplot.graph`(?)', [gene], function(g_err, g_rows, g_fields) {
             if (g_err) throw g_err;
+            if (g_rows[0].length == 0) {
+                transfer_object.status = 1001;
+                transfer_object.message = 'No Data Found';
+                res.json(transfer_object);
+                return;
+            }
+
             var graph = JSON.parse(g_rows[0][0].json_data);
             transfer_object.data.graph = graph;
             res.json(transfer_object);

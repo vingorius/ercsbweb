@@ -8,6 +8,11 @@ var compression = require('compression');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+
+// Chart view
+var chart = require('./routes/chart');
+
+// Chart RESTful Service
 var maplot = require('./routes/maplot');
 var needleplot = require('./routes/needleplot');
 var xyplot = require('./routes/xyplot');
@@ -29,7 +34,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+// Chart view
 app.use('/users', users);
+app.use('/chart', chart);
+// Chart RESTful Service
 app.use('/maplot', maplot);
 app.use('/needleplot', needleplot);
 app.use('/xyplot', xyplot);

@@ -9,7 +9,22 @@ router.get('/', function(req, res, next) {
 
 router.get('/maplot', function(req, res, next) {
     res.render('chart/maplot', {
-        title: 'Express'
+        title: 'MaPlot'
+    });
+});
+
+router.get('/degplot', function(req, res, next) {
+    res.render('chart/degplot', {
+        title: 'DEG Pathway Table',
+        data: {
+            titles: ["Title", "Title", "Title", "Title", "Title", "Title"],
+            columns: [
+                ["Data", "Data", "Data", "Data", "Data", "Data"],
+                ["Data", "Data", "Data", "Data", "Data", "Data"],
+                ["Data", "Data", "Data", "Data", "Data", "Data"],
+                ["Data", "Data", "Data", "Data", "Data", "Data"]
+            ]
+        }
     });
 });
 

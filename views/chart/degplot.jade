@@ -1,0 +1,17 @@
+extends ../basiclayout
+
+block content
+    div.container
+        table.table.table-bordered.table-hover.table-responsive
+            thead
+                tr
+                    th #
+                    each title, i in data.titles
+                        th #{title}#{i}
+
+            tbody
+                each column, p in data.columns
+                    tr
+                        th #{p}
+                        each value, q in column
+                            td  #{value}#{p}#{q}

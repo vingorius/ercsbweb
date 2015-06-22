@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.css')
+  body
+      block header
+          include layout/header.jade
+      block content
+      block footer
+          include layout/footer.jade
+      block scripts
+          script(src='/bower_components/jquery/dist/jquery.js')
+          script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
+          script(src='/bower_components/d3/d3.js')

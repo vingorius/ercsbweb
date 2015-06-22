@@ -15,11 +15,14 @@ router.get('/', function(req, res, next) {
             plot_list: []
         }
     };
-    pool.query('CALL getMAPlot()', function(err, rows, fields) {
-        if (err) throw err;
-        transfer_object.data.plot_list = rows[0];
-        res.json(transfer_object);
-        //console.log('The solution is: ', rows[0].solution);
+    pool.getConnection(function(err, connection) {
+        connection.query('CALL getMAPlot()', function(err, rows, fields) {
+            if (err) throw err;
+            transfer_object.data.plot_list = rows[0];
+            res.json(transfer_object);
+            //console.log('The solution is: ', rows[0].solution);
+            connection.release();
+        });
     });
 });
 

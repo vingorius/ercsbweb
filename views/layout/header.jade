@@ -9,19 +9,16 @@ nav.navbar.navbar-default.navbar-fixed-top
           a.navbar-brand(href="#") ERCSB
         div#navbar.collapse.navbar-collapse
           ul.nav.navbar-nav
-            li.active: a(href="#",data-toggle="pill") Home
-            //li: a(href="#about",data-toggle="pill") About
-            li: a(href="#contact",data-toggle="pill") Contact
-            li.dropdown
-              a.dropdown-toggle(href="#",data-toggle="dropdown",role="button",aria-haspopup="true",aria-expanded="false") Chart
-               span.caret
-              ul.dropdown-menu
-                li: a(href="#",data-toggle="pill") Needle Plot
-                li: a(href="#",data-toggle="pill") Xy Plot
-                li: a(href="#",data-toggle="pill") MA Plot
-                li.divider(role="separator")
-                li.dropdown-header Nav header
-                li: a(href="#",data-toggle="pill") XXX Plot
-                li: a(href="#",data-toggle="pill") YYY Plot
+            li.active: a(href="#",data-toggle="pill") Menu0
+            li: a(href="#",data-toggle="pill") Menu1
+            li: a(href="#",data-toggle="pill") Menu2
+            li: a(href="#",data-toggle="pill") Menu3
           ul.nav.navbar-nav.navbar-right
-              li: a(href="#about",data-toggle="pill") About
+            if user.userid
+              li: a#logoutButton(href="#") logout
+            else
+              li: a(href="#",data-toggle="modal",data-target="#loginmodal") login
+              li: a(href="#") register
+              
+block loginform
+    include ../system/loginmodal.jade

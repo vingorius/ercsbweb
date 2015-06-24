@@ -5,20 +5,27 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var compression = require('compression');
+var session = require('express-session')
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+// Login,Logout Manager
+var manager = require('./routes/manager');
 
 // Chart view
 var chart = require('./routes/chart');
-
 // Chart RESTful Service
 var maplot = require('./routes/maplot');
 var needleplot = require('./routes/needleplot');
 var xyplot = require('./routes/xyplot');
 
 var app = express();
-
+// Session Management
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}));
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -34,6 +41,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
+app.use('/manager', manager);
 // Chart view
 app.use('/users', users);
 app.use('/chart', chart);

@@ -34,6 +34,10 @@ body > .container {
   padding-left: 15px;
 }
 
+body > .modal-dialog {
+    margin: 100px auto;
+}
+
 code {
   font-size: 80%;
 }

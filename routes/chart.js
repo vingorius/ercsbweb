@@ -22,6 +22,7 @@ router.get('/degplot', function(req, res, next) {
                 ["Data", "Data", "Data", "Data", "Data", "Data"],
                 ["Data", "Data", "Data", "Data", "Data", "Data"],
                 ["Data", "Data", "Data", "Data", "Data", "Data"],
+                ["Data", "Data", "Data", "Data", "Data", "Data"],
                 ["Data", "Data", "Data", "Data", "Data", "Data"]
             ]
         }

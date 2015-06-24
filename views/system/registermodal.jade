@@ -1,0 +1,23 @@
+div.modal.fade#registermodal(tabindex="-1",role="dialog",aria-labelledby="registerModalLabel")
+    div.modal-dialog
+      div.modal-content
+          div.modal-header
+               button.close(type="button",data-dismiss="modal", aria-hidden="true") ×
+               h1.text-center Register
+          div.modal-body
+               form.form-signin.col-md-12.center-block
+                div.form-group
+                   input.form-control.input-lg#r_username(placeholder="Username",type="text",required="", autofocus="")
+                div.form-group
+                   input.form-control.input-lg#r_password(placeholder="Password",type="password",required="")
+                div.form-group
+                   button.btn.btn-primary.btn-lg.btn-block#registerButton(type="submit") Register
+                //-    span.pull-right
+                //-        a(href="#") Register
+                //-    span
+                //-        a(href="#") Need help?
+          div.modal-footer(style={'border-top': '0px'})
+            div.col-md-8(style={"text-align":"center"})
+              p#registerMessage(style={"color":"red"})
+            div.col-md-4
+              button.btn(data-dismiss="modal",aria-hidden="true") Cancel

@@ -5,12 +5,14 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var compression = require('compression');
-var session = require('express-session')
+// Session Management with Passport
+var mongoose = require('mongoose');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var session = require('express-session');//확인필요.
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
-// Login,Logout Manager
-var manager = require('./routes/manager');
 
 // Chart view
 var chart = require('./routes/chart');
@@ -24,8 +26,19 @@ var app = express();
 app.use(session({
   secret: 'keyboard cat',
   resave: false,
-  saveUninitialized: true
+  saveUninitialized: false
 }));
+// Passport
+app.use(passport.initialize());
+app.use(passport.session());
+// passport config
+var Account = require('./routes/account');
+passport.use(new LocalStrategy(Account.authenticate()));
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
+// mongoose
+mongoose.connect('mongodb://localhost/passport_local_mongoose_express4');
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -41,7 +54,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
-app.use('/manager', manager);
 // Chart view
 app.use('/users', users);
 app.use('/chart', chart);

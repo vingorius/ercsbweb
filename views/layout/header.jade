@@ -6,7 +6,8 @@ nav.navbar.navbar-default.navbar-fixed-top
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href="#") ERCSB
+          a.navbar-brand(href="/")
+              img(width=25,height=25,alt="ERCSB",src="/images/logo-48.png")
         div#navbar.collapse.navbar-collapse
           ul.nav.navbar-nav
             li.active: a(href="#",data-toggle="pill") Menu0
@@ -14,11 +15,16 @@ nav.navbar.navbar-default.navbar-fixed-top
             li: a(href="#",data-toggle="pill") Menu2
             li: a(href="#",data-toggle="pill") Menu3
           ul.nav.navbar-nav.navbar-right
-            if user.userid
-              li: a#logoutButton(href="#") logout
+            if(!user)
+                li: a(href="/login") login
+                li: a(href="/register") register
             else
-              li: a(href="#",data-toggle="modal",data-target="#loginmodal") login
-              li: a(href="#") register
-              
+                li: a(href="/logout") logout
+
+            //- li: a#loginItem(href="#",data-toggle="modal",data-target="#loginmodal") login
+            //- li: a#registerItem(href="#",data-toggle="modal",data-target="#registermodal") register
+            //- li: a#logoutItem(href="#") logout
+        
 block loginform
     include ../system/loginmodal.jade
+    include ../system/registermodal.jade

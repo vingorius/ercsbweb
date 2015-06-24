@@ -1,66 +1,50 @@
 var express = require('express');
-var pool = require('./modules/mysql_connection');
-var session = require('express-session')
-
+var passport = require('passport');
+var Account = require('./account');
 var router = express.Router();
 
-router.post('/login', function(req, res, next) {
-    if(!req.session.user){
-        console.log('세션에 사용자가 없다');
-    }else{
-        console.log('세션에 사용자가 있다',req.session.user);
-    }
-    var transfer_object = {
-        status: -1,
-        message: 'Error',
-        user: {}
-    };
 
-    if (req.body == undefined || req.body.userid == undefined || req.body.password == undefined) {
-        transfer_object.status = 100;
-        transfer_object.message = 'EPARAM';
-        res.json(transfer_object);
-        return next;
-    }
+var router = express.Router();
+//
+router.get('/', function (req, res) {
+    console.log("Manager root",req.user)
+    res.render('index', { user : req.user });
+});
 
-    var userid = req.body.userid;
-    var password = req.body.password;
+router.get('/register', function(req, res) {
+    res.render('register', { });
+});
 
-    pool.getConnection(function(err, connection) {
-        connection.query('CALL login(?,?)', [userid, password], function(err, rows, fields) {
-            if (err) throw err;
-            var data = rows[0][0];
-            transfer_object.status  = data.status;
-            transfer_object.message = data.message;
-            transfer_object.user.userid = data.userid;
-            transfer_object.user.group  = data.group;
+router.post('/register', function(req, res) {
+    console.log("register",req.body)
+    Account.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
+        if (err) {
+            console.log("register:err",err);
+            return res.render('register', { account : account });
+        }
 
-            console.log("Query Data:",rows[0]);
-
-            if(data.status == 0){
-                req.session.user = {userid:data.userid,group:data.group};
-                console.log("Success",req.session.user);
-            }else{
-                req.session.destroy();
-            }
-
-            res.json(transfer_object);
-            //console.log('The solution is: ', rows[0].solution);
-            connection.release();
+        passport.authenticate('local')(req, res, function () {
+            console.log("register:redirect");
+            res.redirect('/');
         });
     });
+});
 
+router.get('/login', function(req, res) {
+    res.render('login', { user : req.user });
+});
 
-    //res.json(transfer_object);
-    // pool.getConnection(function(err, connection) {
-    //     connection.query('CALL getMAPlot()', function(err, rows, fields) {
-    //         if (err) throw err;
-    //         transfer_object.data.plot_list = rows[0];
-    //         res.json(transfer_object);
-    //         //console.log('The solution is: ', rows[0].solution);
-    //         connection.release();
-    //     });
-    // });
+router.post('/login', passport.authenticate('local'), function(req, res) {
+    res.redirect('/');
+});
+
+router.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
+});
+
+router.get('/ping', function(req, res){
+    res.status(200).send("pong!");
 });
 
 module.exports = router;

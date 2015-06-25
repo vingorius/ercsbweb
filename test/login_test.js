@@ -1,14 +1,88 @@
 //var express = require('express');
 var request = require('supertest');
 var assert = require('assert');
+var pool = require('../routes/modules/mysql_connection');
 var host = 'http://localhost:3000';
 
 describe('Login Test Suite', function() {
-    it('path가 존재하여야 한다.', function(done) {
+    var cookie;
+    var user = {
+        username: 'test',
+        password: 'test',
+        toString: function() {
+            return this.username + '/' + this.password;
+        }
+    };
+    var wrong_user = {
+        username: 'test',
+        password: 'wrong',
+        toString: function() {
+            return this.username + '/' + this.password;
+        }
+    };
+
+    it('DB에서 테스트할 사용자가 있으면 삭제한다.', function(done) {
+        pool.getConnection(function(err, connection) {
+            connection.query('delete from users where username = ?', [user.username], function(err, rows, fields) {
+                connection.release();
+                if (err) assert(false, err.code); //throw err;
+                done();
+            });
+        });
+    });
+    it('login 화면 패스(get)가 존재하여야 한다.', function(done) {
         request(host)
-            .post('/manager/login')
+            .get('/login')
             .expect(200, done);
-    })
+    });
+    it('register ' + user.toString() + ' 으로 사용자 등록이 되어야한다.', function(done) {
+        request(host)
+            .post('/register')
+            .send(user)
+            .expect(302) //Moved Temporarily
+            .expect('Location', '/')
+            .end(function(err, res) {
+                if (err) return done(err);
+                done()
+            });
+    });
+    it('login ' + wrong_user.toString() + ' 이면 로그인 오류가 나야 한다.', function(done) {
+        request(host)
+            .post('/login')
+            .send(wrong_user)
+            .expect(302, done)
+            .expect('Location', '/login'); // "Unauthorized"
+    });
+    it('login ' + user.toString() + ' 으로 로그인하여야 한다.', function(done) {
+        request(host)
+            .post('/login')
+            .send(user)
+            .expect(302) //Moved Temporarily
+            .expect('Location', '/')
+            .expect('set-cookie', /connect.sid=/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                cookie = res.headers['set-cookie'];
+                //console.log("login",res.headers['set-cookie']);
+                done()
+            });
+    });
+    //제대로 테스트가 되려면 Login한 쿠키를 저장했다가,
+    //Logout 헤더에 이를 넣어서 테스트해야한다.
+    it('logout이 정상적으로 이루어져야한다.', function(done) {
+        request(host)
+            .get('/logout')
+            .set('Cookie', cookie)
+            .expect(302) //Moved Temporarily
+            .expect('Location', '/')
+            .end(function(err, res) {
+                if (err) return done(err);
+                //console.log("logout",res.headers['set-cookie']);
+                assert.equal(undefined, res.headers['set-cookie']);
+                done()
+            });
+    });
+    /*
     it('userid,password 가 들어오지 않으면 100번,EPARAM 발생.', function(done) {
         request(host)
             .post('/manager/login')
@@ -77,4 +151,5 @@ describe('Login Test Suite', function() {
                 done()
             });
     })
+    */
 })

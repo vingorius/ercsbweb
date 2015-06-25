@@ -3,14 +3,19 @@ extends ../layout/basiclayout
 block content
     div.container
         form.form-signin(method="post",action="/login")
-            h2.form-signin-heading Please sign in
+            h2.form-signin-heading Login
+            if message.length > 0
+                div.alert.alert-danger #{message}
             label.sr-only(for="username") User Name
             input#username.form-control(placeholder="Username", name="username", required="", autofocus="", type="text")
                 
             label.sr-only(for="password") Password
             input#password.form-control(placeholder="Password", name="password", required="", type="password")
-            //- div.checkbox
-            //-     label
-            //-         input(type="checkbox",name="remember-me",value="Remember me")
+            div.form-group
+                div
+                    div.checkbox
+                      label 
+                        input(type="checkbox",name="remember",checked)
+                        | Remember me
             button.btn.btn-lg.btn-primary.btn-block.ladda-button(type="submit",data-style="zoom-in") 
              span.ladda-label Sign in

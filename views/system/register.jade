@@ -3,7 +3,10 @@ extends ../layout/basiclayout
 block content
     div.container
         form.form-signin(method="post",action="/register")
-            h2.form-signin-heading Please Register
+            //h2.form-signin-heading Please Register
+            h2.form-signin-heading: span.glyphicon.glyphicon-registration-mark  Register
+            if message.length > 0
+                div.alert.alert-danger #{message}
             label.sr-only(for="username") User Name
             input#username.form-control(placeholder="Username", name="username", required="", autofocus="", type="text")
                 

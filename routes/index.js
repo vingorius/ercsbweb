@@ -3,6 +3,8 @@ var passport = require('passport');
 var Account = require('./account');
 var router = express.Router();
 
+var authorization = require('express-authorization');
+
 //
 router.get('/', function(req, res) {
     console.log("Login User", req.user)
@@ -11,8 +13,18 @@ router.get('/', function(req, res) {
     });
 });
 
+router.get('/restricted', authorization.ensureRequest.isPermitted("admin:view"),
+    function(req, res) {
+        console.log("Login User", req.user)
+        res.render('restricted', {
+            user: req.user
+        });
+    });
+
 router.get('/register', function(req, res) {
-    res.render('system/register', {message: req.flash('signupMessage')});
+    res.render('system/register', {
+        message: req.flash('signupMessage')
+    });
 });
 
 router.post('/register', passport.authenticate('register', {
@@ -29,10 +41,20 @@ router.get('/login', function(req, res) {
 });
 
 router.post('/login', passport.authenticate('login', {
-    successRedirect: '/', // redirect to the secure profile section
+    //successRedirect: '/', // redirect to the secure profile section
     failureRedirect: '/login', // redirect back to the signup page if there is an error
     failureFlash: true // allow flash messages
 }), function(req, res) {
+    //Remember Me Cookie
+    if (req.body.remember) {
+        req.session.cookie.maxAge = 1000 * 60 * 3;
+    } else {
+        req.session.cookie.expires = false;
+    }
+    //권한관리
+    //req.user.permissions = ["admin:*"] ;
+    //console.log("cookie",req.session.cookie);
+
     res.redirect('/');
 });
 

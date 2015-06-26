@@ -1,7 +1,8 @@
 // config/passport.js
-
 // load all the things we need
+var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var validator = require('validator');
 var pool = require('./mysql_connection');
 
 // load up the user model
@@ -22,16 +23,14 @@ module.exports = function(passport) {
 
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
-        done(null, user.id);
+        console.log('serializeUser');
+        done(null, user);
     });
 
     // used to deserialize the user
-    passport.deserializeUser(function(id, done) {
-        pool.getConnection(function(err, connection) {
-            connection.query("SELECT * FROM users WHERE id = ? ", [id], function(err, rows) {
-                done(err, rows[0]);
-            });
-        });
+    passport.deserializeUser(function(user, done) {
+        console.log('deserializeUser');
+        done(null, user);
     });
 
     // =========================================================================
@@ -51,6 +50,9 @@ module.exports = function(passport) {
             },
             function(req, username, password, done) {
                 console.log(username, password);
+                if(!validator.isEmail(username)){
+                    return done(null, false, req.flash('signupMessage', 'Please insert a valid E-mail address.'));
+                }
                 // find a user whose email is the same as the forms email
                 // we are checking to see if the user trying to login already exists
                 pool.getConnection(function(err, connection) {
@@ -111,7 +113,20 @@ module.exports = function(passport) {
                             return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
 
                         // all is well, return successful user
-                        return done(null, rows[0]);
+                        //rows[0].permissions =  ["admin:*"];
+                        // get permissions
+                        connection.query("SELECT permission FROM users_permissions WHERE username = ?", [username], function(err, p_rows) {
+                            if (err)
+                                return done(err);
+                            if (p_rows.length > 0) {
+                                rows[0].permissions = [];
+                                p_rows.map(function(data){
+                                    rows[0].permissions.push(data.permission);
+                                });
+                                console.log(rows[0]);
+                            }
+                            return done(null, rows[0]);
+                        });
                     });
                 });
             })

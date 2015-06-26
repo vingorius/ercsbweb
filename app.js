@@ -30,6 +30,8 @@ var app = express();
 // Session Management
 app.use(session({
     secret: 'keyboard cat',
+    resave: true, //default
+    saveUninitialized: true, //default
     store: new MongoStore(options)
 }));
 // Passport

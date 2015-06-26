@@ -1,0 +1,12 @@
+extends layout/basiclayout
+
+block content
+    div.container
+        h2 Restricted
+        if (!user)
+          a(href="/manager/login") Login
+          br
+          a(href="/manager/register") Register
+        if (user)
+          p You are currently logged in as #{user.username}, group: #{user.group}
+          a(href="/manager/logout") Logout

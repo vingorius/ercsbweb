@@ -1,0 +1,23 @@
+{
+  "name": "ercsb",
+  "version": "0.1.0",
+  "homepage": "",
+  "authors": [
+    "vingorius <vingorius@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "d3": "~3.5.5",
+    "jquery": "~2.1.4",
+    "ladda": "~0.9.8",
+    "require": "*"
+  }
+}

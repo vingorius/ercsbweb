@@ -6,10 +6,7 @@ block content
             h2.form-signin-heading Login
             if message.length > 0
                 div.alert.alert-danger #{message}
-            label.sr-only(for="username") User Name
-            input#username.form-control(placeholder="Username", name="username", required="", autofocus="", type="text")
-                
-            label.sr-only(for="password") Password
+            input#username.form-control(placeholder="Your Email", name="username", required="", autofocus="", type="email")
             input#password.form-control(placeholder="Password", name="password", required="", type="password")
             div.form-group
                 div

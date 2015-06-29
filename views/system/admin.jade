@@ -1,0 +1,25 @@
+extends ../layout/basiclayout
+
+block content
+    div.container
+        h2 Admin
+        if (user)
+            h3 User
+            -for(var prop in user)
+                p #{prop}: #{user[prop]}
+        if (session)
+            h3 Session
+            +printObject(session)
+            //- each data,prop in session
+            //-     if typeof(data) ==  'object'
+            //-         h4 #{prop}
+            //-         each x,y in data
+            //-             h5 #{y}: #{x} 
+
+
+    mixin printObject(obj)
+        each data,prop in obj
+            if typeof(data) == 'object'
+                h4 #{prop}: #{data}
+                each x,y in data
+                    h5 #{y}: #{x}

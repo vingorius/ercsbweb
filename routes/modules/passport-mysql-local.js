@@ -23,13 +23,11 @@ module.exports = function(passport) {
 
     // used to serialize the user for the session
     passport.serializeUser(function(user, done) {
-        console.log('serializeUser');
         done(null, user);
     });
 
     // used to deserialize the user
     passport.deserializeUser(function(user, done) {
-        console.log('deserializeUser');
         done(null, user);
     });
 
@@ -49,7 +47,7 @@ module.exports = function(passport) {
                 passReqToCallback: true // allows us to pass back the entire request to the callback
             },
             function(req, username, password, done) {
-                console.log(username, password);
+                // Check Your name is valid email format
                 if(!validator.isEmail(username)){
                     return done(null, false, req.flash('signupMessage', 'Please insert a valid E-mail address.'));
                 }
@@ -71,11 +69,8 @@ module.exports = function(passport) {
 
                             var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
 
-
                             connection.query(insertQuery, [newUserMysql.username, newUserMysql.password], function(err, rows) {
-                                console.log(rows);
                                 newUserMysql.id = rows.insertId;
-
                                 return done(null, newUserMysql);
                             });
                         }
@@ -123,7 +118,6 @@ module.exports = function(passport) {
                                 p_rows.map(function(data){
                                     rows[0].permissions.push(data.permission);
                                 });
-                                console.log(rows[0]);
                             }
                             return done(null, rows[0]);
                         });

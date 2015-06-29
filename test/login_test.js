@@ -120,9 +120,9 @@ describe('Login Test Suite', function() {
                     done();
                 });
         });
-        it('login ' + user.toString() + ' restricted 페이지에 접근할 수 있어야 한다.', function(done) {
+        it('login ' + user.toString() + ' admin 페이지에 접근할 수 있어야 한다.', function(done) {
             agent
-                .get('/restricted')
+                .get('/admin')
                 .expect(200) //Moved Temporarily
                 .end(function(err, res) {
                     if (err) return done(err);
@@ -142,9 +142,9 @@ describe('Login Test Suite', function() {
                 });
         });
 
-        it('logout이후에는  restricted 페이지에 접근할 수 없어야 한다.', function(done) {
+        it('logout이후에는  admin 페이지에 접근할 수 없어야 한다.', function(done) {
             agent
-                .get('/restricted')
+                .get('/admin')
                 .expect(302) //Moved Temporarily
                 .end(function(err, res) {
                     if (err) return done(err);
@@ -169,9 +169,9 @@ describe('Login Test Suite', function() {
                     done();
                 });
         });
-        it('login ' + user.toString() + ' restricted 페이지에 접근할 수 있어야 한다.', function(done) {
+        it('login ' + user.toString() + ' admin 페이지에 접근할 수 있어야 한다.', function(done) {
             agent
-                .get('/restricted')
+                .get('/admin')
                 .expect(200) //Moved Temporarily
                 .end(function(err, res) {
                     if (err) return done(err);
@@ -190,14 +190,13 @@ describe('Login Test Suite', function() {
         //             done()
         //         });
         // });
-        it('다른 Agent로 로그인 없이 restricted 페이지에 접근할 수 있어야 한다.', function(done) {
+        it('다른 Agent로 로그인 없이 admin 페이지에 접근할 수 있어야 한다.', function(done) {
             request(host)
-                .get('/restricted')
+                .get('/admin')
                 .set('Cookie', cookie)
                 .expect(200) //Moved Temporarily
                 .end(function(err, res) {
                     if (err) return done(err);
-                    console.log(res.headers['set-cookie']);
                     done()
                 });
         });

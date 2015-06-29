@@ -11,20 +11,20 @@ var passport = require('passport');
 var flash = require('connect-flash'); //Message 전달
 require('./routes/modules/passport-mysql-local')(passport);
 
+// Security
+var security = require('./routes/modules/security')
+
 //Session정보 저장
 var session = require('express-session');
 var MongoStore = require('connect-mongo')(session); //Session정보 저장
-var options = require('./routes/modules/mongo-session-options.js');//MongoDB Session Collection Information
+var options = require('./routes/modules/mongo-session-options.js'); //MongoDB Session Collection Information
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var root = require('./routes/index');
+var admin = require('./routes/admin');
+var menus = require('./routes/menus');
 
 // Chart view
 var chart = require('./routes/chart');
-// Chart RESTful Service
-var maplot = require('./routes/maplot');
-var needleplot = require('./routes/needleplot');
-var xyplot = require('./routes/xyplot');
 
 var app = express();
 // Session Management
@@ -34,27 +34,19 @@ app.use(session({
     saveUninitialized: true, //default
     store: new MongoStore(options)
 }));
+
 // Passport
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-// passport config
-//var Account = require('./routes/account');
-//passport.use(new LocalStrategy(Account.authenticate()));
-//passport.serializeUser(Account.serializeUser());
-//passport.deserializeUser(Account.deserializeUser());
-// mongoose
-//mongoose.connect('mongodb://localhost/passport_local_mongoose_express4');
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
-
 // For contents gzip compression
 app.use(compression())
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
-app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
@@ -62,16 +54,23 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-// Chart view
-app.use('/users', users);
-app.use('/chart', chart);
+// debug log user & session
+if (app.get('env') === 'development') {
+    app.use(logger('dev'));
+    app.use(security.debugLog);
+    app.set('view options', { pretty: true });
+}
+
+app.use('/', root);
+//app.use('/admin', authorization.ensureRequest.isPermitted("admin:view"), admin);
+app.use('/admin', security.isPermitted("admin:view"), admin);
+//상위메뉴차원에서 로그인한 세션만 접근할 수 있도록 하였다.
+app.use('/menus', security.isAuthenticated, menus);
 // Chart RESTful Service
-app.use('/maplot', maplot);
-app.use('/needleplot', needleplot);
-app.use('/xyplot', xyplot);
+app.use('/chart', chart);
 
 // catch 404 and forward to error handler
+//여기까지 왔다는 말은 처리할 핸들러가 없다는 뜻.
 app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
@@ -101,6 +100,5 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-
 
 module.exports = app;

@@ -1,25 +1,14 @@
 var express = require('express');
 var passport = require('passport');
-var Account = require('./account');
+//var Account = require('./account');
 var router = express.Router();
-
-var authorization = require('express-authorization');
 
 //
 router.get('/', function(req, res) {
-    console.log("Login User", req.user)
     res.render('index', {
         user: req.user
     });
 });
-
-router.get('/restricted', authorization.ensureRequest.isPermitted("admin:view"),
-    function(req, res) {
-        console.log("Login User", req.user)
-        res.render('restricted', {
-            user: req.user
-        });
-    });
 
 router.get('/register', function(req, res) {
     res.render('system/register', {
@@ -47,15 +36,16 @@ router.post('/login', passport.authenticate('login', {
 }), function(req, res) {
     //Remember Me Cookie
     if (req.body.remember) {
-        req.session.cookie.maxAge = 1000 * 60 * 3;
+        //24hours
+        req.session.cookie.maxAge = 1000 * 60 * 60 * 24;
     } else {
         req.session.cookie.expires = false;
     }
-    //권한관리
-    //req.user.permissions = ["admin:*"] ;
-    //console.log("cookie",req.session.cookie);
+    // security.js에서 session에 넣어둔 원 path로 redirect한다.
+    var origin = req.session.origin_path || '/';
+    delete req.session.origin_path;
 
-    res.redirect('/');
+    res.redirect(origin);
 });
 
 router.get('/logout', function(req, res) {

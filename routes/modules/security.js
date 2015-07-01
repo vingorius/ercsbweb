@@ -29,7 +29,10 @@ security.isPermitted = function(required_permission) {
         if (authorization.considerSubject(req.user).isPermitted(required_permission)) {
             return next();
         }
-        res.redirect('/login');
+        //res.redirect('/login');
+        var err = new Error('not allowed!');
+        err.status = 403;
+        next(err);
     }
 }
 module.exports = security;

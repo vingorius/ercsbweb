@@ -20,7 +20,13 @@ pool.on('enqueue', function() {
 
 var getConnection = function(callback) {
     pool.getConnection(function(err, connection) {
-        callback(err, connection);
+        if (err) {
+            console.error('error connecting: ' + err.stack);
+            return err;
+        }
+        //console.log('connected as id ' + connection.threadId);
+
+        callback(connection);
         connection.release();
     });
 };

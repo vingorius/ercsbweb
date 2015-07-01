@@ -6,12 +6,12 @@ var host = 'http://localhost:3000';
 describe('Needle Plot Test Suite', function() {
     it('path가 존재하여야 한다.', function(done) {
         request(host)
-            .get('/chart/needleplot')
+            .get('/rest/needleplot')
             .expect(200, done);
     })
     it('parameter가 없으면 transfer_object error code 1000', function(done) {
         request(host)
-            .get('/chart/needleplot')
+            .get('/rest/needleplot')
             .end(function(err, res) {
                 if (err) return done(err);
                 var transfer_object = res.body;
@@ -23,7 +23,7 @@ describe('Needle Plot Test Suite', function() {
     })
     it('Database에 해당 Gene이 없을 때 오류를 발생하여야 한다.', function(done) {
             request(host)
-                .get('/chart/needleplot?gene=XXX')
+                .get('/rest/needleplot?gene=XXX')
                 .end(function(err, res) {
                     if (err) return done(err);
                     var transfer_object = res.body;
@@ -38,12 +38,12 @@ describe('Needle Plot Test Suite', function() {
     //})
     it('Content Type이 application/json 여야한다.', function(done) {
         request(host)
-            .get('/chart/needleplot?gene=EGFR')
+            .get('/rest/needleplot?gene=EGFR')
             .expect('content-type',/json/,done)
     })
     it('JSON Data Format Check', function(done) {
         request(host)
-            .get('/chart/needleplot?gene=EGFR')
+            .get('/rest/needleplot?gene=EGFR')
             //.field('gene','EGFR')
             .end(function(err, res) {
                 if (err) return done(err);

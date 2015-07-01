@@ -1,7 +1,7 @@
 //var express = require('express');
 var request = require('supertest');
 var assert = require('assert');
-var pool = require('../routes/modules/mysql_connection');
+var getConnection = require('../routes/modules/mysql_connection');
 var host = 'http://localhost:3000';
 
 describe('Login Test Suite', function() {
@@ -23,9 +23,8 @@ describe('Login Test Suite', function() {
     };
 
     it('DB에서 테스트할 사용자가 있으면 삭제한다.', function(done) {
-        pool.getConnection(function(err, connection) {
-            connection.query('delete from users where username = ?', [user.username], function(err, rows, fields) {
-                connection.release();
+        getConnection(function(connection) {
+            connection.query('delete from ercsb_cdss.users where username = ?', [user.username], function(err, rows, fields) {
                 if (err) assert(false, err.code); //throw err;
                 done();
             });

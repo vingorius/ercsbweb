@@ -12,18 +12,38 @@ nav.navbar.navbar-default.navbar-fixed-top
             li: a(href="/menus/menu1") Menu1
             li: a(href="/menus/menu2") Menu2
             li: a(href="/admin") Admin
+            li.dropdown
+                a.dropdown-toggle(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true") Chart
+                    span.caret  
+                ul.dropdown-menu
+                    li: a(href="/chart/maplot")
+                        i.menu_icon.fa.fa-bar-chart
+                        span.sub_menu_span ma plot
+                    li: a(href="/chart/needleplot")
+                        i.menu_icon.fa.fa-dot-circle-o
+                        span.sub_menu_span needle plot
+                    li: a(href="/chart/xyplot")
+                        i.menu_icon.fa.fa-line-chart
+                        span.sub_menu_span xy plot
+                    li: a(href="/chart/3dplot")
+                        i.menu_icon.fa.fa-cube
+                        span.sub_menu_span 3d plot
+                    li: a(href="/chart/degplot")
+                        i.menu_icon.fa.fa-list-alt
+                        span.sub_menu_span deg plot
+
           ul.nav.navbar-nav.navbar-right
             if(!user)
                 li: a(href="/login")
-                    i.glyphicon.glyphicon-user 
-                    span(style={'padding-left': '5px'}) login
+                    i.fa.fa-sign-in
+                    span.menu_span login
                 li: a(href="/register")
-                    i.glyphicon.glyphicon-check 
-                    span(style={'padding-left': '5px'}) register
+                    i.fa.fa-user-plus
+                    span.menu_span register
             else
                 li: a(href="/logout")
-                    i.glyphicon.glyphicon-off 
-                    span(style={'padding-left': '5px'}) logout
+                    i.fa.fa-sign-out
+                    span.menu_span logout
         
 block loginform
     //- include ../system/loginmodal.jade

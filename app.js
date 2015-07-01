@@ -25,6 +25,8 @@ var menus = require('./routes/menus');
 
 // Chart view
 var chart = require('./routes/chart');
+// Chart RESTful
+var rest = require('./routes/rest');
 
 var app = express();
 // Session Management
@@ -40,13 +42,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+app.use(compression())
+// uncomment after placing your favicon in /public
+app.use(favicon(__dirname + '/public/favicon.ico'));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 // For contents gzip compression
-app.use(compression())
-// uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false
@@ -57,7 +60,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // debug log user & session
 if (app.get('env') === 'development') {
     app.use(logger('dev'));
-    app.use(security.debugLog);
+    // app.use(security.debugLog);
     app.set('view options', { pretty: true });
 }
 
@@ -66,8 +69,10 @@ app.use('/', root);
 app.use('/admin', security.isPermitted("admin:view"), admin);
 //상위메뉴차원에서 로그인한 세션만 접근할 수 있도록 하였다.
 app.use('/menus', security.isAuthenticated, menus);
-// Chart RESTful Service
+// Chart View
 app.use('/chart', chart);
+app.use('/rest', rest);
+// Chart RESTful Service
 
 // catch 404 and forward to error handler
 //여기까지 왔다는 말은 처리할 핸들러가 없다는 뜻.

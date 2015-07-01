@@ -41,6 +41,28 @@ code {
     font-size: 80%;
 }
 
+/* Header
+-------------------------------------------------- */
+
+.menu_icon {
+    /*color: #286090;*/
+}
+
+.menu_span {
+    padding-left: 5px;
+}
+
+.sub_menu_span {
+    padding-left: 10px;
+}
+
+.dropdown-menu > li > a {
+    color: #777;
+}
+/* Header
+-------------------------------------------------- */
+
+
 /* Login Form
 -------------------------------------------------- */
 

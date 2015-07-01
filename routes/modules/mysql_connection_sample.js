@@ -1,12 +1,27 @@
 var mysql = require('mysql');
 
 //var connection = mysql.createConnection({
+// connection 개수는 cluster 개수가 max이다.
 var pool = mysql.createPool({
-    connectionLimit : 10,
+    supportBigNumbers: true,
+    connectionLimit: 100,
+    // waitForConnections: false,
     host: 'localhost',
     database: 'yourdatabase',
     user: 'uesr',
     password: 'password'
 });
+pool.on('connection', function(connection) {
+    console.log('connection is created!!!');
+});
+pool.on('enqueue', function() {
+    console.log('Waiting for available connection slot');
+});
 
-module.exports = pool;
+var getConnection = function(callback) {
+    pool.getConnection(function(err, connection) {
+        callback(err, connection);
+        connection.release();
+    });
+};
+module.exports = getConnection;

@@ -6,17 +6,17 @@ var host = 'http://localhost:3000';
 describe('Ma Plot Test Suite', function() {
     it('path가 존재하여야 한다.', function(done) {
         request(host)
-            .get('/chart/maplot')
+            .get('/rest/maplot')
             .expect(200, done);
     })
     it('Content Type이 application/json 여야한다.', function(done) {
         request(host)
-            .get('/chart/maplot')
+            .get('/rest/maplot')
             .expect('content-type',/json/,done)
     })
     it('JSON Data Format Check', function(done) {
         request(host)
-            .get('/chart/maplot')
+            .get('/rest/maplot')
             .end(function(err, res) {
                 if (err) return done(err);
                 var transfer_object = res.body;

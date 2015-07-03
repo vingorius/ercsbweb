@@ -1,5 +1,6 @@
 var express = require('express');
 var getConnection = require('./modules/mysql_connection');
+var plot = require('./modules/plot');
 var router = express.Router();
 
 router.get('/', function(req, res, next) {
@@ -58,53 +59,22 @@ router.get('/comutationplot', function(req, res, next) {
             if (mut_err) throw mut_err;
             //transfer_object.data.sample_list = mut_rows[0];
             var sample_list = [];
-            for (i = 0; i < mut_rows[0].length; i++) {
-                var data = mut_rows[0][i];
-                var samples = sample_list.filter(function(obj) {
-                    return obj.name == data.sample;
-                });
-                var sample;
-                if (samples.length == 0) {
-                    sample = {
-                        id: "id",
-                        name: data.sample,
-                        group: data.group,
-                        gene_list: []
-                    };
-                    var gene = {
-                        name: data.hugo,
-                        aberration_list: []
-                    };
-                    var aberration = {
-                        type: data.type,
-                        value: data.value
-                    };
-                    gene.aberration_list.push(aberration);
-                    sample.gene_list.push(gene)
-                    sample_list.push(sample);
-                } else {
-                    sample = samples[0];
-                    var genes = sample.gene_list.filter(function(obj) {
-                        return obj.name == data.hugo;
-                    });
-                    var gene;
-                    var aberration = {
-                        type: data.type,
-                        value: data.value
-                    };
-                    if (genes.length == 0) {
-                        gene = {
-                            name: data.hugo,
-                            aberration_list: []
-                        };
-                        sample.gene_list.push(gene);
-                    } else {
-                        gene = genes[0];
-                    }
-                    gene.aberration_list.push(aberration);
-                }
+            mut_rows[0].forEach(function(data) {
+                var sample = plot.getSample(sample_list, data.sample);
+                var aberration = plot.newAberration(data.type, data.value);
 
-            }
+                if (typeof sample == 'undefined') {
+                    sample = plot.newSample('id', data.sample, data.group, []);
+                    sample_list.push(sample);
+                }
+                var gene = plot.getGene(sample.gene_list, data.hugo);
+                if (typeof gene == 'undefined') {
+                    gene = plot.newGene(data.hugo, []);
+                    sample.gene_list.push(gene);
+                }
+                gene.aberration_list.push(aberration);
+
+            });
             transfer_object.data.sample_list = sample_list;
             //console.log(transfer_object.data.sample_list[5]);
 
@@ -113,9 +83,13 @@ router.get('/comutationplot', function(req, res, next) {
                 transfer_object.data.symbol_list = sig_rows[0];
                 connection.query('CALL getComutationplotGroup()', function(grp_err, grp_rows) {
                     if (grp_err) throw grp_err;
-                    grp_rows[0].map(function(data) {
-                        transfer_object.data.group_list.push(data.group);
-                    });
+                    transfer_object.data.group_list =
+                        grp_rows[0].map(function(data) {
+                            return data.group;
+                        });
+                    // grp_rows[0].map(function(data) {
+                    //     transfer_object.data.group_list.push(data.group);
+                    // });
 
                     res.json(transfer_object);
                 });
@@ -146,54 +120,24 @@ router.get('/tumorportal_cmp', function(req, res, next) {
                 if (mut_err) throw mut_err;
                 //transfer_object.data.sample_list = mut_rows[0];
                 var sample_list = [];
-                for (i = 0; i < mut_rows[0].length; i++) {
-                    var data = mut_rows[0][i];
-                    var samples = sample_list.filter(function(obj) {
-                        return obj.name == data.sample;
-                    });
-                    var sample;
-                    if (samples.length == 0) {
-                        sample = {
-                            id: "id",
-                            name: data.sample,
-                            group: data.group,
-                            gene_list: []
-                        };
-                        var gene = {
-                            name: data.hugo,
-                            aberration_list: []
-                        };
-                        var aberration = {
-                            type: data.type,
-                            value: data.value
-                        };
-                        gene.aberration_list.push(aberration);
-                        sample.gene_list.push(gene)
-                        sample_list.push(sample);
-                    } else {
-                        sample = samples[0];
-                        var genes = sample.gene_list.filter(function(obj) {
-                            return obj.name == data.hugo;
-                        });
-                        var gene;
-                        var aberration = {
-                            type: data.type,
-                            value: data.value
-                        };
-                        if (genes.length == 0) {
-                            gene = {
-                                name: data.hugo,
-                                aberration_list: []
-                            };
-                            sample.gene_list.push(gene);
-                        } else {
-                            gene = genes[0];
-                        }
-                        gene.aberration_list.push(aberration);
-                    }
+                mut_rows[0].forEach(function(data) {
+                    var sample = plot.getSample(sample_list, data.sample);
+                    var aberration = plot.newAberration(data.type, data.value);
 
-                }
+                    if (typeof sample == 'undefined') {
+                        sample = plot.newSample('id', data.sample, data.group, []);
+                        sample_list.push(sample);
+                    }
+                    var gene = plot.getGene(sample.gene_list, data.hugo);
+                    if (typeof gene == 'undefined') {
+                        gene = plot.newGene(data.hugo, []);
+                        sample.gene_list.push(gene);
+                    }
+                    gene.aberration_list.push(aberration);
+
+                });
                 transfer_object.data.sample_list = sample_list;
+
                 //console.log(transfer_object.data.sample_list[5]);
 
                 connection.query('CALL getComutationplotTumorMutsig(?)', [p_type], function(sig_err, sig_rows) {

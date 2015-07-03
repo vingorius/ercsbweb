@@ -9,8 +9,10 @@ define("maplot/view_maplot", ["utils", "size", "maplot/event_maplot"], function(
 		div
 		.append(input);
 
-		$('.spinner .btn:first-of-type').on("click", _e.arrow);
-		$('.spinner .btn:last-of-type').on("click", _e.arrow);
+		$('.spinner .btn:first-of-type')
+		.on("click", _e.arrow);
+		$('.spinner .btn:last-of-type')
+		.on("click", _e.arrow);
 
 		redraw
 		.on("click", _e.redraw);

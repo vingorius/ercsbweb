@@ -34,6 +34,14 @@ define("gene/view_gene", ["utils", "size", "gene/event_gene"], function(_utils, 
 		.on("mouseover", e.axis_m_over)
 		.on("mouseout", e.axis_m_out);
 
+		svg.append("g")
+		.attr("class", "pq_explain")
+		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 2) + ", " + (size.height - 2) + ")")
+		.append("text")
+		.text("#mutations")
+		.style("font-size", "12px")
+		.style("font-style", "italic");
+
 		var bar_group = svg.selectAll(".genebar_group")
 		.data(data.data)
 		.enter().append("g")

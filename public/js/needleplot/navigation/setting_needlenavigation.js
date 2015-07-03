@@ -3,7 +3,7 @@ define("needleplotnavigation/setting_needlenavigation", ["utils", "size", "needl
 		var data = _data || [];
 		var stacked = _stacked || [];
 		var ymax = _ymax;
-		var size = _size.define_size("needleplot_navigation", 10, 10, 10, 10);
+		var size = _size.define_size("needleplot_navigation", 10, 10, 20, 20);
 
 		var x = _utils.linearScale(0, data.data.graph[0].length, (size.margin.left * 2), size.rwidth);
 		var y = _utils.linearScale(0, ymax, size.height, 0);

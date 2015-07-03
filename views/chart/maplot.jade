@@ -17,13 +17,16 @@ block content
 					button.btn.btn-default#download_button(type='button') download
 					button.btn.btn-default#reset_button(type='button') reset
 				div.row
-					table.table.table-striped#result_table(style={'font-size' : '12px'})
-						caption Seleted gene table
-						thead
-							tr
-								th #
-								th gene
-								th x
-								th y
-								th p
-						tbody#result_body
+					div.table_header
+						table.table.table-striped(style={'font-size' : '12px'})
+							caption Seleted gene table
+							thead
+								tr
+									th #
+									th gene
+									th x
+									th y
+									th p	
+					div.table_body
+						table.table.table-striped#result_table(style={'font-size' : '12px'})
+							tbody#result_body

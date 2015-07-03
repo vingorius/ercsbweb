@@ -3,16 +3,18 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 		var svg = _svg || null;
 		var size = _size || {};
 		var data = _data || [];
-		var border_box_width = 20;
 
 		var box_g = svg.insert("g", "g")
-		.data([{ x : size.margin.left * 2, y : 0, width : (size.rwidth - size.margin.left * 2), height : size.height }])
+		.data([{ x : 0
+			, y : 0
+			, width : size.rwidth
+			, height : size.height }])
 		.attr("class", "needle_select_box")
 		.attr("transform", "translate(0, 0)");
 
 		var box = box_g.append("rect")
 		.attr("class", "navi_box")
-		.attr("x", function(_d) { return _d.x; })
+		.attr("x", function(_d) { return _d.x + size.margin.left; })
 		.attr("y", function(_d) { return _d.y; })
 		.attr("width", function(_d) { return _d.width; })
 		.attr("height", function(_d) { return _d.height; })
@@ -20,21 +22,21 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 
 		var right_border = box_g.append("rect")
 		.attr("class", "navi_2_box_right")
-		.attr("x", function(_d) { return _d.width + size.margin.left * 2; })
+		.attr("x", function(_d) { return _d.width + size.margin.left; })
 		.attr("y", 0)
-		.attr("width", border_box_width)
+		.attr("width", size.margin.left)
 		.attr("height", size.height)
 		.attr("cursor", "ew-resize")
-		.style("fill", "#96281B");
+		.style("stroke", "#96281B");
 
 		var left_border = box_g.append("rect")
 		.attr("class", "navi_2_box_left")
-		.attr("x", function(_d) { return _d.x - border_box_width; })
+		.attr("x", function(_d) { return _d.x; })
 		.attr("y", 0)
-		.attr("width", border_box_width)
+		.attr("width", size.margin.left)
 		.attr("height", size.height)
 		.attr("cursor", "ew-resize")
-		.style("fill", "#96281B");
+		.style("stroke", "#96281B");
 
 		var e = _event({
 			box : box,
@@ -84,8 +86,10 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 		.data(function(_d)  { return _d.sample_list; })
 		.enter().append("rect")
 		.attr("class", function(_d) { return "stacked_hbar_navi2"; })
-		.attr("x", 0).attr("y", function(_d) { return data.y(_d.y + _d.count); })
-		.attr("width", 2).attr("height", function(_d) { return (size.height + size.margin.top) - data.y(_d.count); });
+		.attr("x", 0)
+		.attr("y", function(_d) { return data.y(_d.y + _d.count); })
+		.attr("width", 1)
+		.attr("height", function(_d) { return (size.height + size.margin.top) - data.y(_d.count); });
 	}
 
 	return {

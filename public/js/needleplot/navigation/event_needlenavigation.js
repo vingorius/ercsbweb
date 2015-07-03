@@ -19,7 +19,7 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			var height = div[0].offsetHeight;
 			var width = (div[0].offsetWidth / _width) * div[0].offsetWidth - (size.margin.left * 2);
 
-			var udt_width = _utils.linearScale(0, data.data.data.graph[0].length,
+			var udt_width = _utils.linearScale((size.margin.left * 2), data.data.data.graph[0].length,
 				(size.margin.left * 2), (width - size.margin.left * 2)).clamp(true);
 			var udt_x = _utils.linearScale(0, size.rwidth, (size.margin.left * 2), 
 				(width - size.margin.left * 2)).clamp(true);
@@ -39,12 +39,10 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			var update = update_size(now_x, now_width);
 			var svg = update.svg;
 
-			svg
-			.attr("width", update.width);
+			console.log(size, update.width)
 
 			svg
-			.select(".needle_gene_full_path_g rect")
-			.attr("width", update.width - size.margin.left * 2);
+			.attr("width", update.width - size.margin.left);
 
 			svg
 			.selectAll(".graph_group")
@@ -68,56 +66,69 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 
 		var moving_event = function()   {
 			var margin = size.margin.left * 2;
+			var width = Number(elements.box.attr("width"));
+			var x = Number(elements.box.attr("x"));
+			var left = Number(elements.left.attr("x"));
 
 			elements.box.attr("x", function(_d) {
 				return _d.x = Math.max(margin, 
-					Math.min(size.rwidth - Number(elements.box.attr("width")), d3.event.x));
+					Math.min(size.rwidth - width, d3.event.x));
 			});
 
 			elements.right.attr("x", function(_d)    {
-				return _d.x = Math.max(Number(elements.box.attr("width"))
-					, Math.min(size.rwidth, d3.event.x + Number(elements.box.attr("width"))));
+				return _d.x = Math.max(width
+					, Math.min(size.rwidth, d3.event.x + width));
 			});
 
 			elements.left.attr("x", function(_d)    {
-				return _d.x = Math.max(0, Math.min(elements.box.attr("x"), d3.event.x));
+				return _d.x = Math.max(0, Math.min(x, d3.event.x));
 			});
 
-			move_needle_plot(Number(elements.left.attr("x")), Number(elements.box.attr("width")));
+			move_needle_plot(left, width);
 		}
 
 		var resizing_right_event = function() {
+			var width = Number(elements.box.attr("width"));
+			var x = Number(elements.box.attr("x"));
+			var left = Number(elements.left.attr("x"));
+			var left_width = Number(elements.left.attr("width"));
+			var right = Number(elements.right.attr("x"));
+
+			console.log(right)
 
 			elements.box.attr("width", function(_d)  {
-				return _d.width = Math.max(0, Math.min(Number(elements.right.attr("x")), _d.width + d3.event.dx));
+				console.log(Math.max(0, Math.min(right, _d.width + d3.event.dx)))
+				return _d.width = Math.max(0, Math.min(right, (_d.width) + d3.event.dx));
 			});
 
 			elements.right.attr("x", function(_d) {
-				return Math.max(Number(elements.left.attr("x")) + Number(elements.left.attr("width"))
-					, Math.min(size.rwidth, d3.event.dx + _d.x + Number(elements.box.attr("width"))));
+				return Math.max(x, 
+					Math.min((size.width - size.margin.left), d3.event.dx + _d.x + width));
 			});
 
-			scale_needle_plot(Number(elements.left.attr("x")), Number(elements.box.attr("width")));       
+			scale_needle_plot(left, width);       
 		}
 
 		var resizing_left_event = function() {
-			var margin = size.margin.left * 2;
+			var width = Number(elements.box.attr("width"));
+			var x = Number(elements.box.attr("x"));
+			var left = Number(elements.left.attr("x"));
+			var left_width = Number(elements.left.attr("width"));
+			var right = Number(elements.right.attr("x"));
 
 			elements.box
 			.attr("x", function(_d) {
-				return _d.x = Math.max(Number(elements.left.attr("x")) + Number(elements.left.attr("width"))
-					, Math.min(elements.right.attr("x"), d3.event.x));
+				return _d.x = Math.max(left + left_width, Math.min(right, d3.event.x));
 			})
 			.attr("width", function(_d) {
-				return _d.width 
-				= Number(elements.right.attr("x")) - Number(elements.left.attr("x"));
+				return _d.width = right - left;
 			});
 
 			elements.left.attr("x", function(_d)    {
-				return _d.x = Math.max(0, Math.min(Number(elements.right.attr("x")) - margin, d3.event.x));
+				return _d.x = Math.max(0, Math.min((right - size.margin.left), d3.event.x));
 			});
 
-			scale_needle_plot(Number(elements.left.attr("x")), Number(elements.box.attr("width")));
+			scale_needle_plot(left, width);
 		}
 
 		var box_drag_move = d3.behavior.drag()

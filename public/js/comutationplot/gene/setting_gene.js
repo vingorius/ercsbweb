@@ -92,7 +92,7 @@ define( "gene/setting_gene", ["utils", "size", "gene/view_gene"], function(_util
 		var all_data = _all_data || [];
 		var genes = _genes || [];
 		var count_gene = count_by_order(all_data);
-		var size = _size.define_size("comutationplot_gene", 10, 15, 10, 70);
+		var size = _size.define_size("comutationplot_gene", 10, 20, 10, 70);
 		var max = get_max(count_gene);
 
 		_utils.remove_svg("comutationplot_gene");

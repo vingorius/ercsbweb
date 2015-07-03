@@ -34,7 +34,7 @@ define("pq/view_pq", ["utils", "size", "pq/event_pq"], function(_utils, _size, _
 
 		svg.append("g")
 		.attr("class", "pq_explain")
-		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 0.5) + ", " + (size.height - size.margin.bottom) + ")")
+		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 2) + ", " + (size.height - 2) + ")")
 		.append("text")
 		.text("#p value")
 		.style("font-size", "12px")

@@ -64,6 +64,6 @@ require(["size", "maplot/setting_maplot", "needleplot/setting_needleplot", "xypl
 	 
 	$(function()    {
 		var target = find_pathname(window.location.pathname);
-		request_data("comutation");
+		request_data(target);
 	});
 });

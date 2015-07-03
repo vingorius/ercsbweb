@@ -1,7 +1,6 @@
 define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 	return function(_data)	{
 		var data = _data || {};
-
 		var selected_circles = [];
 		var stacked_circles = [];
 		var stacked_paths = [];

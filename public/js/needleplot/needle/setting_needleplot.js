@@ -1,7 +1,7 @@
 define("needleplot/setting_needleplot", ["utils", "size", "needleplot/view_needleplot", "legend/setting_legend", "needleplotnavigation/setting_needlenavigation"], function(_utils, _size, _view, _setting_legend, _setting_navigation)   {
     return function(_data)  {
         var data = _data || [];
-        var size = _size.define_size("needleplot_view", 20, 20, 10, 10);
+        var size = _size.define_size("needleplot_view", 20, 20, 20, 20);
         size.graph_width = 20;
 
         var get_same_position_list = function(_sample_list)    {

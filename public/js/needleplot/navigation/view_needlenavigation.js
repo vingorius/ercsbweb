@@ -5,7 +5,7 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 		var data = _data || [];
 
 		var box_g = svg.insert("g", "g")
-		.data([{ x : 0
+		.data([{ x : size.margin.left
 			, y : 0
 			, width : size.rwidth
 			, height : size.height }])
@@ -14,7 +14,7 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 
 		var box = box_g.append("rect")
 		.attr("class", "navi_box")
-		.attr("x", function(_d) { return _d.x + size.margin.left; })
+		.attr("x", function(_d) { return _d.x; })
 		.attr("y", function(_d) { return _d.y; })
 		.attr("width", function(_d) { return _d.width; })
 		.attr("height", function(_d) { return _d.height; })
@@ -22,7 +22,7 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 
 		var right_border = box_g.append("rect")
 		.attr("class", "navi_2_box_right")
-		.attr("x", function(_d) { return _d.width + size.margin.left; })
+		.attr("x", function(_d) { return _d.width + _d.x; })
 		.attr("y", 0)
 		.attr("width", size.margin.left)
 		.attr("height", size.height)
@@ -31,7 +31,7 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 
 		var left_border = box_g.append("rect")
 		.attr("class", "navi_2_box_left")
-		.attr("x", function(_d) { return _d.x; })
+		.attr("x", 0)
 		.attr("y", 0)
 		.attr("width", size.margin.left)
 		.attr("height", size.height)

@@ -94,11 +94,9 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			var left_width = Number(elements.left.attr("width"));
 			var right = Number(elements.right.attr("x"));
 
-			console.log(right)
-
 			elements.box.attr("width", function(_d)  {
-				console.log(Math.max(0, Math.min(right, _d.width + d3.event.dx)))
-				return _d.width = Math.max(0, Math.min(right, (_d.width) + d3.event.dx));
+				return _d.width = Math.max(0, 
+					Math.min((right - size.margin.left), _d.width + d3.event.dx));
 			});
 
 			elements.right.attr("x", function(_d) {

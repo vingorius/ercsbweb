@@ -25,23 +25,23 @@ require(["size", "maplot/setting_maplot", "needleplot/setting_needleplot", "xypl
 	//Nessecery for make chart 
 	var info_chart = {
 		comutation : { 
-			url : "http://192.168.191.159/rest/tumorportal_cmp?type=BRCA", 
+			url : "/rest/tumorportal_cmp?type=BRCA", 
 			func : _comutation 
 		},
 		needle : { 
-			url : "http://192.168.191.159/rest/needleplot?gene=EGFR", 
+			url : "/rest/needleplot?gene=EGFR", 
 			func : _needle
 		},
 		xy : { 
-			url : "http://192.168.191.159/rest/xyplot", 
+			url : "/rest/xyplot", 
 			func : _xy 
 		},
 		ma : { 
-			url : "http://192.168.191.159/rest/maplot", 
+			url : "/rest/maplot", 
 			func : _ma
 		},
 		pca : { 
-			url : "http://192.168.191.159/datas/PCA.dat.tsv", 
+			url : "/datas/PCA.dat.tsv", 
 			func : _pca 
 		}
 }

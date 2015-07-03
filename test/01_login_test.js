@@ -54,57 +54,6 @@ describe('Login Test Suite', function() {
             .expect(302, done)
             .expect('Location', '/login'); // "Unauthorized"
     });
-    /*
-    it('login ' + user.toString() + ' 으로 로그인하여야 한다.', function(done) {
-        var req = request(host)
-            .post('/login')
-            .send(user)
-            .expect(302) //Moved Temporarily
-            .expect('Location', '/')
-            .expect('set-cookie', /connect.sid=/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                cookie = res.headers['set-cookie'];
-                //console.log("Test login:",res);
-                done()
-            });
-    });
-    it('login ' + user.toString() + ' restricted 페이지에 접근할 수 있어야 한다.', function(done) {
-        var req = request(host)
-            .get('/restricted')
-            .set('Cookie', cookie)
-            .expect(200) //Moved Temporarily
-            .end(function(err, res) {
-                if (err) return done(err);
-                done()
-            });
-    });
-    //제대로 테스트가 되려면 Logout 후에 restricted path에 접근하지 못하는 코드가 밑에 있어야 된다.
-    it('logout이 정상적으로 이루어져야한다.', function(done) {
-        var req = request(host)
-            .get('/logout')
-            .set('Cookie', cookie)
-            .expect(302) //Moved Temporarily
-            .expect('Location', '/')
-            .expect('set-cookie', /connect.sid=/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                cookie = res.headers['set-cookie'];
-                //console.log("Test logout:",res);
-                done()
-            });
-    });
-    it('logout이후에는  restricted 페이지에 접근할 수 없어야 한다.', function(done) {
-        var req = request(host)
-            .get('/restricted')
-            .set('Cookie', cookie)
-            .expect(302) //Moved Temporarily
-            .end(function(err, res) {
-                if (err) return done(err);
-                done()
-            });
-    });
-    */
     describe('Remember = false test suit', function() {
         user.remember = false;
         var agent = request.agent(host);
@@ -144,7 +93,7 @@ describe('Login Test Suite', function() {
         it('logout이후에는  admin 페이지에 접근할 수 없어야 한다.', function(done) {
             agent
                 .get('/admin')
-                .expect(302) //Moved Temporarily
+                .expect(401) //Unauthorized
                 .end(function(err, res) {
                     if (err) return done(err);
                     // console.log("4",agent.jar.getCookie());

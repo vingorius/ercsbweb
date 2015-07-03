@@ -30,8 +30,8 @@ security.isPermitted = function(required_permission) {
             return next();
         }
         //res.redirect('/login');
-        var err = new Error('not allowed!');
-        err.status = 403;
+        var err = new Error('Unauthorized!');
+        err.status = 401;
         next(err);
     }
 }

@@ -16,18 +16,22 @@ nav.navbar.navbar-default.navbar-fixed-top
                 a.dropdown-toggle(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true") Chart
                     span.caret  
                 ul.dropdown-menu
-                    li: a(href="/chart/maplot")
-                        i.menu_icon.fa.fa-bar-chart
-                        span.sub_menu_span ma plot
+                    li: a(href="/chart/comutationplot")
+                        i.menu_icon.fa.fa-list-alt
+                        span.sub_menu_span comutation plot
                     li: a(href="/chart/needleplot")
                         i.menu_icon.fa.fa-dot-circle-o
                         span.sub_menu_span needle plot
                     li: a(href="/chart/xyplot")
                         i.menu_icon.fa.fa-line-chart
                         span.sub_menu_span xy plot
-                    li: a(href="/chart/3dplot")
+                    li.divider(role="separator")
+                    li: a(href="/chart/maplot")
+                        i.menu_icon.fa.fa-bar-chart
+                        span.sub_menu_span ma plot
+                    li: a(href="/chart/pcaplot")
                         i.menu_icon.fa.fa-cube
-                        span.sub_menu_span 3d plot
+                        span.sub_menu_span pca plot
                     li: a(href="/chart/degplot")
                         i.menu_icon.fa.fa-list-alt
                         span.sub_menu_span deg plot

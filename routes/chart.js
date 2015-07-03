@@ -12,4 +12,19 @@ router.get('/needleplot',function(req, res, next) {
         user: req.user
     });
 });
+router.get('/xyplot',function(req, res, next) {
+    res.render('chart/xyplot', {
+        user: req.user
+    });
+});
+router.get('/pcaplot',function(req, res, next) {
+    res.render('chart/pcaplot', {
+        user: req.user
+    });
+});
+router.get('/comutationplot',function(req, res, next) {
+    res.render('chart/comutationplot', {
+        user: req.user
+    });
+});
 module.exports = router;

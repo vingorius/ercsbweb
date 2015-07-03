@@ -1,5 +1,12 @@
 extends ../layout/basiclayout
 
 block content
-    div.container
-        h1 Needleplot
+	div.container.chart_base_container
+		div.row
+			div#needleplot_yaxis(style={'padding': '0px', 'margin': '0px', 'width': '50px', 'height': '530px', 'float': 'left'})
+			div#needleplot_view(style={'padding': '0px', 'margin': '0px', 'width': '1350px', 'height': '530px', 'float': 'left', 'overflow' : 'hidden', 'background-color' : 'rgb(236, 240, 241)'})
+		div.row
+			div#needleplot_navigation(style={'padding': '0px', 'margin-left': '50px', 'width': '1350px', 'height': '70px', 'background-color' : 'rgb(242, 241, 239)'})
+		div.row
+			div#needleplot_legend(style={'padding': '0px', 'margin-left': '50px', 'width': '1350px', 'height': '70px'})
+1450px

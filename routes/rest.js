@@ -40,25 +40,177 @@ router.get('/delay3', function(req, res, next) {
 });
 
 
-router.get('/maplot2', function(req, res, next) {
+router.get('/comutationplot', function(req, res, next) {
     var transfer_object = {
         status: 0,
         message: 'OK',
         data: {
-            title: 'MA Plot',
-            x_axis_title: 'AveExpr',
-            y_axis_title: 'LogFC',
-            cutoff_value: 0.01,
-            plot_list: []
+            id: '2',
+            name: 'Lung Cancer',
+            type: 'LUCA',
+            sample_list: [],
+            symbol_list: [],
+            group_list: []
         }
     };
-
     getConnection(function(connection) {
-        connection.query('CALL getMAPlot()', function(err, rows, fields) {
-            if (err) throw err;
-            transfer_object.data.plot_list = rows[0];
-            res.json(transfer_object);
+        connection.query('CALL getComutationplotMutation()', function(mut_err, mut_rows) {
+            if (mut_err) throw mut_err;
+            //transfer_object.data.sample_list = mut_rows[0];
+            var sample_list = [];
+            for (i = 0; i < mut_rows[0].length; i++) {
+                var data = mut_rows[0][i];
+                var samples = sample_list.filter(function(obj) {
+                    return obj.name == data.sample;
+                });
+                var sample;
+                if (samples.length == 0) {
+                    sample = {
+                        id: "id",
+                        name: data.sample,
+                        group: data.group,
+                        gene_list: []
+                    };
+                    var gene = {
+                        name: data.hugo,
+                        aberration_list: []
+                    };
+                    var aberration = {
+                        type: data.type,
+                        value: data.value
+                    };
+                    gene.aberration_list.push(aberration);
+                    sample.gene_list.push(gene)
+                    sample_list.push(sample);
+                } else {
+                    sample = samples[0];
+                    var genes = sample.gene_list.filter(function(obj) {
+                        return obj.name == data.hugo;
+                    });
+                    var gene;
+                    var aberration = {
+                        type: data.type,
+                        value: data.value
+                    };
+                    if (genes.length == 0) {
+                        gene = {
+                            name: data.hugo,
+                            aberration_list: []
+                        };
+                        sample.gene_list.push(gene);
+                    } else {
+                        gene = genes[0];
+                    }
+                    gene.aberration_list.push(aberration);
+                }
+
+            }
+            transfer_object.data.sample_list = sample_list;
+            //console.log(transfer_object.data.sample_list[5]);
+
+            connection.query('CALL getComutationplotMutsig()', function(sig_err, sig_rows) {
+                if (sig_err) throw sig_err;
+                transfer_object.data.symbol_list = sig_rows[0];
+                connection.query('CALL getComutationplotGroup()', function(grp_err, grp_rows) {
+                    if (grp_err) throw grp_err;
+                    grp_rows[0].map(function(data) {
+                        transfer_object.data.group_list.push(data.group);
+                    });
+
+                    res.json(transfer_object);
+                });
+            });
         });
+    });
+});
+
+router.get('/tumorportal_cmp', function(req, res, next) {
+    var p_type = req.query.type || 'BRCA';
+    var transfer_object = {
+        status: 0,
+        message: 'OK',
+        data: {
+            id: 'id',
+            name: 'TumorPortal Cancer Type: BRCA',
+            type: 'LUCA',
+            sample_list: [],
+            symbol_list: [],
+            group_list: []
+        }
+    };
+    getConnection(function(connection) {
+        connection.query('select SaveSortedPatientListIfNot(?)', [p_type], function(err, rows) {
+            if (err) throw err;
+
+            connection.query('CALL getComutationplotTumorMutation(?)', [p_type], function(mut_err, mut_rows) {
+                if (mut_err) throw mut_err;
+                //transfer_object.data.sample_list = mut_rows[0];
+                var sample_list = [];
+                for (i = 0; i < mut_rows[0].length; i++) {
+                    var data = mut_rows[0][i];
+                    var samples = sample_list.filter(function(obj) {
+                        return obj.name == data.sample;
+                    });
+                    var sample;
+                    if (samples.length == 0) {
+                        sample = {
+                            id: "id",
+                            name: data.sample,
+                            group: data.group,
+                            gene_list: []
+                        };
+                        var gene = {
+                            name: data.hugo,
+                            aberration_list: []
+                        };
+                        var aberration = {
+                            type: data.type,
+                            value: data.value
+                        };
+                        gene.aberration_list.push(aberration);
+                        sample.gene_list.push(gene)
+                        sample_list.push(sample);
+                    } else {
+                        sample = samples[0];
+                        var genes = sample.gene_list.filter(function(obj) {
+                            return obj.name == data.hugo;
+                        });
+                        var gene;
+                        var aberration = {
+                            type: data.type,
+                            value: data.value
+                        };
+                        if (genes.length == 0) {
+                            gene = {
+                                name: data.hugo,
+                                aberration_list: []
+                            };
+                            sample.gene_list.push(gene);
+                        } else {
+                            gene = genes[0];
+                        }
+                        gene.aberration_list.push(aberration);
+                    }
+
+                }
+                transfer_object.data.sample_list = sample_list;
+                //console.log(transfer_object.data.sample_list[5]);
+
+                connection.query('CALL getComutationplotTumorMutsig(?)', [p_type], function(sig_err, sig_rows) {
+                    if (sig_err) throw sig_err;
+                    transfer_object.data.symbol_list = sig_rows[0];
+                    // connection.query('CALL getComutationplotTumorGroup()', function(grp_err, grp_rows) {
+                    //     if (grp_err) throw grp_err;
+                    //     grp_rows[0].map(function(data) {
+                    //         transfer_object.data.group_list.push(data.group);
+                    //     });
+                    // });
+                    transfer_object.data.group_list = ['group'];
+                    res.json(transfer_object);
+                });
+            });
+        });
+
     });
 });
 

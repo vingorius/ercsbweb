@@ -3,10 +3,12 @@ html
   head
     title= title
     link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.css')
+    link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.css')
     link(rel='stylesheet', href='/bower_components/fontawesome/css/font-awesome.css')
     link(rel='stylesheet', href='/bower_components/ladda/dist/ladda-themeless.min.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
+      div.tooltip
       block header
           include header.jade
       block content
@@ -15,8 +17,7 @@ html
       block scripts
           script(src='/bower_components/jquery/dist/jquery.js')
           script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
-          script(src='/bower_components/ladda/js/ladda.js')
           script(src='/bower_components/d3/d3.js')
           script(src='/bower_components/ladda/js/spin.js')
           script(src='/bower_components/ladda/js/ladda.js')
-          script(src='/js/main.js')
+          script(src='/bower_components/requirejs/require.js', data-main='/js/index')

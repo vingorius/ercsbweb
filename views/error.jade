@@ -2,6 +2,6 @@ extends layout/basiclayout
 
 block content
     div.container
-        h1= message
+        h1 #{message}
         h2= error.status
         pre #{error.stack}

@@ -33,7 +33,7 @@ var app = express();
 app.use(session({
     secret: 'keyboard cat',
     resave: true, //default
-    saveUninitialized: true, //default
+    saveUninitialized: true,  //default
     store: new MongoStore(options)
 }));
 
@@ -60,7 +60,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // debug log user & session
 if (app.get('env') === 'development') {
     app.use(logger('dev'));
-    // app.use(security.debugLog);
+    //app.use(security.debugLog);
     app.set('view options', { pretty: true });
 }
 
@@ -71,8 +71,8 @@ app.use('/admin', security.isPermitted("admin:view"), admin);
 app.use('/menus', security.isAuthenticated, menus);
 // Chart View
 app.use('/chart', chart);
-app.use('/rest', rest);
 // Chart RESTful Service
+app.use('/rest', rest);
 
 // catch 404 and forward to error handler
 //여기까지 왔다는 말은 처리할 핸들러가 없다는 뜻.
@@ -90,6 +90,7 @@ if (app.get('env') === 'development') {
     app.use(function(err, req, res, next) {
         res.status(err.status || 500);
         res.render('error', {
+            user: req.user, // For Menu whether login, logout
             message: err.message,
             error: err
         });
@@ -101,6 +102,7 @@ if (app.get('env') === 'development') {
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.render('error', {
+        user: req.user, // For Menu whether login, logout
         message: err.message,
         error: {}
     });

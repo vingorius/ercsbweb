@@ -1,3 +1,4 @@
+node_modules
 routes/modules/mysql_connection.js
 public/bower_components/
 public/datas/

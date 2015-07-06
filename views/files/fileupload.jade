@@ -1,0 +1,9 @@
+extends ../layout/basiclayout
+
+block content
+    div.container
+        form(action="/files/upload", method="post", enctype="multipart/form-data")
+            div.form-group
+                label(for="fileName") Selct files for upload
+                input(type="file",name="fileName")
+            button.btn.btn-default(type="submit") Submit

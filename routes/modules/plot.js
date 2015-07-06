@@ -18,6 +18,7 @@ plot.newGene = function(name, aberration_list) {
 plot.newAberration = function(type, value) {
     return {
         type: type,
+
         value: value
     };
 }

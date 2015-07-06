@@ -27,6 +27,8 @@ var menus = require('./routes/menus');
 var chart = require('./routes/chart');
 // Chart RESTful
 var rest = require('./routes/rest');
+// File Upload
+var files = require('./routes/files');
 
 var app = express();
 // Session Management
@@ -73,6 +75,8 @@ app.use('/menus', security.isAuthenticated, menus);
 app.use('/chart', chart);
 // Chart RESTful Service
 app.use('/rest', rest);
+// File Upload
+app.use('/files', files);
 
 // catch 404 and forward to error handler
 //여기까지 왔다는 말은 처리할 핸들러가 없다는 뜻.

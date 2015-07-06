@@ -1,7 +1,7 @@
 $(document).ready(function() {
     Ladda.bind('button[type=submit]');
 
-    //set clicked navbar as active  
+    //set clicked navbar as active x 
     $(document).ready(function() {
         $('ul.nav.navbar-nav').find('a[href="' + location.pathname + '"]')
             .closest('li').addClass('active');

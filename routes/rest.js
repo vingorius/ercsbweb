@@ -83,14 +83,11 @@ router.get('/comutationplot', function(req, res, next) {
                 transfer_object.data.symbol_list = sig_rows[0];
                 connection.query('CALL getComutationplotGroup()', function(grp_err, grp_rows) {
                     if (grp_err) throw grp_err;
+
                     transfer_object.data.group_list =
                         grp_rows[0].map(function(data) {
                             return data.group;
                         });
-                    // grp_rows[0].map(function(data) {
-                    //     transfer_object.data.group_list.push(data.group);
-                    // });
-
                     res.json(transfer_object);
                 });
             });
@@ -138,17 +135,9 @@ router.get('/tumorportal_cmp', function(req, res, next) {
                 });
                 transfer_object.data.sample_list = sample_list;
 
-                //console.log(transfer_object.data.sample_list[5]);
-
                 connection.query('CALL getComutationplotTumorMutsig(?)', [p_type], function(sig_err, sig_rows) {
                     if (sig_err) throw sig_err;
                     transfer_object.data.symbol_list = sig_rows[0];
-                    // connection.query('CALL getComutationplotTumorGroup()', function(grp_err, grp_rows) {
-                    //     if (grp_err) throw grp_err;
-                    //     grp_rows[0].map(function(data) {
-                    //         transfer_object.data.group_list.push(data.group);
-                    //     });
-                    // });
                     transfer_object.data.group_list = ['group'];
                     res.json(transfer_object);
                 });
@@ -297,19 +286,23 @@ var getMaxMin = function(plot_list) {
 }
 
 router.get('/degplot', function(req, res, next) {
-    res.render('chart/degplot', {
-        title: 'DEG Pathway Table',
+    var transfer_object = {
+        status: 0,
+        message: 'OK',
         data: {
-            titles: ["Title", "Title", "Title", "Title", "Title", "Title"],
-            columns: [
-                ["Data", "Data", "Data", "Data", "Data", "Data"],
-                ["Data", "Data", "Data", "Data", "Data", "Data"],
-                ["Data", "Data", "Data", "Data", "Data", "Data"],
-                ["Data", "Data", "Data", "Data", "Data", "Data"],
-                ["Data", "Data", "Data", "Data", "Data", "Data"]
-            ]
+            pathwayList: []
         }
+    };
+
+    getConnection(function(connection) {
+        connection.query('CALL getDEGpathway()', function(err, rows) {
+            if (err) throw err;
+            transfer_object.data.pathway_list = rows[0];
+            res.json(transfer_object);
+        });
     });
+
+
 });
 
 module.exports = router;

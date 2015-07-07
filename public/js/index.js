@@ -1,27 +1,28 @@
 require.config({
-	baseUrl : "../js",
+	baseUrl : "/js",
 	
 	paths : {
 		size : "size",
 		utils : "utils",
-		interface_comutation : "./comutationplot/interface_comutationplot",
-		comutation : "./comutationplot/comutation/",
-		gene : "./comutationplot/gene/",
-		pq : "./comutationplot/pq/",
-		sample : "./comutationplot/sample/",
-		comutationnavigation : "./comutationplot/navigation/",
-		legend : "./legend/",
-		maplot : "./maplot/",
-		needleplot : "./needleplot/needle/",
-		needleplotnavigation : "./needleplot/navigation/",
-		pcasetting : "./pcaplot/interface_pcaplot",
-		pcaplot2d : "./pcaplot/pca2d/",
-		pcaplot3d : "./pcaplot/pca3d/",
-		xyplot : "./xyplot/"
+		interface_comutation : "comutationplot/interface_comutationplot",
+		comutation : "comutationplot/comutation/",
+		gene : "comutationplot/gene/",
+		pq : "comutationplot/pq/",
+		sample : "comutationplot/sample/",
+		comutationnavigation : "comutationplot/navigation/",
+		legend : "legend/",
+		maplot : "maplot/",
+		needleplot : "needleplot/needle/",
+		needleplotnavigation : "needleplot/navigation/",
+		pcasetting : "pcaplot/interface_pcaplot",
+		pcaplot2d : "pcaplot/pca2d/",
+		pcaplot3d : "pcaplot/pca3d/",
+		xyplot : "xyplot/",
+		degplot : "degplot/"
 	}
 });
 
-require(["size", "maplot/setting_maplot", "needleplot/setting_needleplot", "xyplot/setting_xyplot", "pcasetting", "interface_comutation"], function(_size, _ma, _needle, _xy, _pca, _comutation)  {
+require(["size", "maplot/setting_maplot", "needleplot/setting_needleplot", "xyplot/setting_xyplot", "pcasetting", "interface_comutation", "degplot/setting_degplot"], function(_size, _ma, _needle, _xy, _pca, _comutation, _deg)  {
 	//Nessecery for make chart 
 	var info_chart = {
 		comutation : { 
@@ -43,6 +44,10 @@ require(["size", "maplot/setting_maplot", "needleplot/setting_needleplot", "xypl
 		pca : { 
 			url : "/datas/PCA.dat.tsv", 
 			func : _pca 
+		},
+		deg : {
+			url : "/rest/degplot",
+			func : _deg
 		}
 }
 

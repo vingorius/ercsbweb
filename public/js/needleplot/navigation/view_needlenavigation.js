@@ -5,10 +5,12 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 		var data = _data || [];
 
 		var box_g = svg.insert("g", "g")
-		.data([{ x : size.margin.left
-			, y : 0
-			, width : size.rwidth
-			, height : size.height }])
+		.data([{ 
+			x : size.margin.left, 
+			y : 0, 
+			width : size.rwidth - size.margin.left, 
+			height : size.height 
+		}])
 		.attr("class", "needle_select_box")
 		.attr("transform", "translate(0, 0)");
 
@@ -22,12 +24,12 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 
 		var right_border = box_g.append("rect")
 		.attr("class", "navi_2_box_right")
-		.attr("x", function(_d) { return _d.width + _d.x; })
+		.attr("x", size.rwidth)
 		.attr("y", 0)
 		.attr("width", size.margin.left)
 		.attr("height", size.height)
 		.attr("cursor", "ew-resize")
-		.style("stroke", "#96281B");
+		//.style("stroke", "#96281B");
 
 		var left_border = box_g.append("rect")
 		.attr("class", "navi_2_box_left")
@@ -36,7 +38,7 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 		.attr("width", size.margin.left)
 		.attr("height", size.height)
 		.attr("cursor", "ew-resize")
-		.style("stroke", "#96281B");
+		//.style("stroke", "#96281B");
 
 		var e = _event({
 			box : box,
@@ -66,8 +68,6 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 		.append("g")
 		.attr("transform", "translate(0, 0)");
 
-		box(svg, size, data);
-
 		var xAxis = d3.svg.axis()
 		.scale(data.x)
 		.orient("bottom");
@@ -90,6 +90,8 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 		.attr("y", function(_d) { return data.y(_d.y + _d.count); })
 		.attr("width", 1)
 		.attr("height", function(_d) { return (size.height + size.margin.top) - data.y(_d.count); });
+
+		box(svg, size, data);
 	}
 
 	return {

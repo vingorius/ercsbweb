@@ -1,7 +1,7 @@
 define("needleplot/setting_needleplot", ["utils", "size", "needleplot/view_needleplot", "legend/setting_legend", "needleplotnavigation/setting_needlenavigation"], function(_utils, _size, _view, _setting_legend, _setting_navigation)   {
     return function(_data)  {
         var data = _data || [];
-        var size = _size.define_size("needleplot_view", 20, 20, 20, 20);
+        var size = _size.define_size("needleplot_view", 20, 20, 20, 0);
         size.graph_width = 20;
 
         var get_same_position_list = function(_sample_list)    {
@@ -97,7 +97,7 @@ define("needleplot/setting_needleplot", ["utils", "size", "needleplot/view_needl
         var mutations = get_mutation_name();
 
         var x = _utils.linearScale(0, data.data.graph[0].length,
-            (size.margin.left * 2), size.rwidth).clamp(true);
+            size.margin.left, size.rwidth).clamp(true);
         var y = _utils.linearScale(ymax, 0, size.margin.top,
          (size.rheight - size.graph_width)).clamp(true);
 

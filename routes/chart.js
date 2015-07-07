@@ -27,4 +27,9 @@ router.get('/comutationplot',function(req, res, next) {
         user: req.user
     });
 });
+router.get('/degplot',function(req, res, next) {
+    res.render('chart/degplot', {
+        user: req.user
+    });
+});
 module.exports = router;

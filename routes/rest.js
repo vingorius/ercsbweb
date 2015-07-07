@@ -36,7 +36,7 @@ router.get('/delay3', function(req, res, next) {
             if (err) throw err;
             transfer_object.data.plot_list = rows[0];
             res.json(transfer_object);
-        })
+        });
     });
 });
 
@@ -182,7 +182,7 @@ router.get('/needleplot', function(req, res, next) {
             sample_list: []
         }
     };
-    if (gene == undefined) {
+    if (gene === undefined) {
         transfer_object.status = 1000;
         transfer_object.message = 'No parameter';
         res.json(transfer_object);
@@ -192,7 +192,7 @@ router.get('/needleplot', function(req, res, next) {
         connection.query('CALL `needleplot.aachange`(?)', [gene], function(err, rows) {
             if (err) throw err;
 
-            if (rows[0].length == 0) {
+            if (rows[0].length === 0) {
                 transfer_object.status = 1001;
                 transfer_object.message = 'No Data Found';
                 res.json(transfer_object);
@@ -202,7 +202,7 @@ router.get('/needleplot', function(req, res, next) {
             //    res.json(transfer_object);
             connection.query('CALL `needleplot.graph`(?)', [gene], function(g_err, g_rows) {
                 if (g_err) throw g_err;
-                if (g_rows[0].length == 0) {
+                if (g_rows[0].length === 0) {
                     transfer_object.status = 1001;
                     transfer_object.message = 'No Data Found';
                     res.json(transfer_object);
@@ -257,7 +257,7 @@ router.get('/xyplot', function(req, res, next) {
 
 var sort_func = function(a, b) {
     return (a < b) ? -1 : 1;
-}
+};
 
 /*
  * x축 start, end .y축 start, end를 구하는 함수.
@@ -282,8 +282,8 @@ var getMaxMin = function(plot_list) {
             min: ylist[0],
             max: ylist[ylist.length - 1]
         }
-    }
-}
+    };
+};
 
 router.get('/degplot', function(req, res, next) {
     var transfer_object = {

@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var multer = require('multer')
+var multer = require('multer');
 var getConnection = require('./modules/mysql_connection');
 
 router.get('/',
@@ -46,7 +46,7 @@ var getRowToBeInsert = function(info, user) {
         upload_date: new Date(),
         json: JSON.stringify(info)
     };
-}
+};
 
 //아래는 TSV를 JSON으로 바꾸는 샘플이다.
 var fs = require('fs');

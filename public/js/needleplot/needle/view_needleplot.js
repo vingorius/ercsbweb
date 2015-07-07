@@ -51,9 +51,9 @@ define("needleplot/view_needleplot", ["utils", "size", "needleplot/event_needlep
 		.attr("class", "needle_gene_full_path_g")
 		.attr("transform", "translate(0, " + (size.rheight + size.graph_width) + ")")
 		.append("rect")
-		.attr("x", (size.margin.left * 2))
+		.attr("x", size.margin.left)
 		.attr("y", -(size.margin.top))
-		.attr("width", size.rwidth - (size.margin.left * 2))
+		.attr("width", size.rwidth - size.margin.left)
 		.attr("height", size.graph_width);
 
 		var graph_group = svg.selectAll(".graph_group")
@@ -116,7 +116,7 @@ define("needleplot/view_needleplot", ["utils", "size", "needleplot/event_needlep
 
 		e.front();
 	}
-	
+
 	return {
 		view : view
 	}

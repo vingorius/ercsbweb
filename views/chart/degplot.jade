@@ -1,17 +1,14 @@
 extends ../layout/basiclayout
 
 block content
-    div.container.chart_base_container
-        table.table.table-bordered.table-hover.table-responsive
-            thead
-                tr
-                    th #
-                    each title, i in data.titles
-                        th #{title}#{i}
-
-            tbody
-                each column, p in data.columns
-                    tr
-                        th #{p}
-                        each value, q in column
-                            td  #{value}#{p}#{q}
+	div.container.chart_base_container
+		table.table.table-bordered.table-hover.table-responsive
+			thead
+				tr
+					th Pathway_A
+					th Pathway_B
+					th Pathway_C
+					th -si.logP
+					th -si.up.logP
+					th -si.dn.logP
+			tbody.degplot_tbody

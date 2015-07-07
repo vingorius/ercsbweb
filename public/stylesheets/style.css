@@ -175,6 +175,15 @@ line  {
 
 /* Needle plot
 ---------------------------------------------- */
+#needleplot_view  {
+  overflow: scroll;
+}
+.navi_box {
+  stroke : blue;
+}
+.navi_2_box_right, .navi_2_box_left {
+  fill : #fff;
+}
 #needleLegend   {
     margin-left: 150px;
     width: 700px;

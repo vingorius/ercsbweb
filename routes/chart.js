@@ -22,6 +22,11 @@ router.get('/pcaplot',function(req, res, next) {
         user: req.user
     });
 });
+router.get('/pcaplot3d',function(req, res, next) {
+    res.render('chart/pcaplot3d', {
+        user: req.user
+    });
+});
 router.get('/comutationplot',function(req, res, next) {
     res.render('chart/comutationplot', {
         user: req.user

@@ -1,73 +1,120 @@
-define("degplot/view_degplot", ["utils", "size"], function(_utils, _size)	{
+define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], function(_utils, _size, _event)	{
 	var create_row = function(_tbody)	{
 		return _tbody.insertRow(-1);
 	}
 
-	var create_cell = function(_data, _row)	{
-
-		for (var i = 0, len = Object.keys(_data).length ; i < len ; i++)	{
-			var cell_data = _data[Object.keys(_data)[i]];
+	var create_cell = function(_column, _row, _data)	{
+		for (var i = 0, len = Object.keys(_column).length ; i < len ; i++)	{
+			var cell_data = _column[Object.keys(_column)[i]];
 
 			_row.insertCell(i).innerHTML = cell_data;
-		}
-	}
-
-	var rowspan = function(_tbody)	{
-		var rows = _tbody.rows;
-
-		for (var i = 0, len = rows[0].cells.length ; i < len ; i++)	{
-			var cells = [];
-			for (var j = 0, leng = rows.length ; j < leng ; j++)	{
-				if(isNaN(Number(rows[j].cells[i].innerHTML)))	{
-					cells.push(rows[j].cells[i]);
-				}
-				else {
-					rows[j].cells[i].style.backgroundColor = "red";
-				}
-			}
-			rowspan_cell(cells);
-		}
-	}
-
-	var rowspan_cell = function(_cells)		{
-		var merge = 1;
-		var row = "";
-
-		for (var i = 0, len = _cells.length ; i < len ; i++)	{
-			if(i > 0)	{
-				if(_cells[i].innerHTML === _cells[i - 1].innerHTML)	{
-					row = (row === "") ? _cells[i - 1].parentNode : row;
-					merge++;
-				}
-				else {
-					if(merge !== 1)	{
-						console.log(i, merge, _cells[i].cellIndex, row)
-						merge = 1;
-						row = "";
-					}
-				}
+			
+			if(cell_data.constructor === Number && _row.cells[i].id === "")	{
+				 _row.cells[i].innerHTML = "";
+				 d3.select(_row.cells[i]).datum({
+				 	id : Object.keys(_column)[i],
+				 	data : cell_data
+				 });
+				_row.cells[i].style.backgroundColor = 
+				_data.backgroundcolor(Object.keys(_column)[i], cell_data,
+					_data[Object.keys(_column)[i]].min, 
+					_data[Object.keys(_column)[i]].max);
 			}
 		}
 	}
 
-	var merge_cell = function(_index, _count, _cell_index, _row)	{
+	var lever = function(_id, _data)	{
+		var target = document.getElementById(_id);
+		var key = _id.substring(_id.indexOf("_") + 1, _id.length);
+		var margin = 20;
 
-		for (var i = (_index - _count), len = _index - 1 ; i < len ; i++)	{
+		var svg = d3.select("#" + _id)
+		.append("svg")
+		.attr("width", target.clientWidth)
+		.attr("height", target.clientHeight)
+		.append("g")
+		.attr("transform", "translate(0, 0)")
 
-		}
+		var x = _utils.linearScale(_data[key].min, _data[key].max, 
+			0, (target.clientWidth - margin));
+
+		var xAxis = d3.svg.axis()
+		.scale(x)
+		.orient("bottom")
+		.ticks(2)
+		.tickValues([_data[key].min, _data[key].max]);
+
+		svg.append("g")
+		.attr("class", "deg_color_range_axis")
+		.attr("transform", "translate(" + (margin / 2) + ", " 
+			+ (target.clientHeight / 2) + ")")
+		.call(xAxis);
+
+		var figure = svg.append("rect")
+		.data([{
+			id : key,
+			width : target.clientWidth,
+			margin : margin,
+			min : _data[key].min,
+			max : _data[key].max,
+			bgcolor : _data.backgroundcolor
+		}])
+		.attr("x", (target.clientWidth - margin / 2))
+		.attr("y", target.clientHeight / 4)
+		.attr("width", 10)
+		.attr("height", 5)
+		.call(_event.drag);
 	}
 
-	var view = function(_data, _tbody)	{
-		var data = _data || [];
-		var tbody = _tbody || null;
+	var range_gradient = function(_id, _start, _end)	{
+		var target = document.getElementById(_id);
+		var svg = d3.select("#" + _id)
+		.append("svg")
+		.attr("width", target.clientWidth)
+		.attr("height", target.clientHeight);
 
-		//console.log(data, tbody, create_row(tbody))
+		var defs = svg.append("defs");
+		var lineargradient = defs.append("linearGradient")
+		.attr("id", _id + "_gradient")
+		.attr("x1", "0")
+		.attr("y1", "0")
+		.attr("x2", "100%")
+		.attr("y2", "0");
+
+		lineargradient.append("stop")
+		.attr("offset", "0%")
+		.attr("stop-color", _start);
+		lineargradient.append("stop")
+		.attr("offset", "100%")
+		.attr("stop-color", _end);
+
+		svg.append("g")
+		.attr("transform", "translate(0, 0)")
+		.append("rect")
+		.attr("x", 0)
+		.attr("y", 0)
+		.attr("width", target.clientWidth)
+		.attr("height", target.clientHeight)
+		.style("fill", "url(#" + _id + "_gradient)");
+	}
+
+	var view = function(_data)	{
+		var data = _data.data || [];
+		var tbody = _data.tbody || null;
 
 		for(var i = 0, len = data.length ; i < len ; i++)	{
-			create_cell(data[i], create_row(tbody));
+			create_cell(data[i], create_row(tbody), _data);
 		}
 
-		rowspan(tbody);
+		_event.rowspan(tbody.rows);
+
+		lever("lever_si_log_p", _data);
+		lever("lever_si_up_log_p", _data);
+		lever("lever_si_down_log_p", _data);
+
+		range_gradient("si_log_p", "#FFFFFF", _data.color_list[0]);
+		range_gradient("si_up_log_p", "#FFFFFF", _data.color_list[1]);
+		range_gradient("si_down_log_p", "#FFFFFF", _data.color_list[2]);
 	}
 
 	return {

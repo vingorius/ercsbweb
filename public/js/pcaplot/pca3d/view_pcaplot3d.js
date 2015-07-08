@@ -3,6 +3,9 @@ define("pcaplot3d/view_pcaplot3d", ["utils", "size", "pcaplot3d/event_pcaplot3d"
 		var data = _data || {};
 		var size = data.size;
 		var v = data.vector;
+		var default_axis = {
+			x : 0.5, y : -0.5, z : 0
+		};
 
 		var renderer = new THREE.WebGLRenderer({
 			antialias : true,
@@ -24,7 +27,9 @@ define("pcaplot3d/view_pcaplot3d", ["utils", "size", "pcaplot3d/event_pcaplot3d"
 
 		camera.position.z = size.width;
 
-		object3d.rotation.y = 0;
+		object3d.rotation.x = default_axis.x;
+		object3d.rotation.y = default_axis.y;
+		object3d.rotation.z = default_axis.z;
 
 		scene.add(object3d);
 

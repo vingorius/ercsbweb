@@ -19,8 +19,6 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			var height = div[0].offsetHeight;
 			var width = (div[0].offsetWidth / _width) * div[0].offsetWidth - (size.margin.left);
 
-			console.log(elements);
-
 			var udt_width = _utils.linearScale((size.margin.left), data.data.data.graph[0].length,
 				(size.margin.left), (width - size.margin.left * 2)).clamp(true);
 			var udt_x = _utils.linearScale(0, size.rwidth, (size.margin.left), 

@@ -2,13 +2,25 @@ extends ../layout/basiclayout
 
 block content
 	div.container.chart_base_container
-		table.table.table-bordered.table-hover.table-responsive
-			thead
-				tr
-					th Pathway_A
-					th Pathway_B
-					th Pathway_C
-					th -si.logP
-					th -si.up.logP
-					th -si.dn.logP
-			tbody.degplot_tbody
+		div.table_component(style={"float" : "left"})
+			table.table.table-bordered.table-hover.table-responsive
+				thead
+					tr
+						th Pathway_A
+						th Pathway_B
+						th Pathway_C
+						th -si.logP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+						th -si.up.logP
+						th -si.dn.logP
+				tbody.degplot_tbody
+		div.color_range_component(style={"float" : "left", "margin-left" : "10px"})
+			h4 Color range
+			div
+				div#lever_si_log_p(style={"width" : "200px", "height" : "40px"})
+				div#si_log_p(style={"width" : "200px", "height" : "40px"})
+			div
+				div#lever_si_up_log_p(style={"width" : "200px", "height" : "40px"})
+				div#si_up_log_p(style={"width" : "200px", "height" : "40px"})
+			div
+				div#lever_si_down_log_p(style={"width" : "200px", "height" : "40px"})
+				div#si_down_log_p(style={"width" : "200px", "height" : "40px"})

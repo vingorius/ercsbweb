@@ -146,6 +146,9 @@ define("utils", [], function()  {
             if(arguments.length < 1)    {
                 return;
             }
+            else if(!d3.selectAll("svg") || d3.selectAll("svg").length < 1)  {
+                return;
+            }
 
             for(var i = 0, len = arguments.length ; i < len ; i++)  {
                 d3.selectAll("." + arguments[i]).remove();
@@ -190,7 +193,11 @@ define("utils", [], function()  {
             var div = $('.tooltip');
             var e = _event || null, contents = _contents || "", x = _x || 0, y = _y || 0;
 
-            if(_event.type === "mouseover")  {
+            if(arguments.length < 1) {
+                div.empty();
+                div.hide();
+            }
+            else   {
                 div.css("position", "absolute");
                 div.css("top", y);
                 div.css("left", x);
@@ -198,10 +205,6 @@ define("utils", [], function()  {
                 div.css("opacity", 0.9);
                 div.append(contents);
                 div.show();
-            }
-            else if(_event.type === "mouseout")  {
-                div.empty();
-                div.hide();
             }
         },
         log : function(_value)    {

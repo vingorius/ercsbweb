@@ -26,7 +26,7 @@ define("xyplot/event_xyplot", ["utils", "size"], function(_utils, _size)	{
 		target.transition().duration(100)
 		.attr("r", radius);
 
-		_utils.tooltip(e);
+		_utils.tooltip();
 	}
 
 	return {

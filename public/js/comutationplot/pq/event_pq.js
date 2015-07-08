@@ -16,7 +16,7 @@ define("pq/event_pq", ["utils", "size"], function(_utils, _size)	{
 		var target = d3.select(this);
 		var e = d3.event;
 
-		_utils.tooltip(e);
+		_utils.tooltip();
 		
 		target.transition().duration(100)
 		.style("fill", "#BFBFBF");

@@ -2,20 +2,21 @@
 -------------------------------------------------- */
 
 html {
-    position: relative;
-    min-height: 100%;
+	position: relative;
+	min-height: 100%;
 }
 body {
-    /* Margin bottom by footer height */
-    margin-bottom: 60px;
+	/* Margin bottom by footer height */
+	margin-bottom: 60px;
 }
 .footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    /* Set the fixed height of the footer here */
-    height: 60px;
-    background-color: #f5f5f5;
+	/*position: absolute;*/
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	/* Set the fixed height of the footer here */
+	height: 60px;
+	background-color: #f5f5f5;
 }
 
 /* Custom page CSS
@@ -25,39 +26,39 @@ body {
 /* Not required for template or sticky footer method. */
 
 body > .container {
-    padding: 60px 15px 0;
+	padding: 60px 15px 0;
 }
 .container .text-muted {
-    margin: 20px 0;
+	margin: 20px 0;
 }
 .footer > .container {
-    padding-right: 15px;
-    padding-left: 15px;
+	padding-right: 15px;
+	padding-left: 15px;
 }
 body > .modal-dialog {
-    margin: 100px auto;
+	margin: 100px auto;
 }
 code {
-    font-size: 80%;
+	font-size: 80%;
 }
 
 /* Header
 -------------------------------------------------- */
 
 .menu_icon {
-    /*color: #286090;*/
+	/*color: #286090;*/
 }
 
 .menu_span {
-    padding-left: 5px;
+	padding-left: 5px;
 }
 
 .sub_menu_span {
-    padding-left: 10px;
+	padding-left: 10px;
 }
 
 .dropdown-menu > li > a {
-    color: #777;
+	color: #777;
 }
 /* Header
 -------------------------------------------------- */
@@ -67,239 +68,248 @@ code {
 -------------------------------------------------- */
 
 .form-signin {
-    max-width: 330px;
-    padding: 15px;
-    margin: 0 auto;
+	max-width: 330px;
+	padding: 15px;
+	margin: 0 auto;
 }
 .form-signin .form-signin-heading, .form-signin .checkbox {
-    margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 .form-signin .checkbox {
-    font-weight: normal;
+	font-weight: normal;
 }
 .form-signin .form-control {
-    position: relative;
-    height: auto;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 10px;
-    font-size: 16px;
-    margin-bottom: 5px;
+	position: relative;
+	height: auto;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	padding: 10px;
+	font-size: 16px;
+	margin-bottom: 5px;
 }
 .form-signin .form-control:focus {
-    z-index: 2;
+	z-index: 2;
 }
 .form-signin input[type="text"] {
-    /*margin-bottom: -1px;
-    border-bottom-right-radius: 0;
-    border-bottom-left-radius: 0;*/
-}
-.form-signin input[type="password"] {
-    /*margin-bottom: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;*/
-}
+		/*margin-bottom: -1px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;*/
+	}
+	.form-signin input[type="password"] {
+		/*margin-bottom: 10px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;*/
+	}
 
 /* All Chart
 ------------------------------------------------------- */
 .chart_base_container{
-    width:1430px;
-    margin-left: auto;
-    margin-right : auto;
+	width:1430px;
+	margin-left: auto;
+	margin-right : auto;
 }
 
 path  {
-    fill : none;
-    stroke : #6C7A89;
-    stroke-width : 1;
-    shape-rendering : crispEdges;
+	fill : none;
+	stroke : #6C7A89;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
 }
 line  {
-    fill : none;
-    stroke : #fff;
-    stroke-width : 1;
-    shape-rendering : crispEdges;
+	fill : none;
+	stroke : #fff;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
 }
 
 /* Ma plot
 ------------------------------------------------------- */
 .table {
-  margin : 0px;
+	margin : 0px;
 }
 .table_body {
-  height : 500px;
-  overflow-y : auto; 
+	height : 500px;
+	overflow-y : auto;
 }
 .spinner {
-  width: 100px;
+	width: 100px;
 }
 .spinner input {
-  text-align: right;
+	text-align: right;
 }
 .input-group-btn-vertical {
-  position: relative;
-  white-space: nowrap;
-  width: 1%;
-  vertical-align: middle;
-  display: table-cell;
+	position: relative;
+	white-space: nowrap;
+	width: 1%;
+	vertical-align: middle;
+	display: table-cell;
 }
 .input-group-btn-vertical > .btn {
-  display: block;
-  float: none;
-  width: 100%;
-  max-width: 100%;
-  padding: 8px;
-  margin-left: -1px;
-  position: relative;
-  border-radius: 0;
+	display: block;
+	float: none;
+	width: 100%;
+	max-width: 100%;
+	padding: 8px;
+	margin-left: -1px;
+	position: relative;
+	border-radius: 0;
 }
 .input-group-btn-vertical > .btn:first-child {
-  border-top-right-radius: 4px;
+	border-top-right-radius: 4px;
 }
 .input-group-btn-vertical > .btn:last-child {
-  margin-top: -2px;
-  border-bottom-right-radius: 4px;
+	margin-top: -2px;
+	border-bottom-right-radius: 4px;
 }
 .input-group-btn-vertical i{
-  position: absolute;
-  top: 0;
-  left: 4px;
+	position: absolute;
+	top: 0;
+	left: 4px;
 }
 .maplot_view_x_axis line, .maplot_view_y_axis line {
-    stroke : #000;
+	stroke : #000;
 }
 #maplot_select_path path   {
-    stroke : #2ECC71;
+	stroke : #2ECC71;
 }
 
 /* Needle plot
 ---------------------------------------------- */
 #needleplot_view  {
-  overflow: scroll;
+	overflow: scroll;
 }
 .navi_box {
-  stroke : blue;
+	stroke : blue;
 }
 .navi_2_box_right, .navi_2_box_left {
-  fill : #fff;
+	fill : #fff;
 }
 #needleLegend   {
-    margin-left: 150px;
-    width: 700px;
-    padding: 0px;
-    height: 5%;
+	margin-left: 150px;
+	width: 700px;
+	padding: 0px;
+	height: 5%;
 }
 #needleplot {
-    border: 1px solid #ECECEC;
-    padding: 0px;
-    height: 85%;
+	border: 1px solid #ECECEC;
+	padding: 0px;
+	height: 85%;
 }
 #needlefullpath {
-    padding: 0px;
-    height: 10%;
+	padding: 0px;
+	height: 10%;
 }
 .needle_graphs_text {
-    font-size: 50%;
+	font-size: 50%;
 }
 .needle_graphs_text {
-    fill : #fff;
-    font-size: 11px;
+	fill : #fff;
+	font-size: 11px;
 }
 .select_area_rect   {
-    fill : #000;
-    opacity: 0.05;
+	fill : #000;
+	opacity: 0.05;
 }
 .needle_select_box  {
-    fill : #E4F1FE;
+	fill : #E4F1FE;
 }
 .needle_gene_full_path_g    {
-    fill : #DADFE1;
+	fill : #DADFE1;
 }
 
 /* Pca plot
 --------------------------------------------- */
 .label_pcaplot_pc1 text, .label_pcaplot_pc2 text {
-    font-weight: bold;
+	font-weight: bold;
 }
 .pcaplots   {
-    fill : #ffffff;
-    stroke-width : 2;
+	fill : #ffffff;
+	stroke-width : 2;
 }
 
 /* Comutation plot
 ---------------------------------------------- */
 .gene_y_axis path, .pq_y_axis path {
-    stroke : #fff;
-    stroke-width : 1;
-    shape-rendering : crispEdges;
+	stroke : #fff;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
 }
 .gene_x_axis path, .pq_x_axis path{
-    fill : none;
-    stroke : #BFBFBF;
-    stroke-width : 1;
-    shape-rendering : crispEdges;
+	fill : none;
+	stroke : #BFBFBF;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
 }
 .gene_x_axis line, .pq_x_axis line  {
-    fill : none;
-    stroke : #BFBFBF;
-    stroke-width : 1;
-    shape-rendering : crispEdges;
+	fill : none;
+	stroke : #BFBFBF;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
 }
 .gene_x_axis text, .pq_x_axis text, .sample_x_axis text {
-    font-size: 8px;
-    font-weight: normal;
+	font-size: 8px;
+	font-weight: normal;
 }
 .gene_y_axis text, .pq_y_axis text, .sample_y_axis text {
-    fill : #626262;
-    font-size: 12px;
-    font-weight: normal;
+	fill : #626262;
+	font-size: 12px;
+	font-weight: normal;
 }
 .sample_y_axis line {
-   fill : none;
-   stroke : #BFBFBF;
-   stroke-width : 1;
-   shape-rendering : crispEdges; 
+	fill : none;
+	stroke : #BFBFBF;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
 }
 .sample_x_axis path, .sample_y_axis path {
-   fill : none;
-   stroke : #fff;
-   stroke-width : 1;
-   shape-rendering : crispEdges;
+	fill : none;
+	stroke : #fff;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
 }
 text {
-    fill : #626262;
+	fill : #626262;
 }
 .comutsheatmap_x_axis path  {
-    fill : none;
-    stroke : #fff;
-    stroke-width : 1;
-    shape-rendering : crispEdges;
+	fill : none;
+	stroke : #fff;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
 }
 .comutsheatmap_x_axis text{
-  fill : #fff;
+	fill : #fff;
 }
 .comutsheatmap_y_axis path  {
-    fill : none;
-    stroke : #fff;
-    stroke-width : 1;
-    shape-rendering : crispEdges;
+	fill : none;
+	stroke : #fff;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
 }
 #comutation_scale_div {
-  display: flex;
-  margin-top: 60px;
-  margin-bottom: 0px;
-  margin-left: 10px;
-  margin-right: 70px;
+	display: flex;
+	margin-top: 60px;
+	margin-bottom: 0px;
+	margin-left: 10px;
+	margin-right: 70px;
+}
+/* DEG Plot 
+--------------------------------------- */
+.deg_color_range_axis path,
+.deg_color_range_axis line 	{
+	fill : none;
+	stroke : #BFBFBF;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
 }
 /* Tooltip
 --------------------------------------- */
 .tooltip {
-    font-size: 20px;
-    line-height: 1;
-    font-weight: normal;
-    padding: 10px;
-    background: #BDC3C7;
-    border-radius: 2px;
-    display: block;
+	font-size: 20px;
+	line-height: 1;
+	font-weight: normal;
+	padding: 10px;
+	background: #BDC3C7;
+	border-radius: 2px;
+	display: block;
 }

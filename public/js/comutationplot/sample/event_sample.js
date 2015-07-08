@@ -12,7 +12,7 @@ define("sample/event_sample", ["utils", "size"], function(_utils, _size)	{
 	var get_mouseout = function(_d)	{
 		var e = d3.event;
 
-		_utils.tooltip(e);
+		_utils.tooltip();
 	}
 
 	var move_scroll = function()	{

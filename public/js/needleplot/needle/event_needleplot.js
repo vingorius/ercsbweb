@@ -14,10 +14,9 @@ define("needleplot/event_needleplot", ["utils", "size"], function(_utils, _size)
     }
 
     var get_mouseout = function(_d)    {
-
         d3.select(this).transition().duration(100).style("stroke-width", 1);
 
-        _utils.tooltip(d3.event, null, null, null)
+        _utils.tooltip();
     }
 
     var show_front_circle = function()  {

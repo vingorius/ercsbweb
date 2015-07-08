@@ -18,7 +18,6 @@
     "d3": "~3.5.5",
     "jquery": "~2.1.4",
     "ladda": "~0.9.8",
-    "require": "*",
     "requirejs": "~2.1.18",
     "threejs": "*",
     "fontawesome": "~4.3.0"

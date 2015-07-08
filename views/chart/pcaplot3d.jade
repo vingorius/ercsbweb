@@ -1,0 +1,11 @@
+extends ../layout/basiclayout
+
+block content
+	div.container.chart_base_container
+		div.row
+			div#pcaplot_legend(style={'padding': '0px', 'margin': '0px 50px', 'width': '180px', 'height': '66px'})
+		div.row
+			div#pcaplot_view_2d(style={'padding': '0px', 'margin': '0px 50px', 'width': '600px', 'height': '600px', 'float' : 'left'})
+			div#pcaplot_view_3d(style={'padding': '0px', 'margin': '0px 50px', 'width': '600px', 'height': '750px', 'float' : 'left'})
+block prepend scripts
+	script(src="/bower_components/threejs/build/three.js")

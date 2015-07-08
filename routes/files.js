@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var multer = require('multer')
+var multer = require('multer');
 var getConnection = require('./modules/mysql_connection');
 
 router.get('/',
@@ -32,7 +32,6 @@ router.post('/upload', [
 
     }
 ]);
-
 var getRowToBeInsert = function(info, user) {
     return {
         originalname: info.originalname,
@@ -46,7 +45,7 @@ var getRowToBeInsert = function(info, user) {
         upload_date: new Date(),
         json: JSON.stringify(info)
     };
-}
+};
 
 //아래는 TSV를 JSON으로 바꾸는 샘플이다.
 var fs = require('fs');
@@ -54,8 +53,8 @@ var tsv = require('tsv');
 
 router.get('/readtsv',
     function(req, res) {
-        fs.readFile('public/datas/maf.tsv','utf8',function(err,data){
-            if(err) return err;
+        fs.readFile('public/datas/maf.tsv', 'utf8', function(err, data) {
+            if (err) return err;
             res.json(tsv.parse(data));
         });
         //res.status(204).end();

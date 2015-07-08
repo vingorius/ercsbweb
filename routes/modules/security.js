@@ -6,11 +6,11 @@ security.debugLog = function(req, res, next) {
         if(req.user){
             console.log("Login User", req.user);
             if(req.session){
-                console.log("Session", req.session)
+                console.log("Session", req.session);
             }
         }
         return next();
-}
+};
 security.isAuthenticated = function(req, res, next) {
     //로그인 여부 확인
     if (req.isAuthenticated()) {
@@ -22,7 +22,7 @@ security.isAuthenticated = function(req, res, next) {
         req.session.origin_path = req.originalUrl;
     }
     res.redirect('/login');
-}
+};
 
 security.isPermitted = function(required_permission) {
     return function(req, res, next) {
@@ -33,6 +33,6 @@ security.isPermitted = function(required_permission) {
         var err = new Error('Unauthorized!');
         err.status = 401;
         next(err);
-    }
-}
+    };
+};
 module.exports = security;

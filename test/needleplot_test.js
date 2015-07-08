@@ -8,7 +8,7 @@ describe('Needle Plot Test Suite', function() {
         request(host)
             .get('/rest/needleplot')
             .expect(200, done);
-    })
+    });
     it('parameter가 없으면 transfer_object error code 1000', function(done) {
         request(host)
             .get('/rest/needleplot')
@@ -16,11 +16,11 @@ describe('Needle Plot Test Suite', function() {
                 if (err) return done(err);
                 var transfer_object = res.body;
                 //console.log(transfer_object.data.graph);
-                assert.equal(1000, transfer_object.status)
-                assert.equal('No parameter', transfer_object.message)
-                done()
-            })
-    })
+                assert.equal(1000, transfer_object.status);
+                assert.equal('No parameter', transfer_object.message);
+                done();
+            });
+    });
     it('Database에 해당 Gene이 없을 때 오류를 발생하여야 한다.', function(done) {
             request(host)
                 .get('/rest/needleplot?gene=XXX')
@@ -28,19 +28,19 @@ describe('Needle Plot Test Suite', function() {
                     if (err) return done(err);
                     var transfer_object = res.body;
                     //console.log(transfer_object.data.graph);
-                    assert.equal(1001, transfer_object.status)
-                    assert.equal('No Data Found', transfer_object.message)
-                    done()
-                })
-        })
+                    assert.equal(1001, transfer_object.status);
+                    assert.equal('No Data Found', transfer_object.message);
+                    done();
+                });
+        });
     //TODO
     //it('Database에 해당 Gene.graph가 없을 때 오류를 발생하여야 한다.', function(done) {
     //})
     it('Content Type이 application/json 여야한다.', function(done) {
         request(host)
             .get('/rest/needleplot?gene=EGFR')
-            .expect('content-type',/json/,done)
-    })
+            .expect('content-type',/json/,done);
+    });
     it('JSON Data Format Check', function(done) {
         request(host)
             .get('/rest/needleplot?gene=EGFR')
@@ -49,11 +49,11 @@ describe('Needle Plot Test Suite', function() {
                 if (err) return done(err);
                 var transfer_object = res.body;
                 //console.log(transfer_object.data.graph);
-                assert.equal('OK', transfer_object.message)
-                assert.equal('EGFR', transfer_object.data.name)
-                assert.equal(1210, transfer_object.data.graph[0].length)
-                assert.equal(77, transfer_object.data.sample_list.length)
-                done()
-            })
-    })
-})
+                assert.equal('OK', transfer_object.message);
+                assert.equal('EGFR', transfer_object.data.name);
+                assert.equal(1210, transfer_object.data.graph[0].length);
+                assert.equal(77, transfer_object.data.sample_list.length);
+                done();
+            });
+    });
+});

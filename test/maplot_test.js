@@ -8,22 +8,22 @@ describe('Ma Plot Test Suite', function() {
         request(host)
             .get('/rest/maplot')
             .expect(200, done);
-    })
+    });
     it('Content Type이 application/json 여야한다.', function(done) {
         request(host)
             .get('/rest/maplot')
-            .expect('content-type',/json/,done)
-    })
+            .expect('content-type',/json/,done);
+    });
     it('JSON Data Format Check', function(done) {
         request(host)
             .get('/rest/maplot')
             .end(function(err, res) {
                 if (err) return done(err);
                 var transfer_object = res.body;
-                assert.equal('OK', transfer_object.message)
-                assert.equal(20429, transfer_object.data.plot_list.length)
-                assert.equal('DNAJC6|9829', transfer_object.data.plot_list[0].title)
-                done()
-            })
-    })
-})
+                assert.equal('OK', transfer_object.message);
+                assert.equal(20429, transfer_object.data.plot_list.length);
+                assert.equal('DNAJC6|9829', transfer_object.data.plot_list[0].title);
+                done();
+            });
+    });
+});

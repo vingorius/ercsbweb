@@ -12,7 +12,7 @@ var flash = require('connect-flash'); //Message 전달
 require('./routes/modules/passport-mysql-local')(passport);
 
 // Security
-var security = require('./routes/modules/security')
+var security = require('./routes/modules/security');
 
 //Session정보 저장
 var session = require('express-session');
@@ -44,7 +44,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-app.use(compression())
+app.use(compression());
 // uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.ico'));
 

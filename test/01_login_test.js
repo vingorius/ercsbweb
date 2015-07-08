@@ -44,7 +44,7 @@ describe('Login Test Suite', function() {
             .expect('Location', '/')
             .end(function(err, res) {
                 if (err) return done(err);
-                done()
+                done();
             });
     });
     it('login ' + wrong_user.toString() + ' 이면 로그인 오류가 나야 한다.', function(done) {
@@ -75,7 +75,7 @@ describe('Login Test Suite', function() {
                 .end(function(err, res) {
                     if (err) return done(err);
                     // console.log("2",agent.jar.getCookie());
-                    done()
+                    done();
                 });
         });
         it('logout이 정상적으로 이루어져야한다.', function(done) {
@@ -86,7 +86,7 @@ describe('Login Test Suite', function() {
                 .end(function(err, res) {
                     if (err) return done(err);
                     // console.log("3",agent.jar.getCookie());
-                    done()
+                    done();
                 });
         });
 
@@ -97,7 +97,7 @@ describe('Login Test Suite', function() {
                 .end(function(err, res) {
                     if (err) return done(err);
                     // console.log("4",agent.jar.getCookie());
-                    done()
+                    done();
                 });
         });
     });
@@ -124,7 +124,7 @@ describe('Login Test Suite', function() {
                 .end(function(err, res) {
                     if (err) return done(err);
                     //console.log(res);
-                    done()
+                    done();
                 });
         });
         // it('logout이 정상적으로 이루어져야한다.', function(done) {
@@ -145,7 +145,7 @@ describe('Login Test Suite', function() {
                 .expect(200) //Moved Temporarily
                 .end(function(err, res) {
                     if (err) return done(err);
-                    done()
+                    done();
                 });
         });
     });
@@ -221,4 +221,4 @@ describe('Login Test Suite', function() {
             });
     })
     */
-})
+});

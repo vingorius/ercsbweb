@@ -10,9 +10,9 @@ define("pcaplot3d/setting_pcaplot3d", ["utils", "size", "pcaplot3d/view_pcaplot3
 		var z_minmax = min_max(data, "PC3");
 
 		var square_size = {
-			x : { start : 0, end : 230 },
-			y : { start : 0, end : 230 },
-			z : { start : 0, end : 230 },
+			x : { start : -170, end : 170 },
+			y : { start : -170, end : 170 },
+			z : { start : -170, end : 170 },
 		}
 
 		var x = _utils.linearScale(x_minmax.min, x_minmax.max,

@@ -55,7 +55,7 @@ define("gene/view_gene", ["utils", "size", "gene/event_gene"], function(_utils, 
 		.attr("x", function(_d) { return data.x(_d.start + _d.count); })
 		.attr("y", function(_d) { return data.y(_d.gene); })
 		.attr("width", function(_d) { return ((size.width - size.margin.right) - data.x(_d.count)); })
-		.attr("height", data.y.rangeBand() / 1.2)
+		.attr("height", data.y.rangeBand() / 1.1)
 		.style("fill", function(_d) { return _utils.colour(_d.type); })
 		.style("stroke", function(_d) { return "#BFBFBF"; })
 		.style("stroke-width", 0.5)

@@ -186,7 +186,10 @@ define("utils", [], function()  {
                 "Othre" : "#B5612E",
                 "pq" : "#C2C4C9",
                 "Primary Solid Tumor" : "#F64747",
-                "Solid Tissue Normal" : "#446CB3"
+                "Solid Tissue Normal" : "#446CB3",
+                "si_log_p" : "#466627",
+                "si_up_log_p" : "#6C1C1D",
+                "si_down_log_p" : "#42536A"
             }[value];
         },
         tooltip : function(_event, _contents, _x, _y)   {
@@ -201,8 +204,9 @@ define("utils", [], function()  {
                 div.css("position", "absolute");
                 div.css("top", y);
                 div.css("left", x);
-                div.css("font-size", 20)
-                div.css("opacity", 0.9);
+                div.css("font-size", 14)
+                div.css("font-weight", "bold")
+                div.css("opacity", 0.7);
                 div.append(contents);
                 div.show();
             }

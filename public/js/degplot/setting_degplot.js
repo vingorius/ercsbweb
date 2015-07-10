@@ -23,23 +23,31 @@ define("degplot/setting_degplot", ["utils", "size", "degplot/view_degplot"], fun
 		return d3.rgb(_color).hsl();
 	}
 
-	var background_color = function(_key, _value, _min, _max)	{
+	var background_color = function(_rgb, _value, _min, _max)	{
 		var si_color_scale = d3.scale.linear()
 		.domain([_max, _min])
 		.range([0, 4]);
-		var colour = {
-			si_log_p : "#466627",	
-			si_up_log_p : "#6C1C1D",
-			si_down_log_p : "#42536A"
-		}
 
-		return rgb(colour[_key]).brighter(si_color_scale(_value));
+		return rgb(_rgb).brighter(si_color_scale(_value));
+	}
+
+	var count_si = function(_data)	{
+		var keys = Object.keys(_data);
+		var result = [];
+
+		for(var i = 0, len = keys.length ; i < len ; i++)	{
+			if((/si/i).test(keys[i]))	{
+				result.push(keys[i]);
+			}
+		}
+		
+		return result;
 	}
 
 	return function(_data)	{
 		var data = _data || [];
 		var tbody = getClass("degplot_tbody");
-		var color_list = [ "#466627", "#6C1C1D", "#42536A" ];
+		var si = count_si(data.data.pathway_list[0]);
 		var si_max = max(data.data.pathway_list, "si_log_p");
 		var si_down_max = max(data.data.pathway_list, "si_down_log_p");
 		var si_up_max = max(data.data.pathway_list, "si_up_log_p");
@@ -50,10 +58,10 @@ define("degplot/setting_degplot", ["utils", "size", "degplot/view_degplot"], fun
 		_view.view({
 			data : data.data.pathway_list, 
 			tbody : tbody,
-			color_list : color_list,
 			backgroundcolor : background_color,
 			max : max,
 			min : min,
+			si : si,
 			si_log_p : {
 				max : si_max,
 				min : si_min

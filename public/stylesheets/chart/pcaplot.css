@@ -1,0 +1,9 @@
+/* Pca plot
+--------------------------------------------- */
+.label_pcaplot_pc1 text, .label_pcaplot_pc2 text {
+	font-weight: bold;
+}
+.pcaplots   {
+	fill : #ffffff;
+	stroke-width : 2;
+}

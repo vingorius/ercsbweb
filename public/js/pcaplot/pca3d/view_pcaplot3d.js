@@ -3,9 +3,7 @@ define("pcaplot3d/view_pcaplot3d", ["utils", "size", "pcaplot3d/event_pcaplot3d"
 		var data = _data || {};
 		var size = data.size;
 		var v = data.vector;
-		var default_axis = {
-			x : 0.5, y : -0.5, z : 0
-		};
+		var default_axis = { x : 0.5, y : -0.5, z : 0 };
 
 		var renderer = new THREE.WebGLRenderer({
 			antialias : true,
@@ -20,12 +18,12 @@ define("pcaplot3d/view_pcaplot3d", ["utils", "size", "pcaplot3d/event_pcaplot3d"
 		var object3d = new THREE.Object3D();
 		var e = _event(renderer, camera, scene, object3d) || null;
 
-		renderer.setSize(size.rwidth, size.rheight);
+		renderer.setSize(size.width, size.height);
 		renderer.setClearColor(0xFFFFFF);
 
 		data.div.appendChild(renderer.domElement);
 
-		camera.position.z = size.width;
+		camera.position.set(0, 0, size.rwidth);
 
 		object3d.rotation.x = default_axis.x;
 		object3d.rotation.y = default_axis.y;
@@ -61,7 +59,8 @@ define("pcaplot3d/view_pcaplot3d", ["utils", "size", "pcaplot3d/event_pcaplot3d"
 
 			v(data.x(data.max.x), data.y(data.min.y), data.z(data.max.z)),
 			v(data.x(data.min.x), data.y(data.min.y), data.z(data.max.z)),
-			v(data.x(data.min.x), data.y(data.min.y), data.z(data.min.z)));
+			v(data.x(data.min.x), data.y(data.min.y), data.z(data.min.z))
+			);
 
 		var border_material = new THREE.LineBasicMaterial({
 			color : 0x515151,
@@ -69,7 +68,6 @@ define("pcaplot3d/view_pcaplot3d", ["utils", "size", "pcaplot3d/event_pcaplot3d"
 		});
 
 		var border = new THREE.Line(border_geometry, border_material);
-		
 		border.type = THREE.Lines;
 
 		object3d.add(border);
@@ -86,21 +84,21 @@ define("pcaplot3d/view_pcaplot3d", ["utils", "size", "pcaplot3d/event_pcaplot3d"
 			object3d.add( figure );
 		}
 
-		var label_x = data.text("PC1");
+		var label_x = data.text("PC1(x-axis)");
 		label_x.position.x = (data.square.x.end - data.square.x.start) / 2;
 		label_x.position.y = (data.square.y.start - (size.margin.top + size.margin.bottom));
 		label_x.position.z = (data.square.z.start);
 
 		object3d.add(label_x);
 
-		var label_y = data.text("PC2");
+		var label_y = data.text("PC2(y-axis)");
 		label_y.position.x = (data.square.x.start - (size.margin.left + size.margin.right));
 		label_y.position.y = (data.square.y.end - data.square.y.start) / 2;
 		label_y.position.z = (data.square.z.start);
 
 		object3d.add(label_y);
 
-		var label_z = data.text("PC3");
+		var label_z = data.text("PC3(z-axis)");
 		label_z.position.x = (data.square.x.start - (size.margin.left + size.margin.right));
 		label_z.position.y = (data.square.y.start - (size.margin.top + size.margin.bottom));
 		label_z.position.z = (data.square.z.end - data.square.z.start) / 2;

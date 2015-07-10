@@ -53,7 +53,7 @@ define("pq/view_pq", ["utils", "size", "pq/event_pq"], function(_utils, _size, _
 		.attr("x", function(_d) { return size.margin.left; })
 		.attr("y", function(_d) { return data.y(_d.name); })
 		.attr("width", function(_d) { return data.x(_utils.log(_d.q)) - size.margin.left; })
-		.attr("height", data.y.rangeBand() / 1.2)
+		.attr("height", data.y.rangeBand() / 1.1)
 		.style("fill", function(_d) { return "#BFBFBF"; })
 		.style("stroke", function(_d) { return "#BFBFBF"; })
 		.style("stroke-width", 0.5)

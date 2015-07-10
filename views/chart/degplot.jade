@@ -13,8 +13,7 @@ block content
 						th -si.up.logP
 						th -si.dn.logP
 				tbody.degplot_tbody
-		div.color_range_component(style={"float" : "left", "margin-left" : "10px"})
-			h4 Color range
+		div#color_range_component(style={"float" : "left", "margin-left" : "10px"})
 			div
 				div#lever_si_log_p(style={"width" : "200px", "height" : "40px"})
 				div#si_log_p(style={"width" : "200px", "height" : "40px"})
@@ -24,3 +23,5 @@ block content
 			div
 				div#lever_si_down_log_p(style={"width" : "200px", "height" : "40px"})
 				div#si_down_log_p(style={"width" : "200px", "height" : "40px"})
+block append stylesheets
+	link(rel='stylesheet', href='/stylesheets/chart/degplot.css')					

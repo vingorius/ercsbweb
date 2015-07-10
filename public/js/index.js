@@ -64,7 +64,7 @@ require(["size", "maplot/setting_maplot", "needleplot/setting_needleplot", "xypl
 
 	 var find_pathname = function(_pathname)	{
 	 	return _pathname.substring(_pathname.lastIndexOf("/") + 1,
-	 		_pathname.length - 4);
+	 		_pathname.indexOf("plot"));
 	 }
 	 
 	$(function()    {

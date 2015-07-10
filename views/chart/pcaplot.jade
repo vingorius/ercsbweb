@@ -3,16 +3,8 @@ extends ../layout/basiclayout
 block content
 	div.container.chart_base_container
 		div.row
-			div.btn-group(data-toggle='bottons')
-				label.btn.btn-primary.active 2D
-					input#pcaplot_2d(type='radio', name='options', autocomplete='off', checked) 
-				label.btn.btn-primary 3D
-					input#pcaplot_3d(type='radio', name='options', autocomplete='off')
-		div.row
 			div#pcaplot_legend(style={'padding': '0px', 'margin': '0px 50px', 'width': '180px', 'height': '66px'})
 		div.row
-			div#pcaplot_view(style={'padding': '0px', 'margin': '0px', 'width': '1200px', 'height': '750px'})
-			div#pcaplot_view_2d(style={'padding': '0px', 'margin': '0px 50px', 'width': '600px', 'height': '600px', 'float' : 'left'})
-			div#pcaplot_view_3d(style={'padding': '0px', 'margin': '0px 50px', 'width': '600px', 'height': '750px', 'float' : 'left'})
-block prepend scripts
-	script(src="/bower_components/threejs/build/three.js")
+			div#pcaplot_view_2d(style={'padding': '0px', 'margin': '0px', 'width': '1400px', 'height': '750px'})
+block append stylesheets
+	link(rel='stylesheet', href='/stylesheets/chart/pcaplot.css')

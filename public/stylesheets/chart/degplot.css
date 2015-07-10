@@ -1,0 +1,15 @@
+/* DEG Plot 
+--------------------------------------- */
+.deg_color_range_axis path,
+.deg_color_range_axis line 	{
+	fill : none;
+	stroke : #BFBFBF;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
+}
+body { 
+	font-size: 12px;
+}
+.table tbody tr td, .table thead tr th {
+	padding : 2px;
+}

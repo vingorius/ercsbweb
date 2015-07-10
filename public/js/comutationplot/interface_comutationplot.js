@@ -1,5 +1,4 @@
 define( "interface_comutation", [ "utils", "comutation/setting_comutation", "gene/setting_gene", "pq/setting_pq", "sample/setting_sample", "comutationnavigation/setting_comutationnavigation", "legend/setting_legend" ], function(_utils, _setting_comutation, _setting_gene, _setting_pq, _setting_sample, _setting_comutationnavigation, _setting_legend)	{
-
 	var get_list_by_key = function(_key, _list)	{
 		var list = _list || [], result = [];
 		var key = _key || "name";
@@ -9,7 +8,6 @@ define( "interface_comutation", [ "utils", "comutation/setting_comutation", "gen
 				result.push(list[i][key]);
 			}
 		}
-
 		return result;
 	}
 
@@ -35,7 +33,6 @@ define( "interface_comutation", [ "utils", "comutation/setting_comutation", "gen
 				value : aberrations.value,
 			});
 		})
-
 		get_all_data(sample_list, samples, index += 1, result);
 
 		return result;
@@ -51,7 +48,6 @@ define( "interface_comutation", [ "utils", "comutation/setting_comutation", "gen
 			}
 			result.value.push(_d.value);
 		});
-
 		return result;
 	}
 
@@ -71,7 +67,6 @@ define( "interface_comutation", [ "utils", "comutation/setting_comutation", "gen
 				if($.inArray(_d.value, result.value_list) < 0) { result.value_list.push(_d.value); }
 			}
 		});
-
 		return result;
 	}
 
@@ -86,6 +81,8 @@ define( "interface_comutation", [ "utils", "comutation/setting_comutation", "gen
 		var mutations = get_mutation_list(sample_list);
 
 		var all_data = get_all_data(sample_list, samples);
+
+		console.log(all_data)
 
 		_utils.remove_svg("comutationplot_legend");
 

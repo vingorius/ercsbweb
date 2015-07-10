@@ -16,8 +16,8 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 				 	data : cell_data
 				 });
 				_row.cells[i].style.backgroundColor = 
-				_data.backgroundcolor(Object.keys(_column)[i], cell_data,
-					_data[Object.keys(_column)[i]].min, 
+				_data.backgroundcolor(_utils.colour(Object.keys(_column)[i]), 
+					cell_data, _data[Object.keys(_column)[i]].min, 
 					_data[Object.keys(_column)[i]].max);
 			}
 		}
@@ -61,8 +61,8 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 		}])
 		.attr("x", (target.clientWidth - margin / 2))
 		.attr("y", target.clientHeight / 4)
-		.attr("width", 10)
-		.attr("height", 5)
+		.attr("width", 5)
+		.attr("height", target.clientHeight / 2.5)
 		.call(_event.drag);
 	}
 
@@ -94,8 +94,32 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 		.attr("x", 0)
 		.attr("y", 0)
 		.attr("width", target.clientWidth)
-		.attr("height", target.clientHeight)
+		.attr("height", target.clientHeight / 2)
 		.style("fill", "url(#" + _id + "_gradient)");
+	}
+
+	var make_range_component = function(_data, _si)	{
+		var range_component = 
+		document.getElementById("color_range_component");
+
+		for(var i = 0, len = _si.length ; i < len ; i++)	{
+			var row = _size.mkdiv();
+			var comp_lever = _size.mkdiv({
+				attribute : { id : "lever_" + _si[i], },
+				style : { "width" : "200px", "height" : "40px" }
+			});
+			var comp_gradient = _size.mkdiv({
+				attribute : { id : _si[i], },
+				style : { "width" : "200px", "height" : "40px" }
+			});
+
+			row.appendChild(comp_lever);
+			row.appendChild(comp_gradient);
+			range_component.appendChild(row);
+			
+			lever("lever_" + _si[i], _data);	
+			range_gradient(_si[i], "#FFFFFF", _utils.colour(_si[i]));
+		}
 	}
 
 	var view = function(_data)	{
@@ -108,13 +132,7 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 
 		_event.rowspan(tbody.rows);
 
-		lever("lever_si_log_p", _data);
-		lever("lever_si_up_log_p", _data);
-		lever("lever_si_down_log_p", _data);
-
-		range_gradient("si_log_p", "#FFFFFF", _data.color_list[0]);
-		range_gradient("si_up_log_p", "#FFFFFF", _data.color_list[1]);
-		range_gradient("si_down_log_p", "#FFFFFF", _data.color_list[2]);
+		make_range_component(_data, _data.si);
 	}
 
 	return {

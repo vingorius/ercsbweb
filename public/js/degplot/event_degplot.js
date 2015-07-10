@@ -31,7 +31,7 @@ define("degplot/event_degplot", ["utils", "size"], function(_utils, _size)	{
 			if(targets[i].style.backgroundColor && 
 				d3.select(targets[i]).datum().id === _target)	{
 				targets[i].style.backgroundColor = 
-					_bgcolor(_target, d3.select(targets[i]).datum().data, 
+					_bgcolor(_utils.colour(_target), d3.select(targets[i]).datum().data, 
 						_min, _value);
 			}
 		}
@@ -46,12 +46,8 @@ define("degplot/event_degplot", ["utils", "size"], function(_utils, _size)	{
 		.attr("x2", x2 + "%");
 	}
 
-	var drag_start = function(_d)	{
-		_utils.tooltip();
-	}
-
-	var drag_end = function(_d)	{
-		var target = d3.select(this);
+	var relocate_bar = function(_target, _d)	{
+		var target = _target || null;
 
 		var x = d3.scale.linear()
 		.domain([_d.margin / 2, _d.width - _d.margin / 2])
@@ -66,23 +62,49 @@ define("degplot/event_degplot", ["utils", "size"], function(_utils, _size)	{
 		var sub_end = Math.abs(end - x(Number(target.attr("x"))));
 		var x_final = (sub_start > sub_end) ? end : start;
 
-		_utils.tooltip(d3.event, x_final, d3.event.sourceEvent.pageX, d3.event.sourceEvent.pageY);
+		return {
+			value : x_final,
+			scale : re_x
+		};
+	}
 
-		target.attr("x", re_x(x_final));
+	var drag_start = function(_d)	{
+		_utils.tooltip();
+	}
 
-		change_brightness(_d.id, _d.min, Math.round(_d.max), x_final);
-		change_cell_background(_d.id, _d.min, x_final, _d.bgcolor);
+	var drag_end = function(_d)	{
+		var target = d3.select(this);
+
+		// _utils.tooltip();
+		
+		var reloc = relocate_bar(target, _d);
+
+		// _utils.tooltip(d3.event, x_final, d3.event.sourceEvent.pageX, d3.event.sourceEvent.pageY);
+
+		target.attr("x", reloc.scale(reloc.value));
+
+		change_brightness(_d.id, _d.min, Math.round(_d.max), reloc.value);
+		change_cell_background(_d.id, _d.min, reloc.value, _d.bgcolor);
 	}
 
 	var drag_lever = function(_d)	{
 		var target = d3.select(this);
+		var reloc = relocate_bar(target, _d);
+
+		console.log(target.attr("x"))
+
+		_utils.tooltip();
 
 		target
 		.attr("x", function()	{
+			console.log(target.attr("y"))
+			_utils.tooltip(d3.event, reloc.value, 
+				d3.event.sourceEvent.pageX, d3.event.sourceEvent.pageY + 10);
+			
 			return Math.max((_d.margin / 2), 
 				Math.min((_d.width - _d.margin / 2), 
 					Number(target.attr("x")) + d3.event.dx));
-		})
+		});
 	}
 
 	var drag_figure = d3.behavior.drag()

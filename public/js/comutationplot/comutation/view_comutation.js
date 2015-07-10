@@ -7,7 +7,7 @@ define("comutation/view_comutation", ["utils", "size", "comutation/event_comutat
 		var svg = d3.select("#comutationplot_mutationseq")
 		.append("svg")
 		.attr("class", "comutationplot_mutationseq")
-		.attr("width", size.width)
+		.attr("width", size.width - size.margin.right)
 		.attr("height", size.height)
 		.append("g")
 		.attr("transform", "translate(0, 0)");

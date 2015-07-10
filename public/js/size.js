@@ -70,92 +70,6 @@ define("size", [], function()   {
     }
 
     /**
-     * [부트스트랩에 쓰이는 'tab-content' 태그를 만들어주는 함수]
-     * @return {[Object]} [DIV(tab-content) 태그]
-     */
-    var make_a_division_of_contents_region = function()    {
-
-        return make_a_division({
-            attribute : {
-                "class" : "tab-content",
-                "id" : "view_region"
-            },
-            style : {
-                "padding" : 0,
-                "margin" : "10px 0px",
-                "width" : get_mainarea().width(),
-                "height" : get_mainarea().height()
-            }
-        });
-    }
-
-    /**
-     * [ToolTip DIV 태그를 생성하는 함수]
-     * @return {[Object]} [DIV(Tooltip) 태그]
-     */
-    var make_a_division_of_tooltip = function() {
-
-        return make_a_division({
-            attribute : {
-                "class" : "tooltip"
-            }
-        });
-    }
-
-    /**
-     * [tab-panel 을 만들어주는 함수]
-     * @param  {[Object]} _order [id, class, role 등이 포함된 객체]
-     * @return {[Object]}        [DIV(tabpanel) 태그]
-     */
-    var make_a_division_of_tabpanel_region = function(_order)   {
-        var order = _order || {};
-        var json_of_tabpanel = {};
-
-        Object.keys(order).map(function(_d) {
-
-            json_of_tabpanel = make_a_division_of_tabpanel_region_json(json_of_tabpanel, _d, order);
-
-        });
-
-        return json_of_tabpanel;
-    }
-
-    /**
-     * [요청한 사항을 DIV (tabpanel) 에 적용하는 함수]
-     * @param  {[Object]} _json  [ID 별로 객체를 만들기 위한 객체 파라미터]
-     * @param  {[String]} _d     [ID]
-     * @param  {[Object]} _order [요청 목록]
-     * @return {[Object]}        [DIV(tabpanel) 태그]
-     */
-    var make_a_division_of_tabpanel_region_json = function(_json, _d, _order)  {
-        var d = _d || null, order = _order || null;
-        var json_of_tabpanel = _json || new Object();
-
-        json_of_tabpanel[d] = make_a_division({
-            attribute : {
-                "role" : "tabpanel",
-                "class" : "tab-pane fade" + order[d],
-                "id" : "container_" + d
-            }
-        });
-
-        return json_of_tabpanel;
-    }
-
-    /**
-     * ['row' 태그를 만드는 함수]
-     * @return {[Object]} [DIV(row) 태그]
-     */
-    var make_a_division_of_row = function() {
-
-        return make_a_division({
-            attribute : {
-                "class" : "row"
-            }
-        });
-    }
-
-    /**
      * [D3 차트를 그려줄 svg 영역 정의 함수]
      * @return {[Object]} [svg 영역이 정의된 객체]
      */
@@ -197,6 +111,7 @@ define("size", [], function()   {
 
     return {
         define_size : define_size,
-        get_original_size : get_original_size
+        get_original_size : get_original_size,
+        mkdiv : make_a_division 
     };
 });

@@ -1,0 +1,65 @@
+/* Comutation plot
+---------------------------------------------- */
+.gene_y_axis path, .pq_y_axis path {
+	stroke : #fff;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
+}
+.gene_x_axis path, .pq_x_axis path{
+	fill : none;
+	stroke : #BFBFBF;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
+}
+.gene_x_axis line, .pq_x_axis line  {
+	fill : none;
+	stroke : #BFBFBF;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
+}
+.gene_x_axis text, .pq_x_axis text, .sample_x_axis text {
+	font-size: 8px;
+	font-weight: normal;
+}
+.gene_y_axis text, .pq_y_axis text, .sample_y_axis text {
+	fill : #626262;
+	font-size: 12px;
+	font-weight: normal;
+}
+.sample_y_axis line {
+	fill : none;
+	stroke : #BFBFBF;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
+}
+.sample_x_axis path, .sample_y_axis path {
+	fill : none;
+	stroke : #fff;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
+}
+text {
+	fill : #626262;
+}
+.comutsheatmap_x_axis path  {
+	fill : none;
+	stroke : #fff;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
+}
+.comutsheatmap_x_axis text{
+	fill : #fff;
+}
+.comutsheatmap_y_axis path  {
+	fill : none;
+	stroke : #fff;
+	stroke-width : 1;
+	shape-rendering : crispEdges;
+}
+#comutation_scale_div {
+	display: flex;
+	margin-top: 60px;
+	margin-bottom: 0px;
+	margin-left: 10px;
+	margin-right: 70px;
+}

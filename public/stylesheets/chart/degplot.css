@@ -7,7 +7,7 @@
 	stroke-width : 1;
 	shape-rendering : crispEdges;
 }
-body { 
+.table {
 	font-size: 12px;
 }
 .table tbody tr td, .table thead tr th {

@@ -1,4 +1,8 @@
 define("pcaplot2d/setting_pcaplot2d", ["utils", "size", "pcaplot2d/view_pcaplot2d"], function(_utils, _size, _view)	{
+	var check_type = function(_type)	{
+				
+	}
+
 	return function(_data, _min_max)	{
 		var data = _data || [];
 		var min_max = _min_max || new Function();

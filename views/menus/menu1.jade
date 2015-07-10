@@ -3,11 +3,3 @@ extends ../layout/basiclayout
 block content
     div.container
         h1 menu1
-        if (!user)
-          h2 Please log-in !
-          a(href="/login") Login
-          br
-          a(href="/register") Register
-        if (user)
-          h3 You are currently logged in as #{user.username}
-          a(href="/logout") Logout

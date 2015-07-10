@@ -2,7 +2,7 @@ var express = require('express');
 var passport = require('passport');
 //var Account = require('./account');
 var router = express.Router();
-
+var security = require('./modules/security');
 //
 router.get('/', function(req, res) {
     res.render('index', {
@@ -41,6 +41,8 @@ router.post('/login', passport.authenticate('login', {
     } else {
         req.session.cookie.expires = false;
     }
+    // Admin인지 여부 체크, Admin 메뉴를 보여줄 지 여부 확인.
+    req.user.isAdmin  = security.isAdmin(req);
     // security.js에서 session에 넣어둔 원 path로 redirect한다.
     var origin = req.session.origin_path || '/';
     delete req.session.origin_path;

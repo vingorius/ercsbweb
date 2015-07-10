@@ -35,4 +35,9 @@ security.isPermitted = function(required_permission) {
         next(err);
     };
 };
+
+security.isAdmin = function(req) {
+        return authorization.considerSubject(req.user).isPermitted("admin:read");
+};
+
 module.exports = security;

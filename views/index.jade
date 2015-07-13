@@ -2,11 +2,103 @@ extends layout/basiclayout
 
 block content
     div.container
-        if (!user)
-          h2 Please log-in !
-          a(href="/login") Login
-          br
-          a(href="/register") Register
-        if (user)
-          h3 You are currently logged in as #{user.username}
-          a(href="/logout") Logout
+        section.featured        
+            div.container
+                div.row.mar-bot40
+                    div.col-md-6.col-md-offset-3
+                        div.align-center
+                            i.fa.fa-medkit.fa-5x.mar-bot20
+                            h2.slogan Welcome to CCDS
+                            p
+                              | Lorem ipsum dolor sit amet, natum bonorum expetendis usu ut.
+                              | Eum impetus offendit disputationi eu, at vim aliquip lucilius praesent.
+                              | Alia laudem antiopam te ius, sed ad munere integre, ubique facete sapientem nam ut.
+
+        section#section-services.section.pad-bot30.bg-white
+            div.container
+              div.row.mar-bot40
+                div.col-lg-4
+                  div.align-center
+                    i.fa.fa-stethoscope.fa-5x.mar-bot20
+                    h4.text-bold Clinical Data Integration
+                    p
+                      | Lorem ipsum dolor sit amet, mutat graeco volumus ad eam, singulis patrioque comprehensam nam no.
+                      | Mei cu dicat voluptaria volumus.
+                div.col-lg-4
+                  div.align-center
+                    i.fa.fa-plus-square.fa-5x.mar-bot20
+                    h4.text-bold Predict Phenotypes
+                    p
+                      | Lorem ipsum dolor sit amet, mutat graeco volumus ad eam, singulis patrioque comprehensam nam no.
+                      | Mei cu dicat voluptaria volumus.
+                div.col-lg-4
+                  div.align-center
+                    i.fa.fa-database.fa-5x.mar-bot20
+                    h4.text-bold Multi-dimensional Query
+                    p
+                      | Lorem ipsum dolor sit amet, mutat graeco volumus ad eam, singulis patrioque comprehensam nam no.
+                      | Mei cu dicat voluptaria volumus.
+
+        section#testimonials.section
+            div.container
+              div.row
+                div.col-lg-12
+                  div.align-center
+                    div.testimonial.pad-top40.pad-bot40.clearfix
+                      h5
+                        | Nunc velit risus, dapibus non interdum quis, suscipit nec dolor. Vivamus tempor tempus mauris vitae fermentum. In vitae nulla lacus. Sed sagittis tortor vel arcu sollicitudin nec tincidunt metus suscipit.Nunc velit risus, dapibus non interdum.
+                      br
+                      span.author
+                        | — MIKE DOE 
+                        a(href='#') www.siteurl.com
+
+
+        section#section-about.section.appear.clearfix
+          div.container
+            div.row.mar-bot40
+              div.col-md-offset-3.col-md-6
+                div.section-header
+                  h2.section-heading.animated(data-animation='bounceInUp') Use Cases
+                  p
+                    | Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet consectetur, adipisci velit, sed quia non numquam.
+            div.row.align-center.mar-bot40
+              div.col-md-3
+                div.team-member
+                  figure.member-photo
+                    img(src='http://www.csems.org/wp-content/uploads/2013/01/drugs2-300x242.png', alt='')
+                  div.team-detail
+                    h4 Drug Sensitivity or Resistance
+                    span Find patients that are poor responders for drug Y and have a mutation in
+                        | the promoter region of Gene X.
+              div.col-md-3
+                div.team-member
+                  figure.member-photo
+                    img(src='http://cdn.vectorstock.com/i/composite/84,64/injection-vector-748464.jpg', alt='')
+                  .team-detail
+                    h4 Variant-Drug-Disease Relationship
+                    span How many patients have disease Z, responded to treatment X, have a 
+                        | chromosome 18 deletion?
+              div.col-md-3
+                div.team-member
+                  figure.member-photo
+                    img(src='http://transhumanisminsports.weebly.com/uploads/1/8/3/4/18348215/2771087_orig.jpg', alt='')
+                  div.team-detail
+                    h4 Expression Analysis
+                    span Do mutations in the coding sequence of Gene X perturbs its expression 
+                        | across all patients?
+              div.col-md-3
+                div.team-member
+                  figure.member-photo
+                    img(src='http://www.geneticliteracyproject.org/wp-content/uploads/2013/10/eBay-genome-auction.jpg', alt='')
+                  div.team-detail
+                    h4 Score the variants based on evidences
+                    span Take only the exome portion of the whole genome and do a statistical
+                        | association analysis with phenotype Z and then prioritize the genes\
+                        | based on their variant type (e.g. non-syn SNPs), annotations (e.g. growth
+                        | factors) and membership to known pathways.
+
+
+
+
+block append stylesheets
+    link(rel='stylesheet', href='/stylesheets/index.css')

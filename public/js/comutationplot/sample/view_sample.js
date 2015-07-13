@@ -7,27 +7,18 @@ define("sample/view_sample", ["utils", "size", "sample/event_sample"], function(
 		var svg = d3.select("#comutationplot_sample")
 		.append("svg")
 		.attr("class", "comutationplot_sample")
-		.attr("width", size.width - size.margin.left)
+		.attr("width", size.width)
 		.attr("height", size.height)
 		.append("g")
 		.attr("transform", "translate(0, 0)");
 
-		var xAxis = d3.svg.axis()
-		.scale(data.x)
-		.orient("bottom");
-
 		var yAxis = d3.svg.axis()
 		.scale(data.y)
 		.orient("left")
-		.ticks(3);
+		.tickValues([0, data.max / 2, data.max]);
 
 		svg.append("g")
-		.attr("class", "sample_x_axis")
-		.attr("transform", "translate(0, " + (size.height - size.margin.bottom) + ")")
-		.call(xAxis);
-
-		svg.append("g")
-		.attr("class", "sample_y_axis")
+		.attr("class", "comutationplot_sample_yaxis")
 		.attr("transform", "translate(" + size.margin.left + ", 0)")
 		.call(yAxis);
 
@@ -39,20 +30,20 @@ define("sample/view_sample", ["utils", "size", "sample/event_sample"], function(
 		.style("font-size", "12px")
 		.style("font-style", "italic");
 
-		var bar_group = svg.selectAll(".samplebar_group")
+		var bar_group = svg.selectAll(".comutationplot_sample_bargroup")
 		.data(data.data)
 		.enter().append("g")
-		.attr("class", "samplebar_group") 
+		.attr("class", "comutationplot_sample_bargroup") 
 		.attr("transform", "translate(0, 0)");
 
 		var stacked_bar = bar_group.selectAll("rect")  
 		.data(function(_d)  { return _d.list; })
 		.enter().append("rect")
-		.attr("class", function(_d, _i) { return "stacked_hbar_" + _d.sample + "-" + _i; })
+		.attr("class", "comutationplot_sample_bars")
 		.attr("x", function(_d) { return data.x(_d.sample); })
 		.attr("y", function(_d) { return data.y(_d.start + _d.count); })
 		.attr("width", data.x.rangeBand())
-		.attr("height", function(_d) { return (size.height - size.margin.bottom) - data.y(_d.count); })
+		.attr("height", function(_d) { return (size.height - size.margin.top) - data.y(_d.count); })
 		.style("fill", function(_d) { return _utils.colour(_d.type); })
 		.on("mouseover", e.m_over)
 		.on("mouseout", e.m_out);

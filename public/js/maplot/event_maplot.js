@@ -5,6 +5,34 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 		var stacked_circles = [];
 		var stacked_paths = [];
 		var all_circles = data.all_circles;
+		var save_paths = [];
+
+		var undo = function(_d)	{
+
+		}
+
+		var redo = function(_d)		{
+
+		}
+
+		var save_all_paths = function()	{
+			var reform_paths = [];
+			var index = 0;
+
+			console.log(save_paths.length)
+
+			for(var i = 0, len = save_paths.length ; i < len ; i++)	{
+				reform_paths[index] = save_paths[i];
+				for(var j = 0, leng = save_paths[i].length ; j < leng ; j++)	{
+					console.log(save_paths[i][j])
+					if(save_paths[i][j].id)	{
+						console.log(save_paths[i][j].id)
+						//console.log(reform_paths[index])
+						index++;
+					}
+				}	
+			}
+		}
 
 		var arrow_btn_click = function(_d)	{
 			var type = this.id.substring(this.id.lastIndexOf("_") + 1, this.id.length);
@@ -34,7 +62,7 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 		var click_redraw = function()  {
 			var value = $('.spinner input').val();
-			var circles = d3.selectAll(".maplot_view_circle");
+			var circles = d3.selectAll(".maplot_circles");
 
 			circles
 			.style("fill", function(_d) { return data.color(_d, value); })
@@ -84,8 +112,8 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 		var row_mouseevent = function(_circle, _radius)	{
 			(this.event.type === "mouseover") ?
-				_circle.transition().duration(250).attr("r", _radius * 2) :
-				_circle.transition().duration(250).attr("r", _radius);
+			_circle.transition().duration(250).attr("r", _radius * 2) :
+			_circle.transition().duration(250).attr("r", _radius);
 		}
 
 		var make_rowcell = function(_index, _circle, _table)	{
@@ -213,6 +241,9 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 			drawPath(true);
 			draw_table();
+
+			save_paths.push(d3.selectAll("#maplot_select_path path")[0]);
+			save_all_paths();
 		}
 
 		var drag = d3.behavior.drag()
@@ -228,7 +259,9 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 			m_out : get_mouseout,
 			redraw : click_redraw,
 			download : click_download,
-			reset : click_reset
+			reset : click_reset,
+			undo : undo,
+			redo : redo
 		}
 	}
 });

@@ -16,7 +16,6 @@ define( "gene/setting_gene", ["utils", "size", "gene/view_gene"], function(_util
 				check.list.push(all_data[i]);
 			}
 		}
-
 		return stacked(counting(gene_list));
 	}
 
@@ -26,7 +25,6 @@ define( "gene/setting_gene", ["utils", "size", "gene/view_gene"], function(_util
 		for(var i = 0, len = list.length ; i < len ; i++)	{
 			list[i].list = count_mutation(list[i].list);
 		}
-
 		return list;
 	}
 
@@ -53,7 +51,6 @@ define( "gene/setting_gene", ["utils", "size", "gene/view_gene"], function(_util
 				}
 			}
 		}   
-
 		return result;
 	}
 
@@ -70,7 +67,6 @@ define( "gene/setting_gene", ["utils", "size", "gene/view_gene"], function(_util
 				}
 			});
 		});
-
 		return data;
 	}
 
@@ -83,7 +79,6 @@ define( "gene/setting_gene", ["utils", "size", "gene/view_gene"], function(_util
 			for(var i = 0, len = _d.list.length ; i < len ; i++)	{
 				result += _d.list[i].count;
 			}
-
 			return result;
 		}));
 	}
@@ -92,17 +87,18 @@ define( "gene/setting_gene", ["utils", "size", "gene/view_gene"], function(_util
 		var all_data = _all_data || [];
 		var genes = _genes || [];
 		var count_gene = count_by_order(all_data);
-		var size = _size.define_size("comutationplot_gene", 10, 20, 10, 70);
+		var size = _size.define_size("comutationplot_gene", 20, 20, 20, 70);
 		var max = get_max(count_gene);
 
 		_utils.remove_svg("comutationplot_gene");
 
 		var x = _utils.linearScale(0, max, (size.width - size.margin.right), size.margin.left);
-		var y = _utils.ordinalScale(genes, size.margin.top, (size.height - size.margin.bottom));
+		var y = _utils.ordinalScale(genes, size.margin.top, (size.height - size.margin.top));
 
 		_view.view({
 			data : count_gene,
 			size : size,
+			max : max,
 			x : x, 
 			y : y
 		});

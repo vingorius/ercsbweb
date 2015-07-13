@@ -11,9 +11,9 @@ define("xyplot/event_xyplot", ["utils", "size"], function(_utils, _size)	{
 			, "<strong>Title : <span style='color:red'>"
 			+ _d.title
 			+ "</span></br> X : <span style='color:red'>"
-			+ _d.x
+			+ Number(_d.x).toFixed(5)
 			+ "</span></br> Y : <span style='color:red'>"
-			+ _d.y
+			+ Number(_d.y).toFixed(5)
 			+ "</span>"
 			, e.pageX, e.pageY - 40);
 	}

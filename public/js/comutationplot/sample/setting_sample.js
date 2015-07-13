@@ -92,7 +92,7 @@ define("sample/setting_sample", ["utils", "size", "sample/view_sample"], functio
 		var all_data = _all_data || [];
 		var samples = _samples || [];
 		var count_sample = count_by_order(all_data);
-		var size = _size.define_size("comutationplot_sample", 10, 10, 20, 20);
+		var size = _size.define_size("comutationplot_sample", 20, 20, 20, 20);
 		var max = get_max(count_sample);
 
 		_utils.remove_svg("comutationplot_sample");
@@ -103,6 +103,7 @@ define("sample/setting_sample", ["utils", "size", "sample/view_sample"], functio
 		_view.view({
 			data : count_sample,
 			size : size,
+			max : max,
 			x : x, 
 			y : y
 		});

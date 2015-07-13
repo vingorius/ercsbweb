@@ -19,8 +19,7 @@ define("gene/event_gene", ["utils", "size"], function(_utils, _size)	{
 
 		_utils.tooltip(e, "Gene : <span style='color : red;'>" + _d.gene 
 			+ "</span></br>Count : <span style='color : red;'>" + _d.count
-			+ "</span>"
-			, e.pageX, e.pageY);
+			+ "</span>", e.pageX, e.pageY);
 
 		target.transition().duration(100)
 		.style("stroke", "black");

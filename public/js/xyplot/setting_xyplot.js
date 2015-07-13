@@ -29,6 +29,12 @@ define("xyplot/setting_xyplot", ["utils", "size", "xyplot/view_xyplot"], functio
 		_view.view({
 			data : data,
 			size : size,
+			max : {
+				x : xmax, y : ymax
+			},
+			min : {
+				x : xmin, y : ymin
+			},
 			radius : radius,
 			x : x,
 			y : y

@@ -84,21 +84,21 @@ define("pcaplot3d/view_pcaplot3d", ["utils", "size", "pcaplot3d/event_pcaplot3d"
 			object3d.add( figure );
 		}
 
-		var label_x = data.text("PC1(x-axis)");
+		var label_x = data.text("PC1(X-axis)");
 		label_x.position.x = (data.square.x.end - data.square.x.start) / 2;
 		label_x.position.y = (data.square.y.start - (size.margin.top + size.margin.bottom));
 		label_x.position.z = (data.square.z.start);
 
 		object3d.add(label_x);
 
-		var label_y = data.text("PC2(y-axis)");
+		var label_y = data.text("PC2(Y-axis)");
 		label_y.position.x = (data.square.x.start - (size.margin.left + size.margin.right));
 		label_y.position.y = (data.square.y.end - data.square.y.start) / 2;
 		label_y.position.z = (data.square.z.start);
 
 		object3d.add(label_y);
 
-		var label_z = data.text("PC3(z-axis)");
+		var label_z = data.text("PC3(Z-axis)");
 		label_z.position.x = (data.square.x.start - (size.margin.left + size.margin.right));
 		label_z.position.y = (data.square.y.start - (size.margin.top + size.margin.bottom));
 		label_z.position.z = (data.square.z.end - data.square.z.start) / 2;

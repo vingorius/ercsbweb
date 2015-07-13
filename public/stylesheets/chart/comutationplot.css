@@ -1,62 +1,52 @@
 /* Comutation plot
 ---------------------------------------------- */
-.gene_y_axis path, .pq_y_axis path {
+.comutationplot_gene_yaxis path, .comutationplot_gene_yaxis line {
 	stroke : #fff;
 	stroke-width : 1;
 	shape-rendering : crispEdges;
 }
-.gene_x_axis path, .pq_x_axis path{
+.comutationplot_gene_xaxis path, .comutationplot_pq_xaxis path, .comutationplot_sample_yaxis path {
 	fill : none;
 	stroke : #BFBFBF;
 	stroke-width : 1;
 	shape-rendering : crispEdges;
 }
-.gene_x_axis line, .pq_x_axis line  {
+.comutationplot_gene_xaxis line, .comutationplot_pq_xaxis line, .comutationplot_sample_yaxis line  {
 	fill : none;
 	stroke : #BFBFBF;
 	stroke-width : 1;
 	shape-rendering : crispEdges;
 }
-.gene_x_axis text, .pq_x_axis text, .sample_x_axis text {
+.comutationplot_gene_xaxis text, .comutationplot_pq_xaxis text 	{
 	font-size: 8px;
 	font-weight: normal;
 }
-.gene_y_axis text, .pq_y_axis text, .sample_y_axis text {
+.comutationplot_gene_yaxis text,  {
 	fill : #626262;
 	font-size: 12px;
 	font-weight: normal;
 }
-.sample_y_axis line {
-	fill : none;
+.comutationplot_sample_yaxis text	{
+	fill : #626262;
+	font-size: 8px;
+}
+.comutationplot_gene_bars	{
+	stroke : #BFBFBF;
+	stroke-width : 0.5;
+}
+.comutationplot_pq_bars {
+	fill : #BFBFBF;
 	stroke : #BFBFBF;
 	stroke-width : 1;
-	shape-rendering : crispEdges;
 }
-.sample_x_axis path, .sample_y_axis path {
+
+.comutationplot_yaxis path  {
 	fill : none;
 	stroke : #fff;
 	stroke-width : 1;
 	shape-rendering : crispEdges;
 }
-text {
-	fill : #626262;
-}
-.comutsheatmap_x_axis path  {
-	fill : none;
-	stroke : #fff;
-	stroke-width : 1;
-	shape-rendering : crispEdges;
-}
-.comutsheatmap_x_axis text{
-	fill : #fff;
-}
-.comutsheatmap_y_axis path  {
-	fill : none;
-	stroke : #fff;
-	stroke-width : 1;
-	shape-rendering : crispEdges;
-}
-#comutation_scale_div {
+#comutationplot_scale_div {
 	display: flex;
 	margin-top: 60px;
 	margin-bottom: 0px;

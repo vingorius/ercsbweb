@@ -1,23 +1,26 @@
 define("pcaplot2d/view_pcaplot2d", ["utils", "size", "pcaplot2d/event_pcaplot2d"], function(_utils, _size, _event)	{
-	var circle = function(_data, _svg)	{
-		return _svg.selectAll("circle")
-		.data(_data.data.sample_list)
-		.enter().append("circle")
-		.attr("class", "pcaplots")
-		.attr("cx", function(_d) { return _data.x(_d.PC1); })
-		.attr("cy", function(_d) { return _data.y(_d.PC2); })
-		.attr("r", function(_d) { return _data.radius; });
+	var interface_figure = function(_data, _x, _y, _svg, _type)	{
+		switch(_type)	{
+			case "circle" : return circles(_data, _x, _y, _svg); break;
+			case "rect" : return rectangle(_data, _x, _y, _svg); break;
+		}
 	}
 
-	var rectangle = function(_data, _svg)	{
-		return _svg.selectAll("rect")
-		.data(_data.data.sample_list)
-		.enter().append("rect")
-		.attr("class", "pcaplots")
-		.attr("x", function(_d) { return _data.x(_d.PC1); })
-		.attr("y", function(_d) { return _data.y(_d.PC2); })
-		.attr("width", function(_d) { return _data.radius; })
-		.attr("height", function(_d) { return _data.radius; });
+	var circles = function(_data, _x, _y, _svg)	{
+		return _svg.append("circle")
+		.attr("class", "pcaplots_circles")
+		.attr("cx", _data.x(_x))
+		.attr("cy", _data.y(_y))
+		.attr("r", _data.radius);
+	}
+
+	var rectangle = function(_data, _x, _y, _svg)	{
+		return _svg.append("rect")
+		.attr("class", "pcaplots_rect")
+		.attr("x", _data.x(_x) - _data.radius)
+		.attr("y", _data.y(_y) - _data.radius)
+		.attr("width", _data.radius * 2)
+		.attr("height", _data.radius * 2);
 	}
 
 	var view = function(_data)	{
@@ -68,17 +71,16 @@ define("pcaplot2d/view_pcaplot2d", ["utils", "size", "pcaplot2d/event_pcaplot2d"
 		.text("PC2")
 		.attr("transform", "rotate(-90)");
 
-		var plot = svg.selectAll("circle")
-		.data(data.data.sample_list)
-		.enter().append("circle")
-		.attr("class", "pcaplots")
-		.attr("cx", function(_d) { return data.x(_d.PC1); })
-		.attr("cy", function(_d) { return data.y(_d.PC2); })
-		.attr("r", function(_d) { return data.radius; })
-		.style("stroke", function(_d) { return _utils.colour(_d.TYPE); })
-		.style("fill", function(_d) { return _utils.colour(_d.TYPE); })
-		.on("mouseover", e.m_over)
-		.on("mouseout", e.m_out);
+		for(var i = 0, len = data.data.sample_list.length ; i < len ; i++)	{
+			var pca = data.data.sample_list[i];
+
+			interface_figure(data, pca.PC1, pca.PC2, svg, data.type(pca.TYPE).figure)
+			.data([pca])
+			.style("stroke", function(_d) { return _utils.colour(pca.TYPE); })
+			.style("fill", function(_d) { return _utils.colour(pca.TYPE); })
+			.on("mouseover", e.m_over)
+			.on("mouseout", e.m_out);
+		}
 	}
 
 	return {

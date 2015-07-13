@@ -17,7 +17,7 @@ define("sample/event_sample", ["utils", "size"], function(_utils, _size)	{
 
 	var move_scroll = function()	{
 		var target_1 = $("#comutationplot_sample");
-		var target_2 = $("#comutationplot_mutationseq");
+		var target_2 = $("#comutationplot_heatmap");
 
 		target_1.scroll(function()	{
 			target_2.scrollLeft(target_1.scrollLeft());

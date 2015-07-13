@@ -48,7 +48,7 @@ define("legend/setting_legend", ["utils", "size", "legend/view_legend"], functio
 		}
 	}
 
-	return function(_data, _id)	{
+	return function(_data, _id, _option)	{
 		var data = _data || [];
 		var id = _id || "";
 		var size = _size.define_size(id, 10, 10, 10, 10);
@@ -75,7 +75,8 @@ define("legend/setting_legend", ["utils", "size", "legend/view_legend"], functio
 			size : size,
 			x : x,
 			y : y,
-			location : choose_scale_location
+			location : choose_scale_location,
+			figure : _option
 		});
 	}
 });

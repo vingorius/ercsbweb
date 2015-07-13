@@ -15,19 +15,19 @@ define("gene/view_gene", ["utils", "size", "gene/event_gene"], function(_utils, 
 		var xAxis = d3.svg.axis()
 		.scale(data.x)
 		.orient("bottom")
-		.ticks(3);
+		.tickValues([0, data.max / 2, data.max]);
 
 		var yAxis = d3.svg.axis()
 		.scale(data.y)
 		.orient("right");
 
 		svg.append("g")
-		.attr("class", "gene_x_axis")
-		.attr("transform", "translate(0, " + (size.height - size.margin.bottom) + ")")
+		.attr("class", "comutationplot_gene_xaxis")
+		.attr("transform", "translate(0, " + (size.height - size.margin.top) + ")")
 		.call(xAxis);
 
 		svg.append("g")
-		.attr("class", "gene_y_axis")
+		.attr("class", "comutationplot_gene_yaxis")
 		.attr("transform", "translate(" + (size.width - size.margin.right) + ", 0)")
 		.call(yAxis)
 		.selectAll("text")
@@ -42,23 +42,21 @@ define("gene/view_gene", ["utils", "size", "gene/event_gene"], function(_utils, 
 		.style("font-size", "12px")
 		.style("font-style", "italic");
 
-		var bar_group = svg.selectAll(".genebar_group")
+		var bar_group = svg.selectAll(".comutationplot_gene_bargroup")
 		.data(data.data)
 		.enter().append("g")
-		.attr("class", "genebar_group") 
+		.attr("class", "comutationplot_gene_bargroup") 
 		.attr("transform", "translate(0, 0)");
 
 		var stacked_bar = bar_group.selectAll("rect")  
 		.data(function(_d)  { return _d.list; })
 		.enter().append("rect")
-		.attr("class", function(_d, _i) { return "stacked_vbar_" + _d.gene + "-" + _i; })
+		.attr("class", "comutationplot_gene_bars")
 		.attr("x", function(_d) { return data.x(_d.start + _d.count); })
 		.attr("y", function(_d) { return data.y(_d.gene); })
 		.attr("width", function(_d) { return ((size.width - size.margin.right) - data.x(_d.count)); })
-		.attr("height", data.y.rangeBand() / 1.1)
+		.attr("height", data.y.rangeBand() / 1.2)
 		.style("fill", function(_d) { return _utils.colour(_d.type); })
-		.style("stroke", function(_d) { return "#BFBFBF"; })
-		.style("stroke-width", 0.5)
 		.on("mouseover", e.bar_m_over)
 		.on("mouseout",e.bar_m_out);
 	}

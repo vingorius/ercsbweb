@@ -1,7 +1,6 @@
 define("pcasetting", ["utils", "size", "legend/setting_legend", "pcaplot2d/setting_pcaplot2d", "pcaplot3d/setting_pcaplot3d"], function(_utils, _size, _setting_legend, _setting_2d, _setting_3d)	{
 	var exchange_tsv = function(_data)  {
 		var data = _data || "";
-
 		var linefeed_data = linefeed_tsv(data, tab_separate_tsv);
 
 		return linefeed_data;
@@ -28,7 +27,6 @@ define("pcasetting", ["utils", "size", "legend/setting_legend", "pcaplot2d/setti
 			result.push(tab_separate_json(keys
 				, linefeed[i].split(tab_separate_reg)));
 		}
-
 		return result;
 	}
 
@@ -42,7 +40,6 @@ define("pcasetting", ["utils", "size", "legend/setting_legend", "pcaplot2d/setti
 			console.log();
 			result[keys[i].replace(/"/g, '')] = (values[i] || "").replace(/"/g, '');
 		}
-
 		return result;
 	}
 
@@ -72,6 +69,17 @@ define("pcasetting", ["utils", "size", "legend/setting_legend", "pcaplot2d/setti
 		};
 	 }
 
+	 var figure_list = function(_type)	{
+		return {
+			"Primary Solid Tumor" : {
+				figure : "circle"
+			},
+			"Solid Tissue Normal" : {
+				figure : "rect"
+			}
+		}[_type];
+	}
+
 	return function(_data)	{
 		var data = exchange_tsv(_data || []);
 		var type_list = get_type_list(data.sample_list);
@@ -80,13 +88,11 @@ define("pcasetting", ["utils", "size", "legend/setting_legend", "pcaplot2d/setti
 		_utils.remove_svg("pcaplot_view_2d");
 		_utils.remove_svg("pcaplot_legend");
 
-		if(!!canvas)	{
-			canvas.remove();
-		}
+		if(!!canvas)	{ canvas.remove(); }
 
-		_setting_legend(type_list, "pcaplot_legend");
+		_setting_legend(type_list, "pcaplot_legend", figure_list);
 
-		_setting_2d(data, min_max);
-		_setting_3d(data, min_max);
+		_setting_2d(data, min_max, figure_list);
+		_setting_3d(data, min_max, figure_list);
 	}
 });

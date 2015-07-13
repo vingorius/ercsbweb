@@ -23,26 +23,26 @@ define("xyplot/view_xyplot", ["utils", "size", "xyplot/event_xyplot"], function(
         .ticks(5);
 
         svg.append("g")
-        .attr("class", "xy x axis")
+        .attr("class", "xyplot_xaxis")
         .attr("transform", "translate(0, " + size.rheight + ")")
         .call(xAxis);
 
         svg.append("g")
-        .attr("class", "xy y axis")
+        .attr("class", "xyplot_yaxis")
         .attr("transform", "translate(" + (size.margin.left + size.margin.right) + ", 0)")
         .call(yAxis);
 
         svg.append("g")
         .append("line")
+        .attr("class", "xyplot_fdrlevelline")
         .attr("x1", (size.margin.left + size.margin.right))
         .attr("y1", data.y(0.05))
         .attr("x2", size.rwidth)
-        .attr("y2", data.y(0.05))
-        .style("stroke", "#2C3E50")
-        .style("stroke-dasharray", "3,3");
+        .attr("y2", data.y(0.05));
 
         svg.append("g")
         .append("text")
+        .attr("class", "xyplot_fdrleveltext")
         .attr("x", size.rwidth - (size.margin.left * 4))
         .attr("y", data.y(1))
         .text("FDR Level = 0.05");
@@ -50,19 +50,17 @@ define("xyplot/view_xyplot", ["utils", "size", "xyplot/event_xyplot"], function(
         var plot = svg.selectAll("circle")
         .data(data.data.data.plot_list)
         .enter().append("circle")
-        .attr("class", "xyplots")
+        .attr("class", "xyplot_circles")
         .attr("cx", function(_d) { return data.x(_d.x); })
         .attr("cy", function(_d) { return data.y(_d.y); })
         .attr("r", data.radius)
-        .style("fill", " #F22613")
-        .style("stroke", "#96281B")
         .on("mouseover", e.m_over)
         .on("mouseout", e.m_out);
 
         var text = svg.selectAll("text")
         .data(data.data.data.plot_list)
         .enter().append("text")
-        .attr("class", "xytext")
+        .attr("class", "xyplot_circles_text")
         .attr("x", function(_d) { return data.x(_d.x) + 5; })
         .attr("y", function(_d) { return data.y(_d.y); })
         .text(function(_d) { if(_d.y > 6) return _d.title; });

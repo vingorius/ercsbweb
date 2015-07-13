@@ -6,12 +6,12 @@ define("comutation/setting_comutation"
 			var samples = _samples || [];
 			var genes = _genes || [];
 
-			var size = _size.define_size("comutationplot_mutationseq", 10, 20, 10, 20);
+			var size = _size.define_size("comutationplot_heatmap", 20, 20, 20, 20);
 
-			_utils.remove_svg("comutationplot_mutationseq");
+			_utils.remove_svg("comutationplot_heatmap");
 
-			var x = _utils.ordinalScale(samples, size.margin.left, size.width - size.margin.right);
-			var y = _utils.ordinalScale(genes, size.margin.top, (size.height - size.margin.bottom));
+			var x = _utils.ordinalScale(samples, size.margin.left, size.width - size.margin.left);
+			var y = _utils.ordinalScale(genes, size.margin.top, (size.height - size.margin.top));
 
 			_view.view({
 				all_data : all_data,

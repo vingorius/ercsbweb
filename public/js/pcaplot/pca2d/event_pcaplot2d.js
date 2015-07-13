@@ -1,9 +1,7 @@
 define("pcaplot2d/event_pcaplot2d", ["utils", "size"], function(_utils, _size)	{
 	var pca_mouseover = function(_d)	{
-		
 		var e = d3.event;
 		
-
 		_utils.tooltip(e
 			, "<strong>sample : <span style='color:red'>"
 			+ _d.SAMPLE

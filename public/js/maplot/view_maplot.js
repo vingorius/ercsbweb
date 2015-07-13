@@ -5,6 +5,8 @@ define("maplot/view_maplot", ["utils", "size", "maplot/event_maplot"], function(
 		var redraw = $("#redraw_button");
 		var download = $("#download_button");
 		var reset = $("#reset_button");
+		var undo = $("#undo_button");
+		var redo = $("#redo_button");
 
 		div
 		.append(input);
@@ -20,6 +22,10 @@ define("maplot/view_maplot", ["utils", "size", "maplot/event_maplot"], function(
 		.on("click", _e.download);
 		reset
 		.on("click", _e.reset);
+		undo
+		.on("click", _e.undo);
+		redo
+		.on("click", _e.redo);
 	}
 
 	var view = function(_data)  {
@@ -49,19 +55,19 @@ define("maplot/view_maplot", ["utils", "size", "maplot/event_maplot"], function(
 		.ticks(5);
 
 		svg.append("g")
-		.attr("class", "maplot_view_x_axis")
+		.attr("class", "maplot_xaxis")
 		.attr("transform", "translate(0, " + size.rheight + ")")
 		.call(xAxis);
 
 		svg.append("g")
-		.attr("class", "maplot_view_y_axis")
+		.attr("class", "maplot_yaxis")
 		.attr("transform", "translate(" + (size.margin.left + size.margin.right) + ", 0)")
 		.call(yAxis);
 
 		var circles = svg.selectAll("circle")
 		.data(data.data.data.plot_list)
 		.enter().append("circle")
-		.attr("class", "maplot_view_circle")
+		.attr("class", "maplot_circles")
 		.attr("r", 2)
 		.attr("cx", function(_d) { return data.x(_d.x); })
 		.attr("cy", function(_d) { return data.y(_d.y); })

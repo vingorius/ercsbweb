@@ -2,7 +2,7 @@ define("comutationnavigation/setting_comutationnavigation", ["utils", "size", "c
 	return function(_samples, _genes)	{
 		var samples = _samples || [];
 		var genes = _genes || [];
-		var size = _size.define_size("mutation_view_navigation", 10, 10, 20, 20);
+		var size = _size.define_size("mutation_view_navigation", 20, 20, 20, 20);
 
 		_view.view({
 			samples : samples,

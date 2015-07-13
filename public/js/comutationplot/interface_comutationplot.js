@@ -82,8 +82,6 @@ define( "interface_comutation", [ "utils", "comutation/setting_comutation", "gen
 
 		var all_data = get_all_data(sample_list, samples);
 
-		console.log(all_data)
-
 		_utils.remove_svg("comutationplot_legend");
 
 		_setting_comutation(all_data, samples, genes);

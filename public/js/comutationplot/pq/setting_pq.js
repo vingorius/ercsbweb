@@ -33,15 +33,16 @@ define("pq/setting_pq", ["utils", "size", "pq/view_pq"], function(_utils, _size,
 		var genes = _genes || [];
 		var pq_data = get_pq(symbol_list);
 		var max = get_max(pq_data);
-		var size = _size.define_size("comutationplot_pq", 10, 20, 10, 70);
+		var size = _size.define_size("comutationplot_pq", 20, 20, 20, 70);
 		var x = _utils.linearScale(0, max, size.margin.left, (size.width - size.margin.right));
-		var y = _utils.ordinalScale(genes, size.margin.top, (size.height - size.margin.bottom));
+		var y = _utils.ordinalScale(genes, size.margin.top, (size.height - size.margin.top));
 
 		_utils.remove_svg("comutationplot_pq");
 
 		_view.view({
 			data : pq_data,
 			size : size,
+			max : max,
 			x : x, 
 			y : y
 		})

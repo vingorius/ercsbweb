@@ -1,9 +1,5 @@
 define("pcaplot2d/setting_pcaplot2d", ["utils", "size", "pcaplot2d/view_pcaplot2d"], function(_utils, _size, _view)	{
-	var check_type = function(_type)	{
-				
-	}
-
-	return function(_data, _min_max)	{
+	return function(_data, _min_max, _type_list)	{
 		var data = _data || [];
 		var min_max = _min_max || new Function();
 		var size = _size.define_size("pcaplot_view_2d", 40, 40, 40, 40);
@@ -20,6 +16,7 @@ define("pcaplot2d/setting_pcaplot2d", ["utils", "size", "pcaplot2d/view_pcaplot2
 		_view.view({
 			data : data,
 			size : size,
+			type : _type_list,
 			x : x,
 			y : y,
 			radius : radius

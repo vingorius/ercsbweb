@@ -107,9 +107,9 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			var left_width = Number(elements.left.attr("width"));
 
 			elements.right.attr("x", function(_d) {
-				return Math.max((left), 
+				return Math.max((left + left_width), 
 					Math.min(size.rwidth, 
-						(d3.event.dx + (_d.x - size.margin.left) + width)));
+						width + d3.event.dx));
 			});
 
 			elements.box.attr("width", function(_d)  {
@@ -127,7 +127,7 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 
 			elements.left.attr("x", function(_d)    {
 				return Math.max(0, 
-					Math.min(elements.box.attr("width"), d3.event.x));
+					Math.min((right - left_width), d3.event.x));
 			});
 
 			elements.box

@@ -15,22 +15,12 @@ define("pq/view_pq", ["utils", "size", "pq/event_pq"], function(_utils, _size, _
 		var xAxis = d3.svg.axis()
 		.scale(data.x)
 		.orient("bottom")
-		.ticks(3);
-
-		var yAxis = d3.svg.axis()
-		.scale(data.y)
-		.orient("left");
+		.tickValues([0, data.max / 2, data.max]);
 
 		svg.append("g")
-		.attr("class", "pq_x_axis")
-		.attr("transform", "translate(0, " + (size.height - size.margin.bottom) + ")")
+		.attr("class", "comutationplot_pq_xaxis")
+		.attr("transform", "translate(0, " + (size.height - size.margin.top) + ")")
 		.call(xAxis);
-
-		svg.append("g")
-		.attr("class", "pq_y_axis")
-		.attr("transform", "translate(" + size.margin.left + ", 0)")
-		.call(yAxis)
-		.selectAll("text").text("");   
 
 		svg.append("g")
 		.attr("class", "pq_explain")
@@ -40,23 +30,20 @@ define("pq/view_pq", ["utils", "size", "pq/event_pq"], function(_utils, _size, _
 		.style("font-size", "12px")
 		.style("font-style", "italic");
 
-		var bar_group = svg.selectAll(".pqbar_group")
+		var bar_group = svg.selectAll(".comutationplot_pq_bargroup")
 		.data(data.data)
 		.enter().append("g")
-		.attr("class", "pqbar_group") 
+		.attr("class", "comutationplot_pq_bargroup") 
 		.attr("transform", "translate(0, 0)");
 
 		var stacked_bar = bar_group.selectAll("rect")  
 		.data(function(_d)  { return _d.list; })
 		.enter().append("rect")
-		.attr("class", function(_d, _i) { return "pqbar stacked_vbar_" + _d.name + "-" + _i; })
+		.attr("class", "comutationplot_pq_bars")
 		.attr("x", function(_d) { return size.margin.left; })
 		.attr("y", function(_d) { return data.y(_d.name); })
 		.attr("width", function(_d) { return data.x(_utils.log(_d.q)) - size.margin.left; })
-		.attr("height", data.y.rangeBand() / 1.1)
-		.style("fill", function(_d) { return "#BFBFBF"; })
-		.style("stroke", function(_d) { return "#BFBFBF"; })
-		.style("stroke-width", 0.5)
+		.attr("height", data.y.rangeBand() / 1.2)
 		.on("mouseover", e.m_over)
 		.on("mouseout", e.m_out);
 	}

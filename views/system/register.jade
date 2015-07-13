@@ -3,15 +3,49 @@ extends ../layout/basiclayout
 block content
     div.container
         div(style={'padding-top': '60px'})
-            form.form-signin(method="post",action="/register")
-                h2.form-signin-heading Please Register
+            form.form-signin(method="post",action="/register",style={'max-width': '530px'})
+                h2.form-signin-heading Register
                 //h2.form-signin-heading: span.glyphicon.glyphicon-registration-mark  Register
                 if message.length > 0
-                    div.alert.alert-danger #{message}
-                input#username.form-control(placeholder="Your Email", name="username", required="", autofocus="", type="email")
-                input#password.form-control(placeholder="Password", name="password", required="", type="password")
-                //- div.checkbox
-                //-     label
-                //-         input(type="checkbox",name="remember-me",value="Remember me")
+                    div.row    
+                        div.col-md-12
+                            div.alert.alert-danger #{message}
+                hr
+                h4(style={'margin-top': '20px'}) Basic
+                div.row    
+                    div.col-md-12
+                        input#username.form-control(placeholder="Your Email", name="username", required="", autofocus="", type="email")
+                div.row
+                    div.col-md-12
+                        input#fullname.form-control(placeholder="Full name", name="fullname",  type="text")
+                div.row
+                    div.col-md-6
+                        input#password.form-control.col-md-6(placeholder="Password", name="password", required="", type="password")
+                    div.col-md-6
+                        input#password2.form-control.col-md-6(placeholder="Confirm Password", name="password2", required="", type="password")
+                div.row
+                    div.col-md-6
+                        select.form-control
+                          option Male
+                          option Female                    
+                    div.col-md-6
+                        input#birth.form-control(placeholder="Date of Birth", name="birth",  type="date")
+                div.row
+                    div.col-md-6
+                        input#mobile.form-control(placeholder="Mobile", name="mobile",type="tel")
+                    div.col-md-6
+                        input#country.form-control(placeholder="Country", name="country",  type="text")
+                div.row
+                    div.col-md-6
+                        input#zipcode.form-control(placeholder="Zip Code", name="zipcode",  type="text")
+                    div.col-md-6
+                        input#address.form-control(placeholder="Address", name="address", type="text")
+                h4(style={'margin-top': '20px'}) Company
+                input#name.form-control(placeholder="Name", name="companyname", type="text")
+                input#location.form-control(placeholder="Location", name="Location", type="text")
+                input#position.form-control(placeholder="Position", name="position", type="text")
                 button.btn.btn-lg.btn-primary.btn-block.ladda-button(type="submit",data-style="zoom-in") 
-                 span.ladda-label Register
+                    span.ladda-label Register
+                    
+block append scripts
+    script(src='/js/register.js')		

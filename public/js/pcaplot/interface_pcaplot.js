@@ -92,7 +92,9 @@ define("pcasetting", ["utils", "size", "legend/setting_legend", "pcaplot2d/setti
 
 		_setting_legend(type_list, "pcaplot_legend", figure_list);
 
+		if(window.location.pathname.indexOf("3d") > 0)	{
+			_setting_3d(data, min_max, figure_list);	
+		}
 		_setting_2d(data, min_max, figure_list);
-		_setting_3d(data, min_max, figure_list);
 	}
 });

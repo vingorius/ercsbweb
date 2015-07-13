@@ -50,11 +50,11 @@ define("degplot/event_degplot", ["utils", "size"], function(_utils, _size)	{
 		var target = _target || null;
 
 		var x = d3.scale.linear()
-		.domain([_d.margin / 2, _d.width - _d.margin / 2])
+		.domain([_d.margin / 2, _d.width * 0.6])
 		.range([_d.min, Math.round(_d.max)]);
 		var re_x = d3.scale.linear()
 		.domain([_d.min, Math.round(_d.max)])
-		.range([_d.margin / 2, _d.width - _d.margin / 2]);
+		.range([_d.margin / 2, _d.width * 0.6]);
 
 		var start = Math.floor(x(Number(target.attr("x"))));
 		var end = Math.floor(x(Number(target.attr("x")))) + 1;
@@ -91,19 +91,15 @@ define("degplot/event_degplot", ["utils", "size"], function(_utils, _size)	{
 		var target = d3.select(this);
 		var reloc = relocate_bar(target, _d);
 
-		console.log(target.attr("x"))
-
 		_utils.tooltip();
 
 		target
 		.attr("x", function()	{
-			console.log(target.attr("y"))
 			_utils.tooltip(d3.event, reloc.value, 
-				d3.event.sourceEvent.pageX, d3.event.sourceEvent.pageY + 10);
+				d3.event.sourceEvent.pageX, d3.event.sourceEvent.pageY - 30);
 			
 			return Math.max((_d.margin / 2), 
-				Math.min((_d.width - _d.margin / 2), 
-					Number(target.attr("x")) + d3.event.dx));
+				Math.min(_d.width * 0.6, Number(target.attr("x")) + d3.event.dx));
 		});
 	}
 

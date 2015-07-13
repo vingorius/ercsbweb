@@ -6,9 +6,9 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 
 		var box_g = svg.insert("g", "g")
 		.data([{ 
-			x : size.margin.left, 
+			x : 0, 
 			y : 0, 
-			width : size.rwidth - size.margin.left, 
+			width : size.rwidth, 
 			height : size.height 
 		}])
 		.attr("class", "needle_select_box")
@@ -16,7 +16,7 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 
 		var box = box_g.append("rect")
 		.attr("class", "navi_box")
-		.attr("x", function(_d) { return _d.x; })
+		.attr("x", function(_d) { return _d.x + size.margin.left; })
 		.attr("y", function(_d) { return _d.y; })
 		.attr("width", function(_d) { return _d.width; })
 		.attr("height", function(_d) { return _d.height; })

@@ -6,7 +6,6 @@ define("maplot/view_maplot", ["utils", "size", "maplot/event_maplot"], function(
 		var download = $("#download_button");
 		var reset = $("#reset_button");
 		var undo = $("#undo_button");
-		var redo = $("#redo_button");
 
 		div
 		.append(input);
@@ -24,8 +23,6 @@ define("maplot/view_maplot", ["utils", "size", "maplot/event_maplot"], function(
 		.on("click", _e.reset);
 		undo
 		.on("click", _e.undo);
-		redo
-		.on("click", _e.redo);
 	}
 
 	var view = function(_data)  {

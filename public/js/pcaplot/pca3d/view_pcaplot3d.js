@@ -23,7 +23,7 @@ define("pcaplot3d/view_pcaplot3d", ["utils", "size", "pcaplot3d/event_pcaplot3d"
 
 		data.div.appendChild(renderer.domElement);
 
-		camera.position.set(0, 0, size.rwidth);
+		camera.position.set(0, -size.margin.top, size.rwidth);
 
 		object3d.rotation.x = default_axis.x;
 		object3d.rotation.y = default_axis.y;

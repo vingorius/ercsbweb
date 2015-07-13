@@ -26,7 +26,7 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 	var lever = function(_id, _data)	{
 		var target = document.getElementById(_id);
 		var key = _id.substring(_id.indexOf("_") + 1, _id.length);
-		var margin = 20;
+		var margin = 5;
 
 		var svg = d3.select("#" + _id)
 		.append("svg")
@@ -36,18 +36,18 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 		.attr("transform", "translate(0, 0)")
 
 		var x = _utils.linearScale(_data[key].min, _data[key].max, 
-			0, (target.clientWidth - margin));
+			0, target.clientWidth * 0.6);
 
 		var xAxis = d3.svg.axis()
 		.scale(x)
-		.orient("bottom")
+		.orient("top")
 		.ticks(2)
 		.tickValues([_data[key].min, _data[key].max]);
 
 		svg.append("g")
 		.attr("class", "deg_color_range_axis")
 		.attr("transform", "translate(" + (margin / 2) + ", " 
-			+ (target.clientHeight / 2) + ")")
+			+ (target.clientHeight * 0.7) + ")")
 		.call(xAxis);
 
 		var figure = svg.append("rect")
@@ -59,8 +59,9 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 			max : _data[key].max,
 			bgcolor : _data.backgroundcolor
 		}])
-		.attr("x", (target.clientWidth - margin / 2))
-		.attr("y", target.clientHeight / 4)
+		.attr("class", "degplot_lever_rect")
+		.attr("x", (target.clientWidth) * 0.6)
+		.attr("y", target.clientHeight / 2)
 		.attr("width", 5)
 		.attr("height", target.clientHeight / 2.5)
 		.call(_event.drag);
@@ -70,8 +71,8 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 		var target = document.getElementById(_id);
 		var svg = d3.select("#" + _id)
 		.append("svg")
-		.attr("width", target.clientWidth)
-		.attr("height", target.clientHeight);
+		.attr("width", target.clientWidth * 0.8)
+		.attr("height", target.clientHeight * 0.8);
 
 		var defs = svg.append("defs");
 		var lineargradient = defs.append("linearGradient")
@@ -93,8 +94,8 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 		.append("rect")
 		.attr("x", 0)
 		.attr("y", 0)
-		.attr("width", target.clientWidth)
-		.attr("height", target.clientHeight / 2)
+		.attr("width", target.clientWidth * 0.62)
+		.attr("height", target.clientHeight * 0.5)
 		.style("fill", "url(#" + _id + "_gradient)");
 	}
 
@@ -106,11 +107,11 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 			var row = _size.mkdiv();
 			var comp_lever = _size.mkdiv({
 				attribute : { id : "lever_" + _si[i], },
-				style : { "width" : "200px", "height" : "40px" }
+				style : { "width" : "200px", "height" : "30px" }
 			});
 			var comp_gradient = _size.mkdiv({
 				attribute : { id : _si[i], },
-				style : { "width" : "200px", "height" : "40px" }
+				style : { "width" : "200px", "height" : "30px" }
 			});
 
 			row.appendChild(comp_lever);

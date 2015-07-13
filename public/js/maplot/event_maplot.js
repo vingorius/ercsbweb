@@ -1,37 +1,74 @@
 define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 	return function(_data)	{
 		var data = _data || {};
+		var all_circles = data.all_circles;
 		var selected_circles = [];
 		var stacked_circles = [];
 		var stacked_paths = [];
-		var all_circles = data.all_circles;
 		var save_paths = [];
+		var save_circles = [];
+		var paths_stack = [];
 
 		var undo = function(_d)	{
+			if(paths_stack.length === 1 || save_circles.length === 1)	{
+				alert("Undo 항목이 더 이상 존재하지 않습니다.");
+				return;
+			}
 
+			undo_path(paths_stack[paths_stack.length - 1]);
+			undo_table(save_circles[save_circles.length - 1]);
+			undo_selected_cells(save_circles[save_circles.length - 1]);
+
+			save_paths.pop();
+			paths_stack.pop();
+			save_circles.pop();
 		}
 
-		var redo = function(_d)		{
+		var undo_selected_cells = function(_target)	{
+			for (var i = 0, len = selected_circles.length ; i < len ; i++)	{
+				for(var j = 0, leng = _target.length ; j < leng ; j++)	{
+					if(_target[j] === selected_circles[i])	{
+						selected_circles.splice(i, 1);
+					}
+				}				
+			}
+		}
 
+		var undo_path = function(_target)	{
+			d3.selectAll(_target).remove();
+		}
+
+		var undo_table = function(_target)		{
+			var tbody = document.getElementById("result_body");
+			var index_array = [];
+
+			for (var i = tbody.rows.length - 1, len = 0 ; i >= len ; i--)	{
+				var row = tbody.rows[i];
+
+				for(var j = 0, leng = _target.length ; j < leng ; j++)	{
+					if(_target[j].datum().title === row.cells[1].innerHTML)	{
+						tbody.deleteRow(i);
+					}
+				}
+			}
 		}
 
 		var save_all_paths = function()	{
 			var reform_paths = [];
 			var index = 0;
 
-			console.log(save_paths.length)
-
 			for(var i = 0, len = save_paths.length ; i < len ; i++)	{
-				reform_paths[index] = save_paths[i];
-				for(var j = 0, leng = save_paths[i].length ; j < leng ; j++)	{
-					console.log(save_paths[i][j])
+				var empty_paths = [];
+				for(var j = (i === 0) ? 0 : save_paths[i - 1].length, leng = save_paths[i].length ; j < leng ; j++)	{
+					empty_paths.push(save_paths[i][j]);
 					if(save_paths[i][j].id)	{
-						console.log(save_paths[i][j].id)
-						//console.log(reform_paths[index])
+						reform_paths[index] = empty_paths;
 						index++;
 					}
 				}	
 			}
+
+			paths_stack = reform_paths;
 		}
 
 		var arrow_btn_click = function(_d)	{
@@ -202,6 +239,8 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 		}
 
 		var find_intersection = function(_selected_circles, _end_selected_circles)		{
+			var empty_circles = [];
+
 			for(var i = 0, len = _end_selected_circles.length ; i < len ; i++)	{
 				var check_title = false;
 
@@ -211,9 +250,11 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 					}
 				}
 				if(!check_title)	{
+					empty_circles.push(_end_selected_circles[i]);
 					_selected_circles.push(_end_selected_circles[i]);
 				}
 			}
+			save_circles.push(empty_circles);
 		}
 
 		var dragEnd = function() {
@@ -221,7 +262,8 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 			var area = get_min_max_coords(coords);
 
 			all_circles.each(function(d, i) {
-				var x =d3.select(this).attr("cx"), y = d3.select(this).attr("cy");
+				var x =d3.select(this).attr("cx");
+				var y = d3.select(this).attr("cy");
 
 				point = [x, y];
 
@@ -236,7 +278,6 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 			end_selected_circles.sort(function(_a, _b)  {
 				return (_a.datum().value > _b.datum().value) ? 1 : -1;
 			});
-
 			find_intersection(selected_circles, end_selected_circles)
 
 			drawPath(true);
@@ -260,8 +301,7 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 			redraw : click_redraw,
 			download : click_download,
 			reset : click_reset,
-			undo : undo,
-			redo : redo
+			undo : undo
 		}
 	}
 });

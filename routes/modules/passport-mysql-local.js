@@ -49,6 +49,8 @@ module.exports = function(passport) {
             },
             function(req, username, password, done) {
                 // Check Your name is valid email format
+                req.flash('prev', getUserFromInputData(req));
+                //console.log('username',req.body.username);
                 if (!validator.isEmail(username)) {
                     return done(null, false, req.flash('signupMessage', 'Please insert a valid E-mail address.'));
                 }
@@ -69,18 +71,37 @@ module.exports = function(passport) {
                                 username: username,
                                 password: bcrypt.hashSync(password, null, null) // use the generateHash function in our user model
                             };
-
+                            //console.log(req.body);
                             //var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
-                            var insertQuery = 'call ercsb_cdss.insertUser(?,?)';
-                            connection.query(insertQuery, [newUserMysql.username, newUserMysql.password], function(err, rows, fields) {
-                                newUserMysql.id = rows.insertId;
-                                return done(null, newUserMysql);
-                            });
+                            var insertQuery = 'call ercsb_cdss.insertUser(?,?,?,?,?,?,?,?,?,?,?,?)';
+                            connection.query(insertQuery, [newUserMysql.username,
+                                    newUserMysql.password,
+                                    req.body.fullname,
+                                    req.body.birth,
+                                    req.body.gender,
+                                    req.body.mobile,
+                                    req.body.country,
+                                    req.body.zipcode,
+                                    req.body.address,
+                                    req.body.company_name,
+                                    req.body.company_address,
+                                    req.body.company_position
+                                ],
+                                function(err, rows, fields) {
+                                    if(err) return done(err);
+
+                                    newUserMysql.id = rows.insertId;
+                                    return done(null, newUserMysql);
+                                });
                         }
                     });
                 });
             })
     );
+
+    var getUserFromInputData = function(req) {
+        return req.body;
+    };
 
     // =========================================================================
     // LOCAL LOGIN =============================================================
@@ -102,7 +123,7 @@ module.exports = function(passport) {
                     connection.query("call ercsb_cdss.getUserByName(?)", [username], function(err, rows, fields) {
                         if (err)
                             return done(err);
-                        var user = rows[0][0];//Only One Rows
+                        var user = rows[0][0]; //Only One Rows
                         //console.log(user);
                         if (typeof user === 'undefined') {
                             return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash

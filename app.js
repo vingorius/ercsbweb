@@ -44,7 +44,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
-app.use(compression());
 // uncomment after placing your favicon in /public
 app.use(favicon(__dirname + '/public/favicon.ico'));
 
@@ -52,6 +51,7 @@ app.use(favicon(__dirname + '/public/favicon.ico'));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 // For contents gzip compression
+app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: false

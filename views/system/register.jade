@@ -1,9 +1,14 @@
 extends ../layout/basiclayout
 
+block append stylesheets
+    link(rel='stylesheet', href='/stylesheets/register.css')
+    link(rel='stylesheet', href='/stylesheets/jquery-bootstrap-datepicker.css')
+    link(rel='stylesheet', href='/bower_components/country-select-js/build/css/countrySelect.css')
+
 block content
     div.container
         div(style={'padding-top': '60px'})
-            form.form-signin(method="post",action="/register",style={'max-width': '530px'})
+            form#registerform.form-register(method="post",action="/register")
                 h2.form-signin-heading Register
                 //h2.form-signin-heading: span.glyphicon.glyphicon-registration-mark  Register
                 if message.length > 0
@@ -13,39 +18,48 @@ block content
                 hr
                 h4(style={'margin-top': '20px'}) Basic
                 div.row    
-                    div.col-md-12
-                        input#username.form-control(placeholder="Your Email", name="username", required="", autofocus="", type="email")
+                    div.col-md-12.form-group
+                        input#username.form-control(placeholder="Your Email", name="username", required="", autofocus="", type="email", value=prev.username)
                 div.row
-                    div.col-md-12
-                        input#fullname.form-control(placeholder="Full name", name="fullname",  type="text")
+                    div.col-md-12.form-group
+                        input#fullname.form-control(placeholder="Full name", name="fullname", required="", type="text", value=prev.fullname)
                 div.row
-                    div.col-md-6
-                        input#password.form-control.col-md-6(placeholder="Password", name="password", required="", type="password")
-                    div.col-md-6
-                        input#password2.form-control.col-md-6(placeholder="Confirm Password", name="password2", required="", type="password")
+                    div.col-md-6.form-group
+                        input#password.form-control.col-md-6(placeholder="Password", name="password", required="", type="password", value=prev.password)
+                    div.col-md-6.form-group
+                        input#password2.form-control.col-md-6(placeholder="Confirm Password", name="password2", required="", type="password", value=prev.password2)
                 div.row
-                    div.col-md-6
-                        select.form-control
-                          option Male
-                          option Female                    
-                    div.col-md-6
-                        input#birth.form-control(placeholder="Date of Birth", name="birth",  type="date")
+                    div.col-md-6.form-group
+                        select#gender.form-control(value=prev.gender,name="gender")
+                          option(value='M',selected) Male
+                          option(value='F') Female                    
+                    div.col-md-6.form-group
+                        input#birth.form-control(placeholder="Date of Birth (mm/dd/yyyy)", name="birth",  type="date", value=prev.birth)
                 div.row
-                    div.col-md-6
-                        input#mobile.form-control(placeholder="Mobile", name="mobile",type="tel")
-                    div.col-md-6
-                        input#country.form-control(placeholder="Country", name="country",  type="text")
+                    div.col-md-6.form-group
+                        input#mobile.form-control(placeholder="Mobile (Only Number)", name="mobile",type="tel", required="", value=prev.mobile)
+                    div.col-md-6.form-group
+                        input#country.form-control(placeholder="Country", name="country",  type="text", value=prev.country)
                 div.row
-                    div.col-md-6
-                        input#zipcode.form-control(placeholder="Zip Code", name="zipcode",  type="text")
-                    div.col-md-6
-                        input#address.form-control(placeholder="Address", name="address", type="text")
+                    div.col-md-6.form-group
+                        input#zipcode.form-control(placeholder="Zip Code", name="zipcode",  type="text", value=prev.zipcode)
+                    div.col-md-6.form-group
+                        input#address.form-control(placeholder="Address", name="address", type="text", value=prev.address)
                 h4(style={'margin-top': '20px'}) Company
-                input#name.form-control(placeholder="Name", name="companyname", type="text")
-                input#location.form-control(placeholder="Location", name="Location", type="text")
-                input#position.form-control(placeholder="Position", name="position", type="text")
+                div.row
+                    div.col-md-12.form-group
+                        input#company_name.form-control(placeholder="Name", name="company_name", type="text", value=prev.companyname)
+                div.row
+                    div.col-md-12.form-group
+                        input#company_address.form-control(placeholder="Address", name="company_address", type="text", value=prev.location)
+                div.row
+                    div.col-md-12.form-group
+                        input#company_position.form-control(placeholder="Your Position", name="company_position", type="text", value=prev.position)
                 button.btn.btn-lg.btn-primary.btn-block.ladda-button(type="submit",data-style="zoom-in") 
                     span.ladda-label Register
                     
 block append scripts
-    script(src='/js/register.js')		
+    script(src='/bower_components/jquery-validation/dist/jquery.validate.js')
+    script(src='/bower_components/jquery-ui/jquery-ui.js')
+    script(src='/bower_components/country-select-js/build/js/countrySelect.js')
+    script(src='/js/register.js')

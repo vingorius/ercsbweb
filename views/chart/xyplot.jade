@@ -3,5 +3,7 @@ extends ../layout/basiclayout
 block content
 	div.container.chart_base_container
 		div#xyplot_view(style={'padding': '0px', 'margin': '0px', 'width': '1450px', 'height': '660px'})
+block append scripts
+	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
 	link(rel='stylesheet', href='/stylesheets/chart/xyplot.css')

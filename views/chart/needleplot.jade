@@ -9,5 +9,7 @@ block content
 			div#needleplot_navigation(style={'padding': '0px', 'margin-left': '50px', 'width': '1350px', 'height': '70px', 'background-color' : 'rgb(242, 241, 239)'})
 		div.row
 			div#needleplot_legend(style={'padding': '0px', 'margin-left': '50px', 'width': '1350px', 'height': '70px'})
+block append scripts
+	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
 	link(rel='stylesheet', href='/stylesheets/chart/needleplot.css')

@@ -6,5 +6,7 @@ block content
 			div#pcaplot_legend(style={'padding': '0px', 'margin': '0px 50px', 'width': '180px', 'height': '66px'})
 		div.row
 			div#pcaplot_view_2d(style={'padding': '0px', 'margin': '0px', 'width': '1400px', 'height': '750px'})
+block append scripts
+	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
 	link(rel='stylesheet', href='/stylesheets/chart/pcaplot.css')

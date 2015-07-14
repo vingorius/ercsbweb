@@ -31,5 +31,7 @@ block content
 					div.table_body
 						table.table.table-striped#result_table(style={'font-size' : '12px'})
 							tbody#result_body
+block append scripts
+	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
 	link(rel='stylesheet', href='/stylesheets/chart/maplot.css')

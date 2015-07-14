@@ -12,7 +12,21 @@ block content
 						th -si.logP&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 						th -si.up.logP
 						th -si.dn.logP
-				tbody.degplot_tbody
-		div#color_range_component(style={"float" : "left", "margin-left" : "10px"})
+				tbody.degplot_tbody			
+		div#degplot_color(style={"float" : "left", "margin-left" : "10px"})
+			div.panel-group#degplot_color_config(role="tablist", aria-multiselectable="true")
+				div.panel.panel-default
+					div.panel-heading#degplot_color_config_heading(role="tab")
+						span.panel-title
+							a(role="button", data-toggle="collapse", data-parent="#accordion", href="#color_config", aria-expanded="false", aria-controls="color_config") Color Configuration
+					div.panel-collapse.collapse#color_config(role="tabpanel", aria-labelledby="degplot_color_config_heading")
+						div.panel-body#degplot_color_config_body color configuration
+					div.panel-heading#degplot_color_bar_heading(role="tab")
+						span.panel-title
+							a(role="button", data-toggle="collapse", data-parent="#accordion", href="#color_bar", aria-expanded="false", aria-controls="color_bar") Choose max value 
+					div.panel-collapse.collapse#color_bar(role="tabpanel", aria-labelledby="degplot_color_bar_heading")
+						div.panel-body#degplot_color_bar_body 
+block append scripts
+	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
 	link(rel='stylesheet', href='/stylesheets/chart/degplot.css')					

@@ -87,17 +87,16 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			var margin = size.margin.left;
 
 			elements.box.attr("x", function(_d) {
-				return Math.max(margin, 
-					Math.min(xr - width + margin, d3.event.x + margin));
+				return Math.max(xl + lw, Math.min(xr - width, d3.event.x));
 			});
 
 			elements.right.attr("x", function(_d)    {
-				return Math.max(width + margin, 
-					Math.min(size.rwidth + margin, (d3.event.x + width + margin)));
+				return Math.max((xl + lw) + width, 
+					Math.min(size.rwidth, (d3.event.x + width)));
 			});
 
 			elements.left.attr("x", function(_d)    {
-				return _d.x = Math.max(0, Math.min(x, d3.event.x));
+				return _d.x = Math.max(0, Math.min(x - margin, d3.event.x));
 			});
 
 			//move_needle_plot(elements.left.attr("x"), elements.box.attr("width"));
@@ -118,7 +117,7 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			});
 
 			elements.box.attr("width", function(_d)  {
-				return _d.width = Math.max(0, 
+				return _d.width = Math.max(size.margin.left, 
 					Math.min(elements.right.attr("x") - size.margin.left, 
 						size.rwidth + d3.event.x));
 			});

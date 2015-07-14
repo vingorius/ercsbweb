@@ -111,6 +111,9 @@ code {
 
 /* All Chart
 ------------------------------------------------------- */
+.char_header_container  {
+    margin-bottom: 10px;
+}
 .chart_base_container{
 	width:1430px;
 	margin-left: auto;

@@ -2,6 +2,7 @@ extends ../layout/basiclayout
 
 block content
 	div.container.chart_base_container
+		include chart_header.jade
 		div.table_component(style={"float" : "left"})
 			table.table.table-bordered.table-hover.table-responsive
 				thead
@@ -20,7 +21,7 @@ block content
 						span.panel-title
 							a(role="button", data-toggle="collapse", data-parent="#accordion", href="#color_config", aria-expanded="false", aria-controls="color_config") Color Configuration
 					div.panel-collapse.collapse#color_config(role="tabpanel", aria-labelledby="degplot_color_config_heading")
-						div.panel-body#degplot_color_config_body color configuration
+						div.panel-body#degplot_color_config_body
 					div.panel-heading#degplot_color_bar_heading(role="tab")
 						span.panel-title
 							a(role="button", data-toggle="collapse", data-parent="#accordion", href="#color_bar", aria-expanded="false", aria-controls="color_bar") Choose max value 

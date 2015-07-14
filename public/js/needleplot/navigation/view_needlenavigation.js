@@ -18,7 +18,7 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 		.attr("class", "navi_box")
 		.attr("x", function(_d) { return _d.x + size.margin.left; })
 		.attr("y", function(_d) { return _d.y; })
-		.attr("width", function(_d) { return _d.width; })
+		.attr("width", function(_d) { return _d.width - size.margin.left; })
 		.attr("height", function(_d) { return _d.height; })
 		.attr("cursor", "move");
 

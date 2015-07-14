@@ -9,6 +9,16 @@ describe('Login Test Suite', function() {
         username: 'test@gmail.com',
         password: 'test',
         remember: false,
+        fullname: '김종호',
+        gender: 'M',
+        birth: '01/01/1970',
+        mobile: '01047017956',
+        country: 'South Korea (대한민국)',
+        zipcode: '324-133',
+        address: '서울 이화여대',
+        company_name: '다음소프트',
+        company_address: '서울 한남동',
+        company_position: '부장',
         toString: function() {
             return this.username + '/' + this.password;
         }
@@ -17,6 +27,16 @@ describe('Login Test Suite', function() {
         username: 'test@gmail.com',
         password: 'wrong',
         remember: false,
+        fullname: '김종호',
+        gender: 'M',
+        birth: '01/01/1970',
+        mobile: '01047017956',
+        country: 'South Korea (대한민국)',
+        zipcode: '324-133',
+        address: '서울 이화여대',
+        company_name: '다음소프트',
+        company_address: '서울 한남동',
+        company_position: '부장',
         toString: function() {
             return this.username + '/' + this.password;
         }

@@ -28,6 +28,8 @@ block content
 					div.panel-collapse.collapse#color_bar(role="tabpanel", aria-labelledby="degplot_color_bar_heading")
 						div.panel-body#degplot_color_bar_body 
 block append scripts
+	script(src='/bower_components/canvas2image/canvas2image/canvas2image.js')
+	script(src='/bower_components/html2canvas/build/html2canvas.js')
 	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
 	link(rel='stylesheet', href='/stylesheets/chart/degplot.css')					

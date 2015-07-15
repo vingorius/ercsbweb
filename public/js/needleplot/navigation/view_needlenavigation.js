@@ -24,12 +24,11 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 
 		var right_border = box_g.append("rect")
 		.attr("class", "navi_2_box_right")
-		.attr("x", size.rwidth)
+		.attr("x", function(_d)	{ return size.rwidth; })
 		.attr("y", 0)
 		.attr("width", size.margin.left)
 		.attr("height", size.height)
-		.attr("cursor", "ew-resize")
-		//.style("stroke", "#96281B");
+		.attr("cursor", "ew-resize");
 
 		var left_border = box_g.append("rect")
 		.attr("class", "navi_2_box_left")
@@ -37,8 +36,7 @@ define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needlepl
 		.attr("y", 0)
 		.attr("width", size.margin.left)
 		.attr("height", size.height)
-		.attr("cursor", "ew-resize")
-		//.style("stroke", "#96281B");
+		.attr("cursor", "ew-resize");
 
 		var e = _event({
 			box : box,

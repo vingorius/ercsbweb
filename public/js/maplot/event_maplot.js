@@ -105,15 +105,6 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 			.style("fill", function(_d) { return data.color(_d, value); })
 		}
 
-		var  downloadFile = function(_filename, _data){
-			var a = document.createElement('a');
-			var e = document.createEvent("HTMLEvents");
-			e.initEvent("click");
-			a.download = _filename;
-			a.href = _data ;
-			a.dispatchEvent(e);
-		}
-
 		var click_download = function()  {
 			var download_data = 'GENE, X, Y, P';
 
@@ -125,7 +116,7 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 				+ "," + Number(_d.datum().value).toExponential(5);
 			});
 
-			downloadFile('maplot.csv','data:text/csv;charset=UTF-8,'
+			_utils.download('maplot.csv','data:text/csv;charset=UTF-8,'
 				+ encodeURIComponent(download_data));
 		}
 

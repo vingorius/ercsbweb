@@ -4,78 +4,47 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 		var size = elements.size;
 		size.graph_width = 20;
 		var data = elements.data;
+		var right_x = size.rwidth;
 
-		var move_needle_plot = function(_x, _width) {
-			var now_x = _x || 0, now_width = _width || 0;
-			var update = update_size(now_x, now_width);
-
-			update.div
-			.scrollLeft(update.udt_x(now_x));
-		}		
-
-		var update_size = function(_x, _width) {
-			var svg = d3.select(".needleplot_view");
-			var div = $("#needleplot_view");
-			var height = div[0].offsetHeight;
-			var width = (div[0].offsetWidth / _width) * div[0].offsetWidth - (size.margin.left);
-
-			var udt_width = _utils.linearScale((size.margin.left), data.data.data.graph[0].length,
-				(size.margin.left), (width - size.margin.left * 2)).clamp(true);
-			var udt_x = _utils.linearScale(0, size.rwidth, (size.margin.left), 
-				(width - size.margin.left)).clamp(true);
+		var get_data_location = function(_x, _width)	{
+			var x = _utils.linearScale(size.margin.left, size.rwidth, 
+				0, data.data.data.graph[0].length).clamp(true);
 
 			return {
-				svg : svg,
-				div : div,
-				width : width,
-				height : height,
-				udt_width : udt_width,
-				udt_x : udt_x
+				x : x,
+				start : x(_x),
+				end : x(Number(_x) + Number(_width))
 			}
 		}
 
 		var scale_needle_plot = function(_x, _width)    {
-			var box_x = _x || 0;
-			var box_width = _width || 0;
-			var update = update_size(box_x, box_width);
-			var svg = update.svg;
+			var svg = d3.select(".needleplot_view");
+			var width = svg.attr("width");
+			var height = svg.attr("height");
+			var loc_data = get_data_location(_x, _width);
+			var loc_x = _utils.linearScale(loc_data.start, loc_data.end, 
+				size.margin.left, size.rwidth).clamp(true);
 
-			svg
-			.attr("width", update.width);
+			var xaxis = d3.select(".needle_x_axis")
+			.call(d3.svg.axis().scale(loc_x).orient("bottom"));
 
-			update.div
-			.scrollLeft(box_x);
-			/*
-
-			var update_x_axis_scale = d3.svg.axis()
-			.scale(update.udt_width)
-			.orient("bottom");
-
-			var update_x_axis = d3.select(".needle_x_axis")
-			.call(update_x_axis_scale);
-
-			var update_x_full_path = d3.select(".needle_gene_full_path_g")
-			.attr("x", size.margin.left)
-			.attr("width", update.width - size.margin.left);
-
-			svg
-			.selectAll(".graph_group")
-			.attr("transform", function(_d) {
-				if(_d.display) { 
-					return "translate(" + update.udt_width(_d.start) + ", " 
-					+ (update.height - size.margin.left) + ")"; 
-				}
+			var graph_group = d3.selectAll(".graph_group")
+			.attr("transform", function(_d)	{
+				if(_d.display) { return "translate(" + loc_x(_d.start) + ", "
+					+ (size.graph_width 
+					+ (height - (size.margin.top * 2) - (size.margin.bottom * 2))) 
+					+ ")"; }
 				else { d3.select(this).remove(); }
-			})
-			.selectAll("rect")
-			.attr("width", function(_d) { return update.udt_width(_d.end) - update.udt_width(_d.start); });
-
-			svg.selectAll(".marker_group")
-			.attr("transform", function(_d) {
-				return "translate(" + update.udt_width(_d.position) + ", "
-					+ (update.height - size.margin.left - size.graph_width) + ")";
 			});
-			*/
+
+			var graphs = d3.selectAll(".graph_group rect")
+			.attr("width", function(_d) { return loc_x(_d.end) - loc_x(_d.start); });
+
+			var maker_group = d3.selectAll(".marker_group")
+			.attr("transform", function(_d)	{
+				return "translate(" + loc_x(_d.position) + ", " 
+					+ (height - (size.margin.top * 2) - (size.margin.bottom * 2)) + ")";
+			});
 		}
 
 		var moving_event = function()   {
@@ -84,11 +53,11 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			var xr = Number(elements.right.attr("x"));
 			var xl = Number(elements.left.attr("x"));
 			var lw = Number(elements.left.attr("width"));
-			var margin = size.margin.left;
 
 			elements.box.attr("x", function(_d) {
 				return Math.max(xl + lw, Math.min(xr - width, d3.event.x));
-			});
+			})
+			.on("mouseup", function(_d)	{ moving_end(_d, xr - xl); });
 
 			elements.right.attr("x", function(_d)    {
 				return Math.max((xl + lw) + width, 
@@ -96,33 +65,38 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			});
 
 			elements.left.attr("x", function(_d)    {
-				return _d.x = Math.max(0, Math.min(x - margin, d3.event.x));
+				return _d.x = Math.max(0, Math.min(x - size.margin.left, d3.event.x));
 			});
+			scale_needle_plot(elements.box.attr("x"), elements.box.attr("width"));
+		}
 
-			//move_needle_plot(elements.left.attr("x"), elements.box.attr("width"));
+		var moving_end = function(_d, _now)	{
+			right_x = Number(_now);
 		}
 
 		var resizing_right_event = function() {
-			var lw = Number(elements.left.attr("width"));
-			var width = Number(elements.box.attr("width"));
 			var x = Number(elements.box.attr("x"));
 			var xr = Number(elements.right.attr("x"));
 			var xl = Number(elements.left.attr("x"));
-			var lw = Number(elements.left.attr("width"));
+			var now_x = 0;
 
 			elements.right.attr("x", function(_d) {
-				console.log(elements.right.attr("x"), elements.box.attr("x"), elements.box.attr("width"))
+				now_x = (right_x + d3.event.x) - xl;
+
 				return Math.max(elements.box.attr("x"), 
-					Math.min(size.rwidth, size.rwidth + d3.event.x));
-			});
+					Math.min(size.rwidth, right_x + (d3.event.x)));
+			})
+			.on("mouseup", function(_d) { resizing_right_end(_d, now_x); });
 
 			elements.box.attr("width", function(_d)  {
 				return _d.width = Math.max(size.margin.left, 
-					Math.min(elements.right.attr("x") - size.margin.left, 
-						size.rwidth + d3.event.x));
+					Math.min(xr - x, size.rwidth + d3.event.x));
 			});
+			scale_needle_plot(elements.box.attr("x"), elements.box.attr("width"));       
+		}
 
-			//scale_needle_plot(elements.box.attr("x"), elements.box.attr("width"));       
+		var resizing_right_end = function(_d, _now)	{
+			right_x = _now;
 		}
 
 		var resizing_left_event = function() {
@@ -141,8 +115,7 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			.attr("x", function(_d) {
 				return Math.max((xl + lw), Math.min(xr, d3.event.x));
 			});
-
-			//scale_needle_plot(elements.box.attr("x"), elements.box.attr("width"));
+			scale_needle_plot(elements.box.attr("x"), elements.box.attr("width"));
 		}
 
 		var box_drag_move = d3.behavior.drag()

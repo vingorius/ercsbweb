@@ -23,7 +23,7 @@ require.config({
 	}
 });
 
-require(["header/setting_header", "size", "maplot/setting_maplot", "needleplot/setting_needleplot", "xyplot/setting_xyplot", "pcasetting", "interface_comutation", "degplot/setting_degplot"], function(_header, _size, _ma, _needle, _xy, _pca, _comutation, _deg)  {
+require(["utils", "header/setting_header", "size", "maplot/setting_maplot", "needleplot/setting_needleplot", "xyplot/setting_xyplot", "pcasetting", "interface_comutation", "degplot/setting_degplot"], function(_utils, _header, _size, _ma, _needle, _xy, _pca, _comutation, _deg)  {
 	var info_chart = {
 		comutation : { 
 			url : "/rest/tumorportal_cmp?type=BRCA", 
@@ -62,13 +62,8 @@ require(["header/setting_header", "size", "maplot/setting_maplot", "needleplot/s
 		});
 	}
 
-	var find_pathname = function(_pathname)	{
-		return _pathname.substring(_pathname.lastIndexOf("/") + 1,
-			_pathname.indexOf("plot"));
-	}
-
 	$(function()    {
-		var target = find_pathname(window.location.pathname);
+		var target = _utils.find_pathname(window.location.pathname);
 
 		_header($(".container.chart_base_container"));
 

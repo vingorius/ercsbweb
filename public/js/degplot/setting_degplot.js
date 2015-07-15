@@ -11,14 +11,6 @@ define("degplot/setting_degplot", ["utils", "size", "degplot/view_degplot"], fun
 		}));
 	}
 
-	var getClass = function(_id)	{
-		for (var i = 0, len = document.getElementsByTagName("*").length ; i < len ; i++)	{
-			if(document.getElementsByTagName("*")[i].className === _id)	{
-				return document.getElementsByTagName("*")[i];
-			}
-		} 
-	}
-
 	var color_list = function()	{
 		return [
 			[ "#466627", "#6C1C1D", "#42536A", "#AD987B", "#6C1C6D", "#CC383B", "#85BC4E", "#682727" ],
@@ -60,7 +52,7 @@ define("degplot/setting_degplot", ["utils", "size", "degplot/view_degplot"], fun
 
 	return function(_data)	{
 		var data = _data || [];
-		var tbody = getClass("degplot_tbody");
+		var tbody = _utils.getClass("degplot_tbody");
 		var si = count_si(data.data.pathway_list[0]);
 		var si_max = max(data.data.pathway_list, "si_log_p");
 		var si_down_max = max(data.data.pathway_list, "si_down_log_p");

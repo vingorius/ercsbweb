@@ -1,13 +1,12 @@
 div.char_header_container
 	div.tooltip
 	div.btn-group(role="group")
-		button.btn.btn-default#png_download_button(type="button", aria-label="Left Align", disabled)
+		button.btn.btn-default#png_download_button(type="button", aria-label="Left Align")
 			span.glyphicon.glyphicon-picture(aria-hidden="true")
 		div.btn-group(role="group")
-			button.btn.btn-default.dropdown-toggle(type="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false")	select area
+			button.btn.btn-default.dropdown-toggle#select_area_button(type="button", data-toggle="dropdown", aria-haspopup="true", aria-expanded="false", value="")	select area
 				span.caret(style={ "margin-left" : "10px" })
 			ul.dropdown-menu#chart_div_ul
 				li
-					a(href="#") Test1
-				li
-					a(href="#") Test2
+					a(href="#") select area
+

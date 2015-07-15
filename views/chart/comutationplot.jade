@@ -2,6 +2,7 @@ extends ../layout/basiclayout
 
 block content
 	div.container.chart_base_container
+		include chart_header.jade
 		div.row
 			div#comutationplot_empty_lt(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
 			div#comutationplot_sample(style={'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1100px', 'height': '100px', 'overflow-y': 'hidden', 'overflow-x': 'scroll'})
@@ -15,6 +16,8 @@ block content
 			div#comutationplot_legend(style={'float' : 'left', 'padding': '0px', 'margin': '0px', 'width': '1100px', 'height': '100px'})
 			div#comutationplot_empty_rb(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
 block append scripts
+	script(src='/bower_components/canvas2image/canvas2image/canvas2image.js')
+	script(src='/bower_components/html2canvas/build/html2canvas.js')
 	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
 	link(rel='stylesheet', href='/stylesheets/chart/comutationplot.css')

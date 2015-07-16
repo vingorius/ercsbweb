@@ -70,7 +70,7 @@ if (app.get('env') === 'development') {
 
 app.use('/', root);
 //app.use('/admin', authorization.ensureRequest.isPermitted("admin:view"), admin);
-app.use('/admin', security.isPermitted("admin:view"), admin);
+app.use('/admin', security.isAdmin, admin);
 //상위메뉴차원에서 로그인한 세션만 접근할 수 있도록 하였다.
 app.use('/menus', security.isAuthenticated, menus);
 // Chart View

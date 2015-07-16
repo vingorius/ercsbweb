@@ -1,0 +1,13 @@
+extends ../layout/basiclayout
+
+block content
+    div.container(style={'padding-top': '100px','max-width':'530px'})
+        if message != 'undefined'
+            div.text-center.alert(class='alert-#{type}') 
+                h2 #{message}
+        h4 
+            | This page will be redirected to home within 
+            strong#counter(style={'color':'rgba(213, 39, 39, 0.87)','font-size':'24px'}) 5
+            |  seconds.
+block append scripts
+    script(src='/js/message.js')

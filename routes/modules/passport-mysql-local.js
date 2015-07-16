@@ -73,7 +73,7 @@ module.exports = function(passport) {
                             };
                             //console.log(req.body);
                             //var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
-                            var insertQuery = 'call ercsb_cdss.insertUser(?,?,?,?,?,?,?,?,?,?,?,?)';
+                            var insertQuery = 'call ercsb_cdss.insertUser(?,?,?,?,?,?,?,?,?,?)';
                             connection.query(insertQuery, [newUserMysql.username,
                                     newUserMysql.password,
                                     req.body.fullname,
@@ -81,14 +81,12 @@ module.exports = function(passport) {
                                     req.body.gender,
                                     req.body.mobile,
                                     req.body.country,
-                                    req.body.zipcode,
-                                    req.body.address,
                                     req.body.company_name,
                                     req.body.company_address,
                                     req.body.company_position
                                 ],
                                 function(err, rows, fields) {
-                                    if(err) return done(err);
+                                    if (err) return done(err);
 
                                     newUserMysql.id = rows.insertId;
                                     return done(null, newUserMysql);
@@ -136,20 +134,21 @@ module.exports = function(passport) {
                         // all is well, return successful user
                         //rows[0].permissions =  ["admin:*"];
                         // get permissions
-                        connection.query("call ercsb_cdss.getPermissionsByUserName(?)", [username], function(p_err, p_rows, p_fields) {
-                            if (p_err)
-                                return done(p_err);
-                            var permissions = p_rows[0];
-                            //console.log(permissions);
-                            if (typeof permissions != 'undefined') {
-                                user.permissions = [];
-                                permissions.map(function(data) {
-                                    user.permissions.push(data.permission);
-                                });
-                            }
-                            //console.log(user);
-                            return done(null, user);
-                        });
+                        // connection.query("call ercsb_cdss.getPermissionsByUserName(?)", [username], function(p_err, p_rows, p_fields) {
+                        //     if (p_err)
+                        //         return done(p_err);
+                        //     var permissions = p_rows[0];
+                        //     //console.log(permissions);
+                        //     if (typeof permissions != 'undefined') {
+                        //         user.permissions = [];
+                        //         permissions.map(function(data) {
+                        //             user.permissions.push(data.permission);
+                        //         });
+                        //     }
+                        //     //console.log(user);
+                        //     return done(null, user);
+                        // });
+                        return done(null, user);
                     });
                 });
             })

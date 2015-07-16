@@ -14,8 +14,6 @@ describe('Login Test Suite', function() {
         birth: '01/01/1970',
         mobile: '01047017956',
         country: 'South Korea (대한민국)',
-        zipcode: '324-133',
-        address: '서울 이화여대',
         company_name: '다음소프트',
         company_address: '서울 한남동',
         company_position: '부장',
@@ -32,8 +30,6 @@ describe('Login Test Suite', function() {
         birth: '01/01/1970',
         mobile: '01047017956',
         country: 'South Korea (대한민국)',
-        zipcode: '324-133',
-        address: '서울 이화여대',
         company_name: '다음소프트',
         company_address: '서울 한남동',
         company_position: '부장',
@@ -88,9 +84,9 @@ describe('Login Test Suite', function() {
                     done();
                 });
         });
-        it('login ' + user.toString() + ' admin 페이지에 접근할 수 있어야 한다.', function(done) {
+        it('login ' + user.toString() + ' /menus/menu0 페이지에 접근할 수 있어야 한다.', function(done) {
             agent
-                .get('/admin')
+                .get('/menus/menu0')
                 .expect(200) //Moved Temporarily
                 .end(function(err, res) {
                     if (err) return done(err);
@@ -110,10 +106,10 @@ describe('Login Test Suite', function() {
                 });
         });
 
-        it('logout이후에는  admin 페이지에 접근할 수 없어야 한다.', function(done) {
+        it('logout이후에는  /menus/menu0 페이지에 접근할 수 없어야 한다.', function(done) {
             agent
-                .get('/admin')
-                .expect(401) //Unauthorized
+                .get('/menus/menu0')
+                .expect(302) //Moved Temporarily
                 .end(function(err, res) {
                     if (err) return done(err);
                     // console.log("4",agent.jar.getCookie());
@@ -137,9 +133,9 @@ describe('Login Test Suite', function() {
                     done();
                 });
         });
-        it('login ' + user.toString() + ' admin 페이지에 접근할 수 있어야 한다.', function(done) {
+        it('login ' + user.toString() + ' /menus/menu0 페이지에 접근할 수 있어야 한다.', function(done) {
             agent
-                .get('/admin')
+                .get('/menus/menu0')
                 .expect(200) //Moved Temporarily
                 .end(function(err, res) {
                     if (err) return done(err);
@@ -147,20 +143,19 @@ describe('Login Test Suite', function() {
                     done();
                 });
         });
-        // it('logout이 정상적으로 이루어져야한다.', function(done) {
-        //     agent
-        //         .get('/logout')
-        //         .expect(302) //Moved Temporarily
-        //         .expect('Location', '/')
-        //         .end(function(err, res) {
-        //             if (err) return done(err);
-        //             // console.log("3",agent.jar.getCookie());
-        //             done()
-        //         });
-        // });
-        it('다른 Agent로 로그인 없이 admin 페이지에 접근할 수 있어야 한다.', function(done) {
-            request(host)
+        it('login ' + user.toString() + ' /admin 페이지는 권한없음 오류가 나야한다.', function(done) {
+            agent
                 .get('/admin')
+                .expect(401) //"Unauthorized"
+                .end(function(err, res) {
+                    if (err) return done(err);
+                    //console.log(res);
+                    done();
+                });
+        });
+        it('다른 Agent로 로그인 없이 /menus/menu0 페이지에 접근할 수 있어야 한다.', function(done) {
+            request(host)
+                .get('/menus/menu0')
                 .set('Cookie', cookie)
                 .expect(200) //Moved Temporarily
                 .end(function(err, res) {
@@ -169,76 +164,4 @@ describe('Login Test Suite', function() {
                 });
         });
     });
-
-
-    /*
-    it('userid,password 가 들어오지 않으면 100번,EPARAM 발생.', function(done) {
-        request(host)
-            .post('/manager/login')
-            .end(function(err, res) {
-                if (err) return done(err);
-                var transfer_object = res.body;
-                assert.equal(100, transfer_object.status)
-                assert.equal('EPARAM', transfer_object.message)
-                done()
-            });
-    })
-    it('userid 만 들어와도 100번,EPARAM 발생.', function(done) {
-        request(host)
-            .post('/manager/login')
-            .end(function(err, res) {
-                if (err) return done(err);
-                var transfer_object = res.body;
-                assert.equal(100, transfer_object.status)
-                assert.equal('EPARAM', transfer_object.message)
-                done()
-            });
-    })
-    it('존재하지 않는 사용자인 경우 101번,ENOUSR 오류 발생.', function(done) {
-        request(host)
-            .post('/manager/login')
-            .send({
-                userid: 'xxx',
-                password: 'hello'
-            })
-            .end(function(err, res) {
-                if (err) return done(err);
-                var transfer_object = res.body;
-                assert.equal(101, transfer_object.status)
-                assert.equal('ENOUSR', transfer_object.message)
-                done()
-            });
-    })
-    it('패스워드가 틀린경우 경우 102번,EINPWD 오류 발생.', function(done) {
-        request(host)
-            .post('/manager/login')
-            .send({
-                userid: 'vingorius',
-                password: 'hello'
-            })
-            .end(function(err, res) {
-                if (err) return done(err);
-                var transfer_object = res.body;
-                assert.equal(102, transfer_object.status)
-                assert.equal('EINPWD', transfer_object.message)
-                done()
-            });
-    })
-    it('패스워드가 일치하면 0번,OK 발생. group 리턴해야한다', function(done) {
-        request(host)
-            .post('/manager/login')
-            .send({
-                userid: 'vingorius',
-                password: 'vingorius'
-            })
-            .end(function(err, res) {
-                if (err) return done(err);
-                var transfer_object = res.body;
-                assert.equal(0, transfer_object.status)
-                assert.equal('OK', transfer_object.message)
-                assert.equal('admin', transfer_object.user.group)
-                done()
-            });
-    })
-    */
 });

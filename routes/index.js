@@ -4,6 +4,9 @@ var passport = require('passport');
 var router = express.Router();
 var security = require('./modules/security');
 //
+var getConnection = require('./modules/mysql_connection');
+
+
 router.get('/', function(req, res) {
     res.render('index', {
         user: req.user
@@ -13,6 +16,14 @@ router.get('/', function(req, res) {
 router.get('/commingsoon', function(req, res) {
     res.render('system/commingsoon', {
         user: req.user
+    });
+});
+
+router.get('/message', function(req, res) {
+    res.render('system/message', {
+        user: req.user,
+        message: req.flash('message'),
+        type: req.flash('type')
     });
 });
 
@@ -85,6 +96,46 @@ router.post('/register', passport.authenticate('register', {
     failureFlash: true // allow flash messages
 }));
 
+router.get('/profile', security.isAuthenticated, function(req, res) {
+    getConnection(function(connection) {
+        connection.query("call ercsb_cdss.getUserByName(?)", [req.user.username], function(err, rows, fields) {
+            if (err) throw err;
+            //var prevArray = req.flash('prev');
+            //console.log(rows[0][0]);
+            var prev = rows[0][0];
+
+            res.render('system/profile', {
+                user: req.user,
+                message: req.flash('profileMessage'),
+                prev: prev
+            });
+        });
+    });
+});
+
+router.post('/profile', security.isAuthenticated, function(req, res) {
+    getConnection(function(connection) {
+        connection.query("call ercsb_cdss.updateUser(?,?,?,?,?,?,?,?,?)", [
+                req.user.username,
+                req.body.fullname,
+                req.body.birth,
+                req.body.gender,
+                req.body.mobile,
+                req.body.country,
+                req.body.company_name,
+                req.body.company_address,
+                req.body.company_position
+            ],
+            function(err, rows, fields) {
+                if (err) throw err;
+                req.flash('message', 'Profile updated.');
+                req.flash('type', 'success');
+                res.redirect('/message');
+            });
+    });
+
+});
+
 router.get('/login', function(req, res) {
     res.render('system/login', {
         user: req.user,
@@ -105,7 +156,7 @@ router.post('/login', passport.authenticate('login', {
         req.session.cookie.expires = false;
     }
     // Admin인지 여부 체크, Admin 메뉴를 보여줄 지 여부 확인.
-    req.user.isAdmin = security.isAdmin(req);
+    req.user.isAdmin = (req.user.group === 'admin')? true : false; 
     // security.js에서 session에 넣어둔 원 path로 redirect한다.
     var origin = req.session.origin_path || '/';
     delete req.session.origin_path;
@@ -113,7 +164,7 @@ router.post('/login', passport.authenticate('login', {
     res.redirect(origin);
 });
 
-router.get('/logout', function(req, res) {
+router.get('/logout', function(req, res, next) {
     req.logout();
     res.redirect('/');
     //res.status(200).send("logout success");

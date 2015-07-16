@@ -8,8 +8,8 @@ block append stylesheets
 block content
     div.container
         div(style={'padding-top': '60px'})
-            form#registerform.form-register(method='post',action='/register')
-                h2.form-signin-heading Register
+            form#registerform.form-register(method='post',action='/profile')
+                h2.form-signin-heading Profile
                 //h2.form-signin-heading: span.glyphicon.glyphicon-registration-mark  Register
                 if message.length > 0
                     div.row    
@@ -19,39 +19,43 @@ block content
                 h3(style={'margin-top': '20px'}) Personal
                 div.row    
                     div.col-md-12.form-group
-                        input#username.form-control(placeholder='Your Email', name='username', required='', autofocus='', type='email', value=prev.username )
+                        label(for="username") ID (Email address)
+                        input#username.form-control(placeholder='Your Email', name='username', required='', autofocus='', type='email', value=prev.username, readonly)
                 div.row
                     div.col-md-12.form-group
+                        label(for="fullname") Full name
                         input#fullname.form-control(placeholder='Full name', name='fullname', required='', type='text', value=prev.fullname)
                 div.row
                     div.col-md-6.form-group
-                        input#password.form-control.col-md-6(placeholder='Password', name='password', required='', type='password', value=prev.password)
-                    div.col-md-6.form-group
-                        input#password2.form-control.col-md-6(placeholder='Confirm Password', name='password2', required='', type='password', value=prev.password2)
-                div.row
-                    div.col-md-6.form-group
+                        label(for="gender") Gender
                         select#gender.form-control(value=prev.gender,name='gender')
                           option(value='M',selected) Male
                           option(value='F') Female                    
                     div.col-md-6.form-group
+                        label(for="birth") Date of Birth (mm/dd/yyyy)
                         input#birth.form-control(placeholder='Date of Birth (mm/dd/yyyy)', name='birth',  type='date', value=prev.birth)
                 div.row
                     div.col-md-6.form-group
+                        label(for="mobile") Mobile (Only Number)
                         input#mobile.form-control(placeholder='Mobile (Only Number)', name='mobile',type='tel', required='', value=prev.mobile)
                     div.col-md-6.form-group
+                        label(for="country") Country
                         input#country.form-control(placeholder='Country', name='country',  type='text', value=prev.country)
                 h3(style={'margin-top': '20px'}) Company
                 div.row
                     div.col-md-12.form-group
-                        input#company_name.form-control(placeholder='Name', name='company_name', type='text', value=prev.companyname)
+                        label(for="company_name") Name
+                        input#company_name.form-control(placeholder='Name', name='company_name', type='text', value=prev.company_name)
                 div.row
                     div.col-md-12.form-group
-                        input#company_address.form-control(placeholder='Address', name='company_address', type='text', value=prev.location)
+                        label(for="company_address") Address
+                        input#company_address.form-control(placeholder='Address', name='company_address', type='text', value=prev.company_address)
                 div.row
                     div.col-md-12.form-group
-                        input#company_position.form-control(placeholder='Your Position', name='company_position', type='text', value=prev.position)
+                        label(for="company_position") Your Position
+                        input#company_position.form-control(placeholder='Your Position', name='company_position', type='text', value=prev.company_position)
                 button.btn.btn-lg.btn-primary.btn-block.ladda-button(type='submit',data-style='zoom-in') 
-                    span.ladda-label Register
+                    span.ladda-label Profile Update
                     
 block append scripts
     script(src='/bower_components/jquery-validation/dist/jquery.validate.js')

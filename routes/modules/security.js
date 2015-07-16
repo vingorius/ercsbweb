@@ -24,20 +24,33 @@ security.isAuthenticated = function(req, res, next) {
     res.redirect('/login');
 };
 
-security.isPermitted = function(required_permission) {
-    return function(req, res, next) {
-        if (authorization.considerSubject(req.user).isPermitted(required_permission)) {
+// security.isAdmin = function(req) {
+//         //return authorization.considerSubject(req.user).isPermitted("admin:read");
+//         console.log('group',req.user.group);
+//         if(req.user.group === 'admin') return true;
+//         return false;
+// };
+
+security.isAdmin = function(req, res, next) {
+        if (req.user.isAdmin) {
             return next();
         }
-        //res.redirect('/login');
         var err = new Error('Unauthorized!');
         err.status = 401;
         next(err);
-    };
 };
 
-security.isAdmin = function(req) {
-        return authorization.considerSubject(req.user).isPermitted("admin:read");
-};
+// user,admin 두개로만 관리하기로 하였음.
+// security.isPermitted = function(required_permission) {
+//     return function(req, res, next) {
+//         if (authorization.considerSubject(req.user).isPermitted(required_permission)) {
+//             return next();
+//         }
+//         //res.redirect('/login');
+//         var err = new Error('Unauthorized!');
+//         err.status = 401;
+//         next(err);
+//     };
+// };
 
 module.exports = security;

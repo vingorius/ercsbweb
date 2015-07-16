@@ -2,11 +2,14 @@ extends ../layout/basiclayout
 
 block content
 	div.container.chart_base_container
+		include chart_header.jade
 		div.row
 			div#pcaplot_legend(style={'padding': '0px', 'margin': '0px 50px', 'width': '180px', 'height': '66px'})
 		div.row
 			div#pcaplot_view_2d(style={'padding': '0px', 'margin': '0px', 'width': '1400px', 'height': '750px'})
 block append scripts
+	script(src='/bower_components/canvas2image/canvas2image/canvas2image.js')
+	script(src='/bower_components/html2canvas/build/html2canvas.js')
 	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
 	link(rel='stylesheet', href='/stylesheets/chart/pcaplot.css')

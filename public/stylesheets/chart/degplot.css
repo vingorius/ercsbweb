@@ -7,9 +7,22 @@
 	stroke-width : 1;
 	shape-rendering : crispEdges;
 }
+.deg_color_range_axis text	{
+	font-size: 10px;
+}
 .table {
 	font-size: 12px;
 }
 .table tbody tr td, .table thead tr th {
 	padding : 2px;
+}
+.degplot_lever_rect	{
+	fill : #F2F1EF;
+	stroke : #BFBFBF;
+}
+.panel-title	{
+	font-size: 12px;
+}
+#degplot_color	{
+	width : 160px;
 }

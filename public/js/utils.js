@@ -1,220 +1,241 @@
 define("utils", [], function()  {
+	var getNum = function(_str)	{
+		var result = "";
 
-    var DataVo = (function() {
-        var comutation = {};
-        var needleplot = {};
-        var xyplot = {};
+		for(var i = 0, len = _str.length ; i < len ; i++)	{
+			if((/\d/).test(_str[i]))	{
+				result += _str[i];
+			}
+		}
 
-        return {
-            setComutation : function(_sample_list, _gene_list, _mutation_list)  {
-                comutation = {
-                    sample_list : _sample_list,
-                    gene_list : _gene_list,
-                    mutation_list : _mutation_list
-                }
-            },
-            setNeedle : function(_data) {
-                needleplot = {
-                    data : _data
-                };
-            },
-            getComutation : function()  { return comutation; },
-            getNeedle : function() { return needleplot; }
-        }
-    }());
+		return Number(result);
+	}
 
-    return {
-        DataVo : DataVo,
+	var ordinalScale = function(domain, range_start, range_end) {
+		return d3.scale.ordinal()
+		.domain(domain)
+		.rangeBands([range_start, range_end]);
+	}
 
-        /**
-         * [함수의 실행 시간을 구하기 위한 함수]
-         * @return {[String]} [밀리초]
-         */
-         getRuntime : function() {
-            var date = new Date();
-            var runtime = date.getTime();
+	var linearScale = function(domain_start, domain_end, range_start, range_end) {
+		return d3.scale.linear()
+		.domain([domain_start, domain_end])
+		.range([range_start, range_end]);
+	}
 
-            return runtime;
-        },
+	var get_array_in_json = function(_json)   {
+		var result = [];
 
-        worker : function() {
-            var winWorker = window.Worker;
+		$.each(Object.keys(_json), function(_i, _d) {
+			if(_json[_d].constructor === Array) {
+				result.push(_json[_d]);
+			}
+		});
 
-            if(!winWorker)  {
-                winWorker = undefined;
-            }
+		return result;
+	}
 
-            else {
-                winWorker = new Worker("worker/worker.js");
-            }
+	var check_array_in_json  = function(_json)  {
+		var result = false;
 
-            return winWorker;
-        },
+		$.each(Object.keys(_json), function(_i, _d) {
+			if(_json[_d].constructor === Array) {
+				result = true;
+			}
+		});
 
-        ordinalScale : function(domain, range_start, range_end) {
-            return d3.scale.ordinal()
-            .domain(domain)
-            .rangeBands([range_start, range_end]);
-        },
+		return result;
+	}
 
-        linearScale : function(domain_start, domain_end, range_start, range_end) {
-            return d3.scale.linear()
-            .domain([domain_start, domain_end])
-            .range([range_start, range_end]);
-        },
+	var search_in_jsonarray = function(_value, _key, _jsonarray)    {
+		var result;
 
-        /**
-         * [Json 객체 안에 Array 값을 반환하는 함수]
-         * @param  {[Object]} _json [Json 객체]
-         * @return {[Array]}       [Array 객체]
-         */
-         get_array_in_json : function(_json)   {
-            var result = [];
+		$.each(_jsonarray, function(_i, _d) {
+			if(_d[_key] === _value) {
+				result = _d;
+			}
+		});
 
-            $.each(Object.keys(_json), function(_i, _d) {
-                if(_json[_d].constructor === Array) {
-                    result.push(_json[_d]);
-                }
-            });
+		return result;
+	}
 
-            return result;
-        },
+	var get_json_in_array = function(_name, _array, _key)  {
+		for(var _i in _array)   {
+			if(_name === _array[_i][_key]) { return _array[_i]; }
+		}
 
-        /**
-         * [check_array_in_json description]
-         * @param  {[type]} _json [description]
-         * @return {[type]}       [description]
-         */
-         check_array_in_json  : function(_json)  {
-            var result = false;
+		return undefined;
+	}
 
-            $.each(Object.keys(_json), function(_i, _d) {
-                if(_json[_d].constructor === Array) {
-                    result = true;
-                }
-            });
+	var get_json_array_in_array = function(_name, _array, _key) {
+		var result = [];
 
-            return result;
-        },
-        /**
-         * [search_in_jsonarray description]
-         * @param  {[type]} _value     [description]
-         * @param  {[type]} _key       [description]
-         * @param  {[type]} _jsonarray [description]
-         * @return {[type]}            [description]
-         */
-         search_in_jsonarray : function(_value, _key, _jsonarray)    {
-            var result;
+		for(var _i in _array)   {
+			if(_name === _array[_i][_key]) { result.push(_array[_i]); }
+		}
 
-            $.each(_jsonarray, function(_i, _d) {
-                if(_d[_key] === _value) {
-                    result = _d;
-                }
-            });
+		return result;
+	}
 
-            return result;
-        },
-        /**
-         * [get_json_in_array description]
-         * @param  {[type]} _name  [description]
-         * @param  {[type]} _array [description]
-         * @param  {[type]} _key   [description]
-         * @return {[type]}        [description]
-         */
-         get_json_in_array : function(_name, _array, _key)  {
-            for(var _i in _array)   {
-                if(_name === _array[_i][_key]) { return _array[_i]; }
-            }
+	var remove_svg = function() {
 
-            return undefined;
-        },
-        get_json_array_in_array : function(_name, _array, _key) {
-            var result = [];
+		if(arguments.length < 1)    {
+			return;
+		}
+		else if(!d3.selectAll("svg") || d3.selectAll("svg").length < 1)  {
+			return;
+		}
 
-            for(var _i in _array)   {
-                if(_name === _array[_i][_key]) { result.push(_array[_i]); }
-            }
+		for(var i = 0, len = arguments.length ; i < len ; i++)  {
+			d3.selectAll("." + arguments[i]).remove();
+		}
+	}
 
-            return result;
-        },
-        /**
-         * [remove_svg description]
-         * @return {[type]} [description]
-         */
-         remove_svg : function() {
+	var define_mutation_name = function(_name)  {
+		if((/MISSENSE/i).test(_name)) { return "Missense"; }
+		else if((/NONSENSE/i).test(_name)) { return "Nonsense"; }
+		else if((/(SPLICE_SITE)|(SPLICE_SITE_SNP)/i).test(_name)) { return "Splice_Site"; }
+		else if((/(SYNONYMOUS)|(SILENT)/i).test(_name)) { return "Synonymous"; }
+		else if((/(FRAME_SHIFT_INS)|(FRAME_SHIFT_DEL)/i).test(_name)) { return "Frame_shift_indel"; }
+		else if((/(IN_FRAME_INS)|(IN_FRAME_DEL)/i).test(_name)) { return "In_frame_indel"; }
+	}
 
-            if(arguments.length < 1)    {
-                return;
-            }
-            else if(!d3.selectAll("svg") || d3.selectAll("svg").length < 1)  {
-                return;
-            }
+	var colour = function(_value)   {
+		var value = _value || "";
 
-            for(var i = 0, len = arguments.length ; i < len ; i++)  {
-                d3.selectAll("." + arguments[i]).remove();
-            }
-        },
+		return {
+			"Missense":"#3E87C2",
+			"Nonsense":"#EA3B29",
+			"In_frame_indel":"#F2EE7E",
+			"Frame_shift_indel":"#F68D3B",
+			"Splice_Site":"#583D5F",
+			"Synonymous":"#5CB755",
+			"Othre":"#B5612E",
+			"pq":"#C2C4C9",
+			"Primary Solid Tumor":"#F64747",
+			"Solid Tissue Normal":"#446CB3",
+			"si_log_p":"#466627",
+			"si_up_log_p":"#6C1C1D",
+			"si_down_log_p":"#42536A"
+		}[value];
+	}
 
-        /**
-         * [define_mutation_name description]
-         * @param  {[type]} _name [description]
-         * @return {[type]}       [description]
-         */
-         define_mutation_name : function(_name)  {
-            if((/MISSENSE/i).test(_name)) { return "Missense"; }
-            else if((/NONSENSE/i).test(_name)) { return "Nonsense"; }
-            else if((/(SPLICE_SITE)|(SPLICE_SITE_SNP)/i).test(_name)) { return "Splice_Site"; }
-            else if((/(SYNONYMOUS)|(SILENT)/i).test(_name)) { return "Synonymous"; }
-            else if((/(FRAME_SHIFT_INS)|(FRAME_SHIFT_DEL)/i).test(_name)) { return "Frame_shift_indel"; }
-            else if((/(IN_FRAME_INS)|(IN_FRAME_DEL)/i).test(_name)) { return "In_frame_indel"; }
-        },
-        /**
-         * [colour description]
-         * @param  {[type]} _value [description]
-         * @return {[type]}        [description]
-         */
-         colour : function(_value)   {
-            var value = _value || "";
+	var strcut = function(_string, _measure)  {
+		var result = [];
+		var empty = [];
 
-            return {
-                "Missense" : "#3E87C2",
-                "Nonsense" : "#EA3B29",
-                "In_frame_indel" : "#F2EE7E",
-                "Frame_shift_indel" : "#F68D3B",
-                "Splice_Site" : "#583D5F",
-                "Synonymous" : "#5CB755",
-                "Othre" : "#B5612E",
-                "pq" : "#C2C4C9",
-                "Primary Solid Tumor" : "#F64747",
-                "Solid Tissue Normal" : "#446CB3",
-                "si_log_p" : "#466627",
-                "si_up_log_p" : "#6C1C1D",
-                "si_down_log_p" : "#42536A"
-            }[value];
-        },
-        tooltip : function(_event, _contents, _x, _y)   {
-            var div = $('.tooltip');
-            var e = _event || null, contents = _contents || "", x = _x || 0, y = _y || 0;
+		for(var i = 1, len = _string.length ; i <= len + 1 ; i++)    {
+			if(_string[i - 1])		{
+				empty.push(_string[i - 1]);
+			}
+			if(i % _measure === 0)  {
+				result.push(empty);
+				empty = [];
+			}
+		}
 
-            if(arguments.length < 1) {
-                div.empty();
-                div.hide();
-            }
-            else   {
-                div.css("position", "absolute");
-                div.css("top", y);
-                div.css("left", x);
-                div.css("font-size", 14)
-                div.css("font-weight", "bold")
-                div.css("opacity", 0.7);
-                div.append(contents);
-                div.show();
-            }
-        },
-        log : function(_value)    {
-            var value = _value || 0;
+		return result;
+	}
 
-            return Math.log(value) / (Math.LN10 * -1);
-        }
-    };
+	var opposite_color = function(_rgb) {
+		var r1, g2, b2, r2, g2, b2;
+		var rgb_hex = strcut(_rgb, 2);
+
+		r1 = parseInt("0x" + rgb_hex[0][0].concat(rgb_hex[0][1]));
+		g1 = parseInt("0x" + rgb_hex[1][0].concat(rgb_hex[1][1]));
+		b1 = parseInt("0x" + rgb_hex[2][0].concat(rgb_hex[2][1]));
+
+		r2 = (255 - r1).toString(16);
+		g2 = (255 - g1).toString(16);
+		b2 = (255 - b1).toString(16);
+
+		return "#" + r2 + g2 + b2;
+	}
+
+	var tooltip = function(_event, _contents, _x, _y)   {
+		var div = $('.tooltip');
+		var e = _event || null, contents = _contents || "", x = _x || 0, y = _y || 0;
+
+		if(arguments.length < 1) {
+			div.empty();
+			div.hide();
+		}
+		else   {
+			div.css("position", "absolute");
+			div.css("top", y);
+			div.css("left", x);
+			div.css("font-size", 14)
+			div.css("font-weight", "bold")
+			div.css("opacity", 0.7);
+			div.append(contents);
+			div.show();
+		}
+	}
+
+	var log = function(_value)    {
+		var value = _value || 0;
+
+		return Math.log(value) / (Math.LN10 * -1);
+	}
+
+	var download = function(_name, _url)	{
+		var a = document.createElement("a");
+		var html_event = document.createEvent("HTMLEvents");
+
+		html_event.initEvent("click");
+
+		a.download = _name;
+		a.href = _url;
+		a.dispatchEvent(html_event);		
+	}
+
+	var toPng = function(_target, _name)	{
+		html2canvas($(_target), {
+			onrendered : function(canvas)	{
+				var png = Canvas2Image.convertToPNG(canvas).getAttribute("src");
+
+				download(_name + ".png", png);
+			}
+		});
+	}
+
+	var getClass = function(_name)	{
+		for (var i = 0, len = document.getElementsByTagName("*").length ; i < len ; i++)	{
+			if(document.getElementsByTagName("*")[i].className === _name)	{
+				return document.getElementsByTagName("*")[i];
+			}
+		} 
+	}
+
+	var get_tag_by_identification = function(_text)	{
+		return getClass(_text) || document.getElementById(_text);
+	}
+
+	var find_pathname = function(_pathname)	{
+		return _pathname.substring(_pathname.lastIndexOf("/") + 1,
+			_pathname.indexOf("plot"));
+	}
+
+	return {
+		getNum : getNum,
+		ordinalScale : ordinalScale,
+		linearScale : linearScale,
+		get_array_in_json : get_array_in_json,
+		check_array_in_json : check_array_in_json,
+		search_in_jsonarray : search_in_jsonarray,
+		get_json_in_array : get_json_in_array,
+		get_json_array_in_array : get_json_array_in_array,
+		remove_svg : remove_svg,
+		define_mutation_name : define_mutation_name,
+		colour : colour,
+		strcut : strcut,
+		opposite_color : opposite_color,
+		tooltip : tooltip,
+		log : log,
+		download : download,
+		toPng : toPng,
+		getClass : getClass,
+		getTag : get_tag_by_identification,
+		find_pathname : find_pathname
+	};
 })

@@ -35,7 +35,7 @@ var app = express();
 app.use(session({
     secret: 'keyboard cat',
     resave: true, //default
-    saveUninitialized: true,  //default
+    saveUninitialized: true, //default
     store: new MongoStore(options)
 }));
 
@@ -63,7 +63,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 if (app.get('env') === 'development') {
     app.use(logger('dev'));
     //app.use(security.debugLog);
-    app.set('view options', { pretty: true });
+    app.set('view options', {
+        pretty: true
+    });
 }
 
 app.use('/', root);

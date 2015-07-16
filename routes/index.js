@@ -10,6 +10,51 @@ router.get('/', function(req, res) {
     });
 });
 
+router.get('/commingsoon', function(req, res) {
+    res.render('system/commingsoon', {
+        user: req.user
+    });
+});
+
+
+var nodemailer = require('nodemailer');
+var transporter = require('./modules/transporter');
+var activator = require('./modules/activator');
+
+var createUser = function(req, res) {
+    req.activator = {
+        id: "12345tg", // the user ID to pass to createActivate()
+        body: "A message" // the body to send back along with the successful 201
+    };
+};
+
+router.post("/users", createUser, activator.createActivate);
+
+
+router.get('/sendmail', function(req, res) {
+    var mailOptions = {
+        from: 'Fred Foo ✔ <vingorius@gmail.com>', // sender address
+        to: 'vingorius@gmail.com', // list of receivers
+        cc: 'ercsbcdss@gmail.com',
+        subject: 'Hello ✔', // Subject line
+        text: 'Hello world ✔', // plaintext body
+        html: '<b>Hello world ✔</b>' // html body
+    };
+
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+            return console.log(error);
+        }
+        console.log('Message sent: ' + info.response);
+
+    });
+
+    res.render('system/commingsoon', {
+        user: req.user
+    });
+});
+
 /* Information
  req.flash('key') 는 한번 호출되고 나면 내용을 삭제한다.
  따라서 값을 다른 변수에 저장하여야 한다.
@@ -25,7 +70,7 @@ router.get('/', function(req, res) {
  */
 router.get('/register', function(req, res) {
     var prevArray = req.flash('prev');
-    var prev = (prevArray.length > 0) ?prevArray[0] : {};
+    var prev = (prevArray.length > 0) ? prevArray[0] : {};
 
     //console.log('2',req.flash('prev'));
     res.render('system/register', {

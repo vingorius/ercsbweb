@@ -1,4 +1,6 @@
 define("degplot/event_degplot", ["utils", "size"], function(_utils, _size)	{
+	var now_si = "";	// 캡슐화를 하여야 하는가? setter & getter 함수로
+
 	var rowspan = function(_rows)	{
 		var cell = "";
 		var cells = [];
@@ -31,24 +33,24 @@ define("degplot/event_degplot", ["utils", "size"], function(_utils, _size)	{
 		for(var i = 0, len = targets.length ; i < len ; i++)	{
 			if(targets[i].style.backgroundColor && 
 				d3.select(targets[i]).datum().id === _target)	{
-				targets[i].style.backgroundColor = 
-					_bgcolor(rgb, d3.select(targets[i]).datum().data, 
-						_min, _value);
+				d3.select(targets[i]).transition().duration(500)
+				.style("background-color", _bgcolor(rgb, d3.select(targets[i]).datum().data, 
+						_min, _value));
 			}
 		}
 	}
 
-	var change_gradient = function(_colors, _color_index, _si)	{
-		for(var i = 0, len = _si.length ; i < len ; i++)	{
-			d3.select("#gradient_end_" + _si[i])
-			.attr("stop-color", _colors[_color_index][i]);
-		}
+	var change_gradient = function(_color, _si)	{
+		d3.select("#gradient_end_" + _si)
+		.transition().duration(500)
+		.attr("stop-color", _color);
 	}
 
 	var change_brightness = function(_target, _min, _max, _value)	{
 		var brightness = d3.select("#" + _target + "_gradient");
 		var percent = 100;
-		var x2 = Math.round((percent * _value) / (_max - _min));
+		var x2 = (Math.round((percent * _value) / (_max - _min)) === 0) ?
+		1 : Math.round((percent * _value) / (_max - _min));
 
 		brightness
 		.attr("x2", x2 + "%");
@@ -114,22 +116,88 @@ define("degplot/event_degplot", ["utils", "size"], function(_utils, _size)	{
 	.on("drag", drag_lever)
 	.on("dragend", drag_end);
 
-	var click_radio = function(_target, _data, _si)	{
-		var color_index = _utils.getNum(_target.id);
-		var colors = _data.colors();
+	var all_colors = function()	{
+		var all_colors = d3.selectAll("stop")[0];
+		var result = [];
 
-		change_gradient(colors, color_index, _si);
+		for(var i = 0, len = all_colors.length ; i < len ; i++)	{
+			if(all_colors[i].id.indexOf("end_color_list") > -1)	{
+				result.push(all_colors[i]);
+			}
+		}
+		return result;
+	}
 
-		d3.selectAll(".degplot_lever_rect")[0].forEach(function(_d, _i)	{
-			var rect = d3.select(_d).datum();
+	var find_color = function(_target, _color, _now_color)	{
+		if($(_color).attr("stop-color").toUpperCase() 
+			=== _now_color.toUpperCase())	{
+			d3.select("#" + _target + " svg").style("border", "2px solid yellow");
+		}
+		else {
+			d3.select("#" + _target + " svg").style("border", "");
+		}
+	}
+
+	var find_what_in_all_colors = function(_all_color, _now_color)	{
+		for(var i = 0, len = _all_color.length ; i < len ; i++)	{
+			var color_num = _utils.getNum($(_all_color[i]).attr("id"));
+			var target = "color_list_" + color_num;
+
+			find_color(target, _all_color[i], _now_color);			
+		}
+	}
+
+	var set_selected_button = function(_target)	{
+		var all_area = $(".gradient_area");
+		var check_id = _target.substring(0, _target.indexOf("_"));
+
+		for(var i = 0, len = all_area.length ; i < len ; i++)	{
+			var svg = $(all_area[i]);
+			var classname = svg.attr("class");
+			if(classname.indexOf(check_id) > -1)	{
+				if(classname.indexOf(_target) > -1)	{
+					svg.css("border", "2px solid yellow");
+				}
+				else {
+					svg.css("border", "");
+				}
+			}
+		}
+	}
+
+	var colors_click = function(_d)	{
+		var target = this.id.substring(this.id.indexOf("_") + 1, this.id.length);
+		var now_color = get_gradient_end(target);
+		var color_config_show = $("#color_config").collapse("show");
+		var all_color = all_colors();
+
+		set_selected_button(target);
+
+		now_si = target;
+		find_what_in_all_colors(all_color, now_color);
+	}
+
+	var click_color_cell = function(_d)	{
+		var target = _d.id.substring(_d.id.lastIndexOf("_") + 1, _d.id.length);
+		var all_color = all_colors();
+		var index = _utils.getNum(_d.id);
+
+		find_what_in_all_colors(all_color, _d.color);
+		change_gradient(_d.color, now_si);
+
+		d3.selectAll(".degplot_lever_rect")[0].forEach(function(_data, _i)	{
+			var rect = d3.select(_data).datum();
 			
-			change_cell_background(rect.id, rect.min, rect.max, rect.bgcolor, colors[color_index][_i]);
+			if(rect.id === now_si)	{
+				change_cell_background(rect.id, rect.min, rect.max, rect.bgcolor, _d.color);
+			}		
 		});
 	}
 
 	return {
 		rowspan : rowspan,
 		drag : drag_figure,
-		click_radio : click_radio
+		colors : colors_click,
+		color_cell : click_color_cell
 	}
 });	

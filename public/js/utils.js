@@ -114,9 +114,9 @@ define("utils", [], function()  {
 			"pq":"#C2C4C9",
 			"Primary Solid Tumor":"#F64747",
 			"Solid Tissue Normal":"#446CB3",
-			"si_log_p":"#466627",
+			"si_log_p":"#466D1C",
 			"si_up_log_p":"#6C1C1D",
-			"si_down_log_p":"#42536A"
+			"si_down_log_p":"#2F3B4B"
 		}[value];
 	}
 
@@ -191,12 +191,39 @@ define("utils", [], function()  {
 
 	var toPng = function(_target, _name)	{
 		html2canvas($(_target), {
+			useCORS : true,
 			onrendered : function(canvas)	{
-				var png = Canvas2Image.convertToPNG(canvas).getAttribute("src");
 
-				download(_name + ".png", png);
+				console.log(d3.selectAll("svg"));
+
+				d3.selectAll(".needleplot_view")[0].forEach(function(_d)	{
+					var html = d3.select(_d)
+					.attr({
+						'xmlns': 'http://www.w3.org/2000/svg',
+						'xmlns:xmlns:xlink': 'http://www.w3.org/1999/xlink',
+						version: '1.1'
+					}) 
+					.node().parentNode.innerHTML;
+
+					var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+					var context = canvas.getContext("2d");
+					var image = new Image;
+					image.src = imgsrc;
+					image.onload = function()	{
+						context.drawImage(image,d3.select(_d).attr("x"), d3.select(_d).attr("y"));
+						var canvasdata = canvas.toDataURL("image/png");
+						download(_name + ".png", canvasdata);
+					}
+				});
 			}
 		});
+	}
+
+	var preserve_events = function(_event)	{
+		var e = _event || event || d3.event;
+
+		e.stopPropagation();
+		e.preventDefault();
 	}
 
 	var getClass = function(_name)	{
@@ -236,6 +263,7 @@ define("utils", [], function()  {
 		toPng : toPng,
 		getClass : getClass,
 		getTag : get_tag_by_identification,
-		find_pathname : find_pathname
+		find_pathname : find_pathname,
+		preserve_events : preserve_events
 	};
 })

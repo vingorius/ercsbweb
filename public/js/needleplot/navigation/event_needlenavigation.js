@@ -86,7 +86,7 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 				return Math.max(elements.box.attr("x"), 
 					Math.min(size.rwidth, right_x + (d3.event.x)));
 			})
-			.on("mouseup", function(_d) { resizing_right_end(_d, now_x); });
+			.on("mouseup", function(_d) { resizing_right_end(_d, now_x, xl); });
 
 			elements.box.attr("width", function(_d)  {
 				return _d.width = Math.max(size.margin.left, 
@@ -95,7 +95,7 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			scale_needle_plot(elements.box.attr("x"), elements.box.attr("width"));       
 		}
 
-		var resizing_right_end = function(_d, _now)	{
+		var resizing_right_end = function(_d, _now, _xl)	{
 			right_x = _now;
 		}
 
@@ -106,7 +106,8 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 
 			elements.left.attr("x", function(_d)    {
 				return _d.x = Math.max(0, Math.min((xr - lw), d3.event.x));
-			});
+			})
+			.on("mouseup", function(_d) { moving_end(_d, xr - xl); });
 
 			elements.box
 			.attr("width", function(_d) {

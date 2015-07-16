@@ -15,10 +15,11 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 					id : Object.keys(_column)[i],
 					data : cell_data
 				});
-				_row.cells[i].style.backgroundColor = 
-				_data.backgroundcolor(_utils.colour(Object.keys(_column)[i]), 
+				d3.select(_row.cells[i]).style("background-color", 
+					_data.backgroundcolor(_utils.colour(Object.keys(_column)[i]), 
 					cell_data, _data[Object.keys(_column)[i]].min, 
-					_data[Object.keys(_column)[i]].max);
+					_data[Object.keys(_column)[i]].max)
+				);
 			}
 		}
 	}
@@ -65,6 +66,7 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 		var margin = 5;
 		var svg = d3.select("#" + _id)
 		.append("svg")
+		.attr("class", "gradient_area " + _id)
 		.attr("width", _width)
 		.attr("height", _height);
 
@@ -84,10 +86,28 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 		svg.append("g")
 		.attr("transform", "translate(0, 0)")
 		.append("rect")
+		.data([{ this : svg, id : _id, color : _end }])
 		.attr("x", 0).attr("y", 0)
 		.attr("width", _width - margin)
-		.attr("height", _height * 0.5)
-		.style("fill", "url(#" + _id + "_gradient)");
+		.attr("height", _height)
+		.style("fill", "url(#" + _id + "_gradient)")
+		.on("click", _e.color_cell);
+	}
+
+	var make_span_option = function(_si)	{
+		var option = _size.mkdiv({
+			attribute : "",
+			style : { float : "left" }
+		});
+
+		var option_icon = document.createElement("a");
+		option_icon.setAttribute("class", "glyphicon glyphicon-option-vertical");
+		option_icon.setAttribute("id", "option_" + _si);
+		option_icon.onclick = _e.colors;
+
+		option.appendChild(option_icon);
+
+		return option;
 	}
 
 	var make_range_component = function(_data, _si, _width, _height)	{
@@ -96,21 +116,28 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 
 		for(var i = 0, len = _si.length ; i < len ; i++)	{
 			var row = _size.mkdiv();
+			var component = _size.mkdiv({
+				attribute : "",
+				style : { float : "left", }
+			});
+			var option = make_span_option(_si[i]);
 			var comp_lever = _size.mkdiv({
 				attribute : { id : "lever_" + _si[i], },
-				style : { "width" : _width + "px", "height" : _height + "px" }
+				style : { "width" : _width * 0.9 + "px", "height" : _height + "px" }
 			});
 			var comp_gradient = _size.mkdiv({
 				attribute : { id : _si[i], },
-				style : { "width" : _width + "px", "height" : _height + "px" }
+				style : { "width" : _width * 0.9 + "px", "height" : _height + "px" }
 			});
 
-			row.appendChild(comp_lever);
-			row.appendChild(comp_gradient);
+			component.appendChild(comp_lever);
+			component.appendChild(comp_gradient);
+			row.appendChild(component);
+			row.appendChild(option);
 			range_component.appendChild(row);
-			
-			lever("lever_" + _si[i], _data, _width, _height);	
-			range_gradient(_si[i], "#FFFFFF", _utils.colour(_si[i]), _width, _height);
+
+			lever("lever_" + _si[i], _data, _width * 0.9, _height);	
+			range_gradient(_si[i], "#FFFFFF", _utils.colour(_si[i]), _width * 0.9, _height);
 		}
 	}
 
@@ -121,45 +148,17 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 
 		for(var j = 0, leng = colors.length ; j < leng ; j++)	{
 			var row = _size.mkdiv();
-
-			var radio_div = _size.mkdiv({
-				attribute : { id : "color_config_radio_div_" + j },
-				style : {
-					"float" : "left",
-					"width" : (_width / (_si.length + 2)) + "px", "height" : _height + "px",
+			var comp_config = _size.mkdiv({
+				attribute : { id : "color_list_" + j },
+				style : { 
+					"float" : "left", 
+					"width" : (_width / _si.length) + "px", "height" : _height + "px",
 					"margin-bottom" : "5px" 
 				}
 			});
-
-			var radio = document.createElement("input");
-			radio.setAttribute("type", "radio")
-			radio.setAttribute("class", "color_config_radio_button")
-			radio.setAttribute("name", "color_config_radio")
-			radio.setAttribute("id", "color_config_radio_" + j);
-
-			if(j === 0)	{
-				radio.setAttribute("checked", true);
-			}
-
-			radio_div.appendChild(radio);
-			row.appendChild(radio_div);
-
-			for(var i = 0, len = _si.length ; i < len ; i++)	{
-				var comp_config = _size.mkdiv({
-					attribute : { id : "config" + "_" + j + "_" + i },
-					style : { 
-						"float" : "left", 
-						"width" : (_width / (_si.length + 1)) + "px", "height" : _height + "px",
-						"margin-bottom" : "5px" 
-					}
-				});
-				row.appendChild(comp_config);	
-			}
+			row.appendChild(comp_config);	
 			config_component.appendChild(row);
-
-			for(var k = 0, lengt = _si.length ; k < lengt ; k++)	{
-				range_gradient("config" + "_" + j + "_" + k, "#FFFFFF", colors[j][k], (_width / _si.length), _height);
-			}
+			range_gradient("color_list_" + j, "#FFFFFF", colors[j], (_width / _si.length), _height);
 		}
 	}
 
@@ -180,9 +179,7 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 		make_range_component(_data, _data.si, width, height);
 		make_config_component(_data, _data.si, width, height);
 
-		$(".color_config_radio_button").on("click", function()	{
-			_e.click_radio(this, _data, _data.si)
-		});
+		$("#color_config_a").click(_utils.preserve_events);
 	}
 
 	return {

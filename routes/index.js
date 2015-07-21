@@ -6,8 +6,10 @@ var security = require('./modules/security');
 //
 var getConnection = require('./modules/mysql_connection');
 
-
 router.get('/', function(req, res) {
+    // console.log('Session:',req.session);
+    // console.log('req.user:',req.user);
+    // req.user == req.session.passport.user
     res.render('index', {
         user: req.user
     });
@@ -28,43 +30,43 @@ router.get('/message', function(req, res) {
 });
 
 
-var nodemailer = require('nodemailer');
-var transporter = require('./modules/transporter');
-var activator = require('./modules/activator');
-
-var createUser = function(req, res) {
-    req.activator = {
-        id: "12345tg", // the user ID to pass to createActivate()
-        body: "A message" // the body to send back along with the successful 201
-    };
-};
-
-router.post("/users", createUser, activator.createActivate);
-
-
-router.get('/sendmail', function(req, res) {
-    var mailOptions = {
-        from: 'Fred Foo ✔ <vingorius@gmail.com>', // sender address
-        to: 'vingorius@gmail.com', // list of receivers
-        cc: 'ercsbcdss@gmail.com',
-        subject: 'Hello ✔', // Subject line
-        text: 'Hello world ✔', // plaintext body
-        html: '<b>Hello world ✔</b>' // html body
-    };
-
-    // send mail with defined transport object
-    transporter.sendMail(mailOptions, function(error, info) {
-        if (error) {
-            return console.log(error);
-        }
-        console.log('Message sent: ' + info.response);
-
-    });
-
-    res.render('system/commingsoon', {
-        user: req.user
-    });
-});
+// var nodemailer = require('nodemailer');
+// var transporter = require('./modules/transporter');
+// var activator = require('./modules/activator');
+//
+// var createUser = function(req, res) {
+//     req.activator = {
+//         id: "12345tg", // the user ID to pass to createActivate()
+//         body: "A message" // the body to send back along with the successful 201
+//     };
+// };
+//
+// router.post("/users", createUser, activator.createActivate);
+//
+//
+// router.get('/sendmail', function(req, res) {
+//     var mailOptions = {
+//         from: 'Fred Foo ✔ <vingorius@gmail.com>', // sender address
+//         to: 'vingorius@gmail.com', // list of receivers
+//         cc: 'ercsbcdss@gmail.com',
+//         subject: 'Hello ✔', // Subject line
+//         text: 'Hello world ✔', // plaintext body
+//         html: '<b>Hello world ✔</b>' // html body
+//     };
+//
+//     // send mail with defined transport object
+//     transporter.sendMail(mailOptions, function(error, info) {
+//         if (error) {
+//             return console.log(error);
+//         }
+//         console.log('Message sent: ' + info.response);
+//
+//     });
+//
+//     res.render('system/commingsoon', {
+//         user: req.user
+//     });
+// });
 
 /* Information
  req.flash('key') 는 한번 호출되고 나면 내용을 삭제한다.
@@ -85,7 +87,7 @@ router.get('/register', function(req, res) {
 
     //console.log('2',req.flash('prev'));
     res.render('system/register', {
-        message: req.flash('signupMessage'),
+        message: req.flash('message'),
         prev: prev
     });
 });
@@ -106,7 +108,7 @@ router.get('/profile', security.isAuthenticated, function(req, res) {
 
             res.render('system/profile', {
                 user: req.user,
-                message: req.flash('profileMessage'),
+                message: req.flash('message'),
                 prev: prev
             });
         });
@@ -139,7 +141,7 @@ router.post('/profile', security.isAuthenticated, function(req, res) {
 router.get('/login', function(req, res) {
     res.render('system/login', {
         user: req.user,
-        message: req.flash('loginMessage')
+        message: req.flash('message')
     });
 });
 
@@ -156,7 +158,7 @@ router.post('/login', passport.authenticate('login', {
         req.session.cookie.expires = false;
     }
     // Admin인지 여부 체크, Admin 메뉴를 보여줄 지 여부 확인.
-    req.user.isAdmin = (req.user.group === 'admin')? true : false; 
+    req.user.isAdmin = (req.user.group === 'admin')? true : false;
     // security.js에서 session에 넣어둔 원 path로 redirect한다.
     var origin = req.session.origin_path || '/';
     delete req.session.origin_path;

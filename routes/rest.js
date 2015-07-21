@@ -63,12 +63,12 @@ router.get('/comutationplot', function(req, res, next) {
                 var sample = plot.getSample(sample_list, data.sample);
                 var aberration = plot.newAberration(data.type, data.value);
 
-                if (typeof sample == 'undefined') {
+                if (sample === undefined) {
                     sample = plot.newSample('id', data.sample, data.group, []);
                     sample_list.push(sample);
                 }
                 var gene = plot.getGene(sample.gene_list, data.hugo);
-                if (typeof gene == 'undefined') {
+                if (gene === undefined) {
                     gene = plot.newGene(data.hugo, []);
                     sample.gene_list.push(gene);
                 }
@@ -121,12 +121,12 @@ router.get('/tumorportal_cmp', function(req, res, next) {
                     var sample = plot.getSample(sample_list, data.sample);
                     var aberration = plot.newAberration(data.type, data.value);
 
-                    if (typeof sample == 'undefined') {
+                    if (sample === undefined) {
                         sample = plot.newSample('id', data.sample, data.group, []);
                         sample_list.push(sample);
                     }
                     var gene = plot.getGene(sample.gene_list, data.hugo);
-                    if (typeof gene == 'undefined') {
+                    if (gene === undefined) {
                         gene = plot.newGene(data.hugo, []);
                         sample.gene_list.push(gene);
                     }
@@ -304,5 +304,6 @@ router.get('/degplot', function(req, res, next) {
 
 
 });
+
 
 module.exports = router;

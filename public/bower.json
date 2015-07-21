@@ -23,7 +23,7 @@
     "fontawesome": "~4.3.0",
     "jquery-validation": "~1.14.0",
     "country-select-js": "~1.0.4",
-    "please-wait": "~0.0.5"
+    "please-wait": "~0.0.5",
     "bootstrap-table": "~1.8.1",
     "bootstrap-toggle": "~2.2.0"
   }

@@ -3,6 +3,7 @@ extends ../layout/basiclayout
 block append stylesheets
     link(rel='stylesheet', href='/bower_components/bootstrap-table/dist/bootstrap-table.css')
     link(rel='stylesheet', href='/bower_components/bootstrap-toggle/css/bootstrap-toggle.css')
+    link(rel='stylesheet', href='//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css')
     style.
         //- .table {
         //- 	table-layout:fixed;
@@ -14,96 +15,12 @@ block append stylesheets
         }
 
 block content
-    div.container(style={'margin-top':'50px'})
+    div.container(style={'width':'1270px','margin-top':'50px'})
         table#table
-        table(data-toggle='table', data-method='post', data-url='/admin/users', data-row-style="rowStyle")
-          thead
-            tr
-                th(data-formatter="noFormatter") #
-                th(data-field='username',data-sortable='true')
-                    i.fa.fa-at
-                    |  ID
-                th(data-field='fullname',data-sortable='true') Name
-                th(data-field='group',data-sortable='true',editable='{type="text",title="Hello"}') Group
-                th(data-field='mobile')
-                    i.fa.fa-lg.fa-mobile
-                    |  Mobile
-                th(data-field='birth') Day of birth
-                th(data-field='country')
-                    i.fa.fa-flag-o
-                    |  Country
-                th(data-field='gender',data-sortable='true',data-align="center",data-formatter="genderFormatter")
-                    i.fa.fa-mars
-                    i.fa.fa-venus
-                th(data-field='company_name')
-                    i.fa.fa-building-o
-                    |  Company
-                th(data-field='company_address') Company address
-                th(data-field='company_position', rowspan="2" ) Position
-                th(data-field='enable',data-sortable='true',data-formatter="statusFormatter") E
-
+            
 block append scripts
-    script(src='/bower_components/bootstrap-table/dist/bootstrap-table-all.js')
+    script(src='/bower_components/bootstrap-table/dist/bootstrap-table.js')
     script(src='/bower_components/bootstrap-table/dist/extensions/editable/bootstrap-table-editable.js')
-    script(src="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js")            script(src='/bower_components/bootstrap-toggle/js/bootstrap-toggle.js')
-    script.
-        $('#table1').bootstrapTable({
-            url: '/admin/users',
-            method: 'post',
-            columns: [
-                {
-                    field: 'username',
-                    title: 'ID'
-                }, 
-                {
-                    field: 'fullname',
-                    title: 'Name',
-                }, 
-                {
-                    field: 'group',
-                    title: 'Group',
-                }, 
-                {
-                    field: 'mobile',
-                    title: 'Mobile',
-                }, 
-                {
-                    field: 'birth',
-                    title: 'Day of birth',
-                }, 
-                {
-                    field: 'country',
-                    title: 'Country',
-                }, 
-                {
-                    field: 'gender',
-                    title: 'Gender',
-                }, 
-                {
-                    field: 'company_name',
-                    title: 'company_name',
-                }, 
-                {
-                    field: 'company_address',
-                    title: 'company_address',
-                }, 
-                {
-                    field: 'company_position',
-                    title: 'company_position',
-                }, 
-            ]
-        });        
-        function rowStyle(row, index) {
-            return (row.enable)? {classes:''} : {classes:'active'};
-        }          
-        function noFormatter(value, row, index) {
-            return index + 1;
-        }
-        function genderFormatter(value, row) {
-            var icon = (row.gender === 'M') ? 'fa-mars' : 'fa-venus';
-            return '<i class="fa ' + icon + '"></i> ';
-        }
-        function statusFormatter(value, row) {
-            var icon = (row.enable === 0) ? 'fa-frown-o' : 'fa-smile-o';
-            return '<i class="fa ' + icon + '"></i> ';
-        }
+    script(src="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js")
+    script(src='/bower_components/bootstrap-toggle/js/bootstrap-toggle.js')
+    script(src='/js/admin.js')

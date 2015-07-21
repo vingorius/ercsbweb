@@ -21,15 +21,6 @@ router.get('/commingsoon', function(req, res) {
     });
 });
 
-router.get('/message', function(req, res) {
-    res.render('system/message', {
-        user: req.user,
-        message: req.flash('message'),
-        type: req.flash('type')
-    });
-});
-
-
 // var nodemailer = require('nodemailer');
 // var transporter = require('./modules/transporter');
 // var activator = require('./modules/activator');
@@ -132,7 +123,7 @@ router.post('/profile', security.isAuthenticated, function(req, res) {
                 if (err) throw err;
                 req.flash('message', 'Profile updated.');
                 req.flash('type', 'success');
-                res.redirect('/message');
+                res.redirect('/profile');
             });
     });
 

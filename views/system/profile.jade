@@ -11,11 +11,6 @@ block content
             form#registerform.form-register(method='post',action='/profile')
                 h2.form-signin-heading Profile
                 //h2.form-signin-heading: span.glyphicon.glyphicon-registration-mark  Register
-                if message.length > 0
-                    div.row    
-                        div.col-md-12
-                            div.alert.alert-danger #{message}
-                hr
                 h3(style={'margin-top': '20px'}) Personal
                 div.row    
                     div.col-md-12.form-group
@@ -56,6 +51,13 @@ block content
                         input#company_position.form-control(placeholder='Your Position', name='company_position', type='text', value=prev.company_position)
                 button.btn.btn-lg.btn-primary.btn-block.ladda-button(type='submit',data-style='zoom-in') 
                     span.ladda-label Profile Update
+
+                if message.length > 0
+                    hr
+                    div.row    
+                        div.col-md-12
+                            div(class='alert alert-success') #{message}
+
                     
 block append scripts
     script(src='/bower_components/jquery-validation/dist/jquery.validate.js')

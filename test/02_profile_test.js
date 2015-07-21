@@ -45,7 +45,7 @@ describe('Profile Test Suite', function() {
         agent.post('/profile')
             .send(user)
             .expect(302) //Moved Temporarily
-            .expect('Location', '/message')
+            .expect('Location', '/profile')
             .end(function(err, res) {
                 if (err) return done(err);
                 done();
@@ -65,7 +65,7 @@ describe('Profile Test Suite', function() {
         agent.post('/profile')
             .send(user)
             .expect(302) //Moved Temporarily
-            .expect('Location', '/message')
+            .expect('Location', '/profile')
             .end(function(err, res) {
                 if (err) return done(err);
                 done();

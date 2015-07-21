@@ -83,7 +83,7 @@ app.use('/files', files);
 // catch 404 and forward to error handler
 //여기까지 왔다는 말은 처리할 핸들러가 없다는 뜻.
 app.use(function(req, res, next) {
-    var err = new Error('Not Found');
+    var err = new Error('Page Not Found');
     err.status = 404;
     next(err);
 });

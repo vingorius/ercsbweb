@@ -52,7 +52,7 @@ module.exports = function(passport) {
                 req.flash('prev', getUserFromInputData(req));
                 //console.log('username',req.body.username);
                 if (!validator.isEmail(username)) {
-                    return done(null, false, req.flash('signupMessage', 'Please insert a valid E-mail address.'));
+                    return done(null, false, req.flash('message', 'Please insert a valid E-mail address.'));
                 }
                 // find a user whose email is the same as the forms email
                 // we are checking to see if the user trying to login already exists
@@ -63,7 +63,7 @@ module.exports = function(passport) {
                             return done(err);
 
                         if (rows[0].length) {
-                            return done(null, false, req.flash('signupMessage', 'That username is already taken.'));
+                            return done(null, false, req.flash('message', 'That username is already taken.'));
                         } else {
                             // if there is no user with that username
                             // create the user
@@ -124,12 +124,12 @@ module.exports = function(passport) {
                         var user = rows[0][0]; //Only One Rows
                         //console.log(user);
                         if (typeof user === 'undefined') {
-                            return done(null, false, req.flash('loginMessage', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
+                            return done(null, false, req.flash('message', 'No user found.')); // req.flash is the way to set flashdata using connect-flash
                         }
 
                         // if the user is found but the password is wrong
                         if (!bcrypt.compareSync(password, user.password))
-                            return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.')); // create the loginMessage and save it to session as flashdata
+                            return done(null, false, req.flash('message', 'Oops! Wrong password.')); // create the message and save it to session as flashdata
 
                         // all is well, return successful user
                         //rows[0].permissions =  ["admin:*"];

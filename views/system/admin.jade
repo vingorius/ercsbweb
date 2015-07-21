@@ -1,25 +1,26 @@
 extends ../layout/basiclayout
 
+block append stylesheets
+    link(rel='stylesheet', href='/bower_components/bootstrap-table/dist/bootstrap-table.css')
+    link(rel='stylesheet', href='/bower_components/bootstrap-toggle/css/bootstrap-toggle.css')
+    link(rel='stylesheet', href='//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/css/bootstrap-editable.css')
+    style.
+        //- .table {
+        //- 	table-layout:fixed;
+        //- }
+        .table td {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
 block content
-    div.container
-        h2 Admin
-        if (user)
-            h3 User
-            -for(var prop in user)
-                p #{prop}: #{user[prop]}
-        if (session)
-            h3 Session
-            +printObject(session)
-            //- each data,prop in session
-            //-     if typeof(data) ==  'object'
-            //-         h4 #{prop}
-            //-         each x,y in data
-            //-             h5 #{y}: #{x} 
-
-
-    mixin printObject(obj)
-        each data,prop in obj
-            if typeof(data) == 'object'
-                h4 #{prop}: #{data}
-                each x,y in data
-                    h5 #{y}: #{x}
+    div.container(style={'width':'1270px','margin-top':'50px'})
+        table#table
+            
+block append scripts
+    script(src='/bower_components/bootstrap-table/dist/bootstrap-table.js')
+    script(src='/bower_components/bootstrap-table/dist/extensions/editable/bootstrap-table-editable.js')
+    script(src="//rawgit.com/vitalets/x-editable/master/dist/bootstrap3-editable/js/bootstrap-editable.js")
+    script(src='/bower_components/bootstrap-toggle/js/bootstrap-toggle.js')
+    script(src='/js/admin.js')

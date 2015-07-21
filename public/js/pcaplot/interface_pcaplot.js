@@ -1,4 +1,9 @@
-define("pcasetting", ["utils", "size", "legend/setting_legend", "pcaplot2d/setting_pcaplot2d", "pcaplot3d/setting_pcaplot3d"], function(_utils, _size, _setting_legend, _setting_2d, _setting_3d)	{
+var PCA = "pcaplot/interface_pcaplot";
+var _2D = "pcaplot/pca2d/setting_pcaplot2d";
+var _3D = "pcaplot/pca3d/setting_pcaplot3d";
+var LEGEND = "legend/setting_legend";
+
+define(PCA, ["utils", "size", LEGEND, _2D, _3D], function(_utils, _size, _setting_legend, _setting_2d, _setting_3d)	{
 	var exchange_tsv = function(_data)  {
 		var data = _data || "";
 		var linefeed_data = linefeed_tsv(data, tab_separate_tsv);
@@ -57,6 +62,21 @@ define("pcasetting", ["utils", "size", "legend/setting_legend", "pcaplot2d/setti
 		};
 	}
 
+	var mutation_importance = function(_data)	{
+		var result = [];
+
+		for (var i = 0, len = _data.length ; i < len ; i++)	{
+			var type = _utils.get_json_in_array(_data[i].TYPE, result, "name");
+			if(type)	{
+				type.importance += 1;
+			}
+			else {
+				result.push({ name : _data[i].TYPE, importance : 0 });
+			}
+		}
+		return result;
+	}
+
 	var min_max = function(_data, _axis)  {
 		var add_axis = 10;
 
@@ -84,13 +104,14 @@ define("pcasetting", ["utils", "size", "legend/setting_legend", "pcaplot2d/setti
 		var data = exchange_tsv(_data || []);
 		var type_list = get_type_list(data.sample_list);
 		var canvas = $("canvas");
+		var importance = mutation_importance(data.sample_list);
 
 		_utils.remove_svg("pcaplot_view_2d");
 		_utils.remove_svg("pcaplot_legend");
 
 		if(!!canvas)	{ canvas.remove(); }
 
-		_setting_legend(type_list, "pcaplot_legend", figure_list);
+		_setting_legend(type_list, "pcaplot_legend", figure_list, importance);
 
 		if(window.location.pathname.indexOf("3d") > 0)	{
 			_setting_3d(data, min_max, figure_list);	

@@ -1,4 +1,6 @@
-define("comutationnavigation/view_comutationnavigation", ["utils", "size", "comutationnavigation/event_comutationnavigation"], function(_utils, _size, _event)	{
+var COMUTS_NAVI = "comutationplot/navigation/";
+
+define(COMUTS_NAVI + "view_comutationnavigation", ["utils", "size", COMUTS_NAVI + "event_comutationnavigation"], function(_utils, _size, _event)	{
 	var make_div = function()	{
 		var side = document.getElementById("comutationplot_scale");
 		var prev_div = $("#comutationplot_scale_div");
@@ -10,11 +12,13 @@ define("comutationnavigation/view_comutationnavigation", ["utils", "size", "comu
 		var div = document.createElement("div");
 		div.setAttribute("class", "input-group-spinner");
 		div.setAttribute("id", "comutationplot_scale_div");
+		div.style.width = "100px";
 		var input = document.createElement("input");
 		input.setAttribute("type", "text");
 		input.setAttribute("class", "form-control");
 		input.setAttribute("id", "comutationplot_scale_input");
 		input.setAttribute("value", "100%");
+		input.setAttribute("disabled", true);
 		var vertical_div = document.createElement("div");
 		vertical_div.setAttribute("class", "input-group-btn-vertical");
 		vertical_div.setAttribute("id", "comutationplot_vertical_div");
@@ -32,15 +36,26 @@ define("comutationnavigation/view_comutationnavigation", ["utils", "size", "comu
 		var i_down = document.createElement("i");
 		i_down.setAttribute("class", "fa fa-caret-down");
 		i_down.setAttribute("id", "comutationplot_down_i");
+		var div_init = document.createElement("div");
+		div_init.setAttribute("class", "input-group-btn");
+		var btn_init = document.createElement("button");
+		btn_init.setAttribute("class", "btn btn-defalut");
+		btn_init.setAttribute("id", "comutationplot_initial_button");
+		var span_init = document.createElement("span");
+		span_init.setAttribute("class", "glyphicon glyphicon-record");
+		span_init.setAttribute("aria-hidden", "true");
 
 		btn_up.appendChild(i_up);
 		btn_down.appendChild(i_down);
+		btn_init.appendChild(span_init);
 
 		vertical_div.appendChild(btn_up);
 		vertical_div.appendChild(btn_down);
+		div_init.appendChild(btn_init);
 
 		div.appendChild(input);
 		div.appendChild(vertical_div);
+		div.appendChild(div_init)
 
 		side.appendChild(div);
 	}
@@ -56,15 +71,23 @@ define("comutationnavigation/view_comutationnavigation", ["utils", "size", "comu
 		.on("click", e.click)
 		.tooltip({
 			title : "확대",
-			placement : "right"
+			placement : "top"
 		});
 
 		$("#comutationplot_draw_down")
 		.on("click", e.click)
 		.tooltip({
 			title : "축소",
-			placement : "right"
+			placement : "bottom"
 		});
+
+		$("#comutationplot_initial_button")
+		.on("click", e.init)
+		.tooltip({
+			container : "body",
+			title : "처음으로",
+			placement : "right"
+		})
 	}
 
 	return {

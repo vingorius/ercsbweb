@@ -173,9 +173,7 @@ define("utils", [], function()  {
 	}
 
 	var log = function(_value)    {
-		var value = _value || 0;
-
-		return Math.log(value) / (Math.LN10 * -1);
+		return Math.log(_value) / (Math.LN10 * -1);
 	}
 
 	var download = function(_name, _url)	{
@@ -193,9 +191,6 @@ define("utils", [], function()  {
 		html2canvas($(_target), {
 			useCORS : true,
 			onrendered : function(canvas)	{
-
-				console.log(d3.selectAll("svg"));
-
 				d3.selectAll(".needleplot_view")[0].forEach(function(_d)	{
 					var html = d3.select(_d)
 					.attr({
@@ -220,7 +215,7 @@ define("utils", [], function()  {
 	}
 
 	var preserve_events = function(_event)	{
-		var e = _event || event || d3.event;
+		var e = event || d3.event;
 
 		e.stopPropagation();
 		e.preventDefault();
@@ -241,6 +236,49 @@ define("utils", [], function()  {
 	var find_pathname = function(_pathname)	{
 		return _pathname.substring(_pathname.lastIndexOf("/") + 1,
 			_pathname.indexOf("plot"));
+	}
+
+	var define_prop = function(_obj, _value, _key)	{
+		return Object.defineProperty(_obj, _key, {
+			value : _value,
+			writable : true,
+			configurable : true,
+			enumrable : false
+		});
+	}
+
+	var get_list_sum = function(_array, _key)	{
+		try {
+			var result = 0;
+
+			for(var i = 0, len = _array.length ; i < len ; i++)	{
+				if((/[pq]/).test(_key))	{
+					result += log(_array[i][_key]);	
+				}
+				else {
+					result += _array[i][_key];
+				}
+			}
+			return result;
+		}
+		finally {
+			result = null;
+		}
+	}
+
+	var loading = function(_class)	{
+		var loadgin_area = $("#loading_area").fadeIn();
+		var loading_div = $("." + _class).fadeIn();
+
+		window.onresize = function(_event)	{
+			var chart_div = $(window);
+			var chart_width = chart_div.width();
+			var chart_height = chart_div.height();
+
+			loading_div
+			.css("top", 890)
+			.css("left", 1858);
+		}
 	}
 
 	return {
@@ -264,6 +302,9 @@ define("utils", [], function()  {
 		getClass : getClass,
 		getTag : get_tag_by_identification,
 		find_pathname : find_pathname,
-		preserve_events : preserve_events
+		preserve_events : preserve_events,
+		defineProp : define_prop,
+		get_list_sum : get_list_sum,
+		loading : loading
 	};
 })

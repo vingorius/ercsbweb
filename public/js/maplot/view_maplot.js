@@ -1,4 +1,6 @@
-define("maplot/view_maplot", ["utils", "size", "maplot/event_maplot"], function(_utils, _size, _event) {
+var MA = "maplot/";
+
+define(MA + "view_maplot", ["utils", "size", MA + "event_maplot"], function(_utils, _size, _event) {
 	var side_menu = function(_e)   {
 		var div = $("#maplot_result");
 		var input = $("#maplot_result_view");
@@ -65,15 +67,10 @@ define("maplot/view_maplot", ["utils", "size", "maplot/event_maplot"], function(
 		.data(data.data.data.plot_list)
 		.enter().append("circle")
 		.attr("class", "maplot_circles")
-		.attr("r", 2)
-		.attr("cx", function(_d) { return data.x(_d.x); })
-		.attr("cy", function(_d) { return data.y(_d.y); })
 		.style("fill", function(_d) { return data.color(_d, data.cut_off); });
 
 		data.all_circles = circles;
-
 		var e = _event(data) || null;
-
 		side_menu(e);
 
 		svg
@@ -81,7 +78,11 @@ define("maplot/view_maplot", ["utils", "size", "maplot/event_maplot"], function(
 
 		circles
 		.on("mouseover", e.m_over)
-		.on("mouseout", e.m_out);
+		.on("mouseout", e.m_out)
+		.transition().delay(function(_d, _i) { return _i * (1 / 10); })
+		.attr("r", 2)
+		.attr("cx", function(_d) { return data.x(_d.x); })
+		.attr("cy", function(_d) { return data.y(_d.y); });
 	}
 
 	return {

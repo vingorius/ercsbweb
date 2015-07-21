@@ -1,4 +1,6 @@
-define("pcaplot2d/view_pcaplot2d", ["utils", "size", "pcaplot2d/event_pcaplot2d"], function(_utils, _size, _event)	{
+var _2D = "pcaplot/pca2d/";
+
+define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], function(_utils, _size, _event)	{
 	var interface_figure = function(_data, _x, _y, _svg, _type)	{
 		switch(_type)	{
 			case "circle" : return circles(_data, _x, _y, _svg); break;
@@ -76,10 +78,10 @@ define("pcaplot2d/view_pcaplot2d", ["utils", "size", "pcaplot2d/event_pcaplot2d"
 
 			interface_figure(data, pca.PC1, pca.PC2, svg, data.type(pca.TYPE).figure)
 			.data([pca])
-			.style("stroke", function(_d) { return _utils.colour(pca.TYPE); })
-			.style("fill", function(_d) { return _utils.colour(pca.TYPE); })
 			.on("mouseover", e.m_over)
-			.on("mouseout", e.m_out);
+			.on("mouseout", e.m_out)
+			.style("stroke", function(_d) { return _utils.colour(pca.TYPE); })
+			.style("fill", function(_d) { return _utils.colour(pca.TYPE); });
 		}
 	}
 

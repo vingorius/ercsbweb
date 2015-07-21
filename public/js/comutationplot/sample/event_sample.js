@@ -1,4 +1,7 @@
-define("sample/event_sample", ["utils", "size"], function(_utils, _size)	{
+var SAMPLE = "comutationplot/sample/";
+var VO = "comutationplot/vo_comutationplot";
+
+define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _VO)	{
 	var get_mouseover = function(_d)	{
 		var target = d3.select(this);
 		var e = d3.event;
@@ -15,18 +18,72 @@ define("sample/event_sample", ["utils", "size"], function(_utils, _size)	{
 		_utils.tooltip();
 	}
 
-	var move_scroll = function()	{
-		var target_1 = $("#comutationplot_sample");
-		var target_2 = $("#comutationplot_heatmap");
+	var ascending = function(_a, _b)	{
+		return (_utils.get_list_sum(_a.list, "count") > _utils.get_list_sum(_b.list, "count")) 
+		? 1 : -1;
+	}
 
-		target_1.scroll(function()	{
-			target_2.scrollLeft(target_1.scrollLeft());
+	var descending = function(_a, _b)	{
+		return (_utils.get_list_sum(_a.list, "count") < _utils.get_list_sum(_b.list, "count")) 
+		? 1 : -1;
+	}
+
+	var sorting_get_name = function(_sorting_data)	{
+		try{
+			var result = [];
+
+			for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
+				result.push(_sorting_data[i].name);
+			}
+			return result;
+		}
+		finally {
+			result = null;
+		}
+	}
+
+	var redraw_xaxis = function(_sorting_data, _size)	{
+		var x = _utils.ordinalScale(_VO.VO.getSample(), _VO.VO.getMarginLeft(), (_VO.VO.getWidth() - _VO.VO.getMarginLeft()));
+		var y = _utils.ordinalScale(_VO.VO.getGene(), _VO.VO.getMarginTop(), (_VO.VO.getHeight() - _VO.VO.getMarginTop()));
+
+		d3.selectAll(".comutationplot_sample_bars")
+		.transition().duration(400)
+		.attr("x", function(_d) { return x(_d.sample); })
+		.attr("width", function(_d) { return x.rangeBand(); });
+
+		d3.selectAll(".comutationplot_cellgroup")
+		.transition().duration(400)
+		.attr("transform", function(_d)	{
+			if(!y(_d.gene))	{
+				return "translate(" + x(_d.sample) + ", " + _d.y(_d.gene) +")";	
+			}
+			return "translate(" + x(_d.sample) + ", " + y(_d.gene) +")";
 		});
+
+		d3.selectAll(".comutationplot_cells")
+		.transition().duration(400)
+		.attr("x", 0)
+		.attr("width", function(_d) { return x.rangeBand(); });
+	}
+
+	var sort_by_value = function(_d)	{
+		var sort_data;
+
+		if(_d.status)	{
+			sort_data =_d.data.sort(ascending);
+			_d.status = false;
+		}
+		else{
+			sort_data =_d.data.sort(descending);
+			_d.status = true;
+		}
+		_VO.VO.setSample(sorting_get_name(sort_data));
+		redraw_xaxis(sorting_get_name(sort_data), _d.size);
 	}
 
 	return {
 		m_over : get_mouseover,
 		m_out : get_mouseout,
-		move_scroll : move_scroll
+		sort_by_value : sort_by_value
 	}
 });

@@ -1,4 +1,6 @@
-define("pcaplot3d/event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
+var _3D = "pcaplot/pca3d/";
+
+define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 	return function(_renderer, _camera, _scene, _object3d)	{
 		var check_click = false;
 		var ex = 0;

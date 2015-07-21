@@ -1,4 +1,6 @@
-define("comutation/view_comutation", ["utils", "size", "comutation/event_comutation"], function(_utils, _size, _event)	{
+var COMUTATION = "comutationplot/comutation/";
+
+define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_comutation"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
 		var data = _data || [];
 		var size = data.size;
@@ -26,6 +28,8 @@ define("comutation/view_comutation", ["utils", "size", "comutation/event_comutat
 		.enter().append("g")
 		.attr("class", "comutationplot_cellgroup")
 		.attr("transform", function(_d)	{
+			_d.x = data.x;
+			_d.y = data.y;
 			return "translate(" + data.x(_d.sample) + ", " + data.y(_d.gene) +")";
 		});
 
@@ -40,6 +44,8 @@ define("comutation/view_comutation", ["utils", "size", "comutation/event_comutat
 		.style("stroke-width", function(_d) { return 1; })
 		.on("mouseover", e.m_over)
 		.on("mouseout", e.m_out);
+
+		e.move_scroll();
 	}
 
 	return {

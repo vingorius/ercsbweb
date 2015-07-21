@@ -1,4 +1,6 @@
-define("pcaplot2d/setting_pcaplot2d", ["utils", "size", "pcaplot2d/view_pcaplot2d"], function(_utils, _size, _view)	{
+var _2D = "pcaplot/pca2d/";
+
+define(_2D + "setting_pcaplot2d", ["utils", "size", _2D + "view_pcaplot2d"], function(_utils, _size, _view)	{
 	return function(_data, _min_max, _type_list)	{
 		var data = _data || [];
 		var min_max = _min_max || new Function();

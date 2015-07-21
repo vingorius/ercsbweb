@@ -1,4 +1,6 @@
-define("xyplot/view_xyplot", ["utils", "size", "xyplot/event_xyplot"], function(_utils, _size, _event)   {
+var XY = "xyplot/";
+
+define(XY + "view_xyplot", ["utils", "size", XY + "event_xyplot"], function(_utils, _size, _event)   {
     var view = function(_data)    {       
         var data = _data || [];
         var size = data.size;
@@ -51,16 +53,18 @@ define("xyplot/view_xyplot", ["utils", "size", "xyplot/event_xyplot"], function(
         .data(data.data.data.plot_list)
         .enter().append("circle")
         .attr("class", "xyplot_circles")
+        .on("mouseover", e.m_over)
+        .on("mouseout", e.m_out)
+        .transition().delay(function(_d, _i) { return _i * (1 / 3); })
         .attr("cx", function(_d) { return data.x(_d.x); })
         .attr("cy", function(_d) { return data.y(_d.y); })
-        .attr("r", data.radius)
-        .on("mouseover", e.m_over)
-        .on("mouseout", e.m_out);
+        .attr("r", data.radius);
 
         var text = svg.selectAll("text")
         .data(data.data.data.plot_list)
         .enter().append("text")
         .attr("class", "xyplot_circles_text")
+        .transition().delay(function(_d, _i) { return _i * (1 / 3); })
         .attr("x", function(_d) { return data.x(_d.x) + 5; })
         .attr("y", function(_d) { return data.y(_d.y); })
         .text(function(_d) { if(_d.y > 6) return _d.title; });

@@ -1,4 +1,6 @@
-define("needleplot/event_needleplot", ["utils", "size"], function(_utils, _size)    {
+var NEEDLE = "needleplot/needle/";
+
+define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)    {
     var get_mouseover = function(_d)   {
         $(this)[0].parentNode.parentNode.parentNode.appendChild($(this)[0].parentNode.parentNode)
 

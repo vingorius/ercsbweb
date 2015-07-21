@@ -1,4 +1,6 @@
-define("degplot/setting_degplot", ["utils", "size", "degplot/view_degplot"], function(_utils, _size, _view)	{
+var DEG = "degplot/";
+
+define(DEG + "setting_degplot", ["utils", "size", DEG + "view_degplot"], function(_utils, _size, _view)	{
 	var max = function(_log_list, _key)	{
 		return d3.max(_log_list.map(function(_d)	{
 			return _d[_key];
@@ -44,7 +46,6 @@ define("degplot/setting_degplot", ["utils", "size", "degplot/view_degplot"], fun
 				result.push(keys[i]);
 			}
 		}
-		
 		return result;
 	}
 
@@ -52,12 +53,14 @@ define("degplot/setting_degplot", ["utils", "size", "degplot/view_degplot"], fun
 		var data = _data || [];
 		var tbody = _utils.getClass("degplot_tbody");
 		var si = count_si(data.data.pathway_list[0]);
-		var si_max = max(data.data.pathway_list, "si_log_p");
-		var si_down_max = max(data.data.pathway_list, "si_down_log_p");
-		var si_up_max = max(data.data.pathway_list, "si_up_log_p");
-		var si_min = min(data.data.pathway_list, "si_log_p");
-		var si_down_min = min(data.data.pathway_list, "si_down_log_p");
-		var si_up_min = min(data.data.pathway_list, "si_up_log_p");
+		var si_min_max = [];
+
+		for(var i = 0, len = si.length ; i < len ; i++)	{
+			var a_si = {};
+			_utils.defineProp(a_si, max(data.data.pathway_list, si[i]), "max");
+			_utils.defineProp(a_si, min(data.data.pathway_list, si[i]), "min");
+			si_min_max.push(_utils.defineProp({}, a_si, si[i]));
+		}
 
 		_view.view({
 			data : data.data.pathway_list, 
@@ -67,18 +70,7 @@ define("degplot/setting_degplot", ["utils", "size", "degplot/view_degplot"], fun
 			max : max,
 			min : min,
 			si : si,
-			si_log_p : {
-				max : si_max,
-				min : si_min
-			},
-			si_up_log_p : {
-				max : si_up_max,
-				min : si_up_min
-			},
-			si_down_log_p : {
-				max : si_down_max,
-				min : si_down_min
-			},
+			min_max : si_min_max
 		});
 	}
 });	

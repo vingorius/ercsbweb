@@ -1,4 +1,6 @@
-define("maplot/setting_maplot", ["utils", "size", "maplot/view_maplot"], function(_utils, _size, _view)	{
+var MA = "maplot/";
+
+define(MA + "setting_maplot", ["utils", "size", MA + "view_maplot"], function(_utils, _size, _view)	{
 	var max_min = function(_data, _axis)  {
 		var min = d3.min(_data.data.plot_list.map(function(_d)    { return _d[_axis]; }))
 		max = d3.max(_data.data.plot_list.map(function(_d)    { return _d[_axis]; }));

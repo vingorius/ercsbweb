@@ -1,4 +1,6 @@
-define("degplot/event_degplot", ["utils", "size"], function(_utils, _size)	{
+var DEG = "degplot/";
+
+define(DEG + "event_degplot", ["utils", "size"], function(_utils, _size)	{
 	var now_si = "";	// 캡슐화를 하여야 하는가? setter & getter 함수로
 
 	var rowspan = function(_rows)	{
@@ -168,7 +170,11 @@ define("degplot/event_degplot", ["utils", "size"], function(_utils, _size)	{
 	var colors_click = function(_d)	{
 		var target = this.id.substring(this.id.indexOf("_") + 1, this.id.length);
 		var now_color = get_gradient_end(target);
-		var color_config_show = $("#color_config").collapse("show");
+		var color_config = $("#color_config");
+
+		color_config.collapse("hide");
+		setTimeout(function()	{ color_config.collapse("show"); }, 400);
+
 		var all_color = all_colors();
 
 		set_selected_button(target);

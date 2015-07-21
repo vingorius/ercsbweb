@@ -1,5 +1,7 @@
-define( "gene/setting_gene", ["utils", "size", "gene/view_gene"], function(_utils, _size, _view)	{
-	var count_by_order = function(_all_data)	{
+var GENE = "comutationplot/gene/";
+
+define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function(_utils, _size, _view)	{
+	var count_by_order = function(_all_data, _importance)	{
 		var all_data = _all_data || [];
 		var gene_list = [];
 
@@ -16,7 +18,7 @@ define( "gene/setting_gene", ["utils", "size", "gene/view_gene"], function(_util
 				check.list.push(all_data[i]);
 			}
 		}
-		return stacked(counting(gene_list));
+		return stacked(counting(gene_list), _importance);
 	}
 
 	var counting = function(_list)	{
@@ -54,10 +56,11 @@ define( "gene/setting_gene", ["utils", "size", "gene/view_gene"], function(_util
 		return result;
 	}
 
-	var stacked = function(_data)  {
+	var stacked = function(_data, _importance)  {
 		var data = _data || [];
 
 		data.map(function(_d)   {
+			_d = sort_by_mutation(_d, _importance);
 			$.each(_d.list, function(_i)    {
 				if(_i === 0)    {
 					_d.list[_i].start = 0;
@@ -83,10 +86,22 @@ define( "gene/setting_gene", ["utils", "size", "gene/view_gene"], function(_util
 		}));
 	}
 
-	return function(_all_data, _genes)	{
+	var sort_by_list = function(_list, _importance)	{
+		_list.sort(function(_a, _b)	{
+			return (_importance.indexOf(_a.type) < _importance.indexOf(_b.type)) ? 1 : -1
+		});
+	}
+
+	var sort_by_mutation = function(_d, _importance)	{
+		sort_by_list(_d.list, _importance);
+		return _d;
+	}
+
+	return function(_all_data, _genes, _importance)	{
 		var all_data = _all_data || [];
 		var genes = _genes || [];
-		var count_gene = count_by_order(all_data);
+		var importance = _importance || [];
+		var count_gene = count_by_order(all_data, importance);
 		var size = _size.define_size("comutationplot_gene", 20, 20, 20, 70);
 		var max = get_max(count_gene);
 

@@ -1,4 +1,6 @@
-define("comutation/event_comutation", ["utils", "size"], function(_utils, _size)	{
+var COMUTATION = "comutationplot/comutation/";
+
+define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _size)	{
 	var event_mouseover = function(_d)	{
 		var target = d3.select(this);
 		var e = d3.event;
@@ -27,8 +29,18 @@ define("comutation/event_comutation", ["utils", "size"], function(_utils, _size)
 		.style("stroke-width", function(_d) { return 1; });
 	}
 
+	var move_scroll = function()	{
+		var target_1 = $("#comutationplot_sample");
+		var target_2 = $("#comutationplot_heatmap");
+
+		target_2.scroll(function()	{
+			target_1.scrollLeft(target_2.scrollLeft());
+		});
+	}
+
 	return {
 		m_over : event_mouseover,
-		m_out : event_mouseout
+		m_out : event_mouseout,
+		move_scroll : move_scroll
 	}
 })

@@ -1,4 +1,6 @@
-define("pq/view_pq", ["utils", "size", "pq/event_pq"], function(_utils, _size, _event)	{
+var PQ = "comutationplot/pq/";
+
+define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
 		var data = _data || {};
 		var size = data.size;
@@ -23,12 +25,21 @@ define("pq/view_pq", ["utils", "size", "pq/event_pq"], function(_utils, _size, _
 		.call(xAxis);
 
 		svg.append("g")
+		.data([{ data : data.data, size : size, status : false }])
 		.attr("class", "pq_explain")
 		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 2) + ", " + (size.height - 2) + ")")
 		.append("text")
-		.text("#p value")
+		.text("#q value")
 		.style("font-size", "12px")
-		.style("font-style", "italic");
+		.style("font-style", "italic")
+		.on("click", e.sort_by_value);
+
+		$(".pq_explain")
+		.tooltip({
+			container : "body",
+			title : "sort by q value",
+			placement : "bottom"
+		});
 
 		var bar_group = svg.selectAll(".comutationplot_pq_bargroup")
 		.data(data.data)

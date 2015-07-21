@@ -1,4 +1,14 @@
-define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], function(_utils, _size, _e)	{
+var DEG = "degplot/";
+
+define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(_utils, _size, _e)	{
+	var find_min_max = function(_min_max, _key)	{
+		for(var i = 0, len = _min_max.length ; i < len ; i++)	{
+			if(_min_max[i][_key])	{
+				return _min_max[i][_key];
+			}
+		}
+	}
+
 	var create_row = function(_tbody)	{
 		return _tbody.insertRow(-1);
 	}
@@ -15,11 +25,11 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 					id : Object.keys(_column)[i],
 					data : cell_data
 				});
-				d3.select(_row.cells[i]).style("background-color", 
-					_data.backgroundcolor(_utils.colour(Object.keys(_column)[i]), 
-					cell_data, _data[Object.keys(_column)[i]].min, 
-					_data[Object.keys(_column)[i]].max)
-				);
+				d3.select(_row.cells[i]).style("background-color", function(_d) {
+					var minmax = find_min_max(_data.min_max, Object.keys(_column)[i]);
+					return _data.backgroundcolor(_utils.colour(Object.keys(_column)[i]), 
+					cell_data, minmax.min, minmax.max)
+				});
 			}
 		}
 	}
@@ -27,6 +37,7 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 	var lever = function(_id, _data, _width, _height)	{
 		var key = _id.substring(_id.indexOf("_") + 1, _id.length);
 		var margin = 5;
+		var minmax = find_min_max(_data.min_max, key);
 
 		var svg = d3.select("#" + _id)
 		.append("svg")
@@ -35,12 +46,12 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 		.append("g")
 		.attr("transform", "translate(0, 0)")
 
-		var x = _utils.linearScale(_data[key].min, _data[key].max, 0, _width - (margin * 2));
+		var x = _utils.linearScale(minmax.min, minmax.max, 0, _width - (margin * 2));
 
 		var xAxis = d3.svg.axis()
 		.scale(x)
 		.orient("top").ticks(2)
-		.tickValues([_data[key].min, _data[key].max]);
+		.tickValues([minmax.min, minmax.max]);
 
 		svg.append("g")
 		.attr("class", "deg_color_range_axis")
@@ -52,8 +63,8 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 			id : key,
 			width : _width,
 			margin : margin,
-			min : _data[key].min,
-			max : _data[key].max,
+			min : minmax.min,
+			max : minmax.max,
 			bgcolor : _data.backgroundcolor
 		}])
 		.attr("class", "degplot_lever_rect")
@@ -63,10 +74,15 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 	}
 
 	var range_gradient = function(_id, _start, _end, _width, _height)	{
+		var pre_id = "";
 		var margin = 5;
+
+		if(_id.indexOf("color_list") > -1)	{ pre_id = "gradients_ "; }
+		else { pre_id = "gradient_area "; }
+
 		var svg = d3.select("#" + _id)
 		.append("svg")
-		.attr("class", "gradient_area " + _id)
+		.attr("class", pre_id + _id)
 		.attr("width", _width)
 		.attr("height", _height);
 
@@ -96,14 +112,18 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 
 	var make_span_option = function(_si)	{
 		var option = _size.mkdiv({
-			attribute : "",
-			style : { float : "left" }
+			attribute : "", style : { float : "left" }
 		});
 
 		var option_icon = document.createElement("a");
 		option_icon.setAttribute("class", "glyphicon glyphicon-option-vertical");
 		option_icon.setAttribute("id", "option_" + _si);
 		option_icon.onclick = _e.colors;
+		$(option).tooltip({
+			container : 'body',
+			title : _si + " 색 선택",
+			placement : "right"
+		});
 
 		option.appendChild(option_icon);
 
@@ -117,8 +137,7 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 		for(var i = 0, len = _si.length ; i < len ; i++)	{
 			var row = _size.mkdiv();
 			var component = _size.mkdiv({
-				attribute : "",
-				style : { float : "left", }
+				attribute : "", style : { float : "left", }
 			});
 			var option = make_span_option(_si[i]);
 			var comp_lever = _size.mkdiv({
@@ -179,7 +198,8 @@ define("degplot/view_degplot", ["utils", "size", "degplot/event_degplot"], funct
 		make_range_component(_data, _data.si, width, height);
 		make_config_component(_data, _data.si, width, height);
 
-		$("#color_config_a").click(_utils.preserve_events);
+		// $("#color_config_a").click(_utils.preserve_events);
+		d3.selectAll(".gradient_area rect").on("click", _utils.preserve_events);
 	}
 
 	return {

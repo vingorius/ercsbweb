@@ -1,4 +1,6 @@
-define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
+var MA = "maplot/";
+
+define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 	return function(_data)	{
 		var data = _data || {};
 		var all_circles = data.all_circles;
@@ -11,7 +13,7 @@ define("maplot/event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 		var undo = function(_d)	{
 			if(paths_stack.length === 1 || save_circles.length === 1)	{
-				alert("Undo 항목이 더 이상 존재하지 않습니다.");
+				alert("마지막 선택입니다.");
 				return;
 			}
 

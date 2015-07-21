@@ -2,22 +2,22 @@
 -------------------------------------------------- */
 
 html {
-    position: relative;
-    min-height: 100%;
+	position: relative;
+	min-height: 100%;
 }
 body {
-    /* Margin bottom by footer height */
-    margin-bottom: 60px;
-    color: #777;
+	/* Margin bottom by footer height */
+	margin-bottom: 60px;
+	color: #777;
 }
 .footer {
-    /*position: absolute;*/
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    /* Set the fixed height of the footer here */
-    height: 60px;
-    background-color: #f5f5f5;
+	/*position: absolute;*/
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	/* Set the fixed height of the footer here */
+	height: 60px;
+	background-color: #f5f5f5;
 }
 
 
@@ -28,36 +28,36 @@ body {
 /* Not required for template or sticky footer method. */
 
 body > .container {
-    padding: 60px 15px 0;
+	padding: 60px 15px 0;
 }
 .container .text-muted {
-    margin: 20px 0;
+	margin: 20px 0;
 }
 .footer > .container {
-    padding-right: 15px;
-    padding-left: 15px;
+	padding-right: 15px;
+	padding-left: 15px;
 }
 body > .modal-dialog {
-    margin: 100px auto;
+	margin: 100px auto;
 }
 code {
-    font-size: 80%;
+	font-size: 80%;
 }
 
 /* Header
 -------------------------------------------------- */
 
 .menu_icon {
-    /*color: #286090;*/
+	/*color: #286090;*/
 }
 .menu_span {
-    padding-left: 5px;
+	padding-left: 5px;
 }
 .sub_menu_span {
-    padding-left: 10px;
+	padding-left: 10px;
 }
 .dropdown-menu > li > a {
-    color: #777;
+	color: #777;
 }
 
 /* Header
@@ -66,28 +66,29 @@ code {
 /* All Chart
 ------------------------------------------------------- */
 .char_header_container  {
-    margin-bottom: 10px;
+	margin-bottom: 10px;
 }
 .chart_base_container{
 	width:1430px;
 	margin-left: auto;
 	margin-right : auto;
+	display: none;
 }
 text {
 	fill : #626262;
 }
 
 path {
-    fill: none;
-    stroke: #BFBFBF;
-    stroke-width: 1;
-    shape-rendering: crispEdges;
+	fill: none;
+	stroke: #BFBFBF;
+	stroke-width: 1;
+	shape-rendering: crispEdges;
 }
 line {
-    fill: none;
-    stroke: #BFBFBF;
-    stroke-width: 1;
-    shape-rendering: crispEdges;
+	fill: none;
+	stroke: #BFBFBF;
+	stroke-width: 1;
+	shape-rendering: crispEdges;
 }
 
 /* Spinner & Input
@@ -127,19 +128,80 @@ line {
 	top: 0;
 	left: 4px;
 }
+/*
+	Loading screen
+	----------------------------------------------------*/
+	#loading_area	{
+		position: absolute;
+		top: 50px;
+		left: 0;
+		width: 1858px;
+		height: 890px;
+		opacity: 0.5;
+		background-color: #000;
+		display: none;
+		z-index: 10000;
+	}
+	.loading {
+		top : 340px;
+		left : 929px;
+		width: 40px;
+		height: 40px;
+		position: absolute;
+		z-index: 10001;
+		margin: 100px auto;
+	}
+	#loading_text	{
+		position: absolute;
+		top : -20px;
+		width : 200px;
+		font-size: 20px;
+		font-weight: bold;
+	}
 
+	.double-bounce1, .double-bounce2 {
+		width: 100%;
+		height: 100%;
+		border-radius: 50%;
+		background-color: #fff;
+		opacity: 0.6;
+		position: absolute;
+		top: 0;
+		left: 0;
+
+		-webkit-animation: sk-bounce 2.0s infinite ease-in-out;
+		animation: sk-bounce 2.0s infinite ease-in-out;
+	}
+
+	.double-bounce2 {
+		-webkit-animation-delay: -1.0s;
+		animation-delay: -1.0s;
+	}
+
+	@-webkit-keyframes sk-bounce {
+		0%, 100% { -webkit-transform: scale(0.0) }
+		50% { -webkit-transform: scale(1.0) }
+	}
+
+	@keyframes sk-bounce {
+		0%, 100% { 
+			transform: scale(0.0);
+			-webkit-transform: scale(0.0);
+			} 50% { 
+				transform: scale(1.0);
+				-webkit-transform: scale(1.0);
+			}
+		}
 /* Tooltip
 --------------------------------------- */
 
 .tooltip {
-    font-size: 14px;
-    line-height: 1;
-    padding: 5px;
-    background: #BDC3C7;
-    border-radius: 2px;
-    display: block;
+	font-size: 14px;
+	line-height: 1;
+	padding: 5px;
+	background: #BDC3C7;
+	border-radius: 2px;
+	display: block;
 }
 
-/*div {
-	border : 1px solid grey;
-}*/
+

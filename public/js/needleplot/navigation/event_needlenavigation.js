@@ -1,4 +1,6 @@
-define("needleplotnavigation/event_needlenavigation", ["utils", "size"], function(_utils, _size)	{
+var NEEDLE_NAVI = "needleplot/navigation/";
+
+define(NEEDLE_NAVI + "event_needlenavigation", ["utils", "size"], function(_utils, _size)	{
 	return function(_element) 	{
 		var elements = _element || {};
 		var size = elements.size;
@@ -17,6 +19,18 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			}
 		}
 
+		var disappear_item = function(_position)	{
+			var location = _position;
+
+			if(_position === size.margin.left)	{
+				location = -size.width;
+			}
+			else if(_position === size.rwidth)	{
+				location = size.width * 2;	
+			}
+			return location;
+		}
+
 		var scale_needle_plot = function(_x, _width)    {
 			var svg = d3.select(".needleplot_view");
 			var width = svg.attr("width");
@@ -30,7 +44,8 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 
 			var graph_group = d3.selectAll(".graph_group")
 			.attr("transform", function(_d)	{
-				if(_d.display) { return "translate(" + loc_x(_d.start) + ", "
+				if(_d.display) { 
+					return "translate(" + loc_x(_d.start) + ", "
 					+ (size.graph_width 
 					+ (height - (size.margin.top * 2) - (size.margin.bottom * 2))) 
 					+ ")"; }
@@ -40,10 +55,21 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			var graphs = d3.selectAll(".graph_group rect")
 			.attr("width", function(_d) { return loc_x(_d.end) - loc_x(_d.start); });
 
+			var text_group = d3.selectAll(".text_group")
+			.attr("transform", function(_d)	{
+				var location = disappear_item(loc_x(_d.start));
+				if(_d.display) { 
+					return "translate(" + location + ", "
+					+ (size.graph_width 
+					+ (height - (size.margin.top * 2) - (size.margin.bottom * 2))) 
+					+ ")"; }
+				else { d3.select(this).remove(); }
+			});
+
 			var maker_group = d3.selectAll(".marker_group")
 			.attr("transform", function(_d)	{
-				return "translate(" + loc_x(_d.position) + ", " 
-					+ (height - (size.margin.top * 2) - (size.margin.bottom * 2)) + ")";
+				var location = disappear_item(loc_x(_d.position));
+				return "translate(" + location + ", " + (height - (size.margin.top * 2) - (size.margin.bottom * 2)) + ")";
 			});
 		}
 
@@ -81,7 +107,14 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			var now_x = 0;
 
 			elements.right.attr("x", function(_d) {
-				now_x = (right_x + d3.event.x) - xl;
+				if(xl === 0)	{ xl == 0; }
+				if(xr === size.rwidth)	{ right_x == xr; }
+				if((right_x + d3.event.x) - xl >= size.rwidth)	{
+					right_x = size.rwidth;
+				}
+				else {
+					now_x = (right_x + d3.event.x) - xl;
+				}
 
 				return Math.max(elements.box.attr("x"), 
 					Math.min(size.rwidth, right_x + (d3.event.x)));
@@ -105,6 +138,7 @@ define("needleplotnavigation/event_needlenavigation", ["utils", "size"], functio
 			var xr = Number(elements.right.attr("x"));
 
 			elements.left.attr("x", function(_d)    {
+				if(xl === 0)	{ xl = 0; }
 				return _d.x = Math.max(0, Math.min((xr - lw), d3.event.x));
 			})
 			.on("mouseup", function(_d) { moving_end(_d, xr - xl); });

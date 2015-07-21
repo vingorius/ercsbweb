@@ -1,4 +1,6 @@
-define("comutationnavigation/setting_comutationnavigation", ["utils", "size", "comutationnavigation/view_comutationnavigation"], function(_utils, _size, _view)	{
+var COMUTS_NAVI = "comutationplot/navigation/";
+
+define(COMUTS_NAVI + "setting_comutationnavigation", ["utils", "size", COMUTS_NAVI + "view_comutationnavigation"], function(_utils, _size, _view)	{
 	return function(_samples, _genes)	{
 		var samples = _samples || [];
 		var genes = _genes || [];

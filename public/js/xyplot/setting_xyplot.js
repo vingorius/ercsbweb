@@ -1,4 +1,6 @@
-define("xyplot/setting_xyplot", ["utils", "size", "xyplot/view_xyplot"], function(_utils, _size, _view)	{
+var XY = "xyplot/";
+
+define(XY + "setting_xyplot", ["utils", "size", XY + "view_xyplot"], function(_utils, _size, _view)	{
 	var get_max = function(_type, _list)	{
 		return d3.max(_list.map(function(_d)	{
 			return _d[_type];

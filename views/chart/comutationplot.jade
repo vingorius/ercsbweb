@@ -1,11 +1,15 @@
 extends ../layout/basiclayout
 
 block content
+	div#loading_area
+		div.loading(style={ "display" : "none" }) 
+		span#loading_text loading chart ...
+			div.double-bounce1
+			div.double-bounce2
 	div.container.chart_base_container
-		include chart_header.jade
 		div.row
 			div#comutationplot_empty_lt(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
-			div#comutationplot_sample(style={'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1100px', 'height': '100px', 'overflow-y': 'hidden', 'overflow-x': 'scroll'})
+			div#comutationplot_sample(style={'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1100px', 'height': '100px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
 			div#comutationplot_scale(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', 'height': '100px'})
 		div.row
 			div#comutationplot_gene(style={'padding': '0px', 'margin': '0px', 'float': 'left', 'width': '150px', 'height': '650px'})
@@ -21,3 +25,4 @@ block append scripts
 	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
 	link(rel='stylesheet', href='/stylesheets/chart/comutationplot.css')
+	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')

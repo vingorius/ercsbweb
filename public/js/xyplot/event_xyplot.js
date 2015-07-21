@@ -1,4 +1,6 @@
-define("xyplot/event_xyplot", ["utils", "size"], function(_utils, _size)	{
+var XY = "xyplot/";
+
+define(XY + "event_xyplot", ["utils", "size"], function(_utils, _size)	{
 	var get_mouseover = function(_d)	{
 		var target = d3.select(this);
 		var e = d3.event;

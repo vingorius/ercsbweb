@@ -1,4 +1,6 @@
-define("sample/view_sample", ["utils", "size", "sample/event_sample"], function(_utils, _size, _event)	{
+var SAMPLE = "comutationplot/sample/";
+
+define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
 		var data = _data || {};
 		var size = data.size;
@@ -23,12 +25,21 @@ define("sample/view_sample", ["utils", "size", "sample/event_sample"], function(
 		.call(yAxis);
 
 		svg.append("g")
+		.data([{ data : data.data, size : size, status : false }])
 		.attr("class", "sample_explain")
 		.attr("transform", "translate(" + (size.margin.left * 1.5) + ", " + (size.margin.top * 1.5) + ")")
 		.append("text")
 		.text("#samples count")
 		.style("font-size", "12px")
-		.style("font-style", "italic");
+		.style("font-style", "italic")
+		.on("click", e.sort_by_value);
+
+		$(".sample_explain")
+		.tooltip({
+			container : "body",
+			title : "sort by sample value",
+			placement : "top"
+		});
 
 		var bar_group = svg.selectAll(".comutationplot_sample_bargroup")
 		.data(data.data)
@@ -43,12 +54,10 @@ define("sample/view_sample", ["utils", "size", "sample/event_sample"], function(
 		.attr("x", function(_d) { return data.x(_d.sample); })
 		.attr("y", function(_d) { return data.y(_d.start + _d.count); })
 		.attr("width", data.x.rangeBand())
-		.attr("height", function(_d) { return (size.height - size.margin.top) - data.y(_d.count); })
+		.attr("height", function(_d) { return (size.height - size.margin.bottom) - data.y(_d.count); })
 		.style("fill", function(_d) { return _utils.colour(_d.type); })
 		.on("mouseover", e.m_over)
 		.on("mouseout", e.m_out);
-
-		e.move_scroll();
 	}
 
 	return {

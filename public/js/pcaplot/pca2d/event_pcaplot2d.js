@@ -1,4 +1,6 @@
-define("pcaplot2d/event_pcaplot2d", ["utils", "size"], function(_utils, _size)	{
+var _2D = "pcaplot/pca2d/";
+
+define(_2D + "event_pcaplot2d", ["utils", "size"], function(_utils, _size)	{
 	var pca_mouseover = function(_d)	{
 		var e = d3.event;
 		

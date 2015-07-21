@@ -1,4 +1,6 @@
-define("needleplotnavigation/view_needlenavigation", ["utils", "size", "needleplotnavigation/event_needlenavigation"], function(_utils, _size, _event)	{
+var NEEDLE_NAVI = "needleplot/navigation/";
+
+define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "event_needlenavigation"], function(_utils, _size, _event)	{
 	var box = function(_svg, _size, _data)	{
 		var svg = _svg || null;
 		var size = _size || {};

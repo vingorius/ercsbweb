@@ -1,8 +1,13 @@
 extends ../layout/basiclayout
 
 block content
+	div#loading_area
+		div.loading(style={ "display" : "none" }) 
+			span#loading_text loading chart ...
+			div.double-bounce1
+			div.double-bounce2
 	div.container.chart_base_container
-		include chart_header.jade
+		//- include chart_header.jade
 		div.row
 			div#pcaplot_legend(style={'padding': '0px', 'margin': '0px 50px', 'width': '180px', 'height': '66px'})
 		div.row
@@ -13,3 +18,4 @@ block append scripts
 	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
 	link(rel='stylesheet', href='/stylesheets/chart/pcaplot.css')
+	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')

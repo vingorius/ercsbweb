@@ -1,4 +1,6 @@
-define("needleplotnavigation/setting_needlenavigation", ["utils", "size", "needleplotnavigation/view_needlenavigation"], function(_utils, _size, _view)	{
+var NEEDLE_NAVI = "needleplot/navigation/";
+
+define(NEEDLE_NAVI + "setting_needlenavigation", ["utils", "size", NEEDLE_NAVI + "view_needlenavigation"], function(_utils, _size, _view)	{
 	return function(_data, _stacked, _ymax) 	{
 		var data = _data || [];
 		var stacked = _stacked || [];

@@ -1,4 +1,6 @@
-define("pcaplot3d/view_pcaplot3d", ["utils", "size", "pcaplot3d/event_pcaplot3d"], function(_utils, _size, _event)	{
+var _3D = "pcaplot/pca3d/";
+
+define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
 		var data = _data || {};
 		var size = data.size;

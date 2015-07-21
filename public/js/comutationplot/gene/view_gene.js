@@ -1,4 +1,6 @@
-define("gene/view_gene", ["utils", "size", "gene/event_gene"], function(_utils, _size, _event)	{
+var GENE = "comutationplot/gene/";
+
+define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
 		var data = _data || {};
 		var size = data.size;
@@ -35,12 +37,21 @@ define("gene/view_gene", ["utils", "size", "gene/event_gene"], function(_utils, 
 		.on("mouseout", e.axis_m_out);
 
 		svg.append("g")
-		.attr("class", "pq_explain")
-		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 2) + ", " + (size.height - 2) + ")")
+		.data([{ data : data.data, size : size, status : false }])
+		.attr("class", "gene_explain")
+		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 1.5) + ", " + (size.height - 2) + ")")
 		.append("text")
 		.text("#mutations")
 		.style("font-size", "12px")
-		.style("font-style", "italic");
+		.style("font-style", "italic")
+		.on("click", e.sort_by_value);
+
+		$(".gene_explain")
+		.tooltip({
+			container : "body",
+			title : "sort by mutation value",
+			placement : "bottom"
+		});
 
 		var bar_group = svg.selectAll(".comutationplot_gene_bargroup")
 		.data(data.data)
@@ -52,10 +63,10 @@ define("gene/view_gene", ["utils", "size", "gene/event_gene"], function(_utils, 
 		.data(function(_d)  { return _d.list; })
 		.enter().append("rect")
 		.attr("class", "comutationplot_gene_bars")
-		.attr("x", function(_d) { return data.x(_d.start + _d.count); })
-		.attr("y", function(_d) { return data.y(_d.gene); })
-		.attr("width", function(_d) { return ((size.width - size.margin.right) - data.x(_d.count)); })
-		.attr("height", data.y.rangeBand() / 1.2)
+		.attr("x", function(_d) { _d.x = data.x; return _d.x(_d.start + _d.count); })
+		.attr("y", function(_d) { _d.y = data.y; return _d.y(_d.gene); })
+		.attr("width", function(_d) { return ((size.width - size.margin.right) - _d.x(_d.count)); })
+		.attr("height", function(_d) { return _d.y.rangeBand() / 1.2; })
 		.style("fill", function(_d) { return _utils.colour(_d.type); })
 		.on("mouseover", e.bar_m_over)
 		.on("mouseout",e.bar_m_out);

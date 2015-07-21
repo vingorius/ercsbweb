@@ -3,11 +3,9 @@
 #needleplot_view  {
 	overflow: scroll;
 }
-.navi_box {
-	stroke : blue;
-}
 .navi_2_box_right, .navi_2_box_left {
-	fill : #fff;
+	fill : #96281B;
+	stroke : #96281B;
 }
 #needleLegend   {
 	margin-left: 150px;

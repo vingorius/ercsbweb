@@ -48,11 +48,30 @@ define("legend/setting_legend", ["utils", "size", "legend/view_legend"], functio
 		}
 	}
 
-	return function(_data, _id, _option)	{
+	var get_importance_name = function(_importance)	{
+		var result = [];
+
+		for(var i = 0, len = _importance.length ; i < len ; i++)	{
+			result.push(_importance[i].name);
+		}
+		return result;
+	}
+
+	var align_by_importance = function(_type_list, _importance)	{
+		var type_list = [];
+
+		for(var i = 0, len = _type_list.length ; i < len ; i++)	{
+			type_list[_importance.indexOf(_type_list[i])] = _type_list[i];
+		}	
+		return type_list;
+	}
+
+	return function(_data, _id, _option, _importance)	{
 		var data = _data || [];
 		var id = _id || "";
 		var size = _size.define_size(id, 10, 10, 10, 10);
 		size.rect_size = 10;
+		data.type_list = align_by_importance(data.type_list, get_importance_name(_importance));
 
 		var x = _utils.ordinalScale(data.type_list, size.margin.left, size.rwidth);
 		var y = _utils.ordinalScale(data.type_list, size.margin.top, size.rheight);

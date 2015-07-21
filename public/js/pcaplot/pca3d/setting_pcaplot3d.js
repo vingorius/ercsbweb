@@ -1,4 +1,6 @@
-define("pcaplot3d/setting_pcaplot3d", ["utils", "size", "pcaplot3d/view_pcaplot3d"], function(_utils, _size, _view)	{
+var _3D = "pcaplot/pca3d/";
+
+define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], function(_utils, _size, _view)	{
 	return function(_data, _min_max)	{
 		var data = _data || [];
 		var min_max = _min_max || new Function();

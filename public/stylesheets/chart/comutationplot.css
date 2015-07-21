@@ -1,5 +1,18 @@
 /* Comutation plot
 ---------------------------------------------- */
+.comutationplot_gene_xaxis text, .comutationplot_pq_xaxis text 	{
+	font-size: 8px;
+	font-weight: normal;
+}
+.comutationplot_gene_yaxis text  {
+	fill : #626262;
+	font-size: 12px;
+	font-weight: normal;
+}
+.comutationplot_sample_yaxis text	{
+	fill : #626262;
+	font-size: 8px;
+}
 .comutationplot_gene_yaxis path, .comutationplot_gene_yaxis line {
 	stroke : #fff;
 	stroke-width : 1;
@@ -16,19 +29,6 @@
 	stroke : #BFBFBF;
 	stroke-width : 1;
 	shape-rendering : crispEdges;
-}
-.comutationplot_gene_xaxis text, .comutationplot_pq_xaxis text 	{
-	font-size: 8px;
-	font-weight: normal;
-}
-.comutationplot_gene_yaxis text,  {
-	fill : #626262;
-	font-size: 12px;
-	font-weight: normal;
-}
-.comutationplot_sample_yaxis text	{
-	fill : #626262;
-	font-size: 8px;
 }
 .comutationplot_gene_bars	{
 	stroke : #BFBFBF;
@@ -48,8 +48,15 @@
 }
 #comutationplot_scale_div {
 	display: flex;
+	width : 100px;
 	margin-top: 60px;
 	margin-bottom: 0px;
 	margin-left: 10px;
 	margin-right: 70px;
+}
+#comutationplot_vertical_div 	{
+	width : 30px;
+}
+#comutationplot_heatmap	{
+	overflow: hidden;
 }

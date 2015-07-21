@@ -1,4 +1,6 @@
-define("pq/setting_pq", ["utils", "size", "pq/view_pq"], function(_utils, _size, _view)	{
+var PQ = "comutationplot/pq/";
+
+define(PQ + "setting_pq", ["utils", "size", PQ + "view_pq"], function(_utils, _size, _view)	{
 	var get_pq = function(_symbol_list)	{
 		var symbol_list = _symbol_list || [];
 		var result = [];

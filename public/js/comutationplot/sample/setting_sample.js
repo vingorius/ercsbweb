@@ -1,5 +1,7 @@
-define("sample/setting_sample", ["utils", "size", "sample/view_sample"], function(_utils, _size, _view)	{
-	var count_by_order = function(_all_data)	{
+var SAMPLE = "comutationplot/sample/";
+
+define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], function(_utils, _size, _view)	{
+	var count_by_order = function(_all_data, _importance)	{
 		var all_data = _all_data || [];
 		var sample_list = [];
 
@@ -16,8 +18,7 @@ define("sample/setting_sample", ["utils", "size", "sample/view_sample"], functio
 				check.list.push(all_data[i]);
 			}
 		}
-
-		return stacked(counting(sample_list));
+		return stacked(counting(sample_list), _importance);
 	}
 
 	var counting = function(_list)	{
@@ -26,7 +27,6 @@ define("sample/setting_sample", ["utils", "size", "sample/view_sample"], functio
 		for(var i = 0, len = list.length ; i < len ; i++)	{
 			list[i].list = count_mutation(list[i].list);
 		}
-
 		return list;
 	}
 
@@ -53,14 +53,14 @@ define("sample/setting_sample", ["utils", "size", "sample/view_sample"], functio
 				}
 			}
 		}   
-
 		return result;
 	}
 
-	var stacked = function(_data)  {
+	var stacked = function(_data, _importance)  {
 		var data = _data || [];
 
 		data.map(function(_d)   {
+			_d = sort_by_mutation(_d, _importance);
 			$.each(_d.list, function(_i)    {
 				if(_i === 0)    {
 					_d.list[_i].start = 0;
@@ -70,8 +70,18 @@ define("sample/setting_sample", ["utils", "size", "sample/view_sample"], functio
 				}
 			});
 		});
-
 		return data;
+	}
+
+	var sort_by_list = function(_list, _importance)	{
+		_list.sort(function(_a, _b)	{
+			return (_importance.indexOf(_a.type) < _importance.indexOf(_b.type)) ? 1 : -1
+		});
+	}
+
+	var sort_by_mutation = function(_d, _importance)	{
+		sort_by_list(_d.list, _importance);
+		return _d;
 	}
 
 	var get_max = function(_data)	{
@@ -83,16 +93,15 @@ define("sample/setting_sample", ["utils", "size", "sample/view_sample"], functio
 			for(var i = 0, len = _d.list.length ; i < len ; i++)	{
 				result += _d.list[i].count;
 			}
-
 			return result;
 		}));
 	}
 
-	return function(_all_data, _samples)	{
+	return function(_all_data, _samples, _importance)	{
 		var all_data = _all_data || [];
 		var samples = _samples || [];
-		var count_sample = count_by_order(all_data);
-		var size = _size.define_size("comutationplot_sample", 20, 20, 20, 20);
+		var count_sample = count_by_order(all_data, _importance);
+		var size = _size.define_size("comutationplot_sample", 30, 10, 20, 20);
 		var max = get_max(count_sample);
 
 		_utils.remove_svg("comutationplot_sample");

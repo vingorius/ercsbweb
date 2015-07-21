@@ -1,4 +1,6 @@
-define("needleplot/view_needleplot", ["utils", "size", "needleplot/event_needleplot"], function(_utils, _size, _event)    {
+var NEEDLE = "needleplot/needle/";
+
+define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"], function(_utils, _size, _event)    {
 	var needleplot_yaxis = function(_max)  {
 		var size = _size.define_size("needleplot_yaxis", 20, 20, 0, 0);
 
@@ -49,12 +51,12 @@ define("needleplot/view_needleplot", ["utils", "size", "needleplot/event_needlep
 
 		svg.append("g")
 		.attr("class", "needle_gene_full_path_g")
-		.attr("transform", "translate(0, " + (size.rheight + size.graph_width) + ")")
+		.attr("transform", "translate(0, " + (size.rheight + size.graph_width + (size.graph_width - (size.graph_width / 1.5)) / 2) + ")")
 		.append("rect")
 		.attr("x", size.margin.left)
 		.attr("y", -(size.margin.top))
 		.attr("width", size.rwidth - size.margin.left)
-		.attr("height", size.graph_width);
+		.attr("height", size.graph_width / 1.5);
 
 		var graph_group = svg.selectAll(".graph_group")
 		.data(data.data.data.graph[0].regions)
@@ -67,16 +69,29 @@ define("needleplot/view_needleplot", ["utils", "size", "needleplot/event_needlep
 		});
 
 		var graphs = graph_group.append("rect")
+		.style("stroke", function(_d) { return d3.rgb(_d.colour).darker(1); })
+		.style("fill", function(_d) { return _d.colour; })
 		.attr("x", 0)
 		.attr("y", -size.margin.top)
+		.attr("width", 0)
+		.transition().duration(400).delay(function(_d, _i)	{ return _i * 100; })
 		.attr("width", function(_d) { return data.x(_d.end) - data.x(_d.start); })
 		.attr("height", size.graph_width)
-		.attr("rx", 3).attr("ry", 3)
-		.style("stroke", function(_d) { return d3.rgb(_d.colour).darker(1); })
-		.style("fill", function(_d) { return _d.colour; });
+		.attr("rx", 3).attr("ry", 3);
 
-		var graphs_text = graph_group.append("text")
+		var text_group = svg.selectAll(".text_group")
+		.data(data.data.data.graph[0].regions)
+		.enter().append("g")
+		.attr("class", "text_group")
+		.attr("transform", function(_d)	{
+			if(_d.display) { return "translate(" + data.x(_d.start) + ", "
+				+ (size.rheight + size.graph_width) + ")"; }
+			else { d3.select(this).remove(); }
+		});
+
+		var graphs_text = text_group.append("text")
 		.attr("class", "needle_graphs_text")
+		.transition().duration(400).delay(function(_d, _i)	{ return _i * 100; })
 		.attr("x", 3)
 		.attr("y", -(size.graph_width / 3))
 		.text(function(_d) { return _d.text; });
@@ -93,26 +108,31 @@ define("needleplot/view_needleplot", ["utils", "size", "needleplot/event_needlep
 		.data(function(_d) { return _d.sample_list; })
 		.enter().append("g")
 		.attr("class", "marker_figures_group")
+		.attr("transform", null)
 		.attr("transform", function(_d, _i) {
 			return "translate(0, " + (data.y(_d.y) - (size.rheight - size.graph_width)) + ")";
 		});
 
 		var marker_figures_path = marker_figures_group.append("path")
 		.attr("class", "marker_figures_path")
+		.attr("d", function(_d) { return "M0,0L0,0"; })
+		.transition().duration(1000)
 		.attr("d", function(_d) {
 			return "M0,0L0," + (data.y(_d.count) - (size.rheight - size.graph_width));
 		});
 
 		var marker_figures_circle = marker_figures_group.append("circle")
 		.attr("class", "marker_figures_circle")
-		.attr("cx", 0)
-		.attr("cy", function(_d, _i) { return (data.y(_d.count) - (size.rheight - size.graph_width - data.radius(_d.count))); })
-		.attr("r", function(_d, _i) { return data.radius(_d.count); })
+		.on("mouseover",e.m_over)
+		.on("mouseout", e.m_out)
 		.style("fill", function(_d) { return _utils.colour(_utils.define_mutation_name(_d.type)); })
 		.style("stroke", function(_d) { return d3.rgb(_utils.colour(_utils.define_mutation_name(_d.type))).darker(2); })
 		.style("stroke-width", function(_d) { return 1; })
-		.on("mouseover",e.m_over)
-		.on("mouseout", e.m_out);
+		.attr("cx", 0)
+		.attr("cy", 0)
+		.transition().duration(1000)
+		.attr("cy", function(_d, _i) { return (data.y(_d.count) - (size.rheight - size.graph_width - data.radius(_d.count))); })
+		.attr("r", function(_d, _i) { return data.radius(_d.count); });
 
 		e.front();
 	}

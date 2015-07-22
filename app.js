@@ -20,7 +20,7 @@ var MongoStore = require('connect-mongo')(session); //Session정보 저장
 var options = require('./routes/modules/mongo-session-options.js'); //MongoDB Session Collection Information
 
 var root = require('./routes/index');
-var admin = require('./routes/admin');
+//var admin = require('./routes/admin');
 var menus = require('./routes/menus');
 
 // Chart view
@@ -29,6 +29,9 @@ var chart = require('./routes/chart');
 var rest = require('./routes/rest');
 // File Upload
 var files = require('./routes/files');
+
+// User Restful
+var users = require('./routes/models/users');
 
 var app = express();
 // Session Management
@@ -70,7 +73,7 @@ if (app.get('env') === 'development') {
 
 app.use('/', root);
 //app.use('/admin', authorization.ensureRequest.isPermitted("admin:view"), admin);
-app.use('/admin', security.isAdmin, admin);
+//app.use('/admin', security.isAdmin, admin);
 //상위메뉴차원에서 로그인한 세션만 접근할 수 있도록 하였다.
 app.use('/menus', security.isAuthenticated, menus);
 // Chart View
@@ -79,6 +82,9 @@ app.use('/chart', chart);
 app.use('/rest', rest);
 // File Upload
 app.use('/files', files);
+
+// Users Restful
+app.use('/models/users',security.isAuthenticated, users);
 
 // catch 404 and forward to error handler
 //여기까지 왔다는 말은 처리할 핸들러가 없다는 뜻.

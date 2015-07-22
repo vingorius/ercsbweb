@@ -1,6 +1,6 @@
  $(function() {
      // Default Options
-     $.fn.editable.defaults.url = '/admin/users/';
+     $.fn.editable.defaults.url = '/models/users/';
      $.fn.editable.defaults.ajaxOptions = {
          type: 'put',
          dataType: 'json',

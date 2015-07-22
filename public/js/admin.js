@@ -1,6 +1,6 @@
 $('#table').bootstrapTable({
-    url: '/admin/users',
-    method: 'post',
+    url: '/models/users',
+    method: 'get',
     idField: 'id',
     search: true,
     showRefresh: true,
@@ -17,7 +17,7 @@ $('#table').bootstrapTable({
         title: 'Group',
         sortable: 'true',
         editable: {
-            url: '/admin/users/',
+            url: '/models/users/',
             type: 'select',
             title: 'Select User Group',
             ajaxOptions: {
@@ -66,7 +66,7 @@ $('#table').bootstrapTable({
         sortable: 'true',
         //formatter: 'statusFormatter',
         editable: {
-            url: '/admin/users/',
+            url: '/models/users/',
             type: 'select',
             title: 'Can use?',
             ajaxOptions: {

@@ -89,42 +89,13 @@ router.post('/register', passport.authenticate('register', {
     failureFlash: true // allow flash messages
 }));
 
-router.get('/profile', security.isAuthenticated, function(req, res) {
-    getConnection(function(connection) {
-        connection.query("call ercsb_cdss.getUserByName(?)", [req.user.username], function(err, rows, fields) {
-            if (err) throw err;
-            var profile = rows[0][0];
-
-            res.render('system/profile', {
-                user: req.user,
-                profile: profile
-            });
+router.get('/admin',security.isAdmin,
+    function(req, res) {
+        res.render('system/admin', {
+            user: req.user
         });
-    });
-});
-
-// router.post('/profile', security.isAuthenticated, function(req, res) {
-//     getConnection(function(connection) {
-//         connection.query("call ercsb_cdss.updateUser(?,?,?,?,?,?,?,?,?)", [
-//                 req.user.username,
-//                 req.body.fullname,
-//                 req.body.birth,
-//                 req.body.gender,
-//                 req.body.mobile,
-//                 req.body.country,
-//                 req.body.company_name,
-//                 req.body.company_address,
-//                 req.body.company_position
-//             ],
-//             function(err, rows, fields) {
-//                 if (err) throw err;
-//                 req.flash('message', 'Profile updated.');
-//                 req.flash('type', 'success');
-//                 res.redirect('/profile');
-//             });
-//     });
-//
-// });
+    }
+);
 
 router.get('/login', function(req, res) {
     res.render('system/login', {
@@ -155,10 +126,25 @@ router.post('/login', passport.authenticate('login', {
 });
 
 router.get('/logout', function(req, res, next) {
+    //console.log('Before:',req.session);
     req.logout();
+
+    //Clear Flash Message
+    clearSessionWithoutCookie(req.session);
     res.redirect('/');
     //res.status(200).send("logout success");
 });
+
+//TODO 세션을 session.destroy()로 완전히 제거 해야하는지 의문이다.
+var clearSessionWithoutCookie = function(session){
+    if(! session) return;
+
+    // for(var property in session){
+    //
+    // }
+    if(session.flash) session.flash = {};
+
+};
 
 router.get('/ping', function(req, res) {
     res.status(200).send("pong!");

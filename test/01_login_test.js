@@ -70,17 +70,27 @@ describe('Login Test Suite', function() {
             .expect(302, done)
             .expect('Location', '/login'); // "Unauthorized"
     });
+
+    it('DB에서 사용자를 Enable한다.', function(done) {
+        getConnection(function(connection) {
+            connection.query('update ercsb_cdss.users set enable = 1 where username = ?', [user.username], function(err, rows, fields) {
+                if (err) assert(false, err.code); //throw err;
+                done();
+            });
+        });
+    });
+
     describe('Remember = false test suit', function() {
         user.remember = false;
         var agent = request.agent(host);
-        it('login ' + user.toString() + ' + 으로 로그인하여야 한다.', function(done) {
+        it('login ' + user.toString() + '으로 로그인하여야 한다.', function(done) {
             agent
                 .post('/login')
                 .send(user)
                 .expect(302) //Moved Temporarily
-                .expect('Location', '/')
                 .end(function(err, res) {
-                    // console.log("1",agent.jar.getCookies());
+                    if (err) return done(err);
+                    assert.equal(res.header.location,'/');
                     done();
                 });
         });

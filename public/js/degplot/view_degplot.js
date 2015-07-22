@@ -29,7 +29,9 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 					var minmax = find_min_max(_data.min_max, Object.keys(_column)[i]);
 					return _data.backgroundcolor(_utils.colour(Object.keys(_column)[i]), 
 					cell_data, minmax.min, minmax.max)
-				});
+				})
+				.on("mouseover", _e.cell_over)
+				.on("mouseout", _e.cell_out);
 			}
 		}
 	}
@@ -110,13 +112,16 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 		.on("click", _e.color_cell);
 	}
 
-	var make_span_option = function(_si)	{
+	var make_span_option = function(_si, _width, _height)	{
 		var option = _size.mkdiv({
-			attribute : "", style : { float : "left" }
+			attribute : "", style : { float : "left"
+			, "width" : (_width * 0.2) + "px"
+			, "height" : _height + "px"
+			, "text-align" : "center" }
 		});
 
 		var option_icon = document.createElement("a");
-		option_icon.setAttribute("class", "glyphicon glyphicon-option-vertical");
+		option_icon.setAttribute("class", "glyphicon glyphicon-plus");
 		option_icon.setAttribute("id", "option_" + _si);
 		option_icon.onclick = _e.colors;
 		$(option).tooltip({
@@ -139,14 +144,14 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 			var component = _size.mkdiv({
 				attribute : "", style : { float : "left", }
 			});
-			var option = make_span_option(_si[i]);
+			var option = make_span_option(_si[i], _width, _height);
 			var comp_lever = _size.mkdiv({
 				attribute : { id : "lever_" + _si[i], },
-				style : { "width" : _width * 0.9 + "px", "height" : _height + "px" }
+				style : { "width" : _width * 0.8 + "px", "height" : _height + "px" }
 			});
 			var comp_gradient = _size.mkdiv({
 				attribute : { id : _si[i], },
-				style : { "width" : _width * 0.9 + "px", "height" : _height + "px" }
+				style : { "width" : _width * 0.8 + "px", "height" : _height + "px" }
 			});
 
 			component.appendChild(comp_lever);
@@ -155,8 +160,8 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 			row.appendChild(option);
 			range_component.appendChild(row);
 
-			lever("lever_" + _si[i], _data, _width * 0.9, _height);	
-			range_gradient(_si[i], "#FFFFFF", _utils.colour(_si[i]), _width * 0.9, _height);
+			lever("lever_" + _si[i], _data, _width * 0.8, _height);	
+			range_gradient(_si[i], "#FFFFFF", _utils.colour(_si[i]), _width * 0.8, _height);
 		}
 	}
 

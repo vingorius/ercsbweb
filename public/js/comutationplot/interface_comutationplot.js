@@ -161,8 +161,6 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		var importance_name = importance_by_name(importance);
 		var groups = group_by_sample(all_data, data.data.group_list);
 
-		// console.log(_VO.VO.getInitSample(), _VO.VO.getInitGene());
-
 		_utils.remove_svg("comutationplot_legend");
 
 		_setting_comutation(all_data, samples, genes, data);

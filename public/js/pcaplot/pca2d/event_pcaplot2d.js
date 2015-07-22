@@ -21,7 +21,7 @@ define(_2D + "event_pcaplot2d", ["utils", "size"], function(_utils, _size)	{
 
 	var pca_mouseout = function(_d)	{
 		var e = d3.event;
-		
+
 		_utils.tooltip();
 	}
 

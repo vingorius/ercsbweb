@@ -25,6 +25,7 @@
     "country-select-js": "~1.0.4",
     "please-wait": "~0.0.5",
     "bootstrap-table": "~1.8.1",
-    "bootstrap-toggle": "~2.2.0"
+    "bootstrap-toggle": "~2.2.0",
+    "x-editable": "~1.5.1"
   }
 }

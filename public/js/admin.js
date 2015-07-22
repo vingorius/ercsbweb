@@ -62,7 +62,7 @@ $('#table').bootstrapTable({
         title: 'Position',
     }, {
         field: 'enable',
-        title: 'Enabled?',
+        title: 'Active?',
         sortable: 'true',
         //formatter: 'statusFormatter',
         editable: {

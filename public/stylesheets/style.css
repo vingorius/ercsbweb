@@ -153,7 +153,8 @@ line {
 	}
 	#loading_text	{
 		position: absolute;
-		top : -20px;
+		top : -40px;
+		left : -45px;
 		width : 200px;
 		font-size: 20px;
 		font-weight: bold;

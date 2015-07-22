@@ -93,41 +93,38 @@ router.get('/profile', security.isAuthenticated, function(req, res) {
     getConnection(function(connection) {
         connection.query("call ercsb_cdss.getUserByName(?)", [req.user.username], function(err, rows, fields) {
             if (err) throw err;
-            //var prevArray = req.flash('prev');
-            //console.log(rows[0][0]);
-            var prev = rows[0][0];
+            var profile = rows[0][0];
 
             res.render('system/profile', {
                 user: req.user,
-                message: req.flash('message'),
-                prev: prev
+                profile: profile
             });
         });
     });
 });
 
-router.post('/profile', security.isAuthenticated, function(req, res) {
-    getConnection(function(connection) {
-        connection.query("call ercsb_cdss.updateUser(?,?,?,?,?,?,?,?,?)", [
-                req.user.username,
-                req.body.fullname,
-                req.body.birth,
-                req.body.gender,
-                req.body.mobile,
-                req.body.country,
-                req.body.company_name,
-                req.body.company_address,
-                req.body.company_position
-            ],
-            function(err, rows, fields) {
-                if (err) throw err;
-                req.flash('message', 'Profile updated.');
-                req.flash('type', 'success');
-                res.redirect('/profile');
-            });
-    });
-
-});
+// router.post('/profile', security.isAuthenticated, function(req, res) {
+//     getConnection(function(connection) {
+//         connection.query("call ercsb_cdss.updateUser(?,?,?,?,?,?,?,?,?)", [
+//                 req.user.username,
+//                 req.body.fullname,
+//                 req.body.birth,
+//                 req.body.gender,
+//                 req.body.mobile,
+//                 req.body.country,
+//                 req.body.company_name,
+//                 req.body.company_address,
+//                 req.body.company_position
+//             ],
+//             function(err, rows, fields) {
+//                 if (err) throw err;
+//                 req.flash('message', 'Profile updated.');
+//                 req.flash('type', 'success');
+//                 res.redirect('/profile');
+//             });
+//     });
+//
+// });
 
 router.get('/login', function(req, res) {
     res.render('system/login', {

@@ -22,22 +22,25 @@ router.post('/users', function(req, res, next) {
 });
 
 router.put('/users', function(req, res, next) {
-    console.log(req.body);
-
     var colname = req.body.name;
     var colvalue = req.body.value;
     var pk = req.body.pk;
 
-    if (!pk || pk == 'undefined') {
-        res.status(400).send('ERRPK:Something wrong!!!');
-        return;
-    }
-    console.log('hi');
+    console.log(req.body);
+    // Check Primary Key
+    if (!pk || pk == 'undefined') return res.status(400).send('ERRPK:Bad Request!!!');
+
     getConnection(function(connection) {
         connection.query('update ercsb_cdss.users set ?? = ? where id = ?', [colname, colvalue, pk], function(err, rows) {
-            if (err) throw err;
+            // Check SQL Statement
+            if (err) return res.status(500).send(err.code);
+            // Check whether affected or not
+            console.log(rows);
+            if (rows.changedRows != 1) return res.status(500).send(rows.changedRows + ' rows affected.');
+
+            // Finally Return
             res.json({
-                message: 'updated!!!'
+                message: 'Updated!'
             });
         });
     });

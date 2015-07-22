@@ -2,65 +2,53 @@ extends ../layout/basiclayout
 
 block append stylesheets
     link(rel='stylesheet', href='/stylesheets/register.css')
-    link(rel='stylesheet', href='/stylesheets/jquery-bootstrap-datepicker.css')
     link(rel='stylesheet', href='/bower_components/country-select-js/build/css/countrySelect.css')
+    link(rel='stylesheet', href='/bower_components/x-editable/dist/bootstrap3-editable/css/bootstrap-editable.css')
 
 block content
     div.container
-        div(style={'padding-top': '60px'})
-            form#registerform.form-register(method='post',action='/profile')
-                h2.form-signin-heading Profile
-                //h2.form-signin-heading: span.glyphicon.glyphicon-registration-mark  Register
-                h3(style={'margin-top': '20px'}) Personal
-                div.row    
-                    div.col-md-12.form-group
-                        label(for="username") ID (Email address)
-                        input#username.form-control(placeholder='Your Email', name='username', required='', autofocus='', type='email', value=prev.username, readonly)
-                div.row
-                    div.col-md-12.form-group
-                        label(for="fullname") Full name
-                        input#fullname.form-control(placeholder='Full name', name='fullname', required='', type='text', value=prev.fullname)
-                div.row
-                    div.col-md-6.form-group
-                        label(for="gender") Gender
-                        select#gender.form-control(value=prev.gender,name='gender')
-                          option(value='M',selected) Male
-                          option(value='F') Female                    
-                    div.col-md-6.form-group
-                        label(for="birth") Date of Birth (mm/dd/yyyy)
-                        input#birth.form-control(placeholder='Date of Birth (mm/dd/yyyy)', name='birth',  type='date', value=prev.birth)
-                div.row
-                    div.col-md-6.form-group
-                        label(for="mobile") Mobile (Only Number)
-                        input#mobile.form-control(placeholder='Mobile (Only Number)', name='mobile',type='tel', required='', value=prev.mobile)
-                    div.col-md-6.form-group
-                        label(for="country") Country
-                        input#country.form-control(placeholder='Country', name='country',  type='text', value=prev.country)
-                h3(style={'margin-top': '20px'}) Company
-                div.row
-                    div.col-md-12.form-group
-                        label(for="company_name") Name
-                        input#company_name.form-control(placeholder='Name', name='company_name', type='text', value=prev.company_name)
-                div.row
-                    div.col-md-12.form-group
-                        label(for="company_address") Address
-                        input#company_address.form-control(placeholder='Address', name='company_address', type='text', value=prev.company_address)
-                div.row
-                    div.col-md-12.form-group
-                        label(for="company_position") Your Position
-                        input#company_position.form-control(placeholder='Your Position', name='company_position', type='text', value=prev.company_position)
-                button.btn.btn-lg.btn-primary.btn-block.ladda-button(type='submit',data-style='zoom-in') 
-                    span.ladda-label Profile Update
-
-                if message.length > 0
-                    hr
-                    div.row    
-                        div.col-md-12
-                            div(class='alert alert-success') #{message}
-
+        div(style={'padding-top': '60px','width': '600px','margin-left':'auto','margin-right':'auto'})
+            table.table.table-striped
+                thead
+                    tr
+                        th(colspan=2) Personal
+                tbody
+                    tr
+                        td ID (Email address)
+                        td #{profile.username}
+                    tr
+                        td Full name
+                        td: a#fullname('data-value'=profile.fullname)
+                    tr
+                        td Gender
+                        td: a#gender('data-value'=profile.gender)
+                    tr
+                        td Date of Birth (mm/dd/yyyy)
+                        td: a#birth #{profile.birth}
+                    tr
+                        td Mobile (Only Number)
+                        td: a#mobile('data-value'=profile.mobile)
+                    tr
+                        td Country
+                        td: a#country('data-value'=profile.country)
+                thead
+                    tr
+                        th(colspan=2) Company
+                tbody
+                    tr
+                        td Name
+                        td: a#company_name('data-value'=profile.company_name)
+                    tr
+                        td Address
+                        td: a#company_address('data-value'=profile.company_address)
+                    tr
+                        td Positon
+                        td: a#company_position('data-value'=profile.company_position)
                     
 block append scripts
-    script(src='/bower_components/jquery-validation/dist/jquery.validate.js')
-    script(src='/bower_components/jquery-ui/jquery-ui.js')
     script(src='/bower_components/country-select-js/build/js/countrySelect.js')
-    script(src='/js/register.js')
+    script(src="/bower_components/x-editable/dist/bootstrap3-editable/js/bootstrap-editable.js")
+    script(src="/bower_components/moment/moment.js")
+    script(src='/js/profile.js')
+    script.
+         $.fn.editable.defaults.pk = '#{profile.id}';

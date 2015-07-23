@@ -111,6 +111,10 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			redraw_comutation(now, x, y);
 		}
 
+		var timeout = function(_func, _sec)	{
+			setTimeout(_func, _sec);
+		}	
+
 		var get_init = function(_d)	{
 			var sample = d3.select(".comutationplot_sample");
 			var sample_rects = d3.selectAll(".comutationplot_sample_bars");
@@ -126,34 +130,38 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 
 			redraw_sample(vo.getInitWidth(), x);
 			redraw_comutation(vo.getInitWidth(), x, y);
+			
+			if(get_input_value() === 100)	{
+				change_input_value(-1, 0);
+			}
 
 			change_input_value(-1, (get_input_value() - 100));
 			scroll_status();
 
-			d3.selectAll(".comutationplot_sample_bars")
+			timeout(function() { d3.selectAll(".comutationplot_sample_bars")
 			.transition().duration(400)
-			.attr("x", function(_d) { return x(_d.sample); });
-
-			d3.selectAll(".comutationplot_pq_bars")
+			.attr("x", function(_d) { return x(_d.sample); }); }, 300);
+			
+			timeout(function() { d3.selectAll(".comutationplot_pq_bars")
 			.transition().duration(400)
-			.attr("y", function(_d) { return y(_d.name); });
+			.attr("y", function(_d) { return y(_d.name); }); }, 400);
 
-			d3.selectAll(".comutationplot_gene_yaxis")
+			timeout(function() { d3.selectAll(".comutationplot_gene_yaxis")
 			.transition().duration(400)
-			.call(d3.svg.axis().scale(y).orient("right"));
+			.call(d3.svg.axis().scale(y).orient("right")); }, 500);
 
-			d3.selectAll(".comutationplot_gene_bars")
+			timeout(function() { d3.selectAll(".comutationplot_gene_bars")
 			.transition().duration(400)
-			.attr("y", function(_d) { return y(_d.gene); });
+			.attr("y", function(_d) { return y(_d.gene); }); }, 600);
 
-			d3.selectAll(".comutationplot_cellgroup")
+			timeout(function() { d3.selectAll(".comutationplot_cellgroup")
 			.transition().duration(400)
 			.attr("transform", function(_d)	{
 				if(!x(_d.sample))	{
 					return "translate(" + _d.x(_d.sample) + ", " + _d.y(_d.gene) +")";	
 				}
 				return "translate(" + x(_d.sample) + ", " + y(_d.gene) +")";	
-			});
+			}); }, 700);
 		}
 
 		return {

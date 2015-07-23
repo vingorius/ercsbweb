@@ -4,7 +4,7 @@ define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)  
     var get_mouseover = function(_d)   {
         $(this)[0].parentNode.parentNode.parentNode.appendChild($(this)[0].parentNode.parentNode)
 
-        d3.select(this).transition().duration(100).style("stroke-width", 3);
+        d3.select(this).transition().duration(100).style("stroke-width", 2);
 
         _utils.tooltip(d3.event
             , "<strong>type : <span style='color:red'>"
@@ -16,7 +16,7 @@ define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)  
     }
 
     var get_mouseout = function(_d)    {
-        d3.select(this).transition().duration(100).style("stroke-width", 1);
+        d3.select(this).transition().duration(100).style("stroke-width", 0);
 
         _utils.tooltip();
     }

@@ -46,6 +46,9 @@ define("legend/setting_legend", ["utils", "size", "legend/view_legend"], functio
 		else if(_size.width > _p_width && _size.height < _p_height) {
 			return 1;
 		}
+		else {
+			return 0;
+		}
 	}
 
 	var get_importance_name = function(_importance)	{
@@ -72,10 +75,8 @@ define("legend/setting_legend", ["utils", "size", "legend/view_legend"], functio
 		var size = _size.define_size(id, 10, 10, 10, 10);
 		size.rect_size = 10;
 		data.type_list = align_by_importance(data.type_list, get_importance_name(_importance));
-
 		var x = _utils.ordinalScale(data.type_list, size.margin.left, size.rwidth);
 		var y = _utils.ordinalScale(data.type_list, size.margin.top, size.rheight);
-
 		var p_width = get_possible_width(data, size);
 		var p_height = get_possible_height(data, size);
 

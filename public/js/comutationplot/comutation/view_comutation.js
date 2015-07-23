@@ -37,13 +37,13 @@ define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_com
 		.attr("class", "comutationplot_cells")
 		.attr("x", 0)
 		.attr("y", 0)
-		.attr("width", function(_d) { return data.x.rangeBand(); })
-		.attr("height", function(_d) { return data.y.rangeBand() / 1.2; })
 		.style("stroke", function(_d) { return _utils.colour(_d.type[0]); })
 		.style("fill", function(_d) { return _utils.colour(_d.type[0]); })
 		.style("stroke-width", function(_d) { return 1; })
 		.on("mouseover", e.m_over)
-		.on("mouseout", e.m_out);
+		.on("mouseout", e.m_out)
+		.attr("width", function(_d) { return data.x.rangeBand(); })
+		.attr("height", function(_d) { return data.y.rangeBand() / 1.2; });
 
 		e.move_scroll();
 	}

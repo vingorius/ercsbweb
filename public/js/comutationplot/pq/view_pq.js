@@ -51,12 +51,12 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		.data(function(_d)  { return _d.list; })
 		.enter().append("rect")
 		.attr("class", "comutationplot_pq_bars")
+		.on("mouseover", e.m_over)
+		.on("mouseout", e.m_out)
 		.attr("x", function(_d) { return size.margin.left; })
 		.attr("y", function(_d) { return data.y(_d.name); })
 		.attr("width", function(_d) { return data.x(_utils.log(_d.q)) - size.margin.left; })
-		.attr("height", data.y.rangeBand() / 1.2)
-		.on("mouseover", e.m_over)
-		.on("mouseout", e.m_out);
+		.attr("height", data.y.rangeBand() / 1.2);
 	}
 
 	return {

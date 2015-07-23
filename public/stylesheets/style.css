@@ -133,18 +133,12 @@ line {
 	----------------------------------------------------*/
 	#loading_area	{
 		position: absolute;
-		top: 50px;
-		left: 0;
-		width: 1858px;
-		height: 890px;
 		opacity: 0.5;
 		background-color: #000;
 		display: none;
 		z-index: 10000;
 	}
 	.loading {
-		top : 340px;
-		left : 929px;
 		width: 40px;
 		height: 40px;
 		position: absolute;
@@ -153,9 +147,9 @@ line {
 	}
 	#loading_text	{
 		position: absolute;
-		top : -40px;
-		left : -45px;
-		width : 200px;
+		top : -50px;
+		left : -100px;
+		width : 500px;
 		font-size: 20px;
 		font-weight: bold;
 	}
@@ -164,7 +158,7 @@ line {
 		width: 100%;
 		height: 100%;
 		border-radius: 50%;
-		background-color: #fff;
+		background-color: #BFBFBF;
 		opacity: 0.6;
 		position: absolute;
 		top: 0;

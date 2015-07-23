@@ -11,7 +11,8 @@ require.config({
 
 require(["router", "utils"], function(_router, _utils)  {
 	$(function()    {
-		_utils.loading("loading");
+		var chart = _utils.find_pathname(window.location.pathname) + "plot";
+		_utils.loading(chart.toUpperCase());
 		_router();
 		// _header($(".container.chart_base_container"));
 	});

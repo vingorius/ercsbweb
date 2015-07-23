@@ -63,13 +63,13 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.data(function(_d)  { return _d.list; })
 		.enter().append("rect")
 		.attr("class", "comutationplot_gene_bars")
+		.style("fill", function(_d) { return _utils.colour(_d.type); })
+		.on("mouseover", e.bar_m_over)
+		.on("mouseout",e.bar_m_out)
 		.attr("x", function(_d) { _d.x = data.x; return _d.x(_d.start + _d.count); })
 		.attr("y", function(_d) { _d.y = data.y; return _d.y(_d.gene); })
 		.attr("width", function(_d) { return ((size.width - size.margin.right) - _d.x(_d.count)); })
-		.attr("height", function(_d) { return _d.y.rangeBand() / 1.2; })
-		.style("fill", function(_d) { return _utils.colour(_d.type); })
-		.on("mouseover", e.bar_m_over)
-		.on("mouseout",e.bar_m_out);
+		.attr("height", function(_d) { return _d.y.rangeBand() / 1.2; });
 	}
 
 	return {

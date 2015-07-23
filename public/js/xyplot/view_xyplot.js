@@ -67,7 +67,7 @@ define(XY + "view_xyplot", ["utils", "size", XY + "event_xyplot"], function(_uti
         .transition().delay(function(_d, _i) { return _i * (1 / 3); })
         .attr("x", function(_d) { return data.x(_d.x) + 5; })
         .attr("y", function(_d) { return data.y(_d.y); })
-        .text(function(_d) { if(_d.y > 6) return _d.title; });
+        .text(function(_d) { if(_d.y > 20) return _d.title; });
     }    
 
     return {

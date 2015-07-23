@@ -187,31 +187,31 @@ define("utils", [], function()  {
 		a.dispatchEvent(html_event);		
 	}
 
-	var toPng = function(_target, _name)	{
-		html2canvas($(_target), {
-			useCORS : true,
-			onrendered : function(canvas)	{
-				d3.selectAll(".needleplot_view")[0].forEach(function(_d)	{
-					var html = d3.select(_d)
-					.attr({
-						'xmlns': 'http://www.w3.org/2000/svg',
-						'xmlns:xmlns:xlink': 'http://www.w3.org/1999/xlink',
-						version: '1.1'
-					}) 
-					.node().parentNode.innerHTML;
+	var saveImg = function(_svg)	{
+		// html2canvas($(".chart_base_container"), {
+		// 	onrendered : function(canvas)	{
+		var canvas = document.createElement("canvas");
+				var test = d3.select("." + _svg)
+				.attr({
+					'xmlns': 'http://www.w3.org/2000/svg',
+					'xmlns:xmlns:xlink': 'http://www.w3.org/1999/xlink',
+					version: '1.1'
+				}).node().parentNode.innerHTML
+				
+				canvg(canvas, test, { ignoreClear : false });
 
-					var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
-					var context = canvas.getContext("2d");
-					var image = new Image;
-					image.src = imgsrc;
-					image.onload = function()	{
-						context.drawImage(image,d3.select(_d).attr("x"), d3.select(_d).attr("y"));
-						var canvasdata = canvas.toDataURL("image/png");
-						download(_name + ".png", canvasdata);
-					}
+				var ctx = canvas.getContext("2d");
+				var imgsrc = 'data:image/svg+xml;base64,' + btoa(test);
+				var img = new Image();
+				imagesLoaded(img, function(_a)		{
+					ctx.drawImage(img, 0, 0);
+					var data = canvas.toDataURL("image/png");
+					window.open(data, "dd", "width=1100 height=500 top=200 left=300")
+					 // download("ss.png", data);
 				});
-			}
-		});
+				img.src = imgsrc;
+		// 	}
+		// });
 	}
 
 	var preserve_events = function(_event)	{
@@ -266,19 +266,23 @@ define("utils", [], function()  {
 		}
 	}
 
-	var loading = function(_class)	{
-		var loadgin_area = $("#loading_area").fadeIn();
-		var loading_div = $("." + _class).fadeIn();
+	var loading = function(_name, _option)	{
+		var loading_div = $(".loading").fadeIn();
+		var chart_div = $(window);
+		var chart_width = chart_div.width();
+		var chart_height = chart_div.height();
+		
+		$("#loading_text").text("loading " + _name + " . . .");
 
 		window.onresize = function(_event)	{
-			var chart_div = $(window);
-			var chart_width = chart_div.width();
-			var chart_height = chart_div.height();
-
-			loading_div
-			.css("top", 890)
-			.css("left", 1858);
+			chart_div = $(window);
+			chart_width = chart_div.width();
+			chart_height = chart_div.height();
 		}
+
+		loading_div
+		.css("top", chart_height / 3)
+		.css("left", chart_width / 2);
 	}
 
 	return {
@@ -298,7 +302,7 @@ define("utils", [], function()  {
 		tooltip : tooltip,
 		log : log,
 		download : download,
-		toPng : toPng,
+		saveImg : saveImg,
 		getClass : getClass,
 		getTag : get_tag_by_identification,
 		find_pathname : find_pathname,

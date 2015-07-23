@@ -79,7 +79,7 @@ define(MA + "view_maplot", ["utils", "size", MA + "event_maplot"], function(_uti
 		circles
 		.on("mouseover", e.m_over)
 		.on("mouseout", e.m_out)
-		.transition().delay(function(_d, _i) { return _i * (1 / 10); })
+		.transition().delay(function(_d, _i) { return _i * (1 / 5); })
 		.attr("r", 2)
 		.attr("cx", function(_d) { return data.x(_d.x); })
 		.attr("cy", function(_d) { return data.y(_d.y); });

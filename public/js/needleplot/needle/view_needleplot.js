@@ -69,7 +69,6 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 		});
 
 		var graphs = graph_group.append("rect")
-		.style("stroke", function(_d) { return d3.rgb(_d.colour).darker(1); })
 		.style("fill", function(_d) { return _d.colour; })
 		.attr("x", 0)
 		.attr("y", -size.margin.top)
@@ -116,7 +115,7 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 		var marker_figures_path = marker_figures_group.append("path")
 		.attr("class", "marker_figures_path")
 		.attr("d", function(_d) { return "M0,0L0,0"; })
-		.transition().duration(1000)
+		.transition().duration(500)
 		.attr("d", function(_d) {
 			return "M0,0L0," + (data.y(_d.count) - (size.rheight - size.graph_width));
 		});
@@ -127,10 +126,10 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 		.on("mouseout", e.m_out)
 		.style("fill", function(_d) { return _utils.colour(_utils.define_mutation_name(_d.type)); })
 		.style("stroke", function(_d) { return d3.rgb(_utils.colour(_utils.define_mutation_name(_d.type))).darker(2); })
-		.style("stroke-width", function(_d) { return 1; })
+		.style("stroke-width", function(_d) { return 0; })
 		.attr("cx", 0)
 		.attr("cy", 0)
-		.transition().duration(1000)
+		.transition().duration(500)
 		.attr("cy", function(_d, _i) { return (data.y(_d.count) - (size.rheight - size.graph_width - data.radius(_d.count))); })
 		.attr("r", function(_d, _i) { return data.radius(_d.count); });
 

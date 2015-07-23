@@ -39,16 +39,33 @@ var CHART = {
 define("router", [CHART.INIT, "utils"], function(TARGET, _utils)	{
 	var chart_set = { url : CHART.URL, func : TARGET };
 
-	var request_data = function()    {    
+	var fade_in = function()	{
+		$(".chart_base_container").fadeIn(1000);
+	}
+
+	var check_status = function(_res)	{
+		if(_res.status === 1001)	{
+			alert(_res.message);
+			window.history.back();
+		}
+	}
+
+	var fade_out = function()	{
+		$(".loading").fadeOut();
+	}
+
+	var request_data = function(_callback)    {    
 		$.get(chart_set.url)
 		.done(function(_res)   { 
-			chart_set.func(_res);
-			$(".chart_base_container").fadeIn();
-			$("#loading_area").fadeOut(); 
+			_callback(_res);
+			fade_in();
+			chart_set.func(_res); 
+			fade_out();
+			// setTimeout(function() { _utils.saveImg("table_component"); }, 3000);
 		});
 	}
 
 	return function()	{
-		request_data();
+		request_data(check_status);
 	}
 });

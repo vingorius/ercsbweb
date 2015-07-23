@@ -86,8 +86,10 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 			_utils.tooltip(e
 				, "<strong>Title : <span style='color:red'>" + _d.title
-				+ "</span></br> X : <span style='color:red'>" + _d.x
-				+ "</span></br> Y : <span style='color:red'>" + _d.y
+				+ "</span></br> X : <span style='color:red'>" 
+				+ Number(_d.x).toFixed(5)
+				+ "</span></br> Y : <span style='color:red'>" 
+				+ Number(_d.y).toFixed(5)
 				+ "</span></br> P : <span style='color:red'>"
 				+ Number(_d.value).toExponential(5)
 				, e.pageX, e.pageY);

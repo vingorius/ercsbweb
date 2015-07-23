@@ -1,9 +1,10 @@
 extends ../layout/basiclayout
 
 block append stylesheets
-    link(rel='stylesheet', href='/stylesheets/register.css')
+    link(rel='stylesheet', href='/bower_components/ladda/dist/ladda-themeless.min.css')
     link(rel='stylesheet', href='/stylesheets/jquery-bootstrap-datepicker.css')
     link(rel='stylesheet', href='/bower_components/country-select-js/build/css/countrySelect.css')
+    link(rel='stylesheet', href='/stylesheets/register.css')
 
 block content
     div.container
@@ -54,7 +55,13 @@ block content
                     span.ladda-label Register
                     
 block append scripts
+    script(src='/bower_components/ladda/js/spin.js')
+    script(src='/bower_components/ladda/js/ladda.js')
     script(src='/bower_components/jquery-validation/dist/jquery.validate.js')
     script(src='/bower_components/jquery-ui/jquery-ui.js')
     script(src='/bower_components/country-select-js/build/js/countrySelect.js')
     script(src='/js/register.js')
+    script.
+        $(document).ready(function() {
+            Ladda.bind('button[type=submit]');
+        });

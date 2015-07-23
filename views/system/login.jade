@@ -1,6 +1,7 @@
 extends ../layout/basiclayout
 
 block append stylesheets
+    link(rel='stylesheet', href='/bower_components/ladda/dist/ladda-themeless.min.css')
     link(rel='stylesheet', href='/stylesheets/login.css')
 
 block content
@@ -22,6 +23,14 @@ block content
                     span.ladda-label Sign in
                 hr
                 p.text-right Forgot password? 
-                    a#forgot-password(href='#') Click here to reset.
+                    a#forgot-password(href='/commingsoon') Click here to reset.
                 p.text-right New user? 
                     a#forgot-password(href='/register') Click here to register.
+
+block append scripts
+    script(src='/bower_components/ladda/js/spin.js')
+    script(src='/bower_components/ladda/js/ladda.js')
+    script.
+        $(document).ready(function() {
+            Ladda.bind('button[type=submit]');
+        });

@@ -8,7 +8,7 @@ html {
 body {
 	/* Margin bottom by footer height */
 	margin-bottom: 60px;
-	color: #777;
+	/*color: #777;*/
 }
 .footer {
 	/*position: absolute;*/
@@ -185,10 +185,10 @@ line {
 	}
 
 	@keyframes sk-bounce {
-		0%, 100% { 
+		0%, 100% {
 			transform: scale(0.0);
 			-webkit-transform: scale(0.0);
-			} 50% { 
+			} 50% {
 				transform: scale(1.0);
 				-webkit-transform: scale(1.0);
 			}
@@ -204,5 +204,3 @@ line {
 	border-radius: 2px;
 	display: block;
 }
-
-

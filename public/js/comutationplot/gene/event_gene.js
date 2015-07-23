@@ -47,17 +47,12 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 	}
 
 	var sorting_get_name = function(_sorting_data)	{
-		try{
-			var result = [];
+		var result = [];
 
-			for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
-				result.push(_sorting_data[i].name);
-			}
-			return result;
+		for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
+			result.push(_sorting_data[i].name);
 		}
-		finally {
-			result = null;
-		}
+		return result;
 	}
 
 	var redraw_yaxis = function(_sorting_data, _size)	{

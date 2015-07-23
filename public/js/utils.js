@@ -114,9 +114,9 @@ define("utils", [], function()  {
 			"pq":"#C2C4C9",
 			"Primary Solid Tumor":"#F64747",
 			"Solid Tissue Normal":"#446CB3",
-			"si_log_p":"#466D1C",
-			"si_up_log_p":"#6C1C1D",
-			"si_down_log_p":"#2F3B4B"
+			"si_log_p":"#ea3b29",
+			"si_up_log_p":"#5cb755",
+			"si_down_log_p":"#3e87c2"
 		}[value];
 	}
 

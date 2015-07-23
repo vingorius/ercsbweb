@@ -8,6 +8,7 @@ define("legend/setting_legend", ["utils", "size", "legend/view_legend"], functio
 
 		data.type_list.map(function(_d) {
 			var width = ctx.measureText(_d).width;
+			var height = parseInt(ctx.font);
 
 			result.push({
 				type : _d,
@@ -40,15 +41,9 @@ define("legend/setting_legend", ["utils", "size", "legend/view_legend"], functio
 			return -1;
 		}
 
-		if(_size.width < _p_width && _size.height > _p_height)    {
-			return 0;
-		}
-		else if(_size.width > _p_width && _size.height < _p_height) {
-			return 1;
-		}
-		else {
-			return 0;
-		}
+		if(_size.width < _p_width && _size.height > _p_height)    { return 0; }
+		else if(_size.width > _p_width && _size.height < _p_height) { return 1; }
+		else { return 0; }
 	}
 
 	var get_importance_name = function(_importance)	{

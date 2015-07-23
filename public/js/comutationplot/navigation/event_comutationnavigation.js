@@ -50,9 +50,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var now = old + (old * calculate_value());
 			var x = _utils.ordinalScale(_VO.VO.getSample(), data.size.margin.left, now - data.size.margin.left);
 
-			if(old > now)	{
-				return;
-			}
+			if(old > now)	{ return; }
 
 			redraw_sample(now, x);
 		}
@@ -62,8 +60,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var rects = d3.selectAll(".comutationplot_sample_bars");
 
 			sample
-			.transition().duration(400)
-			.attr("width", _value);
+			.transition().duration(400).attr("width", _value);
 
 			rects
 			.transition().duration(400)
@@ -78,8 +75,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var origin = $("#comutationplot_heatmap");
 
 			comutation
-			.transition().duration(400)
-			.attr("width", _value);
+			.transition().duration(400).attr("width", _value);
 
 			groups
 			.transition().duration(400)
@@ -88,8 +84,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			});
 
 			rects
-			.transition().duration(400)
-			.attr("x", 0)
+			.transition().duration(400).attr("x", 0)
 			.attr("width", function(_d) { return _x.rangeBand(); });
 		}
 
@@ -104,9 +99,8 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var y = _utils.ordinalScale(_VO.VO.getGene(), data.size.margin.top,
 				(origin.height() - data.size.margin.top));
 
-			if(old > now)	{
-				return;
-			}
+			if(old > now)	{ return; }
+			
 			_VO.VO.setWidth(now);
 			redraw_comutation(now, x, y);
 		}
@@ -148,11 +142,11 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 
 			timeout(function() { d3.selectAll(".comutationplot_gene_yaxis")
 			.transition().duration(400)
-			.call(d3.svg.axis().scale(y).orient("right")); }, 500);
+			.call(d3.svg.axis().scale(y).orient("right")); }, 400);
 
 			timeout(function() { d3.selectAll(".comutationplot_gene_bars")
 			.transition().duration(400)
-			.attr("y", function(_d) { return y(_d.gene); }); }, 600);
+			.attr("y", function(_d) { return y(_d.gene); }); }, 400);
 
 			timeout(function() { d3.selectAll(".comutationplot_cellgroup")
 			.transition().duration(400)
@@ -161,7 +155,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 					return "translate(" + _d.x(_d.sample) + ", " + _d.y(_d.gene) +")";	
 				}
 				return "translate(" + x(_d.sample) + ", " + y(_d.gene) +")";	
-			}); }, 700);
+			}); }, 500);
 		}
 
 		return {

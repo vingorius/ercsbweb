@@ -2,15 +2,11 @@ var XY = "xyplot/";
 
 define(XY + "setting_xyplot", ["utils", "size", XY + "view_xyplot"], function(_utils, _size, _view)	{
 	var get_max = function(_type, _list)	{
-		return d3.max(_list.map(function(_d)	{
-			return _d[_type];
-		})) + 1;
+		return d3.max(_list.map(function(_d)	{ return _d[_type]; })) + 1;
 	}
 
 	var get_min = function(_type, _list)	{
-		return d3.min(_list.map(function(_d)	{
-			return _d[_type];
-		})) - 1;
+		return d3.min(_list.map(function(_d)	{ return _d[_type]; })) - 1;
 	}
 
 	return function(_data)	{
@@ -31,12 +27,8 @@ define(XY + "setting_xyplot", ["utils", "size", XY + "view_xyplot"], function(_u
 		_view.view({
 			data : data,
 			size : size,
-			max : {
-				x : xmax, y : ymax
-			},
-			min : {
-				x : xmin, y : ymin
-			},
+			max : { x : xmax, y : ymax },
+			min : { x : xmin, y : ymin },
 			radius : radius,
 			x : x,
 			y : y

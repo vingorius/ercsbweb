@@ -15,26 +15,29 @@ define(DEG + "setting_degplot", ["utils", "size", DEG + "view_degplot"], functio
 
 	var color_list = function()	{
 		return [
-			"#466D1C", "#6C1C1D", "#2F3B4B",
-			"#7A7510", "#7C4C0E", "#474343",
-			"#54116E", "#170A75"
+			"#ea3b29", "#f68d3b", "#f2ee7e",
+			"#5cb755", "#3e87c2", "#252766",
+			"#955fa7", "#a5a5a5"
 		];
 	}
 
-	var rgb = function(_color) 	{
-		return d3.rgb(_color).hsl();
+	var hsl = function(_color) 	{
+		return d3.hsl(_color);
 	}
 
 	var background_color = function(_rgb, _value, _min, _max)	{
 		if(_value > _max)	{
 			_value = _max;
 		}
-
+		var hsl_color = hsl(_rgb);
+		var color_lightness = hsl_color.l;
 		var si_color_scale = d3.scale.linear()
 		.domain([_max, _min])
-		.range([0, 4]);
+		.range([color_lightness, 1]);
 
-		return rgb(_rgb).brighter(si_color_scale(_value));
+		hsl_color.l = si_color_scale(_value);
+
+		return hsl_color;
 	}
 
 	var count_si = function(_data)	{

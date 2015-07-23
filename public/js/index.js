@@ -1,6 +1,5 @@
 require.config({
 	baseUrl : "/js",
-	
 	paths : {
 		router : "chartrouter",
 		header : "chartheader/",

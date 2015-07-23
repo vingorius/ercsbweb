@@ -61,7 +61,6 @@ define("router", [CHART.INIT, "utils"], function(TARGET, _utils)	{
 			fade_in();
 			chart_set.func(_res); 
 			fade_out();
-			// setTimeout(function() { _utils.saveImg("table_component"); }, 3000);
 		});
 	}
 
@@ -69,3 +68,4 @@ define("router", [CHART.INIT, "utils"], function(TARGET, _utils)	{
 		request_data(check_status);
 	}
 });
+// setTimeout(function() { _utils.saveImg("table_component"); }, 3000);

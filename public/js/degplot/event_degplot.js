@@ -53,8 +53,7 @@ var change_brightness = function(_target, _min, _max, _value)	{
 	var x2 = (Math.round((percent * _value) / (_max - _min)) === 0) ?
 	1 : Math.round((percent * _value) / (_max - _min));
 
-	brightness
-	.attr("x2", x2 + "%");
+	brightness.attr("x2", x2 + "%");
 }
 
 var relocate_bar = function(_target, _d)	{
@@ -73,15 +72,11 @@ var relocate_bar = function(_target, _d)	{
 	var sub_end = Math.abs(end - x(Number(target.attr("x"))));
 	var x_final = (sub_start > sub_end) ? end : start;
 
-	return {
-		value : x_final,
-		scale : re_x
-	};
+	return { value : x_final, scale : re_x };
 }
 
 var get_gradient_end = function(_id)	{
-	return d3.select("#gradient_end_" + _id)
-	.attr("stop-color");
+	return d3.select("#gradient_end_" + _id).attr("stop-color");
 }
 
 var drag_end = function(_d)	{
@@ -106,7 +101,6 @@ var drag_lever = function(_d)	{
 	.attr("x", function()	{
 		_utils.tooltip(d3.event, reloc.value, 
 			d3.event.sourceEvent.pageX, d3.event.sourceEvent.pageY - 30);
-
 		return Math.max((_d.margin / 2), 
 			Math.min(_d.width - _d.margin, Number(target.attr("x")) + d3.event.dx));
 	});
@@ -114,8 +108,7 @@ var drag_lever = function(_d)	{
 
 var drag_figure = d3.behavior.drag()
 .origin(Object)
-.on("drag", drag_lever)
-.on("dragend", drag_end);
+.on("drag", drag_lever).on("dragend", drag_end);
 
 var all_colors = function()	{
 	var all_colors = d3.selectAll("stop")[0];
@@ -130,13 +123,12 @@ var all_colors = function()	{
 }
 
 var find_color = function(_target, _color, _now_color)	{
-	if($(_color).attr("stop-color").toUpperCase() 
-		=== _now_color.toUpperCase())	{
+	if($(_color).attr("stop-color").toUpperCase() === _now_color.toUpperCase())	{
 		d3.select("#" + _target + " svg").style("border", "2px solid yellow");
-}
-else {
-	d3.select("#" + _target + " svg").style("border", "");
-}
+	}
+	else {
+		d3.select("#" + _target + " svg").style("border", "");
+	}
 }
 
 var find_what_in_all_colors = function(_all_color, _now_color)	{
@@ -166,39 +158,6 @@ var set_selected_button = function(_target)	{
 	}
 }
 
-var colors_click = function(_d)	{
-	var target = this.id.substring(this.id.indexOf("_") + 1, this.id.length);
-	var now_color = get_gradient_end(target);
-	var color_config = $("#color_config");
-
-	color_config.collapse("hide");
-	setTimeout(function()	{ color_config.collapse("show"); }, 400);
-
-	var all_color = all_colors();
-
-	set_selected_button(target);
-
-	now_si = target;
-	find_what_in_all_colors(all_color, now_color);
-}
-
-var click_color_cell = function(_d)	{
-	var target = _d.id.substring(_d.id.lastIndexOf("_") + 1, _d.id.length);
-	var all_color = all_colors();
-	var index = _utils.getNum(_d.id);
-
-	find_what_in_all_colors(all_color, _d.color);
-	change_gradient(_d.color, now_si);
-
-	d3.selectAll(".degplot_lever_rect")[0].forEach(function(_data, _i)	{
-		var rect = d3.select(_data).datum();
-
-		if(rect.id === now_si)	{
-			change_cell_background(rect.id, rect.min, rect.max, rect.bgcolor, _d.color);
-		}		
-	});
-}
-
 var m_cell_over = function(_d)	{
 	_utils.tooltip(d3.event, 
 		"<strong>name : <span style='color:red'>" + _d.id
@@ -211,12 +170,28 @@ var m_cell_out = function(_d)	{
 	_utils.tooltip();
 }
 
+var select_color = function(_value, _color, _title)	{
+	var si = _title.substring(0, _title.indexOf("-"));
+	var lever = d3.selectAll(".degplot_lever_rect");
+
+	change_gradient(_color, si);
+
+	lever[0].forEach(function(_data, _i)	{
+		var rect = d3.select(_data).datum();
+		change_brightness(si, rect.min, rect.max, rect.max);
+		lever.transition().duration(250)
+		.attr("x", rect.width - rect.margin);
+		if(rect.id === si)	{
+			change_cell_background(rect.id, rect.min, rect.max, rect.bgcolor, _color);
+		}		
+	});
+}
+
 return {
 	cell_over : m_cell_over,
 	cell_out : m_cell_out,
 	rowspan : rowspan,
 	drag : drag_figure,
-	colors : colors_click,
-	color_cell : click_color_cell
+	select_color : select_color
 }
 });	

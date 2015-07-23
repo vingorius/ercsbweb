@@ -7,11 +7,8 @@ define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)  
         d3.select(this).transition().duration(100).style("stroke-width", 2);
 
         _utils.tooltip(d3.event
-            , "<strong>type : <span style='color:red'>"
-            + _d.type
-            + "</span></br> value : <span style='color:red'>"
-            + _d.count
-            + "</span>"
+            , "<strong>type : <span style='color:red'>"+ _d.type
+            + "</span></br> value : <span style='color:red'>"+ _d.count + "</span>"
             , d3.event.pageX, d3.event.pageY - 40);
     }
 
@@ -29,13 +26,10 @@ define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)  
             _d.sort(function(_a, _b)    {
                 var a = d3.select(_a).datum();
                 var b = d3.select(_b).datum();
-
-                var result = (a.count + a.y < a.count + b.y) ? 
-                1 : -1;
+                var result = (a.count + a.y < a.count + b.y) ? 1 : -1;
 
                 return result;
             });
-
             append_parent(_d);
         });
     }
@@ -44,6 +38,10 @@ define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)  
         _childs.forEach(function(_d)    {
             _d.parentNode.parentNode.parentNode.appendChild(_d.parentNode.parentNode)
         });
+    }
+
+    var view_mutations = function(_data)    {
+        
     }
 
     return {

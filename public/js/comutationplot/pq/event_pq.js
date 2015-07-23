@@ -8,8 +8,8 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 		var e = d3.event;
 		
 		_utils.tooltip(e, "Gene : <span style='color : red;'>" + _d.name 
-			+ "</span></br>q : <span style='color : red;'>" + Number(_utils.log(_d.q)).toFixed(4)
-			+ "</span>"
+			+ "</span></br>q : <span style='color : red;'>" 
+			+ Number(_utils.log(_d.q)).toFixed(4) + "</span>"
 			, e.pageX - 50, e.pageY);
 
 		target.transition().duration(100)

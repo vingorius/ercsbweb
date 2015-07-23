@@ -118,9 +118,7 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			texture.needsUpdate = true;
 			texture.minFilter = THREE.LinearFilter;
 
-			var spriteMaterial = new THREE.SpriteMaterial({
-				map : texture
-			});
+			var spriteMaterial = new THREE.SpriteMaterial({ map : texture });
 
 			var sprite = new THREE.Sprite(spriteMaterial);
 			sprite.scale.set(canvas.width, canvas.height, 1)
@@ -162,11 +160,8 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			var result = [];
 
 			for(var i = _min, len = _max ; i < len ; i++)	{
-				if(i % _period === 0)	{
-					result.push(i);
-				}
+				if(i % _period === 0)	{ result.push(i); }
 			}
-
 			return result;
 		}
 
@@ -182,7 +177,6 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			else {
 				number_period = Math.ceil(number_format) * number_multi;	 		
 			}
-
 			return cal_axis_list(number_period, _min, _max);
 		}
 

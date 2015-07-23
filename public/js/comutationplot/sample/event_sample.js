@@ -29,17 +29,12 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 	}
 
 	var sorting_get_name = function(_sorting_data)	{
-		try{
-			var result = [];
+		var result = [];
 
-			for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
-				result.push(_sorting_data[i].name);
-			}
-			return result;
+		for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
+			result.push(_sorting_data[i].name);
 		}
-		finally {
-			result = null;
-		}
+		return result;
 	}
 
 	var redraw_xaxis = function(_sorting_data, _size)	{
@@ -61,8 +56,7 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 		});
 
 		d3.selectAll(".comutationplot_cells")
-		.transition().duration(400)
-		.attr("x", 0)
+		.transition().duration(400).attr("x", 0)
 		.attr("width", function(_d) { return x.rangeBand(); });
 	}
 

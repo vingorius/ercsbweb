@@ -1,101 +1,71 @@
 define("size", [], function()   {
-	/**
-	 * [DIV 태그를 만들어주는 함수]
-	 * @param  {[Object]} _order [속성 및 모양을 정의한 파라미터]
-	 * @return {[Object]}        [만들어진 DIV 태그를 반환]
-	 */
-	 var make_a_division = function(_order)    {
-	 	var order = _order || {}, div;
-	 	
-	 	div = document.createElement("div");
+	var make_a_division = function(_order)    {
+		var order = _order || {};
+		var div = document.createElement("div");
 
-	 	Object.keys(order).map(function(_d)  {
+		Object.keys(order).map(function(_d)  {
+			if(_d === "attribute")  { 
+				set_a_division_attr(div, order[_d]); 
+			}
+			else if(_d === "style") { 
+				set_a_division_css(div, order[_d]); 
+			}
+		});
+		return div;
+	}
 
-	 		if(_d === "attribute")  { 
-	 			set_a_division_attr(div, order[_d]); 
-	 		}
-	 		else if(_d === "style") { 
-	 			set_a_division_css(div, order[_d]); 
-	 		}
+	var set_a_division_attr = function(_div, _order)    {
+		var div = _div || null;
+		var order = _order || {};
 
-	 	});
+		Object.keys(order).map(function(_d) {
+			div.setAttribute(_d, order[_d]);
+		});
+	}
 
-	 	return div;
-	 }
+	var set_a_division_css = function(_div, _order)   {
+		var div = _div || null;
+		var order = _order || {};
 
-	/**
-	 * [DIV 태그의 속성을 설정해주는 함수]
-	 * @param {[Object]} _div   [DIV 태그]
-	 * @param {[Object]} _order [DIV 태그의 속성 목록]
-	 */
-	 var set_a_division_attr = function(_div, _order)    {
-	 	var div = _div || null, order = _order || {};
+		Object.keys(order).map(function(_d) {
+			div.style[_d] = order[_d];
+		});
+	}
 
-	 	Object.keys(order).map(function(_d) {
+	var define_size = function()  {
+		if(arguments.length < 1 || arguments.length !== 5)    {
+			return undefined;
+		}
 
-	 		div.setAttribute(_d, order[_d]);
+		var width = get_original_size(arguments[0]).width;
+		var height = get_original_size(arguments[0]).height;
 
-	 	});
-	 }
+		return {
+			width : width,
+			height : height,
+			rwidth : width - arguments[3] - arguments[4],
+			rheight : height - arguments[1] - arguments[2],
+			margin : {
+				top : arguments[1],
+				bottom : arguments[2],
+				left : arguments[3],
+				right : arguments[4]
+			}            
+		}
+	}
 
-	/**
-	 * [DIV 태그의 모양을 설정해주는 함수]
-	 * @param {[Object]} _div   [DIV 태그]
-	 * @param {[Object]} _order [DIV 태그의 모양 목록]
-	 */
-	 var set_a_division_css = function(_div, _order)   {
-	 	var div = _div || null, order = _order || {};
+	var get_original_size = function(_id)   {
+		var layout = $("#" + _id);
 
-	 	Object.keys(order).map(function(_d) {
+		return {
+			width : layout.width(),
+			height : layout.height()
+		}
+	}
 
-	 		div.style[_d] = order[_d];
-
-	 	});
-	 }
-
-	/**
-	 * [D3 차트를 그려줄 svg 영역 정의 함수]
-	 * @return {[Object]} [svg 영역이 정의된 객체]
-	 */
-	 var define_size = function()  {
-
-	 	if(arguments.length < 1 || arguments.length !== 5)    {
-	 		return undefined;
-	 	}
-
-	 	var width = get_original_size(arguments[0]).width;
-	 	var height = get_original_size(arguments[0]).height;
-
-	 	return {
-	 		width : width,
-	 		height : height,
-	 		rwidth : width - arguments[3] - arguments[4],
-	 		rheight : height - arguments[1] - arguments[2],
-	 		margin : {
-	 			top : arguments[1],
-	 			bottom : arguments[2],
-	 			left : arguments[3],
-	 			right : arguments[4]
-	 		}            
-	 	}
-	 }
-
-	/**
-	 * [get_original_size description]
-	 * @param  {[type]} _id [description]
-	 * @return {[type]}     [description]
-	 */
-	 var get_original_size = function(_id)   {
-	 	var layout = $("#" + _id);
-	 	return {
-	 		width : layout.width(),
-	 		height : layout.height()
-	 	}
-	 }
-
-	 return {
-	 	define_size : define_size,
-	 	get_original_size : get_original_size,
-	 	mkdiv : make_a_division 
-	 };
-	});
+	return {
+		define_size : define_size,
+		get_original_size : get_original_size,
+		mkdiv : make_a_division 
+	};
+});

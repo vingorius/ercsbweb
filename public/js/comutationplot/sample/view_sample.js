@@ -15,8 +15,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.attr("transform", "translate(0, 0)");
 
 		var yAxis = d3.svg.axis()
-		.scale(data.y)
-		.orient("left")
+		.scale(data.y).orient("left")
 		.tickValues([0, data.max / 2, data.max]);
 
 		svg.append("g")
@@ -30,8 +29,6 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.attr("transform", "translate(" + (size.margin.left * 1.5) + ", " + (size.margin.top * 1.5) + ")")
 		.append("text")
 		.text("#samples count")
-		.style("font-size", "12px")
-		.style("font-style", "italic")
 		.on("click", e.sort_by_value);
 
 		$(".sample_explain")
@@ -56,8 +53,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.attr("width", data.x.rangeBand())
 		.attr("height", function(_d) { return (size.height - size.margin.bottom) - data.y(_d.count); })
 		.style("fill", function(_d) { return _utils.colour(_d.type); })
-		.on("mouseover", e.m_over)
-		.on("mouseout", e.m_out);
+		.on("mouseover", e.m_over).on("mouseout", e.m_out);
 	}
 
 	return {

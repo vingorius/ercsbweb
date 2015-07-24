@@ -54,7 +54,7 @@ define(DEG + "setting_degplot", ["utils", "size", DEG + "view_degplot"], functio
 
 	return function(_data)	{
 		var data = _data || [];
-		var tbody = _utils.getClass("degplot_tbody");
+		var tbody = document.querySelector(".degplot_tbody");
 		var si = count_si(data.data.pathway_list[0]);
 		var si_min_max = [];
 

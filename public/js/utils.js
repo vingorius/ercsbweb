@@ -153,7 +153,7 @@ define("utils", [], function()  {
 	}
 
 	var tooltip = function(_event, _contents, _x, _y)   {
-		var div = $('.tooltip');
+		var div = $('.tooltip_chart');
 		var e = _event || null, contents = _contents || "", x = _x || 0, y = _y || 0;
 
 		if(arguments.length < 1) {

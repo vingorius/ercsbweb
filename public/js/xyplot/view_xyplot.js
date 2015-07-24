@@ -63,6 +63,8 @@ define(XY + "view_xyplot", ["utils", "size", XY + "event_xyplot"], function(_uti
         .attr("x", function(_d) { return data.x(_d.x) + 5; })
         .attr("y", function(_d) { return data.y(_d.y); })
         .text(function(_d) { if(_d.y > 20) return _d.title; });
+
+      
     }    
 
     return {

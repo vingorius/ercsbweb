@@ -138,7 +138,7 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 
 	var make_range_component = function(_data, _si, _width, _height)	{
 		var range_component = 
-		document.getElementById("degplot_color_bar_body");
+		document.querySelector("#degplot_color_bar_body");
 
 		for(var i = 0, len = _si.length ; i < len ; i++)	{
 			var row = _size.mkdiv();
@@ -168,7 +168,7 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 
 	var view = function(_data)	{
 		var data = _data.data || [];
-		var config_div = document.getElementById("degplot_color_bar_heading");
+		var config_div = document.querySelector("#degplot_color_bar_heading");
 		var tbody = _data.tbody || null;
 		var padding_left = _utils.getNum(d3.select(config_div).style("padding-left"));
 		var padding_right = _utils.getNum(d3.select(config_div).style("padding-right"));

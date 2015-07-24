@@ -5,7 +5,7 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 		var data = _data || [];
 		var min_max = _min_max || new Function();
 		var size = _size.define_size("pcaplot_view_3d", 30, 30, 30, 30);
-		var div = document.getElementById("pcaplot_view_3d");
+		var div = document.querySelector("#pcaplot_view_3d");
 
 		var x_minmax = min_max(data, "PC1");
 		var y_minmax = min_max(data, "PC2");

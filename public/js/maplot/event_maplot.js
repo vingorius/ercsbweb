@@ -41,7 +41,7 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 		}
 
 		var undo_table = function(_target)		{
-			var tbody = document.getElementById("result_body");
+			var tbody = document.querySelector("#result_body");
 			var index_array = [];
 
 			for (var i = tbody.rows.length - 1, len = 0 ; i >= len ; i--)	{
@@ -129,7 +129,7 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 		}
 
 		var click_reset = function()	{
-			var table = document.getElementById("result_body");
+			var table = document.querySelector("#result_body");
 			var paths_g = d3.selectAll("#maplot_select_path path");
 
 			delete_table_item(table);
@@ -162,7 +162,7 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 		}
 
 		var draw_table = function() {
-			var table = document.getElementById("result_body");
+			var table = document.querySelector("#result_body");
 
 			delete_table_item(table);
 

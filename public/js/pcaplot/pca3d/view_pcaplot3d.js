@@ -127,6 +127,30 @@ define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], funct
 			z : data.z
 		});
 
+		var raycaster = new THREE.Raycaster();
+		var mouse = new THREE.Vector2();
+
+		function onMouseMove(event)	{
+			mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+			mouse.y = (event.clientY / window.innerHeight) * 2 - 1;
+		}
+
+		function render()	{
+			raycaster.setFromCamera(mouse, camera);
+
+			var intersects = raycaster.intersectObjects(scene.children);
+
+			for(var i = 0 ; i < intersects.length ; i++)	{
+				console.log(intersects[i].object)
+				intersects[i].object.material.color.set(0xff0000);
+			}
+
+			renderer(render(scene, camera));
+		}
+
+		window.addEventListener("mousemove", onMouseMove, false);
+		window.requestAnimationFrame(render);
+
 		renderer.render(scene, camera);
 
 		window.onmousedown = e.win_m_down;

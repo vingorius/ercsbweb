@@ -28,7 +28,7 @@ define(DEG + "event_degplot", ["utils", "size"], function(_utils, _size)	{
 	}
 
 	var change_cell_background = function(_target, _min, _value, _bgcolor, _rgb)	{
-		var targets = document.getElementsByTagName("td");
+		var targets = document.querySelectorAll("td");
 		var rgb = _rgb || _utils.colour(_target);
 
 		for(var i = 0, len = targets.length ; i < len ; i++)	{

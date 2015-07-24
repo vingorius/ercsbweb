@@ -130,6 +130,7 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 		.attr("r", function(_d, _i) { return data.radius(_d.count); });
 
 		e.front();
+		e.view_mutations(data);
 	}
 
 	return {

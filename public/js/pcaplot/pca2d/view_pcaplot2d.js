@@ -90,3 +90,4 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 	return {
 		view : view
 	}
+});

@@ -19,31 +19,64 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		}
 		return result;
 	}
+	var get_all_data = (function()	{
+		var memoize = {
+			sample_group : {},
+			gene_group : {},
+			sample : {},
+			gene : {},
+			type : {},
+			value : {}
+		};
 
-	var get_all_data = function(_sample_list, _samples, _index, _result)  {
-		var sample_list = _sample_list || [], samples = _samples || [], result = _result || [];
-		var sampleColumn, aberrations;
-		var index = _index || 0;
+		function f(_sample_list, _samples, _index, _result)	{
+			var sample_list = _sample_list || [], samples = _samples || [], result = _result || [];
+			var sampleColumn, aberrations;
+			var index = _index || 0;
+			var f_sample_group, f_gene_group, f_sample, f_gene, f_type, f_value;
 
-		if(index > samples.length - 1)  {  return;  }
+			if(index > samples.length - 1)  {  return;  }
 
-		sampleColumn = _utils.search_in_jsonarray(samples[index], "name", sample_list);
+			sampleColumn = _utils.search_in_jsonarray(samples[index], "name", sample_list);
 
-		sampleColumn.gene_list.forEach(function(_d, _i)  {
-			aberrations = get_all_aberration_list(_d);
-			result.push({
-				sample_group : sampleColumn.group,
-				gene_group : "group",
-				sample : sampleColumn.name,
-				gene : _d.name,
-				type : aberrations.type,
-				value : aberrations.value,
-			});
-		})
-		get_all_data(sample_list, samples, index += 1, result);
+			sampleColumn.gene_list.forEach(function(_d, _i)  {
+				aberrations = get_all_aberration_list(_d);
 
-		return result;
-	}
+				f_sample_group = (sampleColumn.group in memoize.sample_group) ? 
+					memoize.sample_group[sampleColumn.group] : sampleColumn.group;
+				f_gene_group = ("group" in memoize.gene_group) ? 
+					memoize.gene_group["group"] : "group";
+				f_sample = (sampleColumn.name in memoize.sample) ?
+					memoize.sample[sampleColumn.name] : sampleColumn.name;
+				f_gene = (_d.name in memoize.gene) ? 
+					memoize.gene[_d.name] : _d.name;
+				f_type = (aberrations.type in memoize.type) ? 
+					memoize.type[aberrations.type] : aberrations.type;
+				f_value = (aberrations.value in memoize.value) ?
+					memoize.value[aberrations.value] : aberrations.value;
+
+				memoize.sample_group[sampleColumn.group] = f_sample_group;
+				memoize.gene_group["group"] = f_gene_group;
+				memoize.sample[sampleColumn.name] = f_sample;
+				memoize.gene[_d.name] = f_gene;
+				memoize.type[aberrations.type] = f_type;
+				memoize.value[aberrations.value] = f_value;
+
+				result.push({
+					sample_group : f_sample_group,
+					gene_group : f_gene_group,
+					sample : f_sample,
+					gene : f_gene,
+					type : f_type,
+					value : f_value,
+				});
+			})
+			get_all_data(sample_list, samples, index += 1, result);
+
+			return result;	
+		}
+		return f;
+	}());
 
 	var get_all_aberration_list = function(_gene) {
 		var gene = _gene.aberration_list || [];
@@ -129,7 +162,7 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 
 	var importance_by_name = function(_importance)	{	
 		var result = [];
-	
+
 		for(var i = 0, len = _importance.length ; i < len ; i++)	{
 			result.push(_importance[i].name);
 		}

@@ -2,7 +2,7 @@ var COMUTS_NAVI = "comutationplot/navigation/";
 
 define(COMUTS_NAVI + "view_comutationnavigation", ["utils", "size", COMUTS_NAVI + "event_comutationnavigation"], function(_utils, _size, _event)	{
 	var make_div = function()	{
-		var side = document.getElementById("comutationplot_scale");
+		var side = document.querySelector("#comutationplot_scale");
 		var prev_div = $("#comutationplot_scale_div");
 
 		if(prev_div)	{

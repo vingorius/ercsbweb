@@ -1,11 +1,10 @@
 extends ../layout/basiclayout
 
 block content
-	div#loading_area
-		div.loading(style={ "display" : "none" }) 
-			span#loading_text loading chart ...
-			div.double-bounce1
-			div.double-bounce2
+	div.loading(style={ "display" : "none" }) 
+		span#loading_text
+		div.double-bounce1
+		div.double-bounce2
 	div.container.chart_base_container
 		//- include chart_header.jade
 		div.row
@@ -16,9 +15,9 @@ block content
 		div.row
 			div#needleplot_legend(style={'padding': '0px', 'margin-left': '50px', 'width': '1350px', 'height': '70px'})
 block append scripts
-	script(src='/bower_components/canvas2image/canvas2image/canvas2image.js')
 	script(src='/bower_components/html2canvas/build/html2canvas.js')
 	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
-	link(rel='stylesheet', href='/stylesheets/chart/needleplot.css')
 	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')
+	link(rel='stylesheet', href='/stylesheets/chart/needleplot.css')
+	

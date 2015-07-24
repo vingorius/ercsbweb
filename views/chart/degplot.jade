@@ -1,15 +1,14 @@
 extends ../layout/basiclayout
 
 block content
-	div#loading_area
-		div.loading(style={ "display" : "none" }) 
-			span#loading_text loading chart ...
-			div.double-bounce1
-			div.double-bounce2
+	div.loading(style={ "display" : "none" }) 
+		span#loading_text 
+		div.double-bounce1
+		div.double-bounce2
 	div.container.chart_base_container
 		//- include chart_header.jade
 		div.table_component(style={"float" : "left"})
-			table.table.table-bordered.table-hover.table-responsive
+			table.table.table-bordered.table-responsive
 				thead
 					tr
 						th Pathway_A
@@ -22,20 +21,20 @@ block content
 		div#degplot_color(style={"float" : "left", "margin-left" : "10px"})
 			div.panel-group#degplot_color_config(role="tablist", aria-multiselectable="true")
 				div.panel.panel-default
-					div.panel-heading#degplot_color_config_heading(role="tab")
-						span.panel-title
-							a#color_config_a(role="button", data-toggle="collapse", data-parent="#accordion", href="#color_config", aria-expanded="false", aria-controls="color_config") Color Configuration
-					div.panel-collapse.collapse#color_config(role="tabpanel", aria-labelledby="degplot_color_config_heading")
-						div.panel-body#degplot_color_config_body
 					div.panel-heading#degplot_color_bar_heading(role="tab")
 						span.panel-title
-							a(role="button", data-toggle="collapse", data-parent="#accordion", href="#color_bar", aria-expanded="false", aria-controls="color_bar") Choose max value 
-					div.panel-collapse.collapse#color_bar(role="tabpanel", aria-labelledby="degplot_color_bar_heading")
+							a(role="button", data-toggle="collapse", data-parent="#accordion", href="#color_bar", aria-expanded="false", aria-controls="color_bar") 
+					div.panel-collapse.in.collapse#color_bar(role="tabpanel", aria-labelledby="degplot_color_bar_heading")
 						div.panel-body#degplot_color_bar_body 
 block append scripts
-	script(src='/bower_components/canvas2image/canvas2image/canvas2image.js')
+	script(src='/bower_components/bootstrap-colorselector/lib/bootstrap-colorselector-0.2.0/js/bootstrap-colorselector.js')
+	script(src='/bower_components/canvg-gabelerner/StackBlur.js')
+	script(src='/bower_components/canvg-gabelerner/rgbcolor.js')
+	script(src='/bower_components/canvg-gabelerner/canvg.js')
+	script(src='/bower_components/imagesloaded/imagesloaded.pkgd.js')
 	script(src='/bower_components/html2canvas/build/html2canvas.js')
 	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
-	link(rel='stylesheet', href='/stylesheets/chart/degplot.css')				
-	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')	
+	link(rel='stylesheet', href='/stylesheets/chart/degplot.css')		
+	link(rel='stylesheet', href='/bower_components/bootstrap-colorselector/lib/bootstrap-colorselector-0.2.0/css/bootstrap-colorselector.css')
+	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')			

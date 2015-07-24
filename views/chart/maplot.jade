@@ -1,11 +1,10 @@
 extends ../layout/basiclayout
 
 block content
-	div#loading_area
-		div.loading(style={ "display" : "none" }) 
-			span#loading_text loading chart ...
-			div.double-bounce1
-			div.double-bounce2
+	div.loading(style={ "display" : "none" }) 
+		span#loading_text
+		div.double-bounce1
+		div.double-bounce2
 	div.container.chart_base_container
 		//- include chart_header.jade
 		div#maplot_view(style={'padding': '0px', 'margin': '0px', 'width': '900px', 'height': '660px', 'float': 'left'})
@@ -38,9 +37,9 @@ block content
 						table.table.table-striped#result_table(style={'font-size' : '12px'})
 							tbody#result_body
 block append scripts
-	script(src='/bower_components/canvas2image/canvas2image/canvas2image.js')
 	script(src='/bower_components/html2canvas/build/html2canvas.js')
 	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
 block append stylesheets
-	link(rel='stylesheet', href='/stylesheets/chart/maplot.css')
 	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')
+	link(rel='stylesheet', href='/stylesheets/chart/maplot.css')
+	

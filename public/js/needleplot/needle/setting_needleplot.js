@@ -42,7 +42,6 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 				_utils.get_json_array_in_array(_d, data.data.sample_list, "position").map(function(_e)   {
 					subResult = reform_needle_json(_e, subResult);
 				});
-
 				result.push({ position : _d, sample_list : subResult, });
 			});
 
@@ -62,7 +61,6 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 				alreadyTypeData.id.push(_e.id);
 				alreadyTypeData.aachange.push(_e.aachange);
 			}
-
 			return result;
 		}
 
@@ -75,7 +73,6 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 					else {  _e.y = _d.sample_list[_j - 1].count - _d.sample_list[_j - 1].y;  }
 				});
 			});
-
 			return array;
 		}
 
@@ -95,22 +92,19 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 
 			data.data.sample_list.forEach(function(_d)   {
 				var mutation = _utils.get_json_in_array(_utils.define_mutation_name(_d.type), result, "name");
-				if(mutation)   {
-					mutation.importance += 1;
-				}	
+				if(mutation)   { mutation.importance += 1; }	
 				else {
 					result.push({ name : _utils.define_mutation_name(_d.type), importance : 0 });
 				}
 			});
-			result.sort(function(_a, _b)	{
-				return (_a.importance > _b.importance) ? 1 : -1;
-			})
+			result.sort(function(_a, _b)	{ return (_a.importance > _b.importance) ? 1 : -1; })
 
 			return result;
 		}
 
 		var set_radius = function(_count) {
 			var count = _count || 0;
+			
 			return Math.sqrt(count) * 5;
 		} 
 

@@ -13,9 +13,7 @@ define(NEEDLE_NAVI + "event_needlenavigation", ["utils", "size"], function(_util
 				0, data.data.data.graph[0].length).clamp(true);
 
 			return {
-				x : x,
-				start : x(_x),
-				end : x(Number(_x) + Number(_width))
+				x : x, start : x(_x), end : x(Number(_x) + Number(_width))
 			}
 		}
 
@@ -112,9 +110,7 @@ define(NEEDLE_NAVI + "event_needlenavigation", ["utils", "size"], function(_util
 				if((right_x + d3.event.x) - xl >= size.rwidth)	{
 					right_x = size.rwidth;
 				}
-				else {
-					now_x = (right_x + d3.event.x) - xl;
-				}
+				else { now_x = (right_x + d3.event.x) - xl; }
 
 				return Math.max(elements.box.attr("x"), 
 					Math.min(size.rwidth, right_x + (d3.event.x)));
@@ -144,24 +140,50 @@ define(NEEDLE_NAVI + "event_needlenavigation", ["utils", "size"], function(_util
 			.on("mouseup", function(_d) { moving_end(_d, xr - xl); });
 
 			elements.box
-			.attr("width", function(_d) {
-				return _d.width = (xr - xl) - size.margin.left;
-			})
-			.attr("x", function(_d) {
-				return Math.max((xl + lw), Math.min(xr, d3.event.x));
-			});
+			.attr("width", function(_d) { return _d.width = (xr - xl) - size.margin.left; })
+			.attr("x", function(_d) { return Math.max((xl + lw), Math.min(xr, d3.event.x)); });
 			scale_needle_plot(elements.box.attr("x"), elements.box.attr("width"));
+		}
+
+		var show_inarea_count = function(_stacked)	{
+			console.log(_stacked);
+		}
+
+		var get_inarea_count = function(_x, _now)	{
+			var result = [];
+
+			for(var i = 0, len = data.stacked.length ; i < len ; i++)	{
+				var stacked = data.stacked[i];
+				var counts = _utils.get_list_sum(stacked.sample_list, "count");
+				var x_pos = _x(stacked.position);
+				if(x_pos > _now.x && x_pos < _now.width)	{
+					result.push(stacked);
+					// console.log(counts, x(stacked.position), now.x, now.width)
+				}
+			}
+			show_inarea_count(result);
+		}
+
+		var drag_end = function(_d)	{
+			var data_length = data.data.data.graph[0].length;
+			var x = _utils.linearScale(0, data_length, size.margin.left, size.rwidth);
+			var now = { x : _d.x, width : _d.width + size.margin.left };
+
+			get_inarea_count(x, now);
 		}
 
 		var box_drag_move = d3.behavior.drag()
 		.origin(Object)
-		.on("drag", moving_event);
+		.on("drag", moving_event)
+		.on("dragend", drag_end);
 		var box_drag_resize_right = d3.behavior.drag()
 		.origin(Object)
-		.on("drag", resizing_right_event);
+		.on("drag", resizing_right_event)
+		.on("dragend", drag_end);
 		var box_drag_resize_left = d3.behavior.drag()
 		.origin(Object)
-		.on("drag", resizing_left_event);
+		.on("drag", resizing_left_event)
+		.on("dragend", drag_end);
 
 		return {
 			moving : box_drag_move,

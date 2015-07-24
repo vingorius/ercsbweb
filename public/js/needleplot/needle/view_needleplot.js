@@ -16,13 +16,16 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 			(size.rheight - size.margin.top)).clamp(true);
 
 		var yAxis = d3.svg.axis()
-		.scale(y)
-		.orient("left");
+		.scale(y).orient("left");
 
 		svg.append("g")
 		.attr("class", "needle_y_axis")
 		.attr("transform", "translate(" + size.width + ", " + size.margin.top + ")")
 		.call(yAxis);
+	}
+
+	var needleplot_mutation_counts = function()	{
+		var div = _size.mkdiv({ attribute : {}, style : {} });
 	}
 
 	var view = function(_data)  {
@@ -39,8 +42,7 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 		.attr("transform", "translate(0, 0)");
 
 		var xAxis = d3.svg.axis()
-		.scale(data.x)
-		.orient("bottom");
+		.scale(data.x).orient("bottom");
 
 		svg.append("g")
 		.attr("class", "needle_x_axis")
@@ -53,8 +55,7 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 		.attr("class", "needle_gene_full_path_g")
 		.attr("transform", "translate(0, " + (size.rheight + size.graph_width + (size.graph_width - (size.graph_width / 1.5)) / 2) + ")")
 		.append("rect")
-		.attr("x", size.margin.left)
-		.attr("y", -(size.margin.top))
+		.attr("x", size.margin.left).attr("y", -(size.margin.top))
 		.attr("width", size.rwidth - size.margin.left)
 		.attr("height", size.graph_width / 1.5);
 
@@ -70,8 +71,7 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 
 		var graphs = graph_group.append("rect")
 		.style("fill", function(_d) { return _d.colour; })
-		.attr("x", 0)
-		.attr("y", -size.margin.top)
+		.attr("x", 0).attr("y", -size.margin.top)
 		.attr("width", 0)
 		.transition().duration(400).delay(function(_d, _i)	{ return _i * 100; })
 		.attr("width", function(_d) { return data.x(_d.end) - data.x(_d.start); })
@@ -91,8 +91,7 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 		var graphs_text = text_group.append("text")
 		.attr("class", "needle_graphs_text")
 		.transition().duration(400).delay(function(_d, _i)	{ return _i * 100; })
-		.attr("x", 3)
-		.attr("y", -(size.graph_width / 3))
+		.attr("x", 3).attr("y", -(size.graph_width / 3))
 		.text(function(_d) { return _d.text; });
 
 		var marker_group = svg.selectAll(".marker_group")
@@ -122,18 +121,16 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 
 		var marker_figures_circle = marker_figures_group.append("circle")
 		.attr("class", "marker_figures_circle")
-		.on("mouseover",e.m_over)
-		.on("mouseout", e.m_out)
+		.on("mouseover",e.m_over).on("mouseout", e.m_out)
 		.style("fill", function(_d) { return _utils.colour(_utils.define_mutation_name(_d.type)); })
 		.style("stroke", function(_d) { return d3.rgb(_utils.colour(_utils.define_mutation_name(_d.type))).darker(2); })
 		.style("stroke-width", function(_d) { return 0; })
-		.attr("cx", 0)
-		.attr("cy", 0)
-		.transition().duration(500)
+		.attr("cx", 0).attr("cy", 0).transition().duration(500)
 		.attr("cy", function(_d, _i) { return (data.y(_d.count) - (size.rheight - size.graph_width - data.radius(_d.count))); })
 		.attr("r", function(_d, _i) { return data.radius(_d.count); });
 
 		e.front();
+		e.view_mutations(data);
 	}
 
 	return {

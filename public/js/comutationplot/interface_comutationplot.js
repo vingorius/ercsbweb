@@ -25,9 +25,7 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		var sampleColumn, aberrations;
 		var index = _index || 0;
 
-		if(index > samples.length - 1)  { 
-			return; 
-		}
+		if(index > samples.length - 1)  {  return;  }
 
 		sampleColumn = _utils.search_in_jsonarray(samples[index], "name", sample_list);
 
@@ -95,9 +93,7 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 			}
 			else {
 				typeName = _utils.define_mutation_name(_d.type);
-
 				if($.inArray(typeName, result.type_list) < 0) { result.type_list.push(typeName); }
-				// if($.inArray(_d.value, result.value_list) < 0) { result.value_list.push(_d.value); }
 			}
 		});
 		return result;

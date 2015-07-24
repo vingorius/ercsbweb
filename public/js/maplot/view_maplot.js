@@ -9,22 +9,15 @@ define(MA + "view_maplot", ["utils", "size", MA + "event_maplot"], function(_uti
 		var reset = $("#reset_button");
 		var undo = $("#undo_button");
 
-		div
-		.append(input);
+		div.append(input);
 
-		$('.spinner .btn:first-of-type')
-		.on("click", _e.arrow);
-		$('.spinner .btn:last-of-type')
-		.on("click", _e.arrow);
+		$('.spinner .btn:first-of-type').on("click", _e.arrow);
+		$('.spinner .btn:last-of-type').on("click", _e.arrow);
 
-		redraw
-		.on("click", _e.redraw);
-		download
-		.on("click", _e.download);
-		reset
-		.on("click", _e.reset);
-		undo
-		.on("click", _e.undo);
+		redraw.on("click", _e.redraw);
+		download.on("click", _e.download);
+		reset.on("click", _e.reset);
+		undo.on("click", _e.undo);
 	}
 
 	var view = function(_data)  {
@@ -44,14 +37,10 @@ define(MA + "view_maplot", ["utils", "size", MA + "event_maplot"], function(_uti
         		.attr("id", "maplot_select_path");
 
 		var xAxis = d3.svg.axis()
-		.scale(data.x)
-		.orient("bottom")
-		.ticks(4);
+		.scale(data.x).orient("bottom").ticks(4);
 
 		var yAxis = d3.svg.axis()
-		.scale(data.y)
-		.orient("left")
-		.ticks(5);
+		.scale(data.y).orient("left").ticks(5);
 
 		svg.append("g")
 		.attr("class", "maplot_xaxis")
@@ -73,12 +62,10 @@ define(MA + "view_maplot", ["utils", "size", MA + "event_maplot"], function(_uti
 		var e = _event(data) || null;
 		side_menu(e);
 
-		svg
-		.call(e.drag);
+		svg.call(e.drag);
 
 		circles
-		.on("mouseover", e.m_over)
-		.on("mouseout", e.m_out)
+		.on("mouseover", e.m_over).on("mouseout", e.m_out)
 		.transition().delay(function(_d, _i) { return _i * (1 / 5); })
 		.attr("r", 2)
 		.attr("cx", function(_d) { return data.x(_d.x); })

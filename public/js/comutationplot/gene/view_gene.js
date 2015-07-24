@@ -15,13 +15,11 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.attr("transform", "translate(0, 0)");
 
 		var xAxis = d3.svg.axis()
-		.scale(data.x)
-		.orient("bottom")
+		.scale(data.x).orient("bottom")
 		.tickValues([0, data.max / 2, data.max]);
 
 		var yAxis = d3.svg.axis()
-		.scale(data.y)
-		.orient("right");
+		.scale(data.y).orient("right");
 
 		svg.append("g")
 		.attr("class", "comutationplot_gene_xaxis")
@@ -33,8 +31,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.attr("transform", "translate(" + (size.width - size.margin.right) + ", 0)")
 		.call(yAxis)
 		.selectAll("text")
-		.on("mouseover", e.axis_m_over)
-		.on("mouseout", e.axis_m_out);
+		.on("mouseover", e.axis_m_over).on("mouseout", e.axis_m_out);
 
 		svg.append("g")
 		.data([{ data : data.data, size : size, status : false }])
@@ -42,8 +39,6 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 1.5) + ", " + (size.height - 2) + ")")
 		.append("text")
 		.text("#mutations")
-		.style("font-size", "12px")
-		.style("font-style", "italic")
 		.on("click", e.sort_by_value);
 
 		$(".gene_explain")
@@ -64,8 +59,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.enter().append("rect")
 		.attr("class", "comutationplot_gene_bars")
 		.style("fill", function(_d) { return _utils.colour(_d.type); })
-		.on("mouseover", e.bar_m_over)
-		.on("mouseout",e.bar_m_out)
+		.on("mouseover", e.bar_m_over).on("mouseout",e.bar_m_out)
 		.attr("x", function(_d) { _d.x = data.x; return _d.x(_d.start + _d.count); })
 		.attr("y", function(_d) { _d.y = data.y; return _d.y(_d.gene); })
 		.attr("width", function(_d) { return ((size.width - size.margin.right) - _d.x(_d.count)); })

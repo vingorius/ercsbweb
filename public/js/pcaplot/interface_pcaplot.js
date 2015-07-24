@@ -29,8 +29,7 @@ define(PCA, ["utils", "size", LEGEND, _2D, _3D], function(_utils, _size, _settin
 		var result = [];
 
 		for(var i = 1, len = linefeed.length - 1 ; i < len ; i++)   {
-			result.push(tab_separate_json(keys
-				, linefeed[i].split(tab_separate_reg)));
+			result.push(tab_separate_json(keys, linefeed[i].split(tab_separate_reg)));
 		}
 		return result;
 	}
@@ -42,7 +41,6 @@ define(PCA, ["utils", "size", LEGEND, _2D, _3D], function(_utils, _size, _settin
 		var result = {};
 
 		for(var i = 0, len = keys.length ; i < len ; i++)   {
-			console.log();
 			result[keys[i].replace(/"/g, '')] = (values[i] || "").replace(/"/g, '');
 		}
 		return result;
@@ -56,10 +54,7 @@ define(PCA, ["utils", "size", LEGEND, _2D, _3D], function(_utils, _size, _settin
 				result.push(_data[i].TYPE);
 			}
 		}
-
-		return {
-			type_list :  result
-		};
+		return { type_list :  result };
 	}
 
 	var mutation_importance = function(_data)	{
@@ -67,9 +62,7 @@ define(PCA, ["utils", "size", LEGEND, _2D, _3D], function(_utils, _size, _settin
 
 		for (var i = 0, len = _data.length ; i < len ; i++)	{
 			var type = _utils.get_json_in_array(_data[i].TYPE, result, "name");
-			if(type)	{
-				type.importance += 1;
-			}
+			if(type)	{ type.importance += 1; }
 			else {
 				result.push({ name : _data[i].TYPE, importance : 0 });
 			}
@@ -91,12 +84,8 @@ define(PCA, ["utils", "size", LEGEND, _2D, _3D], function(_utils, _size, _settin
 
 	 var figure_list = function(_type)	{
 		return {
-			"Primary Solid Tumor" : {
-				figure : "circle"
-			},
-			"Solid Tissue Normal" : {
-				figure : "rect"
-			}
+			"Primary Solid Tumor" : { figure : "circle" },
+			"Solid Tissue Normal" : { figure : "rect" }
 		}[_type];
 	}
 

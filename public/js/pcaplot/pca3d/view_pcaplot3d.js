@@ -8,8 +8,7 @@ define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], funct
 		var default_axis = { x : 0.5, y : -0.5, z : 0 };
 
 		var renderer = new THREE.WebGLRenderer({
-			antialias : true,
-			alpha : true
+			antialias : true, alpha : true
 		});
 
 		var camera = new THREE.OrthographicCamera(
@@ -65,8 +64,7 @@ define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], funct
 			);
 
 		var border_material = new THREE.LineBasicMaterial({
-			color : 0x515151,
-			lineWidth : 1
+			color : 0x515151, lineWidth : 1
 		});
 
 		var border = new THREE.Line(border_geometry, border_material);

@@ -3,6 +3,7 @@ define("legend/view_legend", ["utils", "size"], function(_utils, _size)    {
 		switch(_data.figure(_type).figure)	{
 			case "circle" : return circles(_data, _size, _svg, _type); break;
 			case "rect" : return rectangle(_data, _size, _svg, _type); break;
+			case "triangle" : return triangle(_data, _size, _svg, _type); break;
 		}
 	}
 
@@ -21,6 +22,13 @@ define("legend/view_legend", ["utils", "size"], function(_utils, _size)    {
 		.attr("y", _data.location(_type).ry)
 		.attr("width", _size.rect_size)
 		.attr("height", _size.rect_size);
+	}
+
+	var triangle = function(_data, _size, _svg, _type)	{
+		return _svg.append("path")
+		.attr("class", "pcaplots_triangle")	
+		.attr("d", d3.svg.symbol().type("triangle-up"))
+		.attr("transform", "translate(" + _data.location(_type).rx +  ", " + _data.location(_type).ry + ")");
 	}
 
 	var view = function(_data)  {

@@ -5,6 +5,7 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 		switch(_type)	{
 			case "circle" : return circles(_data, _x, _y, _svg); break;
 			case "rect" : return rectangle(_data, _x, _y, _svg); break;
+			case "triangle" : return triangle(_data, _x, _y, _svg); break;
 		}
 	}
 
@@ -25,6 +26,13 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 		.attr("height", _data.radius * 2);
 	}
 
+	var triangle = function(_data, _x, _y, _svg)	{
+		return _svg.append("path")
+		.attr("class", "pcaplots_triangle")	
+		.attr("d", d3.svg.symbol().type("triangle-up"))
+		.attr("transform", "translate(" + _data.x(_x) +  ", " + _data.y(_y) + ")");
+	}
+
 	var view = function(_data)	{
 		var data = _data || [];
 		var size = data.size;
@@ -39,14 +47,10 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 		.attr("transform", "translate(0, 0)");
 
 		var xAxis = d3.svg.axis()
-		.scale(data.x)
-		.orient("bottom")
-		.ticks(5);
+		.scale(data.x).orient("bottom").ticks(5);
 
 		var yAxis = d3.svg.axis()
-		.scale(data.y)
-		.orient("left")
-		.ticks(5);
+		.scale(data.y).orient("left").ticks(5);
 
 		svg.append("g")
 		.attr("class", "pca x axis")
@@ -69,9 +73,7 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 		.attr("class", "label_pcaplot_pc2")
 		.attr("transform", "translate(" + (size.margin.left / 2) + ", " 
 			+ (size.rheight / 2) + ")")
-		.append("text")
-		.text("PC2")
-		.attr("transform", "rotate(-90)");
+		.append("text").text("PC2").attr("transform", "rotate(-90)");
 
 		for(var i = 0, len = data.data.sample_list.length ; i < len ; i++)	{
 			var pca = data.data.sample_list[i];

@@ -5,10 +5,7 @@ define(MA + "setting_maplot", ["utils", "size", MA + "view_maplot"], function(_u
 		var min = d3.min(_data.data.plot_list.map(function(_d)    { return _d[_axis]; }))
 		max = d3.max(_data.data.plot_list.map(function(_d)    { return _d[_axis]; }));
 
-		return {
-			min : min,
-			max : max
-		};
+		return { min : min, max : max };
 	}
 
 	var point_color = function(_d, _cut_off)	{

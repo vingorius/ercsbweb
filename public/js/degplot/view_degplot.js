@@ -3,9 +3,7 @@ var DEG = "degplot/";
 define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(_utils, _size, _e)	{
 	var find_min_max = function(_min_max, _key)	{
 		for(var i = 0, len = _min_max.length ; i < len ; i++)	{
-			if(_min_max[i][_key])	{
-				return _min_max[i][_key];
-			}
+			if(_min_max[i][_key])	{ return _min_max[i][_key]; }
 		}
 	}
 
@@ -28,10 +26,9 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 				d3.select(_row.cells[i]).style("background-color", function(_d) {
 					var minmax = find_min_max(_data.min_max, Object.keys(_column)[i]);
 					return _data.backgroundcolor(_utils.colour(Object.keys(_column)[i]), 
-					cell_data, minmax.min, minmax.max)
+						cell_data, minmax.min, minmax.max)
 				})
-				.on("mouseover", _e.cell_over)
-				.on("mouseout", _e.cell_out);
+				.on("mouseover", _e.cell_over).on("mouseout", _e.cell_out);
 			}
 		}
 	}
@@ -51,8 +48,7 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 		var x = _utils.linearScale(minmax.min, minmax.max, 0, _width - (margin * 2));
 
 		var xAxis = d3.svg.axis()
-		.scale(x)
-		.orient("top").ticks(2)
+		.scale(x).orient("top").ticks(2)
 		.tickValues([minmax.min, minmax.max]);
 
 		svg.append("g")
@@ -112,25 +108,30 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 		.on("click", _e.color_cell);
 	}
 
-	var make_span_option = function(_si, _width, _height)	{
+	var make_span_option = function(_data, _si, _width, _height)	{
 		var option = _size.mkdiv({
-			attribute : "", style : { float : "left"
+			attribute : "", style : { float : "left",
+			"padding-left" : "5px",
+			"padding-top" : "35px"
 			, "width" : (_width * 0.2) + "px"
-			, "height" : _height + "px"
-			, "text-align" : "center" }
+			, "height" : _height * 2 + "px" }
 		});
+		var colors = _data.colors();
+		var colorselector = document.createElement("select");
+		colorselector.setAttribute("id", "colorselector");
+		colorselector.setAttribute("class", "degplot_colorselector " + _si + "_colors");
 
-		var option_icon = document.createElement("a");
-		option_icon.setAttribute("class", "glyphicon glyphicon-plus");
-		option_icon.setAttribute("id", "option_" + _si);
-		option_icon.onclick = _e.colors;
-		$(option).tooltip({
-			container : 'body',
-			title : _si + " 색 선택",
-			placement : "right"
-		});
-
-		option.appendChild(option_icon);
+		for(var i = 0, len = colors.length ; i < len ; i++)	{
+			var colorselector_option = document.createElement("option");
+			if(_utils.colour(_si) === colors[i])	{
+				colorselector_option.setAttribute("selected", true);
+			}
+			colorselector_option.setAttribute("data-color", colors[i]);
+			colorselector_option.setAttribute("value", i);
+			colorselector_option.text = _si + "-color-" + i;
+			colorselector.add(colorselector_option);
+		}
+		option.appendChild(colorselector);
 
 		return option;
 	}
@@ -144,7 +145,7 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 			var component = _size.mkdiv({
 				attribute : "", style : { float : "left", }
 			});
-			var option = make_span_option(_si[i], _width, _height);
+			var option = make_span_option(_data, _si[i], _width, _height);
 			var comp_lever = _size.mkdiv({
 				attribute : { id : "lever_" + _si[i], },
 				style : { "width" : _width * 0.8 + "px", "height" : _height + "px" }
@@ -165,30 +166,9 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 		}
 	}
 
-	var make_config_component = function(_data, _si, _width, _height)	{
-		var config_component = 
-		document.getElementById("degplot_color_config_body");
-		var colors = _data.colors();
-
-		for(var j = 0, leng = colors.length ; j < leng ; j++)	{
-			var row = _size.mkdiv();
-			var comp_config = _size.mkdiv({
-				attribute : { id : "color_list_" + j },
-				style : { 
-					"float" : "left", 
-					"width" : (_width / _si.length) + "px", "height" : _height + "px",
-					"margin-bottom" : "5px" 
-				}
-			});
-			row.appendChild(comp_config);	
-			config_component.appendChild(row);
-			range_gradient("color_list_" + j, "#FFFFFF", colors[j], (_width / _si.length), _height);
-		}
-	}
-
 	var view = function(_data)	{
 		var data = _data.data || [];
-		var config_div = document.getElementById("degplot_color_config_heading");
+		var config_div = document.getElementById("degplot_color_bar_heading");
 		var tbody = _data.tbody || null;
 		var padding_left = _utils.getNum(d3.select(config_div).style("padding-left"));
 		var padding_right = _utils.getNum(d3.select(config_div).style("padding-right"));
@@ -197,13 +177,13 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 		for(var i = 0, len = data.length ; i < len ; i++)	{
 			create_cell(data[i], create_row(tbody), _data);
 		}
-
 		_e.rowspan(tbody.rows);
-
 		make_range_component(_data, _data.si, width, height);
-		make_config_component(_data, _data.si, width, height);
 
-		// $("#color_config_a").click(_utils.preserve_events);
+		$(".degplot_colorselector").colorselector({
+			callback : _e.select_color
+		});
+
 		d3.selectAll(".gradient_area rect").on("click", _utils.preserve_events);
 	}
 

@@ -7,12 +7,7 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 		var data = _data || [];
 
 		var box_g = svg.insert("g", "g")
-		.data([{ 
-			x : 0, 
-			y : 0, 
-			width : size.rwidth, 
-			height : size.height 
-		}])
+		.data([{ x : 0, y : 0, width : size.rwidth, height : size.height }])
 		.attr("class", "needle_select_box")
 		.attr("transform", "translate(0, 0)");
 
@@ -26,16 +21,14 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 
 		var right_border = box_g.append("rect")
 		.attr("class", "navi_2_box_right")
-		.attr("x", function(_d)	{ return size.rwidth; })
-		.attr("y", 0)
+		.attr("x", function(_d)	{ return size.rwidth; }).attr("y", 0)
 		.attr("width", size.margin.left)
 		.attr("height", size.height)
 		.attr("cursor", "ew-resize");
 
 		var left_border = box_g.append("rect")
 		.attr("class", "navi_2_box_left")
-		.attr("x", 0)
-		.attr("y", 0)
+		.attr("x", 0).attr("y", 0)
 		.attr("width", size.margin.left)
 		.attr("height", size.height)
 		.attr("cursor", "ew-resize");
@@ -48,12 +41,9 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 			data : data
 		});
 
-		box
-		.call(e.moving);
-		right_border
-		.call(e.resizing_r);
-		left_border
-		.call(e.resizing_l);
+		box.call(e.moving);
+		right_border.call(e.resizing_r);
+		left_border.call(e.resizing_l);
 	}
 
 	var view = function(_data)	{
@@ -69,12 +59,10 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 		.attr("transform", "translate(0, 0)");
 
 		var xAxis = d3.svg.axis()
-		.scale(data.x)
-		.orient("bottom");
+		.scale(data.x).orient("bottom");
 
 		var yAxis = d3.svg.axis()
-		.scale(data.y)
-		.orient("left");   
+		.scale(data.y).orient("left");   
 
 		var bar_group = svg.selectAll(".navibar_2_group")
 		.data(data.stacked)
@@ -86,8 +74,7 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 		.data(function(_d)  { return _d.sample_list; })
 		.enter().append("rect")
 		.attr("class", function(_d) { return "stacked_hbar_navi2"; })
-		.attr("x", 0)
-		.attr("y", function(_d) { return data.y(_d.y + _d.count); })
+		.attr("x", 0).attr("y", function(_d) { return data.y(_d.y + _d.count); })
 		.attr("width", 1)
 		.attr("height", function(_d) { return (size.height + size.margin.top) - data.y(_d.count); });
 

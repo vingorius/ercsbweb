@@ -69,7 +69,6 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 					}
 				}	
 			}
-
 			paths_stack = reform_paths;
 		}
 
@@ -105,8 +104,7 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 			var value = $('.spinner input').val();
 			var circles = d3.selectAll(".maplot_circles");
 
-			circles
-			.style("fill", function(_d) { return data.color(_d, value); })
+			circles.style("fill", function(_d) { return data.color(_d, value); })
 		}
 
 		var click_download = function()  {
@@ -114,10 +112,8 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 			selected_circles.forEach(function(_d, _i)   {
 				download_data += "\n"
-				+ _d.datum().title
-				+ "," + _d.datum().x
-				+ "," + _d.datum().y
-				+ "," + Number(_d.datum().value).toExponential(5);
+				+ _d.datum().title + "," + _d.datum().x
+				+ "," + _d.datum().y + "," + Number(_d.datum().value).toExponential(5);
 			});
 
 			_utils.download('maplot.csv','data:text/csv;charset=UTF-8,'
@@ -186,7 +182,6 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 				yi = vs[i][1],
 				xj = vs[j][0],
 				yj = vs[j][1],
-
 				intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
 
 				if (intersect) { inside = !inside };

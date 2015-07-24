@@ -25,8 +25,7 @@ define(XY + "event_xyplot", ["utils", "size"], function(_utils, _size)	{
 		var e = d3.event;
 		var radius = 3;
 
-		target.transition().duration(100)
-		.attr("r", radius);
+		target.transition().duration(100).attr("r", radius);
 
 		_utils.tooltip();
 	}

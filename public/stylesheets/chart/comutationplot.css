@@ -60,3 +60,9 @@
 #comutationplot_heatmap	{
 	overflow: hidden;
 }
+.gene_explain text, 
+.pq_explain text,
+.sample_explain text 	{
+	font-size: 12px;
+	font-style: italic;
+}

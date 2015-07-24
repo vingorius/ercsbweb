@@ -1,0 +1,54 @@
+extends sidebarlayout
+
+block leftmenu
+    
+    ul.sidebar-nav
+        li.sidebar-brand
+            a(href='#') Population Statistics
+        li
+            a(aria-expanded='true', href='#', data-toggle='collapse', data-target='#genotype')
+                i.side-menu-icon.fa.fa-tasks
+                span.sub_menu_span Genotype Selected            
+                span.caret
+                //- i.glyphicon.glyphicon-chevron-down
+            ul#genotype.nav.nav-stacked.collapse(style='', aria-expanded='true')
+                li
+                    a(href='/menus/menu2/genotype')
+                        i.side-menu-icon.fa.fa-check-square-o
+                        span.sub_menu_span Mutation Substype            
+                li
+                    a(href='/menus/menu2/genotype')
+                        i.side-menu-icon.fa.fa-sun-o
+                        span.sub_menu_span Expression Substype            
+                li
+                    a(href='/menus/menu2/genotype')
+                        i.side-menu-icon.fa.fa-sort-numeric-asc
+                        span.sub_menu_span CNV Substype            
+        li
+            a(aria-expanded='true', href='#', data-toggle='collapse', data-target='#clinical')
+                i.side-menu-icon.fa.fa-bed
+                span.sub_menu_span Clinical Selected            
+                span.caret
+                //- i.glyphicon.glyphicon-chevron-down
+            ul#clinical.nav.nav-stacked.collapse(style='', aria-expanded='true')
+                li
+                    a(href='/menus/menu2/clinical')
+                        i.side-menu-icon.fa.fa-heart-o
+                        span.sub_menu_span Vital Status
+                li
+                    a(href='/menus/menu2/clinical')
+                        i.side-menu-icon.fa.fa-sun-o
+                        span.sub_menu_span Age at diagnosis           
+                li
+                    a(href='/menus/menu2/clinical')
+                        i.side-menu-icon.fa.fa-transgender
+                        span.sub_menu_span Gender        
+                li
+                    a(href='/menus/menu2/clinical')
+                        i.side-menu-icon.fa.fa-tags
+                        span.sub_menu_span Treatment        
+
+        //- li
+        //-     a(href='/menus/menu2/clinical') 
+        //-         i.side-menu-icon.fa.fa-bed 
+        //-         span.sub_menu_span Clinical Selected

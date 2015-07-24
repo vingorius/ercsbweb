@@ -1,0 +1,26 @@
+extends sidebarlayout
+
+block leftmenu
+    ul.sidebar-nav
+        li.sidebar-brand
+            a(href='#') Anaysis
+        li
+            a(href='/menus/menu1/summary')
+                i.side-menu-icon.fa.fa-list-alt
+                span.sub_menu_span Summary            
+        li
+            a(href='/menus/menu1/variants') 
+                i.side-menu-icon.fa.fa-exclamation 
+                span.sub_menu_span Variants  
+        li
+            a(href='/menus/menu1/pathways') 
+                i.side-menu-icon.fa.fa-code-fork
+                span.sub_menu_span Pathways            
+        li
+            a(href='/menus/menu1/drugs') 
+                i.side-menu-icon.fa.fa-medkit
+                span.sub_menu_span Drugs            
+        li
+            a(href='/menus/menu1/clinicaltrials') 
+                i.side-menu-icon.fa.fa-list-alt
+                span.sub_menu_span Clinical Trials            

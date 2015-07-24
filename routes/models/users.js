@@ -13,6 +13,9 @@ router.get('/', security.isAdmin, function(req, res, next) {
     });
 });
 
+/*
+ * 보안 상 퍄라미터로 받지 않고, 로그인한 정보로 사용자 정보를 리턴한다.
+ */
 router.get('/profile', function(req, res, next) {
     getConnection(function(connection) {
         connection.query("call ercsb_cdss.getUserByName(?)", [req.user.username], function(err, rows, fields) {
@@ -32,7 +35,7 @@ router.put('/', function(req, res, next) {
     var colvalue = req.body.value;
     var pk = req.body.pk;
 
-    console.log(req.body);
+    // console.log(req.body);
     // Check Primary Key
     if (isNaN(pk)) return res.status(400).send('ERRPK:Bad Request!!!');
 
@@ -40,8 +43,9 @@ router.put('/', function(req, res, next) {
         connection.query('update ercsb_cdss.users set ?? = ? where id = ?', [colname, colvalue, pk], function(err, rows) {
             // Check SQL Statement
             if (err) return res.status(500).send(err.code);
+            
             // Check whether affected or not
-            console.log(rows);
+            // console.log(rows);
             if (rows.changedRows != 1) return res.status(500).send(rows.changedRows + ' rows affected.');
 
             // Finally Return

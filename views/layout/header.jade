@@ -1,18 +1,18 @@
 nav.navbar.navbar-default.navbar-fixed-top
-    div.container
+    div.navbar-container
         div.navbar-header
           button.navbar-toggle.collapsed(type="button",data-toggle="collapse",data-target="#navbar",aria-expanded="false", aria-controls="navbar")
             span.sr-only Toggle navigation
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          a.navbar-brand(href="/",style={'color': '#286090'}) ERCSB CDSS
+          a.navbar-brand(href="/",style={'color': '#286090'}) CDSS
             //img(width=20,height=20,alt="ERCSB",src="/images/logo-48.png")
         div#navbar.collapse.navbar-collapse
           ul.nav.navbar-nav
-            li: a(href="/menus/menu0") Menu0
-            li: a(href="/menus/menu1") Menu1
-            li: a(href="/menus/menu2") Menu2
+            li: a(href="/menus/menu0") NGS Statistics
+            li: a(href="/menus/menu1") Analysis
+            li: a(href="/menus/menu2") Population Statistics
             li.dropdown
                 a.dropdown-toggle(href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="true") Chart
                     span.caret  

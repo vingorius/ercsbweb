@@ -19,8 +19,10 @@ define(XY + "setting_xyplot", ["utils", "size", XY + "view_xyplot"], function(_u
 		var ymax = get_max("y", data.data.plot_list);
 		var ymin = get_min("y", data.data.plot_list);
 
-		var x = _utils.linearScale(xmin, xmax, (size.margin.left + size.margin.right), size.rwidth).clamp(true);
-		var y = _utils.linearScale(ymin, ymax, size.rheight, size.margin.top).clamp(true);
+		var x = _utils.linearScale(xmin, xmax, (size.margin.left + size.margin.right), size.rwidth)
+		.clamp(true);
+		var y = _utils.linearScale(ymin, ymax, size.rheight, size.margin.top)
+		.clamp(true);
 
 		  _utils.remove_svg("xyplot_view");
 

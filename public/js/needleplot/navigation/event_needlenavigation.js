@@ -145,12 +145,45 @@ define(NEEDLE_NAVI + "event_needlenavigation", ["utils", "size"], function(_util
 			scale_needle_plot(elements.box.attr("x"), elements.box.attr("width"));
 		}
 
+		var show_inarea_count = function(_stacked)	{
+			console.log(_stacked);
+		}
+
+		var get_inarea_count = function(_x, _now)	{
+			var result = [];
+
+			for(var i = 0, len = data.stacked.length ; i < len ; i++)	{
+				var stacked = data.stacked[i];
+				var counts = _utils.get_list_sum(stacked.sample_list, "count");
+				var x_pos = _x(stacked.position);
+				if(x_pos > _now.x && x_pos < _now.width)	{
+					result.push(stacked);
+					// console.log(counts, x(stacked.position), now.x, now.width)
+				}
+			}
+			show_inarea_count(result);
+		}
+
+		var drag_end = function(_d)	{
+			var data_length = data.data.data.graph[0].length;
+			var x = _utils.linearScale(0, data_length, size.margin.left, size.rwidth);
+			var now = { x : _d.x, width : _d.width + size.margin.left };
+
+			get_inarea_count(x, now);
+		}
+
 		var box_drag_move = d3.behavior.drag()
-		.origin(Object).on("drag", moving_event);
+		.origin(Object)
+		.on("drag", moving_event)
+		.on("dragend", drag_end);
 		var box_drag_resize_right = d3.behavior.drag()
-		.origin(Object).on("drag", resizing_right_event);
+		.origin(Object)
+		.on("drag", resizing_right_event)
+		.on("dragend", drag_end);
 		var box_drag_resize_left = d3.behavior.drag()
-		.origin(Object).on("drag", resizing_left_event);
+		.origin(Object)
+		.on("drag", resizing_left_event)
+		.on("dragend", drag_end);
 
 		return {
 			moving : box_drag_move,

@@ -35,6 +35,7 @@ require.config({
 
 require(["router", "utils"], function(_router, _utils)  {
 	$(function()    {
+<<<<<<< HEAD
 		// var total_heap = window.performance.memory.totalJSHeapSize;
 		// var used_heap = window.performance.memory.usedJSHeapSize;
 		// var lastused_heap = 0;
@@ -45,6 +46,17 @@ require(["router", "utils"], function(_router, _utils)  {
 		// lastused_heap = used_heap;
 
 		// fibonacci2(45);
+=======
+		var total_heap = window.performance.memory.totalJSHeapSize;
+		var used_heap = window.performance.memory.usedJSHeapSize;
+		var lastused_heap = 0;
+
+		if(used_heap < lastused_heap)	{
+			console.log("Garbage collected !!!");
+		}
+
+		lastused_heap = used_heap;
+>>>>>>> 2faa50cf3712083c04f2b3e1afde83f2b7e01475
 
 		var chart = _utils.find_pathname(window.location.pathname) + "plot";
 		_utils.loading(chart.toUpperCase());

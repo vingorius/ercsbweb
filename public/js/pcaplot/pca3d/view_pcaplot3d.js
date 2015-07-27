@@ -136,12 +136,7 @@ define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], funct
 			z : data.z
 		});
 
-		var stats = new Stats();
-		stats.domElement.style.position = 'absolute';
-		stats.domElement.style.top = '0px';
-		data.div.appendChild( stats.domElement );
-
-		var e = _event(renderer, camera, scene, object3d, raycaster, ray_mouse, event_targets, stats, data) || null;
+		var e = _event(renderer, camera, scene, object3d, raycaster, ray_mouse, event_targets, size) || null;
 		window.onmousedown = e.win_m_down;
 		window.onmouseup = e.win_m_up;
 		window.onmousemove = e.win_m_move;

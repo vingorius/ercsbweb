@@ -1,14 +1,11 @@
 var _3D = "pcaplot/pca3d/";
 
 define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
-	return function(_renderer, _camera, _scene, _object3d, _raycaster, _ray_mouse, _event_targets, _stats, _data)	{
+	return function(_renderer, _camera, _scene, _object3d, _raycaster, _ray_mouse, _event_targets, _sizes)	{
 		var check_click = false;
 		var ex = 0;
 		var ey = 0;
-		var raycaster = _raycaster;
-		var ray_mouse = _ray_mouse, INTERSECTED;
-		var entries = _event_targets;
-		var size = _data.size;
+		var INTERSECTED;
 		var tooltip_x = 0, tooltip_y = 0;
 
 		var win_mousedown =  function(_event)	{ 
@@ -41,9 +38,9 @@ define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 		var ray_mouse_move = function(_event)	{
 			_event.preventDefault();
 
-			ray_mouse.x = (_event.clientX / size.rwidth) * 2 - 1;
-			ray_mouse.y = -(_event.offsetY / size.rheight) * 2 + 1;
-			ray_mouse.z = 0.5;
+			_ray_mouse.x = (_event.clientX / _sizes.rwidth) * 2 - 1;
+			_ray_mouse.y = -(_event.offsetY / _sizes.rheight) * 2 + 1;
+			_ray_mouse.z = 0.5;
 
 			tooltip_x = _event.clientX;
 			tooltip_y = _event.clientY;
@@ -52,30 +49,29 @@ define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 		var animate = function()	{
 			requestAnimationFrame(animate);
 			render_raycaster();
-			_stats.update();
 		}
 
 		var render_raycaster = function()	{
-			raycaster.setFromCamera(ray_mouse, _camera);
-			var intersects = raycaster.intersectObjects(entries, false);
+			_raycaster.setFromCamera(_ray_mouse, _camera);
+			var intersects = _raycaster.intersectObjects(_event_targets, false);
 
 			if(intersects.length > 0)	{
-				for(var i = 0, len = entries.length ; i < len ; i++)	{
-					if(entries[i].uuid === intersects[0].object.uuid)	{
+				for(var i = 0, len = _event_targets.length ; i < len ; i++)	{
+					if(_event_targets[i].uuid === intersects[0].object.uuid)	{
 						var data = intersects[0].object.__data__;
 						_utils.tooltip("ray_event", 
-							"<strong>sample : <span style='color:red'>"
-							+ data.sample
-							+ "</span></br> type : <span style='color:red'>"
-							+ data.type
-							+ "</span></br> pc1 : <span style='color:red'>"
-							+ Number(data.pc1).toFixed(5)
-							+ "</span></br> pc2 : <span style='color:red'>"
-							+ Number(data.pc2).toFixed(5)
-							+ "</span></br> pc3 : <span style='color:red'>"
-							+ Number(data.pc3).toFixed(5)
-							+ "</span>"
-							, tooltip_x, tooltip_y)
+						"<strong>sample : <span style='color:red'>"
+						+ data.sample
+						+ "</span></br> type : <span style='color:red'>"
+						+ data.type
+						+ "</span></br> pc1 : <span style='color:red'>"
+						+ Number(data.pc1).toFixed(5)
+						+ "</span></br> pc2 : <span style='color:red'>"
+						+ Number(data.pc2).toFixed(5)
+						+ "</span></br> pc3 : <span style='color:red'>"
+						+ Number(data.pc3).toFixed(5)
+						+ "</span>"
+						, tooltip_x, tooltip_y)
 					}
 				}
 			}

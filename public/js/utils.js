@@ -167,7 +167,7 @@ define("utils", [], function()  {
 			div.css("font-size", 14)
 			div.css("font-weight", "bold")
 			div.css("opacity", 0.7);
-			div.append(contents);
+			div.html(contents);		// Html 태그를 포함한 문자열을 삽입 할 때에는 html() 함수를 사용하는 것이 낫다.
 			div.show();
 		}
 	}

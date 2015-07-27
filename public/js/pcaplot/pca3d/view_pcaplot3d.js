@@ -6,6 +6,7 @@ define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], funct
 		var size = data.size;
 		var v = data.vector;
 		var default_axis = { x : 0.5, y : -0.5, z : 0 };
+		var event_targets = [];
 
 		var renderer = new THREE.WebGLRenderer({
 			antialias : true, alpha : true
@@ -13,18 +14,17 @@ define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], funct
 
 		var camera = new THREE.OrthographicCamera(
 			(size.rwidth / -2), (size.rwidth / 2),
-			(size.rheight / 2), (size.rheight / -2), 1, 10000);
+			(size.rheight / 2), (size.rheight / -2), -5000, 10000);
 
 		var scene = new THREE.Scene();
 		var object3d = new THREE.Object3D();
-		var e = _event(renderer, camera, scene, object3d) || null;
+		var raycaster = new THREE.Raycaster();
+		var ray_mouse = new THREE.Vector3();
 
-		renderer.setSize(size.width, size.height);
+		renderer.setSize(size.rwidth, size.rheight);
 		renderer.setClearColor(0xFFFFFF);
 
 		data.div.appendChild(renderer.domElement);
-
-		camera.position.set(0, -size.margin.top, size.rwidth);
 
 		object3d.rotation.x = default_axis.x;
 		object3d.rotation.y = default_axis.y;
@@ -79,8 +79,17 @@ define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], funct
 
 			var figure = data.figure(data.data.sample_list[i].TYPE);
 
+			d3.select(figure).datum({
+				sample : data.data.sample_list[i].SAMPLE,
+				type : data.data.sample_list[i].TYPE,
+				pc1 : Number(data.data.sample_list[i].PC1),
+				pc2 : Number(data.data.sample_list[i].PC2),
+				pc3 : Number(data.data.sample_list[i].PC3)
+			});
+
 			figure.position.set(posX, posY, posZ);
 
+			event_targets.push(figure);
 			object3d.add( figure );
 		}
 
@@ -127,35 +136,22 @@ define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], funct
 			z : data.z
 		});
 
-		var raycaster = new THREE.Raycaster();
-		var mouse = new THREE.Vector2();
+		var stats = new Stats();
+		stats.domElement.style.position = 'absolute';
+		stats.domElement.style.top = '0px';
+		data.div.appendChild( stats.domElement );
 
-		function onMouseMove(event)	{
-			mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-			mouse.y = (event.clientY / window.innerHeight) * 2 - 1;
-		}
-
-		function render()	{
-			raycaster.setFromCamera(mouse, camera);
-
-			var intersects = raycaster.intersectObjects(scene.children);
-
-			for(var i = 0 ; i < intersects.length ; i++)	{
-				console.log(intersects[i].object)
-				intersects[i].object.material.color.set(0xff0000);
-			}
-
-			renderer(render(scene, camera));
-		}
-
-		window.addEventListener("mousemove", onMouseMove, false);
-		window.requestAnimationFrame(render);
-
-		renderer.render(scene, camera);
-
+		var e = _event(renderer, camera, scene, object3d, raycaster, ray_mouse, event_targets, stats, data) || null;
 		window.onmousedown = e.win_m_down;
 		window.onmouseup = e.win_m_up;
 		window.onmousemove = e.win_m_move;
+
+		$("#pcaplot_view_3d canvas").on("mousemove", e.ray_mouse_move)
+
+		renderer.render(scene, camera);
+
+		e.ray_render();
+		e.animate();
 	}
 
 	return {

@@ -115,6 +115,16 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		return group_array;
 	}
 
+	var sort_by_groupname = function(_groups)	{
+		if(_groups.length < 2)	{
+			return _groups[0].group_list;
+		}
+
+		/* Should be write sorting logic here */
+
+		return _groups[0].group_list;
+	}
+
 	var get_mutation_list = function(_list, _result)  {
 		var list = _list || [];
 		var typeName = "";
@@ -181,7 +191,6 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 
 		_VO.VO.setInitSample(samples);
 		_VO.VO.setInitGene(genes);
-
 		_VO.VO.setSample(samples);
 		_VO.VO.setGene(genes);
 
@@ -189,13 +198,14 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		var importance = mutation_importance(all_data, mutations);
 		var importance_name = importance_by_name(importance);
 		var groups = group_by_sample(all_data, data.data.group_list);
+		var after_sort_groups = sort_by_groupname(groups);
 
 		_utils.remove_svg("comutationplot_legend");
 
-		_setting_comutation(all_data, samples, genes, data);
-		_setting_gene(all_data, genes, importance_name);
+		_setting_comutation(after_sort_groups, samples, genes, data);
+		_setting_gene(after_sort_groups, genes, importance_name);
 		_setting_pq(data.data.symbol_list, genes);
-		_setting_sample(all_data, samples, importance_name);
+		_setting_sample(after_sort_groups, samples, importance_name);
 		_setting_comutationnavigation(samples, genes);
 		_setting_legend(mutations, "comutationplot_legend", null, importance);
 	};

@@ -171,10 +171,12 @@ var m_cell_out = function(_d)	{
 }
 
 var select_color = function(_value, _color, _title)	{
-	var si = _title.substring(0, _title.indexOf("-"));
+	var title = $(this).attr("class");
+	var si = title.substring(title.indexOf("-") + 1, title.lastIndexOf("_"));
+	var color = $(this).val();
 	var lever = d3.selectAll(".degplot_lever_rect");
 
-	change_gradient(_color, si);
+	change_gradient(color, si);
 
 	lever[0].forEach(function(_data, _i)	{
 		var rect = d3.select(_data).datum();
@@ -182,7 +184,7 @@ var select_color = function(_value, _color, _title)	{
 		lever.transition().duration(250)
 		.attr("x", rect.width - rect.margin);
 		if(rect.id === si)	{
-			change_cell_background(rect.id, rect.min, rect.max, rect.bgcolor, _color);
+			change_cell_background(rect.id, rect.min, rect.max, rect.bgcolor, color);
 		}		
 	});
 }

@@ -119,7 +119,7 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 		var colors = _data.colors();
 		var colorselector = document.createElement("select");
 		colorselector.setAttribute("id", "colorselector");
-		colorselector.setAttribute("class", "degplot_colorselector " + _si + "_colors");
+		colorselector.setAttribute("class", "degplot_colorselector -" + _si + "_colors");
 
 		for(var i = 0, len = colors.length ; i < len ; i++)	{
 			var colorselector_option = document.createElement("option");
@@ -127,8 +127,7 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 				colorselector_option.setAttribute("selected", true);
 			}
 			colorselector_option.setAttribute("data-color", colors[i]);
-			colorselector_option.setAttribute("value", i);
-			colorselector_option.text = _si + "-color-" + i;
+			colorselector_option.setAttribute("value", colors[i]);
 			colorselector.add(colorselector_option);
 		}
 		option.appendChild(colorselector);
@@ -180,9 +179,7 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 		_e.rowspan(tbody.rows);
 		make_range_component(_data, _data.si, width, height);
 
-		$(".degplot_colorselector").colorselector({
-			callback : _e.select_color
-		});
+		$(".degplot_colorselector").simplecolorpicker({ picker : true }).on("change", _e.select_color)
 
 		d3.selectAll(".gradient_area rect").on("click", _utils.preserve_events);
 	}

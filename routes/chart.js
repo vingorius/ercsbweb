@@ -37,4 +37,9 @@ router.get('/degplot',function(req, res, next) {
         user: req.user
     });
 });
+router.get('/flowplot',function(req, res, next) {
+    res.render('chart/flowplot', {
+        user: req.user
+    });
+});
 module.exports = router;

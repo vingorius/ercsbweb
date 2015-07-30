@@ -121,7 +121,7 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 		_utils.remove_svg("needleplot_view");
 
 		_setting_legend(mutations, "needleplot_legend", null, mutation_importance());
-
+		console.log(data, stacked)
 		_view.view({
 			data : data,
 			stacked : stacked,

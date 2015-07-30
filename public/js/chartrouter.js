@@ -4,6 +4,7 @@ var XY = "xyplot/setting_xyplot";
 var MA = "maplot/setting_maplot";
 var PCA = "pcaplot/interface_pcaplot";
 var NEEDLE = "needleplot/needle/setting_needleplot";
+var FLOW = "flowplot/setting_flowplot";
 
 var PATHNAME = window.location.pathname;
 var NOW = PATHNAME.substring(PATHNAME.lastIndexOf("/") + 1,
@@ -33,6 +34,10 @@ var CHART = {
 	deg : {
 		INIT : DEG,
 		URL : "/rest/degplot"
+	},
+	flow : {
+		INIT : FLOW,
+		URL : "/rest/flowplot"
 	}
 }[NOW];
 
@@ -56,7 +61,7 @@ define("router", [CHART.INIT, "utils"], function(TARGET, _utils)	{
 
 	var request_data = function(_callback)    {    
 		$.get(chart_set.url)
-		.done(function(_res)   { 
+		.done(function(_res)   {
 			_callback(_res);
 			fade_in();
 			chart_set.func(_res); 

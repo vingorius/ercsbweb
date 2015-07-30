@@ -1,5 +1,8 @@
 extends ../layout/basiclayout
-
+block append stylesheets
+	link(rel='stylesheet', href='/stylesheets/chart/chart.css')
+	link(rel='stylesheet', href='/stylesheets/chart/degplot.css')
+	link(rel='stylesheet', href='/bower_components/jquery-simplecolorpicker/jquery.simplecolorpicker.css')
 block content
 	div.loading(style={ "display" : "none" }) 
 		span#loading_text 
@@ -28,15 +31,7 @@ block content
 						div.panel-body#degplot_color_bar_body
 	div.tooltip_chart(style={ "display" : "none" }) 
 block append scripts
-	script(src='/bower_components/bootstrap-colorselector/lib/bootstrap-colorselector-0.2.0/js/bootstrap-colorselector.js')
-	script(src='/bower_components/canvg-gabelerner/StackBlur.js')
-	script(src='/bower_components/canvg-gabelerner/rgbcolor.js')
-	script(src='/bower_components/canvg-gabelerner/canvg.js')
-	script(src='/bower_components/imagesloaded/imagesloaded.pkgd.js')
+	script(src='/bower_components/jquery-simplecolorpicker/jquery.simplecolorpicker.js')
 	script(src='/bower_components/html2canvas/build/html2canvas.js')
 	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
-block append stylesheets
-	link(rel='stylesheet', href='/stylesheets/chart/chart.css')
-	link(rel='stylesheet', href='/stylesheets/chart/degplot.css')		
-	link(rel='stylesheet', href='/bower_components/bootstrap-colorselector/lib/bootstrap-colorselector-0.2.0/css/bootstrap-colorselector.css')
-	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')			
+

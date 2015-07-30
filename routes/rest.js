@@ -255,6 +255,10 @@ router.get('/xyplot', function(req, res, next) {
     });
 });
 
+router.get('/flowplot', function(req, res, next)    {
+    res.json("");
+});
+
 var sort_func = function(a, b) {
     return (a < b) ? -1 : 1;
 };

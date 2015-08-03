@@ -6,12 +6,12 @@ var host = 'http://localhost:3000';
 
 describe('Profile Test Suite', function() {
     var user = {
-        id: 96,
+        id: 114,
         username: 'test2@gmail.com',
         password: 'test2',
     };
     var agent = request.agent(host);
-    it('login ' + user.toString() + ' + 으로 로그인하여야 한다.', function(done) {
+    it('login ' + user.username + ' + 으로 로그인하여야 한다.', function(done) {
         agent.post('/login')
             .send(user)
             .expect(302) //Moved Temporarily

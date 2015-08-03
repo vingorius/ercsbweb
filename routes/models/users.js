@@ -42,11 +42,14 @@ router.put('/', function(req, res, next) {
     getConnection(function(connection) {
         connection.query('update ercsb_cdss.users set ?? = ? where id = ?', [colname, colvalue, pk], function(err, rows) {
             // Check SQL Statement
-            if (err) return res.status(500).send(err.code);
-            
+            if (err) {
+                console.log(err);
+                return res.status(500).send(err.code);
+            }
+
             // Check whether affected or not
             // console.log(rows);
-            if (rows.changedRows != 1) return res.status(500).send(rows.changedRows + ' rows affected.');
+            if (rows.changedRows != 1){console.log(rows); return res.status(500).send(rows.changedRows + ' rows affected.');}
 
             // Finally Return
             res.json({

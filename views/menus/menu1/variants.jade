@@ -1,4 +1,163 @@
 extends ../../layout/analysislayout
-
+block append stylesheets
+    link(rel='stylesheet', href='/bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css')
+    style.
+        .slider.slider-horizontal{
+            width: 150px;
+        }
+        #ex1Slider .slider-selection {
+            background: #BABABA;
+        }
+        .box_container {
+            //- padding-top: 20px;
+        }
+        .box_main_title {
+            color: #286090;
+            font-size: 18px;
+        }
+        .box_title {
+            color: #286090;
+            font-size: 16px;
+        }
 block rightcontent
-    h1 Variants
+    div(style={'margin-top':'50px'})
+        div.col-lg-2(style={'line-height': '28px'}) 
+            div.row
+                i.fa.fa-cog.fa-lg
+                span.sub_menu_span.box_main_title Filter By
+            div.row.box_container
+                i.fa.fa-caret-right
+                span.sub_menu_span.box_title Frequency
+                    i.fa.fa-question.text-right(style={'padding-left': '28px','font-size': '12px'})
+                div
+                    input#ex1(data-slider-id='ex1Slider', type='text', data-slider-min='0', data-slider-max='20', data-slider-step='1', data-slider-value='8')
+            div.row.box_container
+                i.fa.fa-caret-right
+                span.sub_menu_span.box_title Genotype  
+                div
+                    input(type='radio',name='a',checked)
+                    span.sub_menu_span Heterozgous
+                div
+                    input(type='radio',name='a')
+                    span.sub_menu_span Homozygous
+
+            div.row.box_container
+                i.fa.fa-caret-right
+                span.sub_menu_span.box_title Classification            
+                div
+                    input(type='radio',name='b',checked)
+                    span.sub_menu_span All
+                div
+                    input(type='radio',name='b')
+                    span.sub_menu_span Stop gain,Lost
+                div
+                    input(type='radio',name='b')
+                    span.sub_menu_span INDEL,Frameshift
+                div
+                    input(type='radio',name='b')
+                    span.sub_menu_span Splice Site
+                div
+                    input(type='radio',name='b')
+                    span.sub_menu_span Non-synonymous
+
+            div.row.box_container
+                i.fa.fa-caret-right
+                span.sub_menu_span.box_title In Cancer Genes            
+                div
+                    input(type='radio',name='c',checked)
+                    span.sub_menu_span COSMIC
+                div
+                    input(type='radio',name='c')
+                    span.sub_menu_span HGMD
+
+
+        div.col-lg-10
+            div
+                table.table.table-striped.table-hover
+                    thead
+                        th Gene
+                        th Classification
+                        th Alter
+                        th Protein Domain
+                        th Frequency in ?
+                        th Actionable target?
+                    tbody
+                        tr
+                            td EFGR
+                            td Missense
+                            td c.2573T>G
+                            td Kinase domain
+                            td 35% in COSMIC
+                            td: a erlotinib 
+                        tr
+                            td PTEN
+                            td Splice Site
+                            td 
+                            td 
+                            td 
+                            td: input(type='checkbox')
+                        tr
+                            td BRAF
+                            td Nonsense
+                            td 
+                            td 
+                            td 
+                            td: input(type='checkbox')
+                        tr
+                            td SKT11
+                            td Frameshift DEL
+                            td 
+                            td 
+                            td 
+                            td: input(type='checkbox')
+                div.text-center
+                    nav
+                        ul.pagination
+                            li
+                                a(href='#', aria-label='Previous')
+                                    span(aria-hidden='true') «
+                            li
+                                a(href='#') 1
+                            li
+                                a(href='#') 2
+                            li
+                                a(href='#') 3
+                            li
+                                a(href='#') 4
+                            li
+                                a(href='#') 5
+                            li
+                                a(href='#', aria-label='Next')
+                                    span(aria-hidden='true') »
+
+            div
+                // Nav tabs
+                ul.nav.nav-tabs(role='tablist')
+                    li.active(role='presentation')
+                        a(href='#home', aria-controls='home', role='tab', data-toggle='tab') EGFR
+                    li(role='presentation')
+                        a(href='#profile', aria-controls='profile', role='tab', data-toggle='tab') PTEN
+                    li(role='presentation')
+                        a(href='#messages', aria-controls='messages', role='tab', data-toggle='tab') BRAF
+                    li(role='presentation')
+                        a(href='#settings', aria-controls='settings', role='tab', data-toggle='tab') SKT11
+                // Tab panes
+                div.tab-content
+                    div#home.tab-pane.active(role='tabpanel')
+                        img(src='/images/sample_needleplot.png',width='900px',style={'padding-top':'10px'})
+                    div#profile.tab-pane(role='tabpanel') ...
+                    div#messages.tab-pane(role='tabpanel') ...
+                    div#settings.tab-pane(role='tabpanel') ...
+block append scripts
+    script(src='/bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
+    script.
+        $(function() {
+            $('#ex1').slider({
+                tooltip:'show',
+                tooltip_position:'bottom',
+                formatter: function(value) {
+                    //- return 'Current value: ' + value;
+                    return value;
+                }
+            });
+        });

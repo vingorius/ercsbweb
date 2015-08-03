@@ -48,7 +48,8 @@ code {
 -------------------------------------------------- */
 .navbar-container {
 	padding-left: 30px;
-	padding-right: 30px;
+	/*padding-right: 30px;*/
+	padding-right: 60px;
 }
 .menu_icon {
 	/*color: #286090;*/
@@ -191,7 +192,7 @@ line {
 			}
 		}
 /* Tooltip
---------------------------------------- 
+---------------------------------------
 
 .tooltip_chart {
 	font-size: 14px;

@@ -1,4 +1,104 @@
 extends ../../layout/analysislayout
 
+block append stylesheets
+    style.
+        .bigbar{
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 5px;
+        }
+            
 block rightcontent
-    h1 Summary
+    div.row         
+        div.col-lg-5
+            div.page-header
+                h3 Patient Results
+            p.bg-danger.bigbar 12 genomic alteration
+            p.bg-primary.bigbar 6 therapies associated with potential clinical benefit
+            p.bg-primary.bigbar 2 therapies associated with lack of response
+            p.bg-success.bigbar 8 clinical trials
+        div.col-lg-7
+            div.page-header
+                //- h3 Tumor type: LUNG ADENOCARCINOMA(LUAD)
+                h3 LUAD 
+                    small LUNG ADENOCARCINOMA
+            div
+              // Nav tabs
+              ul.nav.nav-tabs(role='tablist')
+                li.active(role='presentation')
+                  a(href='#home', aria-controls='home', role='tab', data-toggle='tab') Mutation Landscape
+                li(role='presentation')
+                  a(href='#profile', aria-controls='profile', role='tab', data-toggle='tab') Expression Profile
+                li(role='presentation')
+                  a(href='#messages', aria-controls='messages', role='tab', data-toggle='tab') CNVs
+                li(role='presentation')
+                  a(href='#settings', aria-controls='settings', role='tab', data-toggle='tab') Fusion matrix
+                li(role='pathways')
+                  a(href='#settings', aria-controls='settings', role='tab', data-toggle='tab') Pathways
+              // Tab panes
+              div.tab-content
+                div#home.tab-pane.active(role='tabpanel') 
+                    img(src='/images/sample_needleplot.png',width='700px',style={'padding-top':'10px'})
+                div#profile.tab-pane(role='tabpanel') ...
+                div#messages.tab-pane(role='tabpanel') ...
+                div#settings.tab-pane(role='tabpanel') ...
+                div#pathways.tab-pane(role='tabpanel') ...
+    div.row
+        div.col-lg-12
+            div.page-header
+                h3 THERAPEUTIC IMPLICATIONS
+            table.table.table-striped.table-hover
+                thead
+                    th Genomic Alterations
+                    th Approved Drugs in LUAD
+                    th Approved Drugs in Others
+                    th Clinical Trials
+                    th Frequency in LUAD
+                tbody
+                    tr
+                        td EFGR c.2573T>G(L858R)
+                        td 
+                            a Erlotnib
+                        td 
+                            a Lapatinib
+                        td 
+                            a NCT01306045
+                            br
+                            a NCT01526026
+                        td 10~35%
+                    tr
+                        td PIK3CA C420R
+                        td 
+                        td 
+                        td 
+                        td
+                    tr
+                        td TP53 Q317*
+                        td 
+                        td 
+                        td 
+                        td
+                    tr
+                        td DNMT3A splice site 2322*1G>T
+                        td 
+                        td 
+                        td 
+                        td
+                    tr
+                        td MYD88 L265P
+                        td 
+                        td 
+                        td 
+                        td
+                    tr
+                        td PPP2R1A R183W
+                        td 
+                        td 
+                        td 
+                        td
+                    tr
+                        td PRDM1 truncation exon1
+                        td 
+                        td 
+                        td 
+                        td

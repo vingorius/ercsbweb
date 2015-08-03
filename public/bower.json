@@ -28,6 +28,7 @@
     "bootstrap-toggle": "~2.2.0",
     "x-editable": "~1.5.1",
     "moment": "~2.10.3",
-    "jquery-ui": "~1.11.4"
+    "jquery-ui": "~1.11.4",
+    "seiyria-bootstrap-slider": "~4.13.1"
   }
 }

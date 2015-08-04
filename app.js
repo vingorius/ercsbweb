@@ -32,6 +32,9 @@ var files = require('./routes/files');
 
 // User Restful
 var users = require('./routes/models/users');
+// Patient Sample
+var patient = require('./routes/models/patient');
+
 
 var app = express();
 // Session Management
@@ -85,6 +88,8 @@ app.use('/files', files);
 
 // Users Restful
 app.use('/models/users',security.isAuthenticated, users);
+// Patient Sample
+app.use('/models/patient', patient);
 
 // catch 404 and forward to error handler
 //여기까지 왔다는 말은 처리할 핸들러가 없다는 뜻.

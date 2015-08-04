@@ -1,0 +1,96 @@
+extends ../layout/basiclayout
+
+block append stylesheets
+    style.
+        #sidebar, #sidebar a, #sidebar-footer a {
+            color: #333;
+            //- background-color: transparent;
+            //- text-shadow: 0px 0px 2px #000;
+            //- padding-left: 15px;
+        }
+        #sidebar {
+            padding: 15px 0px 0px;
+            border-style: solid;
+            border-width: 1px;
+            border-color: #DDD;
+        }
+        .column {
+            height: 100%;
+            overflow: auto;
+        }
+        .box{
+            bottom: 0px;
+            left: 0px;
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            //- background-color: #444;        
+        }
+        .side-menu-icon {
+            width: 24px;
+            text-align: center;
+            color: #777575;
+        }
+        .sidebar-brand {
+            height: 65px;
+            font-size: 18px;
+            line-height: 60px;
+            text-indent: 20px;
+        }
+        .col_menu {
+            width: 12%;
+        }
+        .col_content {
+            width: 88%;
+        }        
+block content
+    div.box(style={'padding-top':'50px'})
+        div#sidebar.column.col-sm-2.col-xs-1.sidebar-offcanvas
+            ul.nav
+                li
+                    a.visible-xs.text-center(href='#', data-toggle='offcanvas')
+                        i.glyphicon.glyphicon-chevron-right
+            ul#lg-menu.nav.hidden-xs
+                //- li
+                //-     span.sidebar-brand NGS Statistics    
+                li
+                    a(href='#featured')
+                        i.side-menu-icon.glyphicon.glyphicon-list-alt
+                        |  Featured
+                li
+                    a(href='#stories')
+                        i.side-menu-icon.glyphicon.glyphicon-list
+                        |  Stories
+                li
+                    a(href='#')
+                        i.side-menu-icon.glyphicon.glyphicon-paperclip
+                        |  Saved
+                li
+                    a(href='#')
+                        i.side-menu-icon.glyphicon.glyphicon-refresh
+                        |  Refresh
+            //- ul#sidebar-footer.list-unstyled.hidden-xs
+            //-     li
+            //-         a(href='http://www.bootply.com')
+            //-             h3 Bootstrap
+            //-             i.glyphicon.glyphicon-heart-empty
+            //-             |  Bootply
+            // tiny only nav
+            ul#xs-menu.nav.visible-xs
+                li
+                    a.text-center(href='#featured')
+                        i.glyphicon.glyphicon-list-alt
+                li
+                    a.text-center(href='#stories')
+                        i.glyphicon.glyphicon-list
+                li
+                    a.text-center(href='#')
+                        i.glyphicon.glyphicon-paperclip
+                li
+                    a.text-center(href='#')
+                        i.glyphicon.glyphicon-refresh
+
+        div#main.column.col-sm-10.col-xs-11
+            - for(var i=0; i < 100; i++){
+                h1 Hello World
+            - }    

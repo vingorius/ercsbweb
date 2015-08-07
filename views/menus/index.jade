@@ -1,0 +1,87 @@
+extends ../layout/basiclayout
+
+block append stylesheets
+link(rel='stylesheet', href='/bower_components/bootstrap-table/dist/bootstrap-table.css')
+
+block content
+    div.container
+        div.col-lg-8
+            div.page-header 
+                h1 Sample Analysis 
+                    small Find a sample
+            div.panel.panel-default
+                div.panel-heading
+                    //- input(placeholder='Search',style={'width':'200px'})
+                    input.form-control(type='text', placeholder='Search',style={'margin-left':'auto', 'width':'200px'})
+                div.panel-body
+                    table.table.table-striped.table-hover
+                        thead
+                            tr
+                                th(data-field='no') #
+                                th(data-field='id') Sample ID
+                                th(data-field='type') Type
+                                th(data-field='pic') PiC
+                                th(data-field='prettyDate') Date
+                        tbody
+                            tr
+                                th(scope='row') 1
+                                td: a(href='/menus/analysis/summary?sample_id=Pat99&cancer_type=luad') Pat99
+                                td LUAD
+                                td Dr. Song
+                                td Just ago
+                            tr
+                                th(scope='row') 2
+                                td: a(href='/menus/analysis/summary?sample_id=Pat35&cancer_type=luad') Pat35
+                                td LUAD
+                                td Prof. Lee
+                                td Yesterday
+                            tr
+                                th(scope='row') 3
+                                td: a(href='/menus/analysis/summary?sample_id=Pat76&cancer_type=luad') Pat76
+                                td LUAD
+                                td Prof. Lee
+                                td 1 week ago
+                            tr
+                                th(scope='row') 4
+                                td: a(href='/menus/analysis/summary?sample_id=Pat103&cancer_type=luad') Pat103
+                                td LUAD
+                                td Prof. Lee
+                                td 2 months ago
+                            tr
+                                th(scope='row') 4
+                                td: a(href='/menus/analysis/summary?sample_id=Pat105&cancer_type=luad') Pat105
+                                td LUAD
+                                td Prof. Lee
+                                td 2 months ago
+                            tr
+                                th(scope='row') 4
+                                td: a(href='/menus/analysis/summary?sample_id=Pat29&cancer_type=luad') Pat29
+                                td LUAD
+                                td Prof. Lee
+                                td 2 months ago
+
+
+                    div.text-center
+                        nav
+                            ul.pagination
+                                li
+                                    a(href='#', aria-label='Previous')
+                                        span(aria-hidden='true') «
+                                li
+                                    a(href='#') 1
+                                li
+                                    a(href='#') 2
+                                li
+                                    a(href='#') 3
+                                li
+                                    a(href='#', aria-label='Next')
+                                        span(aria-hidden='true') »
+
+            div.well
+                | Lorem ipsum dolor sit amet, natum bonorum expetendis usu ut. Eum impetus offendit disputationi eu, at vim aliquip lucilius praesent. Alia laudem antiopam te ius, sed ad munere integre, ubique facete sapientem nam ut.
+                br
+                br
+                ul
+                    li Lorem ipsum dolor sit amet, natum bonorum expetendis usu ut.
+                    li Lorem ipsum dolor sit amet, natum bonorum expetendis usu ut.
+block append scripts

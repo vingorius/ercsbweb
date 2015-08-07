@@ -2,6 +2,3 @@ node_modules
 routes/modules/mysql_connection.js
 public/bower_components/
 public/datas/
-public/js/flowplot/
-views/chart/flowplot.jade
-views/layout/header.jade

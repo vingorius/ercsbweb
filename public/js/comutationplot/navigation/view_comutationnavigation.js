@@ -89,7 +89,6 @@ define(COMUTS_NAVI + "view_comutationnavigation", ["utils", "size", COMUTS_NAVI 
 			placement : "right"
 		})
 	}
-
 	return {
 		view : view
 	}

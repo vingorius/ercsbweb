@@ -7,11 +7,17 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 
 		this.parentNode.parentNode.appendChild(this.parentNode);
 
-		_utils.tooltip(e, "x : <span style='color : red;'>"  + _d.sample 
-                + "</span></br>y : <span style='color : red;'>" + _d.gene
-                + "</span></br>type : <span style='color : red;'>" + _d.type 
-                + "</span>"
-                , e.pageX, e.pageY + 10);
+		_utils.tooltip(
+			e, 
+			"x : <span style='color : red;'>"  
+			+ _d.sample 
+			+ "</span></br>y : <span style='color : red;'>" 
+			+ _d.gene
+			+ "</span></br>type : <span style='color : red;'>" 
+			+ _d.type 
+			+ "</span>", 
+			e.pageX, e.pageY
+		);
 
 		target.transition().duration(10)
 		.style("stroke", "black")
@@ -25,8 +31,12 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 		_utils.tooltip();
 
 		target.transition().duration(10)
-		.style("stroke", function(_d) { return _utils.colour(_d.type[0]); })
-		.style("stroke-width", function(_d) { return 1; });
+		.style("stroke", function(_d) { 
+			return _utils.colour(_d.type[0]); 
+		})
+		.style("stroke-width", function(_d) { 
+			return 1; 
+		});
 	}
 
 	var move_scroll = function()	{
@@ -37,7 +47,6 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 			target_1.scrollLeft(target_2.scrollLeft());
 		});
 	}
-
 	return {
 		m_over : event_mouseover,
 		m_out : event_mouseout,

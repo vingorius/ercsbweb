@@ -15,7 +15,8 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.attr("transform", "translate(0, 0)");
 
 		var yAxis = d3.svg.axis()
-		.scale(data.y).orient("left")
+		.scale(data.y)
+		.orient("left")
 		.tickValues([0, data.max / 2, data.max]);
 
 		svg.append("g")
@@ -45,15 +46,26 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.attr("transform", "translate(0, 0)");
 
 		var stacked_bar = bar_group.selectAll("rect")  
-		.data(function(_d)  { return _d.list; })
+		.data(function(_d)  { 
+			return _d.list; 
+		})
 		.enter().append("rect")
 		.attr("class", "comutationplot_sample_bars")
-		.attr("x", function(_d) { return data.x(_d.sample); })
-		.attr("y", function(_d) { return data.y(_d.start + _d.count); })
+		.attr("x", function(_d) { 
+			return data.x(_d.sample); 
+		})
+		.attr("y", function(_d) { 
+			return data.y(_d.start + _d.count); 
+		})
 		.attr("width", data.x.rangeBand())
-		.attr("height", function(_d) { return (size.height - size.margin.bottom) - data.y(_d.count); })
-		.style("fill", function(_d) { return _utils.colour(_d.type); })
-		.on("mouseover", e.m_over).on("mouseout", e.m_out);
+		.attr("height", function(_d) { 
+			return (size.height - size.margin.bottom) - data.y(_d.count); 
+		})
+		.style("fill", function(_d) { 
+			return _utils.colour(_d.type); 
+		})
+		.on("mouseover", e.m_over)
+		.on("mouseout", e.m_out);
 	}
 
 	return {

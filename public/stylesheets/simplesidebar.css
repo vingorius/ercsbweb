@@ -53,7 +53,7 @@
 
 
 .sidebar-nav {
-    position: absolute;
+    /*position: absolute;*/
     top: 20px;
     width: 250px;
     margin: 0;
@@ -68,14 +68,13 @@
 .sidebar-nav li a {
     display: block;
     text-decoration: none;
-    /*color: #999999;*/
-    color: #777;
+    color: #999999;
+    /*color: #777;*/
 }
+
 .sidebar-nav li a:hover {
     text-decoration: none;
-    /*color: #fff;*/
-    color: #333;
-    /*background: rgba(255, 255, 255, 0.2);*/
+    color: #2878BF;
     background: transparent;
 }
 .sidebar-nav li a:active, .sidebar-nav li a:focus {
@@ -105,8 +104,15 @@
 .side-menu-icon {
     width: 24px;
     text-align: center;
-    color: rgb(119, 117, 117);
+    /*color: rgb(119, 117, 117);*/
 }
+.side-menu-active {
+    display: block;
+    text-decoration: none;
+    color: rgb(226, 23, 23);
+}
+
+
 @media(min-width:768px) {
     #wrapper {
         padding-left: 250px;

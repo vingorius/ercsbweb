@@ -5,9 +5,9 @@ var router = express.Router();
 router.get('/getSampleVariantList', function(req, res, next) {
 	var cancer_type = req.query.cancer_type;
 	var sample_id = req.query.sample_id;
-
+	console.log(sample_id,cancer_type);
     getConnection(function(connection) {
-        connection.query('CALL omics_data.getNeedleplotPatientVariantList(?,?)',['luad','Pat99'], function(err, rows) {
+        connection.query('CALL omics_data.getNeedleplotPatientVariantList(?,?)',[cancer_type,sample_id], function(err, rows) {
             if (err) throw err;
             res.json(rows[0]);
         });

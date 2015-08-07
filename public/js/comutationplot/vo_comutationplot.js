@@ -121,7 +121,6 @@ define(VO, ["utils"], function(_utils)	{
 			}
 		}
 	}());
-
 	return 	{
 		VO : VO
 	}

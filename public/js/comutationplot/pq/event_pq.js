@@ -7,10 +7,15 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 		var target = d3.select(this);
 		var e = d3.event;
 		
-		_utils.tooltip(e, "Gene : <span style='color : red;'>" + _d.name 
+		_utils.tooltip(
+			e, 
+			"Gene : <span style='color : red;'>" 
+			+ _d.name 
 			+ "</span></br>q : <span style='color : red;'>" 
-			+ Number(_utils.log(_d.q)).toFixed(4) + "</span>"
-			, e.pageX - 50, e.pageY);
+			+ Number(_utils.log(_d.q)).toFixed(4) 
+			+ "</span>", 
+			e.pageX, e.pageY
+		);
 
 		target.transition().duration(100)
 		.style("fill", d3.rgb("#BFBFBF").darker(1));
@@ -27,19 +32,16 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 	}
 
 	var ascending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "q") > _utils.get_list_sum(_b.list, "q")) 
-		? 1 : -1;
+		return (_utils.get_list_sum(_a.list, "q") > _utils.get_list_sum(_b.list, "q")) ? 1 : -1;
 	}
 
 	var descending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "q") < _utils.get_list_sum(_b.list, "q")) 
-		? 1 : -1;
+		return (_utils.get_list_sum(_a.list, "q") < _utils.get_list_sum(_b.list, "q")) ? 1 : -1;
 	}
 
 	var sorting_get_name = function(_sorting_data)	{
 		try{
 			var result = [];
-
 			for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
 				result.push(_sorting_data[i].name);
 			}
@@ -57,7 +59,9 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 
 		d3.selectAll(".comutationplot_pq_bars")
 		.transition().duration(400)
-		.attr("y", function(_d) { return y(_d.name); });
+		.attr("y", function(_d) { 
+			return y(_d.name); 
+		});
 
 		d3.selectAll(".comutationplot_cellgroup")
 		.transition().duration(400)
@@ -74,7 +78,9 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 
 		d3.selectAll(".comutationplot_gene_bars")
 		.transition().duration(400)
-		.attr("y", function(_d) { return y(_d.gene); });
+		.attr("y", function(_d) { 
+			return y(_d.gene); 
+		});
 	}
 
 	var sort_by_value = function(_d)	{
@@ -91,7 +97,6 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 		_VO.VO.setGene(sorting_get_name(sort_data));
 		redraw_yaxis(sorting_get_name(sort_data), _d.size);
 	}
-
 	return {
 		m_over : get_mouseover,
 		m_out : get_mouseout,

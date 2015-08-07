@@ -20,9 +20,15 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 		var target = d3.select(this);
 		var e = d3.event;
 
-		_utils.tooltip(e, "Gene : <span style='color : red;'>" + _d.gene 
-			+ "</span></br>Count : <span style='color : red;'>" + _d.count
-			+ "</span>", e.pageX, e.pageY);
+		_utils.tooltip(
+			e, 
+			"Gene : <span style='color : red;'>" 
+			+ _d.gene 
+			+ "</span></br>Count : <span style='color : red;'>" 
+			+ _d.count
+			+ "</span>", 
+			e.pageX, e.pageY
+		);
 
 		target.transition().duration(100)
 		.style("stroke", "black");
@@ -33,17 +39,16 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 		var e = d3.event;
 		
 		_utils.tooltip();
-		target.transition().duration(100).style("stroke", "#BFBFBF");
+		target.transition().duration(100)
+		.style("stroke", "#BFBFBF");
 	}
 
 	var ascending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "count") > _utils.get_list_sum(_b.list, "count")) 
-		? 1 : -1;
+		return (_utils.get_list_sum(_a.list, "count") > _utils.get_list_sum(_b.list, "count")) ? 1 : -1;
 	}
 
 	var descending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "count") < _utils.get_list_sum(_b.list, "count")) 
-		? 1 : -1;
+		return (_utils.get_list_sum(_a.list, "count") < _utils.get_list_sum(_b.list, "count")) ? 1 : -1;
 	}
 
 	var sorting_get_name = function(_sorting_data)	{
@@ -66,7 +71,9 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 
 		d3.selectAll(".comutationplot_gene_bars")
 		.transition().duration(400)
-		.attr("y", function(_d) { return y(_d.gene); });
+		.attr("y", function(_d) { 
+			return y(_d.gene); 
+		});
 
 		d3.selectAll(".comutationplot_cellgroup")
 		.transition().duration(400)
@@ -79,7 +86,9 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 
 		d3.selectAll(".comutationplot_pq_bars")
 		.transition().duration(400)
-		.attr("y", function(_d) { return y(_d.name); });
+		.attr("y", function(_d) { 
+			return y(_d.name); 
+		});
 	}
 
 	var sort_by_value = function(_d)	{
@@ -96,7 +105,6 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 		_VO.VO.setGene(sorting_get_name(sort_data));
 		redraw_yaxis(sorting_get_name(sort_data), _d.size);
 	}
-
 	return {
 		axis_m_over : get_axis_mouseover,
 		axis_m_out : get_axis_mouseout,

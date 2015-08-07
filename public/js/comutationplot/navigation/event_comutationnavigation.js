@@ -8,8 +8,12 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 		var scroll_status = function()	{
 			var scroll = $("#comutationplot_heatmap");
 
-			if(get_input_value() === 100)	{ scroll.css("overflow", "hidden"); }
-			else { scroll.css("overflow-x", "scroll"); }
+			if(get_input_value() === 100)	{ 
+				scroll.css("overflow", "hidden"); 
+			}
+			else { 
+				scroll.css("overflow-x", "scroll"); 
+			}
 		}
 
 		var get_click = function()	{
@@ -50,7 +54,9 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var now = old + (old * calculate_value());
 			var x = _utils.ordinalScale(_VO.VO.getSample(), data.size.margin.left, now - data.size.margin.left);
 
-			if(old > now)	{ return; }
+			if(old > now)	{ 
+				return;
+			}
 
 			redraw_sample(now, x);
 		}
@@ -64,8 +70,12 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 
 			rects
 			.transition().duration(400)
-			.attr("x", function(_d) { return _x(_d.sample); })
-			.attr("width", function(_d ) { return _x.rangeBand(); });
+			.attr("x", function(_d) { 
+				return _x(_d.sample); 
+			})
+			.attr("width", function(_d ) {
+				return _x.rangeBand(); 
+			});
 		}
 
 		var redraw_comutation = function(_value, _x, _y)	{
@@ -85,7 +95,9 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 
 			rects
 			.transition().duration(400).attr("x", 0)
-			.attr("width", function(_d) { return _x.rangeBand(); });
+			.attr("width", function(_d) { 
+				return _x.rangeBand(); 
+			});
 		}
 
 		var scale_comutation = function()	{
@@ -96,10 +108,11 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var old = origin.width();
 			var now = old + (old * calculate_value());
 			var x = _utils.ordinalScale(_VO.VO.getSample(), data.size.margin.left, now - data.size.margin.left);
-			var y = _utils.ordinalScale(_VO.VO.getGene(), data.size.margin.top,
-				(origin.height() - data.size.margin.top));
+			var y = _utils.ordinalScale(_VO.VO.getGene(), data.size.margin.top, (origin.height() - data.size.margin.top));
 
-			if(old > now)	{ return; }
+			if(old > now)	{ 
+				return; 
+			}
 			
 			_VO.VO.setWidth(now);
 			redraw_comutation(now, x, y);
@@ -132,32 +145,47 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			change_input_value(-1, (get_input_value() - 100));
 			scroll_status();
 
-			timeout(function() { d3.selectAll(".comutationplot_sample_bars")
-			.transition().duration(400)
-			.attr("x", function(_d) { return x(_d.sample); }); }, 300);
+			timeout(function() { 
+				d3.selectAll(".comutationplot_sample_bars")
+				.transition().duration(400)
+				.attr("x", function(_d) { 
+					return x(_d.sample); 
+				}); 
+			}, 300);
 			
-			timeout(function() { d3.selectAll(".comutationplot_pq_bars")
-			.transition().duration(400)
-			.attr("y", function(_d) { return y(_d.name); }); }, 400);
+			timeout(function() { 
+				d3.selectAll(".comutationplot_pq_bars")
+				.transition().duration(400)
+				.attr("y", function(_d) { 
+					return y(_d.name); 
+				}); 
+			}, 400);
 
-			timeout(function() { d3.selectAll(".comutationplot_gene_yaxis")
-			.transition().duration(400)
-			.call(d3.svg.axis().scale(y).orient("right")); }, 400);
+			timeout(function() { 
+				d3.selectAll(".comutationplot_gene_yaxis")
+				.transition().duration(400)
+				.call(d3.svg.axis().scale(y).orient("right")); 
+			}, 400);
 
-			timeout(function() { d3.selectAll(".comutationplot_gene_bars")
-			.transition().duration(400)
-			.attr("y", function(_d) { return y(_d.gene); }); }, 400);
+			timeout(function() { 
+				d3.selectAll(".comutationplot_gene_bars")
+				.transition().duration(400)
+				.attr("y", function(_d) { 
+					return y(_d.gene); 
+				}); 
+			}, 400);
 
-			timeout(function() { d3.selectAll(".comutationplot_cellgroup")
-			.transition().duration(400)
-			.attr("transform", function(_d)	{
-				if(!x(_d.sample))	{
-					return "translate(" + _d.x(_d.sample) + ", " + _d.y(_d.gene) +")";	
-				}
-				return "translate(" + x(_d.sample) + ", " + y(_d.gene) +")";	
-			}); }, 500);
+			timeout(function() { 
+				d3.selectAll(".comutationplot_cellgroup")
+				.transition().duration(400)
+				.attr("transform", function(_d)	{
+					if(!x(_d.sample))	{
+						return "translate(" + _d.x(_d.sample) + ", " + _d.y(_d.gene) +")";	
+					}
+					return "translate(" + x(_d.sample) + ", " + y(_d.gene) +")";	
+				}); 
+			}, 500);
 		}
-
 		return {
 			click : get_click,
 			init : get_init

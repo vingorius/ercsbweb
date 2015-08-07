@@ -37,7 +37,6 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 		for(var i = 0, len = mutation.length ; i < len ; i++)   {
 			for(var j = 0, lens = mutation[i].type.length ; j < lens ; j++) {
 				var check = _utils.get_json_in_array(mutation[i].type[j], result, "type");
-
 				if(!check) {
 					result.push({
 						gene : [mutation[i].gene],
@@ -78,7 +77,6 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 
 		return d3.max(data.map(function(_d) {
 			var result = 0;
-
 			for(var i = 0, len = _d.list.length ; i < len ; i++)	{
 				result += _d.list[i].count;
 			}
@@ -98,24 +96,18 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 	}
 
 	return function(_all_data, _genes, _importance)	{
-		var all_data = _all_data || [];
-		var genes = _genes || [];
-		var importance = _importance || [];
-		var count_gene = count_by_order(all_data, importance);
+		var count_gene = count_by_order(_all_data, _importance);
 		var size = _size.define_size("comutationplot_gene", 20, 20, 20, 70);
 		var max = get_max(count_gene);
 
 		_utils.remove_svg("comutationplot_gene");
 
-		var x = _utils.linearScale(0, max, (size.width - size.margin.right), size.margin.left);
-		var y = _utils.ordinalScale(genes, size.margin.top, (size.height - size.margin.top));
-
 		_view.view({
 			data : count_gene,
 			size : size,
 			max : max,
-			x : x, 
-			y : y
+			x : _utils.linearScale(0, max, (size.width - size.margin.right), size.margin.left), 
+			y : _utils.ordinalScale(_genes, size.margin.top, (size.height - size.margin.top))
 		});
 	}
 });

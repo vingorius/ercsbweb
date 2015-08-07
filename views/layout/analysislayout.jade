@@ -1,26 +1,153 @@
 extends sidebarlayout
+// Jade code
+//var genotypeclass = (menu.)
+block append stylesheets
+    style.
+        .sub_title{
+            color: #777;
+            margin-left: 10px;
+        }
+        .selected_sample {
+            margin-left: 10px;
+            margin-right: 10px;
+            margin-top: 20px;
+            padding: 8px;
+            //- border-radius: 5px;
+            color: #777;
+        }
+        .sample{
+            //- color: #2878BF;
+            font-size: 16px;
+            font-style: italic;
+        }
+if(sample)        
+    block leftmenu
+        p.selected_sample
+            span Sample : 
+            a.sample(href='/menus/') #{sample.id} (#{sample.type})
+        //- p.selected_sample
+        //-     i.glyphicon.glyphicon-user(style={'color':'#2878BF'})
+        //-     |  Pat99
+        hr
+        p.sub_title
+            strong
+                //- i.fa.fa-tags
+                |  NGS Statistics
+        hr
+        ul.sidebar-nav
+            li
+                a.side-menu-active(href='/menus/ngs/summary')
+                    i.side-menu-icon.fa.fa-list-alt
+                    span.sub_menu_span Summary            
+        hr
+        p.sub_title(href='#')
+            strong
+                //- i.fa.fa-search
+                |  Analysis
+        hr
+        ul.sidebar-nav
+            li
+                a(href='/menus/analysis/summary')
+                    i.side-menu-icon.fa.fa-list-alt
+                    span.sub_menu_span Summary            
+            li
+                a(href='/menus/analysis/variants') 
+                    i.side-menu-icon.fa.fa-exclamation
+                    span.sub_menu_span Variants  
+            li
+                a(href='/menus/analysis/pathways') 
+                    i.side-menu-icon.fa.fa-code-fork
+                    span.sub_menu_span Pathways            
+            li
+                a(href='/menus/analysis/drugs') 
+                    i.side-menu-icon.fa.fa-medkit
+                    span.sub_menu_span Drugs            
+            li
+                a(href='/menus/analysis/clinicaltrials') 
+                    i.side-menu-icon.fa.fa-bed
+                    span.sub_menu_span Clinical Trials       
 
-block leftmenu
-    ul.sidebar-nav
-        li.sidebar-brand
-            a(href='#') Anaysis
-        li
-            a(href='/menus/menu1/summary')
-                i.side-menu-icon.fa.fa-list-alt
-                span.sub_menu_span Summary            
-        li
-            a(href='/menus/menu1/variants') 
-                i.side-menu-icon.fa.fa-exclamation 
-                span.sub_menu_span Variants  
-        li
-            a(href='/menus/menu1/pathways') 
-                i.side-menu-icon.fa.fa-code-fork
-                span.sub_menu_span Pathways            
-        li
-            a(href='/menus/menu1/drugs') 
-                i.side-menu-icon.fa.fa-medkit
-                span.sub_menu_span Drugs            
-        li
-            a(href='/menus/menu1/clinicaltrials') 
-                i.side-menu-icon.fa.fa-bed
-                span.sub_menu_span Clinical Trials            
+        hr
+        p.sub_title(href='#')
+            strong
+                //- i.fa.fa-database
+                |  Population Statistics
+        hr
+        ul.sidebar-nav
+            li
+                a(href='#', data-toggle='collapse', data-target='#genotype')
+                    i.side-menu-icon.fa.fa-tasks
+                    span.sub_menu_span Genotype Selected            
+                    span.caret
+                    //- i.glyphicon.glyphicon-chevron-down
+                ul#genotype.nav.nav-stacked.collapse(style='', aria-expanded='true')
+                    li
+                        a(href='/menus/population/comutation')
+                            i.side-menu-icon.fa.fa-map-o
+                            span.sub_menu_span Mutational Landscape   
+                    li
+                        a(href='/menus/population/mutation')
+                            i.side-menu-icon.fa.fa-check-square-o
+                            span.sub_menu_span Mutation Substype            
+                    li
+                        a(href='/menus/population/expression')
+                            i.side-menu-icon.fa.fa-sun-o
+                            span.sub_menu_span Expression Substype            
+                    li
+                        a(href='/menus/population/substype')
+                            i.side-menu-icon.fa.fa-sort-numeric-asc
+                            span.sub_menu_span CNV Substype            
+            li
+                a(href='#', data-toggle='collapse', data-target='#clinical')
+                    i.side-menu-icon.fa.fa-bed
+                    span.sub_menu_span Clinical Selected            
+                    span.caret
+                    //- i.glyphicon.glyphicon-chevron-down
+                ul#clinical.nav.nav-stacked.collapse(style='', aria-expanded='true')
+                    li
+                        a(href='/menus/population/vital')
+                            i.side-menu-icon.fa.fa-heart-o
+                            span.sub_menu_span Vital Status
+                    li
+                        a(href='/menus/population/diagnosis')
+                            i.side-menu-icon.fa.fa-sun-o
+                            span.sub_menu_span Age at diagnosis           
+                    li
+                        a(href='/menus/population/gender')
+                            i.side-menu-icon.fa.fa-transgender
+                            span.sub_menu_span Gender        
+                    li
+                        a(href='/menus/population/treatment')
+                            i.side-menu-icon.fa.fa-tags
+                            span.sub_menu_span Treatment        
+
+else        
+    block leftmenu
+        p Select Sample
+
+block append scripts
+    script.
+        $(document).ready(function() {
+            /*
+             * 최초 페이지 로딩 시, 사용자가 클릭한 메뉴를 표시한다.
+             * 아울러 클릭한 메뉴가 collapse 안에 들어 있는 메뉴인 경우 이를 펼쳐준다.
+             */
+            var menu = $('ul.sidebar-nav').find('a[href="' + location.pathname + '"]');
+            //menu.closest('li').addClass('side-menu-active');//작동 안하는 이유가 뭘까?
+            menu.css('color','#337AB7');
+            if(location.pathname.match(/^\/menus\/population/)){
+                menu.closest('ul').collapse('show');
+            }
+            /*
+             * 서브 메뉴가 여러개인 경우, 클릭한 이외의 것은 닫는다.
+             */
+            $('[data-toggle=collapse]').click(function(){
+                var clicked_id = $(this).attr('data-target');
+                var list = $('.sidebar-nav ul');
+                for(var i = 0; i < list.length; i ++){
+                    if(clicked_id != '#'+list[i].id){
+                        $(list[i]).collapse('hide');
+                    }
+                }
+            });
+        });                

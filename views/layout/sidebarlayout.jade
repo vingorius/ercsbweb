@@ -6,9 +6,9 @@ block append stylesheets
 block content
         div#wrapper
             div#sidebar-wrapper
-                div.text-right
-                    a#menu-toggle(href='#menu-toggle',style={'color':'#333'})
-                        i#icon-toggle.side-menu-icon.glyphicon.glyphicon-chevron-left
+                //- div.text-right
+                //-     a#menu-toggle(href='#menu-toggle',style={'color':'#333'})
+                //-         i#icon-toggle.side-menu-icon.glyphicon.glyphicon-chevron-left
 
                 block leftmenu
 
@@ -24,24 +24,9 @@ block append scripts
             /*
              * 좌측 메뉴 우상단에 있는 축소/확대 버튼을 토글한다.
              */
-            $("#menu-toggle").click(function(e) {
-                e.preventDefault();
-                $("#wrapper").toggleClass("toggled");
-                $(this).find("i").toggleClass("glyphicon-chevron-left glyphicon-chevron-right");
-            });
-            /*
-             * 서브 메뉴가 여러개인 경우, 클릭한 이외의 것은 닫는다.
-             */
-            $('[data-toggle=collapse]').click(function(){
-                var clicked_id = $(this).attr('data-target');
-                var list = $('.sidebar-nav ul');
-                for(var i = 0; i < list.length; i ++){
-                    if(clicked_id != '#'+list[i].id){
-                        $(list[i]).removeClass('in');
-                    }
-                }
-                // toggle icon
-                //$(this).find("i").toggleClass("glyphicon-chevron-right glyphicon-chevron-down");
-            });
+            //- $("#menu-toggle").click(function(e) {
+            //-     e.preventDefault();
+            //-     $("#wrapper").toggleClass("toggled");
+            //-     $(this).find("i").toggleClass("glyphicon-chevron-left glyphicon-chevron-right");
+            //- });
         });        
-        

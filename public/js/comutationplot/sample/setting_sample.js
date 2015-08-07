@@ -37,7 +37,6 @@ define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], fun
 		for(var i = 0, len = mutation.length ; i < len ; i++)   {
 			for(var j = 0, lens = mutation[i].type.length ; j < lens ; j++) {
 				var check = _utils.get_json_in_array(mutation[i].type[j], result, "type");
-
 				if(!check) {
 					result.push({
 						sample : [mutation[i].sample],
@@ -89,7 +88,6 @@ define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], fun
 
 		return d3.max(data.map(function(_d) {
 			var result = 0;
-
 			for(var i = 0, len = _d.list.length ; i < len ; i++)	{
 				result += _d.list[i].count;
 			}
@@ -98,15 +96,13 @@ define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], fun
 	}
 
 	return function(_all_data, _samples, _importance)	{
-		var all_data = _all_data || [];
-		var samples = _samples || [];
-		var count_sample = count_by_order(all_data, _importance);
+		var count_sample = count_by_order(_all_data, _importance);
 		var size = _size.define_size("comutationplot_sample", 30, 10, 20, 20);
 		var max = get_max(count_sample);
 
 		_utils.remove_svg("comutationplot_sample");
 
-		var x = _utils.ordinalScale(samples, size.margin.left, (size.width - size.margin.left));
+		var x = _utils.ordinalScale(_samples, size.margin.left, (size.width - size.margin.left));
 		var y = _utils.linearScale(0, max, (size.height - size.margin.bottom), size.margin.top);
 
 		_view.view({

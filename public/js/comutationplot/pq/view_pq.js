@@ -15,7 +15,8 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		.attr("transform", "translate(0, 0)");
 
 		var xAxis = d3.svg.axis()
-		.scale(data.x).orient("bottom")
+		.scale(data.x)
+		.orient("bottom")
 		.tickValues([0, data.max / 2, data.max]);
 
 		svg.append("g")
@@ -45,16 +46,24 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		.attr("transform", "translate(0, 0)");
 
 		var stacked_bar = bar_group.selectAll("rect")  
-		.data(function(_d)  { return _d.list; })
+		.data(function(_d)  { 
+			return _d.list; 
+		})
 		.enter().append("rect")
 		.attr("class", "comutationplot_pq_bars")
-		.on("mouseover", e.m_over).on("mouseout", e.m_out)
-		.attr("x", function(_d) { return size.margin.left; })
-		.attr("y", function(_d) { return data.y(_d.name); })
-		.attr("width", function(_d) { return data.x(_utils.log(_d.q)) - size.margin.left; })
+		.on("mouseover", e.m_over)
+		.on("mouseout", e.m_out)
+		.attr("x", function(_d) { 
+			return size.margin.left; 
+		})
+		.attr("y", function(_d) { 
+			return data.y(_d.name); 
+		})
+		.attr("width", function(_d) { 
+			return data.x(_utils.log(_d.q)) - size.margin.left; 
+		})
 		.attr("height", data.y.rangeBand() / 1.2);
 	}
-
 	return {
 		view : view
 	}

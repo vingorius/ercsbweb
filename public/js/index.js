@@ -1,10 +1,10 @@
 require.config({
-	baseUrl : "/js",
+	baseUrl : "/js/",
 	paths : {
 		router : "chartrouter",
 		header : "chartheader/",
 		size : "size",
-		utils : "utils",
+		utils : "chart/utils",
 	}
 });
 

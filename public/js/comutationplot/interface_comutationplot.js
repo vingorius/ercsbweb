@@ -17,6 +17,7 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 				result.push(list[i][key]);
 			}
 		}
+		console.log(result);
 		return result;
 	}
 	var get_all_data = (function()	{
@@ -42,18 +43,12 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 			sampleColumn.gene_list.forEach(function(_d, _i)  {
 				aberrations = get_all_aberration_list(_d);
 
-				f_sample_group = (sampleColumn.group in memoize.sample_group) ? 
-					memoize.sample_group[sampleColumn.group] : sampleColumn.group;
-				f_gene_group = ("group" in memoize.gene_group) ? 
-					memoize.gene_group["group"] : "group";
-				f_sample = (sampleColumn.name in memoize.sample) ?
-					memoize.sample[sampleColumn.name] : sampleColumn.name;
-				f_gene = (_d.name in memoize.gene) ? 
-					memoize.gene[_d.name] : _d.name;
-				f_type = (aberrations.type in memoize.type) ? 
-					memoize.type[aberrations.type] : aberrations.type;
-				f_value = (aberrations.value in memoize.value) ?
-					memoize.value[aberrations.value] : aberrations.value;
+				f_sample_group = (sampleColumn.group in memoize.sample_group) ? memoize.sample_group[sampleColumn.group] : sampleColumn.group;
+				f_gene_group = ("group" in memoize.gene_group) ? memoize.gene_group["group"] : "group";
+				f_sample = (sampleColumn.name in memoize.sample) ? memoize.sample[sampleColumn.name] : sampleColumn.name;
+				f_gene = (_d.name in memoize.gene) ? memoize.gene[_d.name] : _d.name;
+				f_type = (aberrations.type in memoize.type) ? memoize.type[aberrations.type] : aberrations.type;
+				f_value = (aberrations.value in memoize.value) ?memoize.value[aberrations.value] : aberrations.value;
 
 				memoize.sample_group[sampleColumn.group] = f_sample_group;
 				memoize.gene_group["group"] = f_gene_group;
@@ -119,7 +114,6 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		if(_groups.length < 2)	{
 			return _groups[0].group_list;
 		}
-
 		/* Should be write sorting logic here */
 
 		return _groups[0].group_list;
@@ -136,7 +130,9 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 			}
 			else {
 				typeName = _utils.define_mutation_name(_d.type);
-				if($.inArray(typeName, result.type_list) < 0) { result.type_list.push(typeName); }
+				if($.inArray(typeName, result.type_list) < 0) { 
+					result.type_list.push(typeName); 
+				}
 			}
 		});
 		return result;
@@ -164,12 +160,11 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 				}
 			}
 		}
-
 		return mutations.sort(function(_a, _b)	{
 			return (_a.importance > _b.importance) ? 1 : -1;
 		});
 	}
-
+	/* Stacked value sequance by importance of sample / gene name */
 	var importance_by_name = function(_importance)	{	
 		var result = [];
 
@@ -179,11 +174,80 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		return result;
 	}
 
-	return function(_data)	{
-		var data = _data || [];
+	var importanceValueOfGene = function(_symbol_list)	{
+		var importanceGene = {};
 
-		var sample_list = data.data.sample_list;
-		var symbol_list = data.data.symbol_list;
+		for(var i = 0, len = _symbol_list.length ; i < len ; i++)	{
+			importanceGene[_symbol_list[i].name] = i + 1;
+		}
+		return importanceGene;
+	}
+
+	var importanceValueOfType = function(_type_list)	{
+		var mappingType = {
+			"Nonsense" : 3,
+			"Synonymous" : 6,
+			"Splice_Site" : 2,
+			"Frame_shift_indel" : 1,
+			"In_frame_indel" : 4,
+			"Missense" : 5
+		};
+		var typeStr = makeStrArray(mappingType);
+
+		for(var i = 0, len = _type_list.length ; i < len ; i++)	{
+			typeStr[mappingType[_type_list[i].type] - 1] = 0;
+		}
+		return typeStr.join("");
+	}
+
+	var makeStrArray = function(_mapping)	{
+		var result = [];
+
+		for(var i = 0, len = Object.keys(_mapping).length ; i < len ; i++)	{
+			result.push("1");
+		}
+		return result;
+	}
+
+	var makeImportanceGeneStr = function(_gene_list, _mapping)	{
+		var geneStr = makeStrArray(_mapping);
+
+		for(var i = 0, len = _gene_list.length ; i < len ; i++)	{
+			var gene = _gene_list[i];
+			var typeStr = importanceValueOfType(gene.aberration_list);
+			var mappingGene = _mapping[gene.name];
+			gene.sort_str = typeStr;
+			gene.aberration_list.sort(function(_a, _b)	{
+				return (_a.sort_text  > _b.sort_text) ? 1 : -1;
+			})
+			geneStr[mappingGene - 1] = 0;
+		}
+		return geneStr.join("");
+	}	
+
+	var initialSort = function(_data)	{
+		var mappingGene = importanceValueOfGene(_data.symbol_list);
+
+		for(var i = 0, len = _data.sample_list.length ; i < len ; i++)	{
+			var sample = _data.sample_list[i];
+			var geneStr = makeImportanceGeneStr(sample.gene_list, mappingGene);
+			sample.sort_text = geneStr;
+			console.log(geneStr)
+		}
+		_data.sample_list.sort(function(_a, _b)	{
+			return (_a.sort_text > _b.sort_text) ? 1 : -1;
+		});
+		return _data;
+	}
+
+	return function(_data)	{
+		var presortdata = initialSort(_data.data);
+
+		var sample_list = presortdata.sample_list;
+		var symbol_list = presortdata.symbol_list;
+
+		// var sample_list = _data.data.sample_list;
+		// var symbol_list = _data.data.symbol_list;
 
 		var genes = get_list_by_key("name", symbol_list);
 		var samples = get_list_by_key("name", sample_list);
@@ -195,16 +259,17 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		_VO.VO.setGene(genes);
 
 		var all_data = get_all_data(sample_list, samples);
+		console.log(all_data)
 		var importance = mutation_importance(all_data, mutations);
 		var importance_name = importance_by_name(importance);
-		var groups = group_by_sample(all_data, data.data.group_list);
+		var groups = group_by_sample(all_data, _data.data.group_list);
 		var after_sort_groups = sort_by_groupname(groups);
 
 		_utils.remove_svg("comutationplot_legend");
-
-		_setting_comutation(after_sort_groups, samples, genes, data);
+		
+		_setting_comutation(after_sort_groups, samples, genes, _data);
 		_setting_gene(after_sort_groups, genes, importance_name);
-		_setting_pq(data.data.symbol_list, genes);
+		_setting_pq(_data.data.symbol_list, genes);
 		_setting_sample(after_sort_groups, samples, importance_name);
 		_setting_comutationnavigation(samples, genes);
 		_setting_legend(mutations, "comutationplot_legend", null, importance);

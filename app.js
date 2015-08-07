@@ -74,6 +74,12 @@ if (app.get('env') === 'development') {
     });
 }
 
+// 모든 페이지에 user 객체를 넣어준다.
+app.use(function(req, res, next) {
+    res.locals.user = req.user;
+    next();
+});
+
 app.use('/', root);
 //app.use('/admin', authorization.ensureRequest.isPermitted("admin:view"), admin);
 //app.use('/admin', security.isAdmin, admin);

@@ -87,7 +87,7 @@ define("utils", [], function()  {
 		}
 
 		for(var i = 0, len = arguments.length ; i < len ; i++)  {
-			d3.selectAll("." + arguments[i]).remove();
+			d3.selectAll(arguments[i]).remove();
 		}
 	}
 
@@ -152,9 +152,18 @@ define("utils", [], function()  {
 		return "#" + r2 + g2 + b2;
 	}
 
+	var getElementPostion = function(_element)	{
+		var position = $(_element).position();
+
+		return {
+			left : position.left,
+			top : position.top
+		}
+	}
+
 	var tooltip = function(_event, _contents, _x, _y)   {
 		var div = $('.tooltip_chart');
-		var e = _event || null, contents = _contents || "", x = _x || 0, y = _y || 0;
+		var space = 5;
 
 		if(arguments.length < 1) {
 			div.empty();
@@ -162,12 +171,13 @@ define("utils", [], function()  {
 		}
 		else   {
 			div.css("position", "absolute");
-			div.css("top", y);
-			div.css("left", x);
-			div.css("font-size", 14)
+			div.html(_contents);		// Html 태그를 포함한 문자열을 삽입 할 때에는 html() 함수를 사용하는 것이 낫다.
+			div.css("top", _y);
+			div.css("left", _x);
+			div.css("font-size", 12)
+			div.css("font-family", "trebuchet ms")
 			div.css("font-weight", "bold")
-			div.css("opacity", 0.7);
-			div.html(contents);		// Html 태그를 포함한 문자열을 삽입 할 때에는 html() 함수를 사용하는 것이 낫다.
+			div.css("opacity", 0.8);
 			div.show();
 		}
 	}
@@ -185,33 +195,6 @@ define("utils", [], function()  {
 		a.download = _name;
 		a.href = _url;
 		a.dispatchEvent(html_event);		
-	}
-
-	var saveImg = function(_svg)	{
-		// html2canvas($(".chart_base_container"), {
-		// 	onrendered : function(canvas)	{
-		var canvas = document.createElement("canvas");
-				var test = d3.select("." + _svg)
-				.attr({
-					'xmlns': 'http://www.w3.org/2000/svg',
-					'xmlns:xmlns:xlink': 'http://www.w3.org/1999/xlink',
-					version: '1.1'
-				}).node().parentNode.innerHTML
-				
-				canvg(canvas, test, { ignoreClear : false });
-
-				var ctx = canvas.getContext("2d");
-				var imgsrc = 'data:image/svg+xml;base64,' + btoa(test);
-				var img = new Image();
-				imagesLoaded(img, function(_a)		{
-					ctx.drawImage(img, 0, 0);
-					var data = canvas.toDataURL("image/png");
-					window.open(data, "dd", "width=1100 height=500 top=200 left=300")
-					 // download("ss.png", data);
-				});
-				img.src = imgsrc;
-		// 	}
-		// });
 	}
 
 	var preserve_events = function(_event)	{
@@ -266,23 +249,52 @@ define("utils", [], function()  {
 		}
 	}
 
-	var loading = function(_name, _option)	{
+	var loading = function(_name, _target)	{
 		var loading_div = $(".loading").fadeIn();
-		var chart_div = $(window);
+		var chart_div = $(_target);
 		var chart_width = chart_div.width();
 		var chart_height = chart_div.height();
-		
-		$("#loading_text").text("loading " + _name + " . . .");
 
-		window.onresize = function(_event)	{
-			chart_div = $(window);
-			chart_width = chart_div.width();
-			chart_height = chart_div.height();
-		}
+		$("#loading_text")
+		.css("top", -50)
+		.css("left", -25)
+		.text("Loading  . . .");
 
 		loading_div
-		.css("top", chart_height / 3)
-		.css("left", chart_width / 2);
+		.css("top", chart_height / 1.25)
+		.css("left", chart_width / 1.5);
+	}
+
+	var preserveEventInterrupt = function(_target)	{
+		var target = $(_target);
+
+		if(target.is(".preserve_events"))	{
+			var classList = target.attr("class").split(" ");
+			var className = "";
+
+			for(var i = 0, len = classList.length ; i < len ; i++)	{
+				if(classList[i] !== "preserve_events")	{
+					if(i === classList.length)	{
+						className += classList[i];
+					}
+					else {
+						className += classList[i] + " ";
+					}
+				}
+			}
+
+			target.attr("class", className);
+		}
+		else {
+			target.addClass("preserve_events");
+		}		
+	}
+	/* bit operation 에서 >> 11 은 나누기 2048, >> 7 은 나누기 128
+	즉 문자 하나의 유니코드 값을 구해서 2048 로 나눈 값이 존재하면  */
+	var getByteLength = function(_str, _byte, _index, _char)	{
+		for(_byte = _index = 0 ; _char = _str.charCodeAt(_index++) ; _byte += _char >> 11 ? 3 : _char >> 7 ? 2 : 1);
+			
+		return _byte;
 	}
 
 	return {
@@ -302,13 +314,15 @@ define("utils", [], function()  {
 		tooltip : tooltip,
 		log : log,
 		download : download,
-		saveImg : saveImg,
 		getClass : getClass,
 		getTag : get_tag_by_identification,
 		find_pathname : find_pathname,
 		preserve_events : preserve_events,
 		defineProp : define_prop,
 		get_list_sum : get_list_sum,
-		loading : loading
+		loading : loading,
+		getPosition : getElementPostion,
+		preserveInterrupt : preserveEventInterrupt,
+		getByteLength : getByteLength
 	};
-})
+});

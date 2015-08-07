@@ -6,10 +6,17 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 		var target = d3.select(this);
 		var e = d3.event;
 
-		_utils.tooltip(e, "Sample : <span style='color : red;'>" + _d.sample 
-			+ "</span></br>" + _d.type + " : <span style='color : red;'>" + _d.count
+		_utils.tooltip(
+			e, 
+			"Sample : <span style='color : red;'>" 
+			+ _d.sample 
+			+ "</span></br>" 
+			+ _d.type 
+			+ " : <span style='color : red;'>" 
+			+ _d.count
 			+ "</span>"
-			, e.pageX, e.pageY);
+			, e.pageX, e.pageY
+		);
 	}
 
 	var get_mouseout = function(_d)	{
@@ -19,13 +26,11 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 	}
 
 	var ascending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "count") > _utils.get_list_sum(_b.list, "count")) 
-		? 1 : -1;
+		return (_utils.get_list_sum(_a.list, "count") > _utils.get_list_sum(_b.list, "count")) ? 1 : -1;
 	}
 
 	var descending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "count") < _utils.get_list_sum(_b.list, "count")) 
-		? 1 : -1;
+		return (_utils.get_list_sum(_a.list, "count") < _utils.get_list_sum(_b.list, "count")) ? 1 : -1;
 	}
 
 	var sorting_get_name = function(_sorting_data)	{
@@ -43,8 +48,12 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 
 		d3.selectAll(".comutationplot_sample_bars")
 		.transition().duration(400)
-		.attr("x", function(_d) { return x(_d.sample); })
-		.attr("width", function(_d) { return x.rangeBand(); });
+		.attr("x", function(_d) { 
+			return x(_d.sample); 
+		})
+		.attr("width", function(_d) { 
+			return x.rangeBand(); 
+		});
 
 		d3.selectAll(".comutationplot_cellgroup")
 		.transition().duration(400)
@@ -56,8 +65,11 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 		});
 
 		d3.selectAll(".comutationplot_cells")
-		.transition().duration(400).attr("x", 0)
-		.attr("width", function(_d) { return x.rangeBand(); });
+		.transition().duration(400)
+		.attr("x", 0)
+		.attr("width", function(_d) { 
+			return x.rangeBand(); 
+		});
 	}
 
 	var sort_by_value = function(_d)	{

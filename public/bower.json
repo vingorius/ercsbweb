@@ -20,7 +20,7 @@
     "ladda": "~0.9.8",
     "requirejs": "~2.1.18",
     "threejs": "*",
-    "fontawesome": "~4.3.0",
+    "fontawesome": "~4.4.0",
     "jquery-validation": "~1.14.0",
     "country-select-js": "~1.0.4",
     "please-wait": "~0.0.5",

@@ -2,104 +2,65 @@ var GENE = "population/comutationplot/gene/";
 
 define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function(_utils, _size, _view)	{
 	var count_by_order = function(_all_data, _importance)	{
-		var all_data = _all_data || [];
 		var gene_list = [];
 
-		for(var i = 0, len = all_data.length ; i < len ; i++)	{
-			var check = _utils.get_json_in_array(all_data[i].gene, gene_list, "name");
-			if(!check)	{
+		for(var i = 0, len = _all_data.data.mutation_list.length ; i < len ; i++)	{
+			var gene = _all_data.data.mutation_list[i];
+			var is_gene = _utils.get_json_in_array(gene.gene, gene_list, "gene");
+
+			if(!is_gene)	{
 				gene_list.push({
-					name : all_data[i].gene,
-					gene_group : all_data[i].gene_group,
-					list : [all_data[i]]
+					gene : gene.gene,
+					types : [{ type : gene.type, count : 1 }],
+					counts : 1
 				});
 			}
 			else {
-				check.list.push(all_data[i]);
+				var is_type = _utils.get_json_in_array(gene.type, is_gene.types, "type");
+
+				if(!is_type)	{ is_gene.types.push({ type : gene.type, count : 1 }); }
+				else { is_type.count += 1; }
+
+				is_gene.counts += 1;
 			}
 		}
-		return stacked(counting(gene_list), _importance);
+		return stacked(gene_list, _importance);
 	}
 
-	var counting = function(_list)	{
-		var list = _list || [];
+	var stacked = function(_gene_list, _importance)  {
+		for(var i = 0, len = _gene_list.length ; i < len ; i++)	{
+			var stack_gene = _gene_list[i];
+			stack_gene.types = sort_by_mutation(stack_gene.types, _importance);
 
-		for(var i = 0, len = list.length ; i < len ; i++)	{
-			list[i].list = count_mutation(list[i].list);
+			for(var j = 0, leng = stack_gene.types.length ; j < leng ; j++)	{
+				var type = stack_gene.types[j];
+
+				if(j === 0)    { type.start = 0; }
+				else {
+					var pre_type = stack_gene.types[j - 1];
+					type.start = pre_type.count + pre_type.start;
+				}
+			}
 		}
-		return list;
+		return _gene_list;
 	}
 
-	var count_mutation = function(_mutation)    {
-		var mutation = _mutation || [];
-		var result = [];
-
-		for(var i = 0, len = mutation.length ; i < len ; i++)   {
-			for(var j = 0, lens = mutation[i].type.length ; j < lens ; j++) {
-				var check = _utils.get_json_in_array(mutation[i].type[j], result, "type");
-				if(!check) {
-					result.push({
-						gene : [mutation[i].gene],
-						type : mutation[i].type[j],
-						count : 1,
-					});
-				}
-				else {
-					if($.inArray(mutation[i].gene, check.gene) < 0)    {
-						check.gene.push(mutation[i].gene);
-					}
-					check.count += 1;
-				}
-			}
-		}   
-		return result;
-	}
-
-	var stacked = function(_data, _importance)  {
-		var data = _data || [];
-
-		data.map(function(_d)   {
-			_d = sort_by_mutation(_d, _importance);
-			$.each(_d.list, function(_i)    {
-				if(_i === 0)    {
-					_d.list[_i].start = 0;
-				}
-				else {
-					_d.list[_i].start = _d.list[_i - 1].count + _d.list[_i - 1].start;
-				}
-			});
-		});
-		return data;
-	}
-
-	var get_max = function(_data)	{
-		var data = _data || [];
-
-		return d3.max(data.map(function(_d) {
-			var result = 0;
-			for(var i = 0, len = _d.list.length ; i < len ; i++)	{
-				result += _d.list[i].count;
-			}
-			return result;
-		}));
-	}
-
-	var sort_by_list = function(_list, _importance)	{
-		_list.sort(function(_a, _b)	{
+	var sort_by_mutation = function(_types, _importance)	{
+		return _types.sort(function(_a, _b)	{
 			return (_importance.indexOf(_a.type) < _importance.indexOf(_b.type)) ? 1 : -1
 		});
 	}
 
-	var sort_by_mutation = function(_d, _importance)	{
-		sort_by_list(_d.list, _importance);
-		return _d;
+	var get_max = function(_count_gene)	{
+		return d3.max(_count_gene.map(function(_d) {
+			return _d.counts;
+		}));
 	}
 
 	return function(_data, _genes, _importance)	{
-		console.log(_data);
 		var count_gene = count_by_order(_data, _importance);
 		var size = _size.define_size("comutationplot_gene", 20, 20, 20, 70);
-		var max = get_max(count_gene);
+		var max = Math.ceil(get_max(count_gene) / 10) * 10;
 
 		_utils.remove_svg("comutationplot_gene");
 

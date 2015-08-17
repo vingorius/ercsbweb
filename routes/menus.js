@@ -21,31 +21,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:folder/:page', function(req, res, next) {
-	res.locals.menu = {
-		folder: req.params.folder,
-		page: req.params.page
-	};
-	
 	var loc = 'menus/' + req.params.folder + '/' + req.params.page;
 	res.render(loc);
 });
 
-// router.get('/ngs/:page', function(req, res, next) {
-//     var page = req.params.page;
-//     page = 'menus/ngs/' + page;
-//     res.render(page);
-// });
-//
-// router.get('/analysis/:page', function(req, res, next) {
-//     var page = req.params.page;
-//     page = 'menus/analysis/' + page;
-//     res.render(page);
-// });
-//
-// router.get('/population/:page', function(req, res, next) {
-//     var page = req.params.page;
-//     page = 'menus/population/' + page;
-//     res.render(page);
-// });
-//
 module.exports = router;

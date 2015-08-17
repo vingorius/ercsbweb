@@ -13,9 +13,7 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 			+ _d.sample 
 			+ "</span></br>y : <span style='color : red;'>" 
 			+ _d.gene
-			+ "</span></br>type : <span style='color : red;'>" 
-			+ _d.type 
-			+ "</span>", 
+			+ "</span>",
 			e.pageX, e.pageY
 		);
 
@@ -32,7 +30,7 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 
 		target.transition().duration(10)
 		.style("stroke", function(_d) { 
-			return _utils.colour(_d.type[0]); 
+			return _utils.colour(_utils.define_mutation_name(_d.type)); 
 		})
 		.style("stroke-width", function(_d) { 
 			return 1; 

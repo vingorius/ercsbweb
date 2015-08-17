@@ -8,11 +8,9 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 
 		_utils.tooltip(
 			e, 
-			"Sample : <span style='color : red;'>" 
-			+ _d.sample 
-			+ "</span></br>" 
+			"type: <span style='color : red;'>" 
 			+ _d.type 
-			+ " : <span style='color : red;'>" 
+			+ "</span></br>count : <span style='color : red;'>" 
 			+ _d.count
 			+ "</span>"
 			, e.pageX, e.pageY
@@ -26,18 +24,18 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 	}
 
 	var ascending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "count") > _utils.get_list_sum(_b.list, "count")) ? 1 : -1;
+		return (_utils.get_list_sum(_a.types, "count") > _utils.get_list_sum(_b.types, "count")) ? 1 : -1;
 	}
 
 	var descending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "count") < _utils.get_list_sum(_b.list, "count")) ? 1 : -1;
+		return (_utils.get_list_sum(_a.types, "count") < _utils.get_list_sum(_b.types, "count")) ? 1 : -1;
 	}
 
 	var sorting_get_name = function(_sorting_data)	{
 		var result = [];
 
 		for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
-			result.push(_sorting_data[i].name);
+			result.push(_sorting_data[i].sample);
 		}
 		return result;
 	}
@@ -46,11 +44,13 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 		var x = _utils.ordinalScale(_VO.VO.getSample(), _VO.VO.getMarginLeft(), (_VO.VO.getWidth() - _VO.VO.getMarginLeft()));
 		var y = _utils.ordinalScale(_VO.VO.getGene(), _VO.VO.getMarginTop(), (_VO.VO.getHeight() - _VO.VO.getMarginTop()));
 
-		d3.selectAll(".comutationplot_sample_bars")
+		d3.selectAll(".comutationplot_sample_bargroup")
 		.transition().duration(400)
-		.attr("x", function(_d) { 
-			return x(_d.sample); 
-		})
+		.attr("transform", function(_d)	{
+			return "translate(" + x(_d.sample) + ", 0)";
+		});
+
+		d3.selectAll(".comutationplot_sample_bars")
 		.attr("width", function(_d) { 
 			return x.rangeBand(); 
 		});

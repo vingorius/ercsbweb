@@ -14,4 +14,13 @@ router.get('/getSampleVariantList', function(req, res, next) {
     });
 });
 
+router.get('/getSampleList', function(req, res, next) {
+    getConnection(function(connection) {
+        connection.query('CALL omics_data.getPageTestSampleList()', function(err, rows) {
+            if (err) throw err;
+            res.json(rows[0]);
+        });
+    });
+});
+
 module.exports = router;

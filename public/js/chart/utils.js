@@ -67,6 +67,14 @@ define("utils", [], function()  {
 		return undefined;
 	}
 
+	var findObjectIndexInArray = function(_name, _array, _key)	{
+		for(var i = 0, len = _array.length ; i < len ; i++)	{
+			if(_array[i][_key] === _name)	{
+				return i;
+			}
+		}
+	}
+
 	var get_json_array_in_array = function(_name, _array, _key) {
 		var result = [];
 
@@ -164,7 +172,7 @@ define("utils", [], function()  {
 	}
 
 	var getElementPostion = function(_element)	{
-		var position = $(_element).position();
+		var position = $(_element).offset();
 
 		return {
 			left : position.left,
@@ -174,6 +182,8 @@ define("utils", [], function()  {
 
 	var tooltip = function(_event, _contents, _x, _y)   {
 		var div = $('.tooltip_chart');
+		var padding_left = getNum($("#wrapper").css("padding-left"));
+		var padding_top = getNum($("#wrapper").css("padding-top"));
 		var space = 5;
 
 		if(arguments.length < 1) {
@@ -183,8 +193,8 @@ define("utils", [], function()  {
 		else   {
 			div.css("position", "absolute");
 			div.html(_contents);		// Html 태그를 포함한 문자열을 삽입 할 때에는 html() 함수를 사용하는 것이 낫다.
-			div.css("top", _y);
-			div.css("left", _x);
+			div.css("top", _y - padding_top);
+			div.css("left", _x - padding_left);
 			div.css("font-size", 12)
 			div.css("font-family", "trebuchet ms")
 			div.css("font-weight", "bold")
@@ -265,6 +275,8 @@ define("utils", [], function()  {
 		var chart_div = $(_target);
 		var chart_width = chart_div.width();
 		var chart_height = chart_div.height();
+		var doc_width = document.documentElement.clientWidth;
+		var doc_height = document.documentElement.clientHeight;
 
 		$("#loading_text")
 		.css("top", -50)
@@ -272,7 +284,7 @@ define("utils", [], function()  {
 		.text("Loading  . . .");
 
 		loading_div
-		.css("top", chart_height / 1.25)
+		.css("top", (doc_height - chart_height / 2) / 3)
 		.css("left", chart_width / 1.5);
 	}
 
@@ -316,6 +328,7 @@ define("utils", [], function()  {
 		check_array_in_json : check_array_in_json,
 		search_in_jsonarray : search_in_jsonarray,
 		get_json_in_array : get_json_in_array,
+		findObjectIndexInArray : findObjectIndexInArray,
 		get_json_array_in_array : get_json_array_in_array,
 		remove_svg : remove_svg,
 		define_mutation_name : define_mutation_name,

@@ -9,8 +9,8 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 		
 		_utils.tooltip(
 			e, 
-			"Gene : <span style='color : red;'>" 
-			+ _d.name 
+			"gene : <span style='color : red;'>" 
+			+ _d.gene 
 			+ "</span></br>q : <span style='color : red;'>" 
 			+ Number(_utils.log(_d.q)).toFixed(4) 
 			+ "</span>", 
@@ -43,7 +43,7 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 		try{
 			var result = [];
 			for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
-				result.push(_sorting_data[i].name);
+				result.push(_sorting_data[i].gene);
 			}
 			return result;
 		}
@@ -57,10 +57,10 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 		var y = _utils.ordinalScale(vo.getGene(), _size.margin.top, (_size.height - _size.margin.top));
 		var x = _utils.ordinalScale(vo.getSample(),vo.getMarginLeft(), (vo.getWidth() - vo.getMarginLeft()));
 
-		d3.selectAll(".comutationplot_pq_bars")
+		d3.selectAll(".comutationplot_pq_bargroup")
 		.transition().duration(400)
-		.attr("y", function(_d) { 
-			return y(_d.name); 
+		.attr("transform", function(_d)	{
+			return "translate(0, " + y(_d.gene) + ")"
 		});
 
 		d3.selectAll(".comutationplot_cellgroup")
@@ -76,10 +76,10 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 		.transition().duration(400)
 		.call(d3.svg.axis().scale(y).orient("right"));
 
-		d3.selectAll(".comutationplot_gene_bars")
+		d3.selectAll(".comutationplot_gene_bargroup")
 		.transition().duration(400)
-		.attr("y", function(_d) { 
-			return y(_d.gene); 
+		.attr("transform", function(_d)	{
+			return "translate(0, " + y(_d.gene) + ")";
 		});
 	}
 

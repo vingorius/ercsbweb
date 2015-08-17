@@ -16,11 +16,10 @@ $(function() {
 		sortName: 'patientsOfPosition',
 		sortable: true,
 		sortOrder: 'desc',
-		// rowStyle:function(row,index){
-		// 	console.log(index,row);
-		// 	if(index === 0) return 'active';
-		// 	return '';
-		// },
+		rowStyle:function(row,index){ // make first row active
+			if(index === 0) return {classes: 'info'};
+			return {};
+		},
 		columns: [{
 			field: 'gene',
 			title: 'Gene',
@@ -93,7 +92,7 @@ $(function() {
 
 	//
 	table.on('click-row.bs.table',function(_event, _data, _args){
-	    $(_args[0]).addClass('active').siblings().removeClass('active');
+	    $(_args[0]).addClass('info').siblings().removeClass('info');
 	});
 
 	window.tsEvents = {

@@ -43,11 +43,13 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.data(data.data)
 		.enter().append("g")
 		.attr("class", "comutationplot_sample_bargroup") 
-		.attr("transform", "translate(0, 0)");
+		.attr("transform", function(_d)	{
+			return "translate(" + data.x(_d.sample) + ", 0)";
+		});
 
 		var stacked_bar = bar_group.selectAll("rect")  
-		.data(function(_d)  { 
-			return _d.list; 
+		.data(function(_d)  {
+			return _d.types; 
 		})
 		.enter().append("rect")
 		.attr("class", "comutationplot_sample_bars")
@@ -62,7 +64,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 			return (size.height - size.margin.bottom) - data.y(_d.count); 
 		})
 		.style("fill", function(_d) { 
-			return _utils.colour(_d.type); 
+			return _utils.colour(_utils.define_mutation_name(_d.type)); 
 		})
 		.on("mouseover", e.m_over)
 		.on("mouseout", e.m_out);

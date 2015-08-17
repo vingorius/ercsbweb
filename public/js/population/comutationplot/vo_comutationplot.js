@@ -4,8 +4,10 @@ define(VO, ["utils"], function(_utils)	{
 	var VO = (function()	{
 		var init_sample = [];
 		var init_gene = [];
+		var init_mutation = [];
 		var sample_list = [];
 		var gene_list = [];
+		var mutation_list = [];
 		var init_layout_width = 0;
 		var init_layout_height = 0;
 		var init_layout_margin_top = 0;
@@ -31,6 +33,12 @@ define(VO, ["utils"], function(_utils)	{
 			},
 			setGene : function(_gene_list) {
 				gene_list = _gene_list;
+			},
+			setInitMutation : function(_init_mutation)	{
+				init_mutation = _init_mutation;
+			},
+			setMutation : function(_mutation_list)	{
+				mutation_list = _mutation_list;
 			},
 			setInitWidth : function(_init_layout_width)	{
 				init_layout_width = _init_layout_width;
@@ -79,6 +87,12 @@ define(VO, ["utils"], function(_utils)	{
 			},
 			getGene : function()	{
 				return gene_list;
+			},
+			getInitMutation : function()	{
+				return init_mutation;
+			},
+			getMutation : function()	{
+				return mutation_list;
 			},
 			getInitWidth : function()	{
 				return init_layout_width;

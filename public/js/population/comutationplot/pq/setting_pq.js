@@ -2,13 +2,14 @@ var PQ = "population/comutationplot/pq/";
 
 define(PQ + "setting_pq", ["utils", "size", PQ + "view_pq"], function(_utils, _size, _view)	{
 	var get_pq = function(_symbol_list)	{
-		var symbol_list = _symbol_list || [];
 		var result = [];
 
-		for(var i = 0, len = symbol_list.length ; i < len ; i++)	{
+		for(var i = 0, len = _symbol_list.length ; i < len ; i++)	{
+			var symbol = _symbol_list[i];
+
 			result.push({
-				name : symbol_list[i].name,
-				list : [symbol_list[i]]
+				gene : symbol.gene,
+				list : [ symbol ]
 			});
 		}
 		return result;
@@ -29,7 +30,7 @@ define(PQ + "setting_pq", ["utils", "size", PQ + "view_pq"], function(_utils, _s
 
 	return function(_symbol_list, _genes)	{
 		var pq_data = get_pq(_symbol_list);
-		var max = get_max(pq_data);
+		var max = Math.ceil(get_max(pq_data));
 		var size = _size.define_size("comutationplot_pq", 20, 20, 20, 70);
 
 		_utils.remove_svg("comutationplot_pq");

@@ -38,10 +38,10 @@ define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_com
 		.attr("x", 0)
 		.attr("y", 0)
 		.style("stroke", function(_d) { 
-			return _utils.colour(_d.type[0]); 
+			return _utils.colour(_utils.define_mutation_name(_d.type)); 
 		})
 		.style("fill", function(_d) { 
-			return _utils.colour(_d.type[0]); 
+			return _utils.colour(_utils.define_mutation_name(_d.type)); 
 		})
 		.style("stroke-width", function(_d) { 
 			return 1; 

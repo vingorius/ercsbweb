@@ -2,7 +2,7 @@ var COMUTATION = "population/comutationplot/comutation/";
 var VO = "population/comutationplot/vo_comutationplot";
 
 define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_comutation", VO], function(_utils, _size, _view, _VO)	{
-	return function(_all_data, _samples, _genes, _data)	{
+	return function(_all_data, _samples, _genes)	{
 		var size = _size.define_size("comutationplot_heatmap", 20, 20, 20, 20);
 
 		_VO.VO.setInitWidth(size.width);
@@ -22,7 +22,6 @@ define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_c
 		_utils.remove_svg("comutationplot_heatmap");
 		
 		_view.view({
-			data : _data.data,
 			all_data : _all_data,
 			samples : _samples,
 			genes : _genes,

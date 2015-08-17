@@ -6,14 +6,14 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 		var target = d3.select(this);
 
 		target.transition().duration(100)
-		.style("font-size", 14);
+		.style("font-size", 12);
 	}
 
 	var get_axis_mouseout = function(_d)	{
 		var target = d3.select(this);
 
 		target.transition().duration(100)
-		.style("font-size", 12);
+		.style("font-size", 8);
 	}
 
 	var get_bar_mouseover = function(_d)	{
@@ -22,9 +22,9 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 
 		_utils.tooltip(
 			e, 
-			"Gene : <span style='color : red;'>" 
-			+ _d.gene 
-			+ "</span></br>Count : <span style='color : red;'>" 
+			"type : <span style='color : red;'>" 
+			+ _d.type 
+			+ "</span></br>count : <span style='color : red;'>" 
 			+ _d.count
 			+ "</span>", 
 			e.pageX, e.pageY
@@ -44,18 +44,18 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 	}
 
 	var ascending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "count") > _utils.get_list_sum(_b.list, "count")) ? 1 : -1;
+		return (_utils.get_list_sum(_a.types, "count") > _utils.get_list_sum(_b.types, "count")) ? 1 : -1;
 	}
 
 	var descending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "count") < _utils.get_list_sum(_b.list, "count")) ? 1 : -1;
+		return (_utils.get_list_sum(_a.types, "count") < _utils.get_list_sum(_b.types, "count")) ? 1 : -1;
 	}
 
 	var sorting_get_name = function(_sorting_data)	{
 		var result = [];
 
 		for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
-			result.push(_sorting_data[i].name);
+			result.push(_sorting_data[i].gene);
 		}
 		return result;
 	}
@@ -69,10 +69,10 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 		.transition().duration(400)
 		.call(d3.svg.axis().scale(y).orient("right"));
 
-		d3.selectAll(".comutationplot_gene_bars")
+		d3.selectAll(".comutationplot_gene_bargroup")
 		.transition().duration(400)
-		.attr("y", function(_d) { 
-			return y(_d.gene); 
+		.attr("transform", function(_d)	{
+			return "translate(0, " + y(_d.gene) + ")";
 		});
 
 		d3.selectAll(".comutationplot_cellgroup")
@@ -84,10 +84,10 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 			return "translate(" + x(_d.sample) + ", " + y(_d.gene) +")";	
 		});
 
-		d3.selectAll(".comutationplot_pq_bars")
+		d3.selectAll(".comutationplot_pq_bargroup")
 		.transition().duration(400)
-		.attr("y", function(_d) { 
-			return y(_d.name); 
+		.attr("transform", function(_d)	{
+			return "translate(0, " + y(_d.gene) + ")"
 		});
 	}
 

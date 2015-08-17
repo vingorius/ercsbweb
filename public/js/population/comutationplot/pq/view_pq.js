@@ -43,7 +43,9 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		.data(data.data)
 		.enter().append("g")
 		.attr("class", "comutationplot_pq_bargroup") 
-		.attr("transform", "translate(0, 0)");
+		.attr("transform", function(_d)	{
+			return "translate(0, " + data.y(_d.gene) + ")"
+		});
 
 		var stacked_bar = bar_group.selectAll("rect")  
 		.data(function(_d)  { 
@@ -56,8 +58,8 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		.attr("x", function(_d) { 
 			return size.margin.left; 
 		})
-		.attr("y", function(_d) { 
-			return data.y(_d.name); 
+		.attr("y", function(_d)	{
+			return 0;
 		})
 		.attr("width", function(_d) { 
 			return data.x(_utils.log(_d.q)) - size.margin.left; 

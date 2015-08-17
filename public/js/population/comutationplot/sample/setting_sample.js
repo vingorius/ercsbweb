@@ -1,116 +1,75 @@
 var SAMPLE = "population/comutationplot/sample/";
 
 define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], function(_utils, _size, _view)	{
-	var count_by_order = function(_all_data, _importance)	{
-		var all_data = _all_data || [];
+	var count_by_order = function(_mutation_list, _importance)	{
 		var sample_list = [];
 
-		for(var i = 0, len = all_data.length ; i < len ; i++)	{
-			var check = _utils.get_json_in_array(all_data[i].sample, sample_list, "name");
-			if(!check)	{
+		for(var i = 0, len = _mutation_list.length ; i < len ; i++)	{
+			var sample = _mutation_list[i];
+			var is_sample = _utils.get_json_in_array(sample.sample, sample_list, "sample");
+
+			if(!is_sample)	{
 				sample_list.push({
-					name : all_data[i].sample,
-					sample_group : all_data[i].sample_group,
-					list : [all_data[i]]
+					sample : sample.sample,
+					types : [{ type : sample.type, count : 1 }],
+					counts : 1
 				});
 			}
 			else {
-				check.list.push(all_data[i]);
+				var is_type = _utils.get_json_in_array(sample.type, is_sample.types, "type");
+
+				if(!is_type)	{ is_sample.types.push({ type : sample.type, count : 1 }); }
+				else { is_type.count += 1; }
+
+				is_sample.counts += 1;
 			}
 		}
-		return stacked(counting(sample_list), _importance);
+		return stacked(sample_list, _importance);
 	}
 
-	var counting = function(_list)	{
-		var list = _list || [];
+	var stacked = function(_sample_list, _importance)  {
+		for(var i = 0, len = _sample_list.length ; i < len ; i++)	{
+			var stack_sample = _sample_list[i];
+			stack_sample.types = sort_by_mutation(stack_sample.types, _importance);
 
-		for(var i = 0, len = list.length ; i < len ; i++)	{
-			list[i].list = count_mutation(list[i].list);
-		}
-		return list;
-	}
+			for(var j = 0, leng = stack_sample.types.length ; j < leng ; j++)	{
+				var type = stack_sample.types[j];
 
-	var count_mutation = function(_mutation)    {
-		var mutation = _mutation || [];
-		var result = [];
-
-		for(var i = 0, len = mutation.length ; i < len ; i++)   {
-			for(var j = 0, lens = mutation[i].type.length ; j < lens ; j++) {
-				var check = _utils.get_json_in_array(mutation[i].type[j], result, "type");
-				if(!check) {
-					result.push({
-						sample : [mutation[i].sample],
-						type : mutation[i].type[j],
-						count : 1,
-					});
-				}
+				if(j === 0)    { type.start = 0; }
 				else {
-					if($.inArray(mutation[i].sample, check.sample) < 0)    {
-						check.sample.push(mutation[i].sample);
-					}
-					check.count += 1;
+					var pre_type = stack_sample.types[j - 1];
+					type.start = pre_type.count + pre_type.start;
 				}
 			}
-		}   
-		return result;
+		}
+		return _sample_list;
 	}
 
-	var stacked = function(_data, _importance)  {
-		var data = _data || [];
-
-		data.map(function(_d)   {
-			_d = sort_by_mutation(_d, _importance);
-			$.each(_d.list, function(_i)    {
-				if(_i === 0)    {
-					_d.list[_i].start = 0;
-				}
-				else {
-					_d.list[_i].start = _d.list[_i - 1].count + _d.list[_i - 1].start;
-				}
-			});
-		});
-		return data;
-	}
-
-	var sort_by_list = function(_list, _importance)	{
-		_list.sort(function(_a, _b)	{
+	var sort_by_mutation = function(_types, _importance)	{
+		return _types.sort(function(_a, _b)	{
 			return (_importance.indexOf(_a.type) < _importance.indexOf(_b.type)) ? 1 : -1
 		});
 	}
 
-	var sort_by_mutation = function(_d, _importance)	{
-		sort_by_list(_d.list, _importance);
-		return _d;
-	}
-
-	var get_max = function(_data)	{
-		var data = _data || [];
-
-		return d3.max(data.map(function(_d) {
-			var result = 0;
-			for(var i = 0, len = _d.list.length ; i < len ; i++)	{
-				result += _d.list[i].count;
-			}
-			return result;
+	var get_max = function(_count_sample)	{
+		return d3.max(_count_sample.map(function(_d) {
+			return _d.counts;
 		}));
 	}
 
-	return function(_all_data, _samples, _importance)	{
-		var count_sample = count_by_order(_all_data, _importance);
+	return function(_mutation_list, _samples, _importance)	{
+		var count_sample = count_by_order(_mutation_list, _importance);
 		var size = _size.define_size("comutationplot_sample", 30, 10, 20, 20);
-		var max = get_max(count_sample);
+		var max = Math.ceil(get_max(count_sample) / 10) * 10;
 
 		_utils.remove_svg("comutationplot_sample");
-
-		var x = _utils.ordinalScale(_samples, size.margin.left, (size.width - size.margin.left));
-		var y = _utils.linearScale(0, max, (size.height - size.margin.bottom), size.margin.top);
 
 		_view.view({
 			data : count_sample,
 			size : size,
 			max : max,
-			x : x, 
-			y : y
+			x : _utils.ordinalScale(_samples, size.margin.left, (size.width - size.margin.left)), 
+			y : _utils.linearScale(0, max, (size.height - size.margin.bottom), size.margin.top)
 		});
 	}
 });

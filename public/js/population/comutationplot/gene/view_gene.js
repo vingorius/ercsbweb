@@ -59,16 +59,18 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.data(data.data)
 		.enter().append("g")
 		.attr("class", "comutationplot_gene_bargroup") 
-		.attr("transform", "translate(0, 0)");
+		.attr("transform", function(_d)	{
+			return "translate(0, " + data.y(_d.gene) + ")";
+		});
 
 		var stacked_bar = bar_group.selectAll("rect")  
-		.data(function(_d)  { 
-			return _d.list; 
+		.data(function(_d)  {
+			return _d.types; 
 		})
 		.enter().append("rect")
 		.attr("class", "comutationplot_gene_bars")
 		.style("fill", function(_d) { 
-			return _utils.colour(_d.type); 
+			return _utils.colour(_utils.define_mutation_name(_d.type)); 
 		})
 		.on("mouseover", e.bar_m_over)
 		.on("mouseout",e.bar_m_out)
@@ -78,7 +80,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		})
 		.attr("y", function(_d) { 
 			_d.y = data.y; 
-			return _d.y(_d.gene); 
+			return 0; 
 		})
 		.attr("width", function(_d) { 
 			return ((size.width - size.margin.right) - _d.x(_d.count)); 

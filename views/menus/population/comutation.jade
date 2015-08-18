@@ -3,21 +3,21 @@ extends ../../layout/analysislayout
 block rightcontent
 	div.container.chart_container(style={"margin" : "20px", "width" : "1590px"})
 		div.row
-			div#comutationplot_empty_ltt(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '150px'})
-			div#comutationplot_groups(style={'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1300px', 'height': '150px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
-			div#comutationplot_empty_rtt(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '150px'})
-		div.row
-			div#comutationplot_empty_lt(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
+			div#comutationplot_sample_yaxis_title(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
 			div#comutationplot_sample(style={'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1300px', 'height': '100px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
-			div#comutationplot_scale(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', 'height': '100px'})
+			div#comutationplot_empty_rm(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', "height" : "100px"})
+		div.row
+			div#comutationplot_groups_name(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px'})
+			div#comutationplot_groups(style={'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1300px', 'height': '0px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
+			div#comutationplot_scale(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', "height" : "50px"})
 		div.row
 			div#comutationplot_gene(style={'padding': '0px', 'margin': '0px', 'float': 'left', 'width': '150px', 'height': '400px'})
 			div#comutationplot_heatmap(style={'padding': '0px', 'margin': '0px', 'float': 'left', 'width': '1300px', 'height': '400px', 'overflow-x' : 'hidden', 'overflow-y': 'hidden', 'border' : '1px solid rgb(236, 236, 236)'})
 			div#comutationplot_pq(style={'padding': '0px', 'margin': '0px', 'float': 'left', 'width': '150px', 'height': '400px'})
 		div.row
-			div#comutationplot_empty_lb(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
+			div#comutationplot_gene_title(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
 			div#comutationplot_legend(style={'float' : 'left', 'padding': '0px', 'margin': '0px', 'width': '1300px', 'height': '150px'})
-			div#comutationplot_empty_rb(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
+			div#comutationplot_pq_title(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
 	div.loading(style={ "display" : "none" }) 
 		span#loading_text
 		div.double-bounce1

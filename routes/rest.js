@@ -271,6 +271,28 @@ router.get('/needleplot', function(req, res, next) {
 
 });
 
+router.get('/pathwayplot', function(req, res, next) {
+	var cancer_type = req.query.cancer_type;
+	var seq = req.query.seq;
+	var transfer_object = {
+		status: 0,
+		message: 'OK',
+		data: {
+			cancer_type: cancer_type,
+			seq: seq,
+			pathway_list: []
+		}
+	};
+	getConnection(function(connection) {
+		connection.query('CALL omics_data.getPathwayplot(?,?)',[cancer_type,seq], function(err, rows) {
+			if (err) throw err;
+			transfer_object.data.pathway_list = rows[0];
+			res.json(transfer_object);
+		});
+	});
+});
+
+
 router.get('/needleplot_old', function(req, res, next) {
 	var gene = req.query.gene;
 	var transfer_object = {

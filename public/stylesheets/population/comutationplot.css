@@ -13,6 +13,10 @@
 	fill : #626262;
 	font-size: 8px;
 }
+.comutationplot_name_group_text		{
+	fill : #626262;
+	font-size: 8px;
+}
 .comutationplot_gene_yaxis path, .comutationplot_gene_yaxis line {
 	stroke : #fff;
 	stroke-width : 1;
@@ -49,10 +53,8 @@
 #comutationplot_scale_div {
 	display: flex;
 	width : 100px;
-	margin-top: 60px;
-	margin-bottom: 0px;
-	margin-left: 10px;
-	margin-right: 70px;
+	margin-left : 20px;
+	margin-top : 10px;
 }
 #comutationplot_vertical_div 	{
 	width : 30px;
@@ -63,6 +65,7 @@
 .gene_explain text, 
 .pq_explain text,
 .sample_explain text 	{
-	font-size: 12px;
+	font-size: 11px;
+	font-weight: bold;
 	font-style: italic;
 }

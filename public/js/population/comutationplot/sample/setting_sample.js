@@ -59,8 +59,10 @@ define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], fun
 
 	return function(_mutation_list, _samples, _importance)	{
 		var count_sample = count_by_order(_mutation_list, _importance);
-		var size = _size.define_size("comutationplot_sample", 30, 10, 20, 20);
+		var size = _size.define_size("comutationplot_sample", 20, 20, 0, 0);
+		var title_size = _size.define_size("comutationplot_sample_yaxis_title", 20, 20, 20, 20);
 		var max = Math.ceil(get_max(count_sample) / 10) * 10;
+		var y = _utils.linearScale(0, max, (size.height - (size.margin.bottom / 2)), (size.margin.top * 1.5));
 
 		_utils.remove_svg("comutationplot_sample");
 
@@ -69,7 +71,14 @@ define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], fun
 			size : size,
 			max : max,
 			x : _utils.ordinalScale(_samples, size.margin.left, (size.width - size.margin.left)), 
-			y : _utils.linearScale(0, max, (size.height - size.margin.bottom), size.margin.top)
+			y : y
 		});
+		_view.titleView({
+			data : count_sample,
+			size : size,
+			title_size : title_size,
+			max : max,
+			y : y
+		})
 	}
 });

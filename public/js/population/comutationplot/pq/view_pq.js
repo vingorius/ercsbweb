@@ -21,23 +21,8 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 
 		svg.append("g")
 		.attr("class", "comutationplot_pq_xaxis")
-		.attr("transform", "translate(0, " + (size.height - size.margin.top) + ")")
+		.attr("transform", "translate(0, " + (size.height - size.margin.bottom) + ")")
 		.call(xAxis);
-
-		svg.append("g")
-		.data([{ data : data.data, size : size, status : false }])
-		.attr("class", "pq_explain")
-		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 2) + ", " + (size.height - 2) + ")")
-		.append("text")
-		.text("#q value")
-		.on("click", e.sort_by_value);
-
-		$(".pq_explain")
-		.tooltip({
-			container : "body",
-			title : "sort by q value",
-			placement : "bottom"
-		});
 
 		var bar_group = svg.selectAll(".comutationplot_pq_bargroup")
 		.data(data.data)
@@ -66,7 +51,37 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		})
 		.attr("height", data.y.rangeBand() / 1.2);
 	}
+
+	var titleView = function(_data)	{
+		var size = _data.title_size;
+		var e = _event || null;
+
+		var svg = d3.select("#comutationplot_pq_title")
+		.append("svg")
+		.attr("class", "comutationplot_pq_title")
+		.attr("width", size.width)
+		.attr("height", size.height)
+		.append("g")
+		.attr("transform", "translate(0, 0)");
+
+		svg.append("g")
+		.data([{ data : _data.data, size : _data.size, status : false }])
+		.attr("class", "pq_explain")
+		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")")
+		.append("text")
+		.text("#q value")
+		.on("click", e.sort_by_value);
+
+		$(".pq_explain")
+		.tooltip({
+			container : "body",
+			title : "sort by q value",
+			placement : "bottom"
+		});
+	}
+
 	return {
-		view : view
+		view : view,
+		titleView : titleView
 	}
 });

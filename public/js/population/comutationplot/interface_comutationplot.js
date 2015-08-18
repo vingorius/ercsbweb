@@ -39,12 +39,12 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 				});
 			}
 			else {
-				if($.inArray(item.sample, is_gene_datas.sample) < 0)	{
+				// if($.inArray(item.sample, is_gene_datas.sample) < 0)	{
 					is_gene_datas.sample.push(item.sample);	
-				}
-				if($.inArray(item.type, is_gene_datas.type) < 0)	{
+				// }
+				// if($.inArray(item.type, is_gene_datas.type) < 0)	{
 					is_gene_datas.type.push(item.type);
-				}
+				// }
 			}
 			if(!is_sample_datas)	{
 				sample_datas.push({
@@ -54,12 +54,12 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 				});
 			}
 			else {
-				if($.inArray(item.gene, is_sample_datas.gene) < 0)	{
+				// if($.inArray(item.gene, is_sample_datas.gene) < 0)	{
 					is_sample_datas.gene.push(item.gene);
-				}
-				if($.inArray(item.type, is_sample_datas.type) < 0)	{
+				// }
+				// if($.inArray(item.type, is_sample_datas.type) < 0)	{
 					is_sample_datas.type.push(item.type);
-				}
+				// }
 			}
 		}
 		return {
@@ -123,6 +123,7 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 		var mutation_list = _data.data.mutation_list;
 		var gene_list = _data.data.gene_list;
 		var gene_names = getOnlyGeneSampleName("gene", gene_list);
+		var samples = getOnlyGeneSampleName("sample", mutation_list);
 		vo.setInitGene(gene_names);
 		vo.setGene(gene_names);
 		var mutations = getOnlyMutations(mutation_list);
@@ -130,8 +131,9 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 		vo.setMutation(mutations.type_list);
 		var importance = mutation_importance(_data, mutations);
 		var importance_name = importance_by_name(importance);
-		var groups = _sort.group(_data.data.group_list[0].data, getOnlyGeneSampleData(mutation_list).sample);		
-		var exclusive_sample = _sort.exclusiveGroup(groups);
+		var groups = _sort.group(_data.data.group_list[0].data, getOnlyGeneSampleData(mutation_list).sample);	
+		// var exclusive_sample = _sort.exclusiveGroup(groups);
+		var exclusive_sample = _sort.exclusiveGroup(getOnlyGeneSampleData(mutation_list).sample, samples.length);
 		var sample_names = getOnlyGeneSampleName("sample", exclusive_sample);
 		vo.setInitSample(sample_names);
 		vo.setSample(sample_names);

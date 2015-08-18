@@ -59,8 +59,11 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 
 	return function(_data, _genes, _importance)	{
 		var count_gene = count_by_order(_data, _importance);
-		var size = _size.define_size("comutationplot_gene", 20, 20, 20, 70);
+		var size = _size.define_size("comutationplot_gene", 0, 20, 20, 70);
+		var title_size = _size.define_size("comutationplot_gene_title", 20, 20, 20, 20);
 		var max = Math.ceil(get_max(count_gene) / 10) * 10;
+		var x = _utils.linearScale(0, max, (size.width - size.margin.right), size.margin.left);
+		var y = _utils.ordinalScale(_genes, 0, (size.height - size.margin.bottom));
 
 		_utils.remove_svg("comutationplot_gene");
 
@@ -68,8 +71,16 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 			data : count_gene,
 			size : size,
 			max : max,
-			x : _utils.linearScale(0, max, (size.width - size.margin.right), size.margin.left), 
-			y : _utils.ordinalScale(_genes, size.margin.top, (size.height - size.margin.top))
+			x : x,
+			y : y
+		});
+		_view.titleView({
+			data : count_gene,
+			size : size,
+			title_size : title_size,
+			max : max,
+			x : x,
+			y : y
 		});
 	}
 });

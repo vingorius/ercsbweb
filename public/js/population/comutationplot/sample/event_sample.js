@@ -55,11 +55,17 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 			return x.rangeBand(); 
 		});
 
+		d3.selectAll(".comutationplot_bar_group_rects")
+		.transition().duration(250)
+		.attr("x", function(_d)	{
+			return x(_d.sample);
+		});
+
 		d3.selectAll(".comutationplot_cellgroup")
 		.transition().duration(400)
 		.attr("transform", function(_d)	{
 			if(!y(_d.gene))	{
-				return "translate(" + x(_d.sample) + ", " + _d.y(_d.gene) +")";	
+				return "translate(" + x(_d.sample) + ", " + y(_d.gene) +")";	
 			}
 			return "translate(" + x(_d.sample) + ", " + y(_d.gene) +")";
 		});

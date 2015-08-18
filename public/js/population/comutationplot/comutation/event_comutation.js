@@ -24,7 +24,6 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 
 	var event_mouseout = function(_d)	{
 		var target = d3.select(this);
-		var e = d3.event;
 
 		_utils.tooltip();
 
@@ -40,9 +39,13 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 	var move_scroll = function()	{
 		var target_1 = $("#comutationplot_sample");
 		var target_2 = $("#comutationplot_heatmap");
+		var target_3 = $("#comutationplot_groups");
 
 		target_2.scroll(function()	{
-			target_1.scrollLeft(target_2.scrollLeft());
+			var scroll = target_2.scrollLeft();
+			
+			target_1.scrollLeft(scroll);
+			target_3.scrollLeft(scroll);
 		});
 	}
 	return {

@@ -31,7 +31,10 @@ define(PQ + "setting_pq", ["utils", "size", PQ + "view_pq"], function(_utils, _s
 	return function(_symbol_list, _genes)	{
 		var pq_data = get_pq(_symbol_list);
 		var max = Math.ceil(get_max(pq_data));
-		var size = _size.define_size("comutationplot_pq", 20, 20, 20, 70);
+		var size = _size.define_size("comutationplot_pq", 0, 20, 20, 70);
+		var title_size = _size.define_size("comutationplot_pq_title", 20, 20, 20, 20);
+		var x = _utils.linearScale(0, max, size.margin.left, (size.width - size.margin.right));
+		var y = _utils.ordinalScale(_genes, 0, (size.height - size.margin.bottom));
 
 		_utils.remove_svg("comutationplot_pq");
 
@@ -39,8 +42,16 @@ define(PQ + "setting_pq", ["utils", "size", PQ + "view_pq"], function(_utils, _s
 			data : pq_data,
 			size : size,
 			max : max,
-			x : _utils.linearScale(0, max, size.margin.left, (size.width - size.margin.right)), 
-			y : _utils.ordinalScale(_genes, size.margin.top, (size.height - size.margin.top))
+			x : x,
+			y : y
+		});
+		_view.titleView({
+			data : pq_data,
+			size : size,
+			title_size : title_size,
+			max : max,
+			x : x,
+			y : y
 		})
 	}
 });

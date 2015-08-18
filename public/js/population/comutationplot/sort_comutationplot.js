@@ -77,9 +77,13 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		}
 	}
 
-	var exclusiveGroup = function(_groups)	{
+	var exclusiveGroup = function(_groups, _length)	{
 		var vo = _VO.VO;
 		var result = [];
+
+		if(_groups.length === _length)	{
+			return sortByExclusive(_groups, vo.getGene(), vo.getMutation());
+		}
 
 		for(var i = 0, len = _groups.length ; i < len ; i++)	{
 			var groups = _groups[i];
@@ -90,9 +94,13 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 	}
 
 	var sortByExclusive = function(_groups, _genes, _mutations)	{
-		_mutations.sort(function(_a, _b) { return _a > _b ? -1 : 1; })
+		_mutations.sort(function(_a, _b) { 
+			return _a > _b ? -1 : 1; 
+		})
 
 		_groups.sort(function(_a, _b)	{
+			// var a = makeSortStr(_a, _genes, _mutations);
+			// var b = makeSortStr(_b, _genes, _mutations);
 			var a = makeSortStr(_a.gene, _genes) + makeSortStr(_a.type, _mutations);
 			var b = makeSortStr(_b.gene, _genes) + makeSortStr(_b.type, _mutations);			
 			return a > b ? -1 : 1;
@@ -100,14 +108,20 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		return _groups;
 	}
 
-	var makeZeroArray = function(_list)	{
-		var result = [];
+	// var makeSortStr = function(_item, _genes, _mutations)	{
+	// 	var index = "";
 
-		for(var i = 0, len = _list.length ; i < len ; i++)	{
-			result[i] = "0";
-		}
-		return result;
-	}
+	// 	for(var i = 0, len = _item.gene.length ; i < len ; i++)	{
+	// 		var gene_i = +(_genes.indexOf(_item.gene[i]) === -1 ? 
+	// 					_genes.length + 1 : _genes.indexOf(_item.gene[i]));
+	// 		var muts_i = +(_mutations.indexOf(_item.type[i]) === -1 ? 
+	// 					_mutations.length + 1 : _mutations.indexOf(_item.type[i]));
+
+	// 		index += "" + (Number(gene_i) + Number(muts_i));
+	// 	}
+	// 	console.log(index)
+	// 	return index;
+	// }
 
 	var makeSortStr = function(_item, _target)	{
 		var zero = makeZeroArray(_target);
@@ -118,6 +132,15 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 			zero[index] = "1";
 		}
 		return zero.join("");
+	}
+
+	var makeZeroArray = function(_list)	{
+		var result = [];
+
+		for(var i = 0, len = _list.length ; i < len ; i++)	{
+			result[i] = "0";
+		}
+		return result;
 	}
 
 	return {

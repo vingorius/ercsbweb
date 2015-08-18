@@ -25,7 +25,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 
 		svg.append("g")
 		.attr("class", "comutationplot_gene_xaxis")
-		.attr("transform", "translate(0, " + (size.height - size.margin.top) + ")")
+		.attr("transform", "translate(0, " + (size.height - size.margin.bottom) + ")")
 		.call(xAxis);
 
 		svg.append("g")
@@ -35,25 +35,6 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.selectAll("text")
 		.on("mouseover", e.axis_m_over)
 		.on("mouseout", e.axis_m_out);
-
-		svg.append("g")
-		.data([{ 
-			data : data.data, 
-			size : size, 
-			status : false 
-		}])
-		.attr("class", "gene_explain")
-		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 1.5) + ", " + (size.height - 2) + ")")
-		.append("text")
-		.text("#mutations")
-		.on("click", e.sort_by_value);
-
-		$(".gene_explain")
-		.tooltip({
-			container : "body",
-			title : "sort by mutation value",
-			placement : "bottom"
-		});
 
 		var bar_group = svg.selectAll(".comutationplot_gene_bargroup")
 		.data(data.data)
@@ -89,7 +70,41 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 			return _d.y.rangeBand() / 1.2; 
 		});
 	}
+
+	var titleView = function(_data)	{
+		var size = _data.title_size;
+		var e = _event || null;
+
+		var svg = d3.select("#comutationplot_gene_title")
+		.append("svg")
+		.attr("class", "comutationplot_gene_title")
+		.attr("width", size.width)
+		.attr("height", size.height)
+		.append("g")
+		.attr("transform", "translate(0, 0)");
+
+		svg.append("g")
+		.data([{ 
+			data : _data.data, 
+			size : _data.size, 
+			status : false 
+		}])
+		.attr("class", "gene_explain")
+		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")")
+		.append("text")
+		.text("#mutations")
+		.on("click", e.sort_by_value);
+
+		$(".gene_explain")
+		.tooltip({
+			container : "body",
+			title : "sort by mutation value",
+			placement : "bottom"
+		});
+	}
+
 	return {
-		view : view
+		view : view,
+		titleView : titleView
 	}
 });

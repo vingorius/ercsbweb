@@ -320,6 +320,19 @@ define("utils", [], function()  {
 		return _byte;
 	}
 
+	var getTextSize = function(_txt, _font_size)	{
+		var canvas = document.createElement('canvas');
+		var ctx = canvas.getContext("2d");
+		ctx.font = _font_size + "px Arial";
+		var width = ctx.measureText(_txt).width;
+		var height = parseInt(ctx.font);
+
+		return { 
+			width : width, 
+			height : height 
+		};
+	}
+
 	return {
 		getNum : getNum,
 		ordinalScale : ordinalScale,
@@ -348,6 +361,7 @@ define("utils", [], function()  {
 		loading : loading,
 		getPosition : getElementPostion,
 		preserveInterrupt : preserveEventInterrupt,
-		getByteLength : getByteLength
+		getByteLength : getByteLength,
+		getTextSize : getTextSize
 	};
 });

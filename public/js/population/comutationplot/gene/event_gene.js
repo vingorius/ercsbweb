@@ -62,7 +62,7 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 
 	var redraw_yaxis = function(_sorting_data, _size)	{
 		var vo = _VO.VO;
-		var y = _utils.ordinalScale(vo.getGene(), _size.margin.top, (_size.height - _size.margin.top));
+		var y = _utils.ordinalScale(vo.getGene(), 0, (_size.height - _size.margin.bottom));
 		var x = _utils.ordinalScale(vo.getSample(),vo.getMarginLeft(), (vo.getWidth() - vo.getMarginLeft()));
 
 		d3.selectAll(".comutationplot_gene_yaxis")

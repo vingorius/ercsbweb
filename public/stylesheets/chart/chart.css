@@ -136,12 +136,20 @@ line {
 --------------------------------------- */
 
 .tooltip_chart {
-	font-size: 14px;
+	font-size: 1.4em;
 	line-height: 1;
 	padding: 5px;
-	background: #BDC3C7;
+	background: #aaa5a5;
 	border-radius: 2px;
 	display: block;
+}
+.tooltip {
+	z-index:10;
+	opacity: 0.5;
+}
+.tooltip.in 	{
+	opacity: 1;
+	filter : alpha(opacity = 80);
 }
 /* Legend
 ---------------------------------------- */

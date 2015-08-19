@@ -34,9 +34,15 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.attr("y", function(_d) { 
 			return data.y(_d.start + _d.count); 
 		})
-		.attr("width", data.x.rangeBand())
+		.attr("width", data.x.rangeBand() * 0.8)
 		.attr("height", function(_d) { 
 			return (size.height - (size.margin.bottom / 2)) - data.y(_d.count); 
+		})
+		.style("stroke", function(_d) { 
+			return _utils.colour(_utils.define_mutation_name(_d.type)); 
+		})
+		.style("stroke-width", function(_d) { 
+			return 0.1;
 		})
 		.style("fill", function(_d) { 
 			return _utils.colour(_utils.define_mutation_name(_d.type)); 

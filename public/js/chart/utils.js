@@ -195,7 +195,7 @@ define("utils", [], function()  {
 			div.html(_contents);		// Html 태그를 포함한 문자열을 삽입 할 때에는 html() 함수를 사용하는 것이 낫다.
 			div.css("top", _y - padding_top);
 			div.css("left", _x - padding_left);
-			div.css("font-size", 12)
+			div.css("font-size", "0.4em")
 			div.css("font-family", "trebuchet ms")
 			div.css("font-weight", "bold")
 			div.css("opacity", 0.8);
@@ -362,6 +362,6 @@ define("utils", [], function()  {
 		getPosition : getElementPostion,
 		preserveInterrupt : preserveEventInterrupt,
 		getByteLength : getByteLength,
-		getTextSize : getTextSize
+		getTextSize : getTextSize,
 	};
 });

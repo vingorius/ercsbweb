@@ -9,15 +9,20 @@ $(function() {
 	});
 	var table = $('#table');
 	table.bootstrapTable({
-//		url: '/models/patient/getSampleVariantList',
+		// url: '/models/patient/getSampleVariantList',
 		classes: 'table',
 		method: 'get',
+		cache: true, // False to disable caching of AJAX requests.
 		showColumns: true,
-		sortName: 'patientsOfPosition',
-		sortable: true,
-		sortOrder: 'desc',
-		rowStyle:function(row,index){ // make first row active
-			if(index === 0) return {classes: 'info'};
+		showRefresh: true,
+		// sortName: 'gene',
+		// sortName: 'patientsOfPosition',
+		// sortable: true,
+		// sortOrder: 'desc',
+		rowStyle: function(row, index) { // make first row active
+			if (index === 0) return {
+				classes: 'info'
+			};
 			return {};
 		},
 		columns: [{
@@ -31,7 +36,7 @@ $(function() {
 			sortable: true,
 			align: 'center',
 			formatter: function(value, row) {
-				var params = [row.cancer_type, row.sample_id, row.gene, row.transcript];
+				//var params = [row.cancer_type, row.sample_id, row.gene, row.transcript];
 				return '<a href="#" id="transcript">' + value + '</a> ';
 			},
 			events: 'tsEvents', // needleplot.js
@@ -39,8 +44,8 @@ $(function() {
 			field: 'class',
 			title: 'Classification',
 			align: 'center',
-			formatter: function(value,row){
-				return value.replace('_Mutation','');
+			formatter: function(value, row) {
+				return value.replace('_Mutation', '');
 			}
 		}, {
 			field: 'cds',
@@ -91,8 +96,8 @@ $(function() {
 	});
 
 	//
-	table.on('click-row.bs.table',function(_event, _data, _args){
-	    $(_args[0]).addClass('info').siblings().removeClass('info');
+	table.on('click-row.bs.table', function(_event, _data, _args) {
+		$(_args[0]).addClass('info').siblings().removeClass('info');
 	});
 
 	window.tsEvents = {

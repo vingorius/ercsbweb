@@ -6,7 +6,8 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 		var data = _data || {};
 
 		var scroll_status = function()	{
-			var scroll = $("#comutationplot_heatmap");
+			var scroll = $("#comutationplot_border");
+			// var scroll = $("#comutationplot_heatmap");
 
 			if(get_input_value() === 100)	{ 
 				scroll.css("overflow", "hidden"); 
@@ -75,7 +76,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 				return _x(_d.sample);
 			})
 			.attr("width", function(_d)	{
-				return _x.rangeBand();
+				return _x.rangeBand() * 0.8;
 			});
 		}
 
@@ -108,15 +109,14 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 
 			rects
 			.attr("width", function(_d ) {
-				return _x.rangeBand(); 
+				return _x.rangeBand() * 0.8; 
 			});
 		}
 
 		var scale_comutation = function()	{
-			var comutation = d3.select(".comutationplot_heatmap");
 			var groups = d3.selectAll(".comutationplot_cellgroup");
 			var rects = d3.selectAll(".comutationplot_cells");
-			var origin = $("#comutationplot_heatmap");
+			var origin = $("#comutationplot_border");
 			var old = origin.width();
 			var now = old + (old * calculate_value());
 			var x = _utils.ordinalScale(_VO.VO.getSample(), 0, now);
@@ -139,6 +139,8 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 
 			comutation
 			.attr("width", _value);
+			origin
+			.css("width", _value);
 
 			groups
 			.transition().duration(400)
@@ -152,7 +154,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			rects
 			.attr("x", 0)
 			.attr("width", function(_d) { 
-				return _x.rangeBand(); 
+				return _x.rangeBand() * 0.8; 
 			});
 		}
 

@@ -17,6 +17,10 @@
 	fill : #626262;
 	font-size: 8px;
 }
+.comutationplot_patient_path	{
+	stroke-dasharray : 1.5, 1.5;
+	stroke : ;
+}
 .comutationplot_gene_yaxis path, .comutationplot_gene_yaxis line {
 	stroke : #fff;
 	stroke-width : 1;

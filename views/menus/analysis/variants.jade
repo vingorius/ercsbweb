@@ -79,7 +79,6 @@ block rightcontent
 
         div.col-lg-12
             div
-                //- h3 Pat99
                 table#table('data-url'='/models/patient/getSampleVariantList?sample_id=#{sample.id}&cancer_type=#{sample.type}')
 
             div
@@ -101,4 +100,5 @@ block append scripts
     script(src='/bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
     script(src='/bower_components/bootstrap-table/dist/bootstrap-table.js')
     script(src='/js/analysis/variant.js')
-    script(src='/bower_components/requirejs/require.js', data-main='/js/chart/init')
+    script(src='/js/chart/init.js')
+    script(src='/bower_components/requirejs/require.js')

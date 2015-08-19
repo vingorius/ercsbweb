@@ -5,9 +5,13 @@ define(VO, ["utils"], function(_utils)	{
 		var init_sample = [];
 		var init_gene = [];
 		var init_mutation = [];
+		var init_patient = [];
 		var sample_list = [];
+		var formated_data = [];
 		var gene_list = [];
 		var mutation_list = [];
+		var patient_list = [];
+		var sort_order = [];
 		var init_layout_width = 0;
 		var init_layout_height = 0;
 		var init_layout_margin_top = 0;
@@ -28,6 +32,9 @@ define(VO, ["utils"], function(_utils)	{
 			setSample : function(_sample_list) 	{
 				sample_list = _sample_list;
 			},
+			setFormatedData : function(_formated_data)	{
+				formated_data = _formated_data;
+			},
 			setInitGene : function(_init_gene) 	{
 				init_gene = _init_gene;
 			},
@@ -39,6 +46,15 @@ define(VO, ["utils"], function(_utils)	{
 			},
 			setMutation : function(_mutation_list)	{
 				mutation_list = _mutation_list;
+			},
+			setInitPatient : function(_init_patient)	{
+				init_patient = _init_patient;
+			},
+			setPatient : function(_patient_list)	{
+				patient_list = _patient_list;
+			},
+			setSortOrder : function(_sort_order)	{
+				sort_order = _sort_order;
 			},
 			setInitWidth : function(_init_layout_width)	{
 				init_layout_width = _init_layout_width;
@@ -85,6 +101,9 @@ define(VO, ["utils"], function(_utils)	{
 			getSample : function()	   {
 				return sample_list;
 			},
+			getFormatedData : function()	{
+				return formated_data;
+			},
 			getGene : function()	{
 				return gene_list;
 			},
@@ -93,6 +112,15 @@ define(VO, ["utils"], function(_utils)	{
 			},
 			getMutation : function()	{
 				return mutation_list;
+			},
+			getInitPatient : function()	{
+				return init_patient;
+			},
+			getPatient : function()	{
+				return patient_list;
+			},
+			getSortOrder : function()	{
+				return sort_order;
 			},
 			getInitWidth : function()	{
 				return init_layout_width;

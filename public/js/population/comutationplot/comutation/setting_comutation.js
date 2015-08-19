@@ -3,7 +3,7 @@ var VO = "population/comutationplot/vo_comutationplot";
 
 define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_comutation", VO], function(_utils, _size, _view, _VO)	{
 	return function(_all_data, _samples, _genes)	{
-		var size = _size.define_size("comutationplot_heatmap", 0, 20, 0, 0);
+		var size = _size.define_size("comutationplot_heatmap", 0, 0, 0, 0);
 
 		_VO.VO.setInitWidth(size.width);
 		_VO.VO.setInitHeight(size.height + 2);
@@ -27,7 +27,7 @@ define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_c
 			genes : _genes,
 			size : size,
 			x : _utils.ordinalScale(_samples, 0, size.width),
-			y : _utils.ordinalScale(_genes,0, (size.height - size.margin.bottom))
+			y : _utils.ordinalScale(_genes,0, size.height)
 		});
 	}
 });

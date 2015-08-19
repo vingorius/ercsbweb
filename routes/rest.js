@@ -176,27 +176,47 @@ router.get('/comutationplot', function(req, res, next) {
 				transfer_object.data.gene_list = sig_rows[0];
 				connection.query('CALL omics_data.getComutationplotMutationGroupList(?)', [p_cancer_type], function(group_err, group_rows) {
 					if (group_err) throw group_err;
-					var his_group = {
-						name: 'histological_type',
-						data: []
-					};
-					var gender_group = {
-						name: 'gender',
-						data: []
-					};
 
+					// var his_group = {
+					// 	name: 'histological_type',
+					// 	data: []
+					// };
+					// var gender_group = {
+					// 	name: 'gender',
+					// 	data: []
+					// };
+					//
+					// group_rows[0].forEach(function(_data) {
+					// 	his_group.data.push({
+					// 		'sample': _data.sample_id,
+					// 		'value': _data.histological_type
+					// 	});
+					// 	gender_group.data.push({
+					// 		'sample': _data.sample_id,
+					// 		'value': _data.gender
+					// 	});
+					// });
+					// transfer_object.data.group_list.push(his_group);
+					// transfer_object.data.group_list.push(gender_group);
+
+					var groupList = [];
+					var keys = Object.keys(group_rows[0][0]);
+					for (var i = 1; i < keys.length; i++) { // 0번은 sample_id 이므로 skip
+						//console.log(key);
+						groupList.push({
+							name: keys[i],
+							data: []
+						});
+					}
 					group_rows[0].forEach(function(_data) {
-						his_group.data.push({
-							'sample': _data.sample_id,
-							'value': _data.histological_type
-						});
-						gender_group.data.push({
-							'sample': _data.sample_id,
-							'value': _data.gender
-						});
+						for (var i = 0; i < groupList.length; i++) {
+							groupList[i].data.push({
+								sample: _data.sample_id,
+								value: _data[groupList[i].name]
+							});
+						}
 					});
-					transfer_object.data.group_list.push(his_group);
-					transfer_object.data.group_list.push(gender_group);
+					transfer_object.data.group_list = groupList;
 
 					connection.query('CALL omics_data.getComutationplotMutationPatientList(?,?)', [p_cancer_type, p_sample_id], function(patient_err, patient_rows) {
 						if (patient_err) throw patient_err;
@@ -204,6 +224,66 @@ router.get('/comutationplot', function(req, res, next) {
 
 						res.json(transfer_object);
 					});
+				});
+			});
+		});
+	});
+});
+router.get('/comutationplotForERCSB', function(req, res, next) {
+	// var p_cancer_type = req.query.cancer_type;
+	// var p_sample_id = req.query.sample_id;
+
+	var transfer_object = {
+		status: 0,
+		message: 'OK',
+		data: {
+			id: 'id',
+			name: 'Co Mutation Plot with TCGA + Lung104',
+			type: 'LUAD',
+			mutation_list: [],
+			gene_list: [],
+			group_list: [],
+			patient_list: [],
+		}
+	};
+
+	getConnection(function(connection) {
+		connection.query('CALL omics_data.getERCSBComutationplotMutationList()', function(mut_err, mut_rows) {
+			if (mut_err) throw mut_err;
+			transfer_object.data.mutation_list = mut_rows[0];
+
+			connection.query('CALL omics_data.getERCSBComutationplotMutationGeneList()', function(sig_err, sig_rows) {
+				if (sig_err) throw sig_err;
+				transfer_object.data.gene_list = sig_rows[0];
+				connection.query('CALL omics_data.getERCSBComutationplotMutationGroupList()', function(group_err, group_rows) {
+					if (group_err) throw group_err;
+
+					var groupList = [];
+					var keys = Object.keys(group_rows[0][0]);
+					for (var i = 1; i < keys.length; i++) { // 0번은 sample_id 이므로 skip
+						//console.log(key);
+						groupList.push({
+							name: keys[i],
+							data: []
+						});
+					}
+					group_rows[0].forEach(function(_data) {
+						for (var i = 0; i < groupList.length; i++) {
+							groupList[i].data.push({
+								sample: _data.sample_id,
+								value: _data[groupList[i].name]
+							});
+						}
+					});
+					transfer_object.data.group_list = groupList;
+
+					// connection.query('CALL omics_data.getERCSBComutationplotMutationPatientList(?,?)', [p_cancer_type, p_sample_id], function(patient_err, patient_rows) {
+					// 	if (patient_err) throw patient_err;
+					// 	transfer_object.data.patient_list = patient_rows[0];
+					//
+					// 	res.json(transfer_object);
+					// });
+					res.json(transfer_object);
 				});
 			});
 		});
@@ -284,7 +364,7 @@ router.get('/pathwayplot', function(req, res, next) {
 		}
 	};
 	getConnection(function(connection) {
-		connection.query('CALL omics_data.getPathwayplot(?,?)',[cancer_type,seq], function(err, rows) {
+		connection.query('CALL omics_data.getPathwayplot(?,?)', [cancer_type, seq], function(err, rows) {
 			if (err) throw err;
 			transfer_object.data.pathway_list = rows[0];
 			res.json(transfer_object);

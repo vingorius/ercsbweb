@@ -48,7 +48,7 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group"], funct
 			return _range.x(_d.sample);
 		})
 		.attr("y", -_range.y)
-		.attr("width", _range.x.rangeBand())
+		.attr("width", _range.x.rangeBand() * 0.8)
 		.attr("height", _range.y);
 	}
 
@@ -85,9 +85,20 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group"], funct
 		}])
 		.attr("class", "comutationplot_name_group_text")
 		.text(_name)
-		.on("click", function()	{
-			_e.nclick(this, _name, _group);
+		.on("click", function(_d)	{
+			if(event.altKey)	{
+				_e.mclick(this, _group);
+			}
+			else{
+				_e.nclick(this, _group);
+			}
 		});
+
+		$(name_text).tooltip({
+			container : "body",
+			title : "sort (alt + click add subtype)",
+			placement : "right"
+		})
 	}
 
 	return	{

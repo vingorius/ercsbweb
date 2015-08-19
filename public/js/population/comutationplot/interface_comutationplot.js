@@ -39,12 +39,8 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 				});
 			}
 			else {
-				// if($.inArray(item.sample, is_gene_datas.sample) < 0)	{
-					is_gene_datas.sample.push(item.sample);	
-				// }
-				// if($.inArray(item.type, is_gene_datas.type) < 0)	{
-					is_gene_datas.type.push(item.type);
-				// }
+				is_gene_datas.sample.push(item.sample);	
+				is_gene_datas.type.push(item.type);
 			}
 			if(!is_sample_datas)	{
 				sample_datas.push({
@@ -54,12 +50,8 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 				});
 			}
 			else {
-				// if($.inArray(item.gene, is_sample_datas.gene) < 0)	{
-					is_sample_datas.gene.push(item.gene);
-				// }
-				// if($.inArray(item.type, is_sample_datas.type) < 0)	{
-					is_sample_datas.type.push(item.type);
-				// }
+				is_sample_datas.gene.push(item.gene);
+				is_sample_datas.type.push(item.type);
 			}
 		}
 		return {
@@ -79,6 +71,37 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 			}
 		}
 		return result;
+	}
+
+	var formatedPatient = function(_patient_list)	{
+		var result = [];
+
+		for(var i = 0, len = _patient_list.length ; i < len ; i++)	{
+			var patient = _patient_list[i];
+			var is_patient = _utils.get_json_in_array(patient.sample, result, "sample");
+
+			if(!is_patient)	{
+				result.push({
+					sample : patient.sample,
+					gene : [ patient.gene ],
+					type : [ patient.type ]
+				});
+			}
+			else {
+				is_patient.gene.push(patient.gene);
+				is_patient.type.push(patient.type);
+			}
+		}
+		return result;
+	}
+	
+	var addPatientToMutation = function(_mutation_list, _patient_list)	{
+		for(var i = 0, len = _patient_list.length ; i < len ; i++)	{
+			var patient = _patient_list[i];
+
+			_mutation_list.unshift(patient);
+		}
+		return _mutation_list;
 	}
 	/* ========================== Mutation Importance start ===========================  */
 	var define_mutations = function(_mutation_list)	{
@@ -117,11 +140,13 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 		return result;
 	}
 	/* ========================== Mutation Importance end ===========================  */
-
 	return function(_data)	{
 		var vo = _VO.VO;
-		var mutation_list = _data.data.mutation_list;
 		var gene_list = _data.data.gene_list;
+		var patient_list = formatedPatient(_data.data.patient_list);
+		var mutation_list = addPatientToMutation(_data.data.mutation_list, _data.data.patient_list);
+		vo.setInitPatient(patient_list);
+		vo.setPatient(patient_list);
 		var gene_names = getOnlyGeneSampleName("gene", gene_list);
 		var samples = getOnlyGeneSampleName("sample", mutation_list);
 		vo.setInitGene(gene_names);
@@ -131,16 +156,17 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 		vo.setMutation(mutations.type_list);
 		var importance = mutation_importance(_data, mutations);
 		var importance_name = importance_by_name(importance);
-		var groups = _sort.group(_data.data.group_list[0].data, getOnlyGeneSampleData(mutation_list).sample);	
-		// var exclusive_sample = _sort.exclusiveGroup(groups);
-		var exclusive_sample = _sort.exclusiveGroup(getOnlyGeneSampleData(mutation_list).sample, samples.length);
-		var sample_names = getOnlyGeneSampleName("sample", exclusive_sample);
+		vo.setFormatedData(getOnlyGeneSampleData(mutation_list));
+		var exclusive_sample = _sort.exclusiveGroup(vo.getFormatedData().sample, samples.length);
+		var sample_names = _sort.spliceAndUnshiftExclusive(getOnlyGeneSampleName("sample", exclusive_sample));
 		vo.setInitSample(sample_names);
 		vo.setSample(sample_names);
 
+		var groups = _sort.group(_data.data.group_list[0].data, _data.data.group_list[0].data, vo.getFormatedData().sample);	
+
 		_utils.remove_svg("comutationplot_legend");
 
-		_setting_group(_data.data.group_list, getOnlyGeneSampleData(mutation_list).sample);
+		_setting_group(_data.data.group_list, vo.getFormatedData().sample);
 		_setting_comutation(mutation_list, sample_names, gene_names);
 		_setting_gene(_data, gene_names, importance_name);
 		_setting_pq(gene_list, gene_names);

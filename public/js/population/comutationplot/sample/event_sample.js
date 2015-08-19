@@ -1,7 +1,8 @@
 var SAMPLE = "population/comutationplot/sample/";
 var VO = "population/comutationplot/vo_comutationplot";
+var SORT = "population/comutationplot/sort_comutationplot";
 
-define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _VO)	{
+define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _size, _VO, _sort)	{
 	var get_mouseover = function(_d)	{
 		var target = d3.select(this);
 		var e = d3.event;
@@ -15,12 +16,25 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 			+ "</span>"
 			, e.pageX, e.pageY
 		);
+
+		target.transition().duration(10)
+		.style("stroke", "black")
+		.style("stroke-width", 1);
 	}
 
 	var get_mouseout = function(_d)	{
 		var e = d3.event;
+		var target = d3.select(this);
 
 		_utils.tooltip();
+
+		target.transition().duration(10)
+		.style("stroke", function(_d) { 
+			return _utils.colour(_utils.define_mutation_name(_d.type)); 
+		})
+		.style("stroke-width", function(_d) { 
+			return 0.1; 
+		});
 	}
 
 	var ascending = function(_a, _b)	{
@@ -41,7 +55,8 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 	}
 
 	var redraw_xaxis = function(_sorting_data, _size)	{
-		var x = _utils.ordinalScale(_VO.VO.getSample(), _VO.VO.getMarginLeft(), (_VO.VO.getWidth() - _VO.VO.getMarginLeft()));
+		var sample = _sort.spliceAndUnshiftExclusive(_VO.VO.getSample());
+		var x = _utils.ordinalScale(sample, _VO.VO.getMarginLeft(), (_VO.VO.getWidth() - _VO.VO.getMarginLeft()));
 		var y = _utils.ordinalScale(_VO.VO.getGene(), _VO.VO.getMarginTop(), (_VO.VO.getHeight() - _VO.VO.getMarginTop()));
 
 		d3.selectAll(".comutationplot_sample_bargroup")

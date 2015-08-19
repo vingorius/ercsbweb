@@ -14,26 +14,54 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 
 	}
 
-	var byGroup = function(_by, _target)	{
-		var leached = leachedUnknown(_by, _target);
-		return separatedOrdered(_by, leached);			
+	var byGroup = function(_source, _target, _samples)	{
+		var find_out = findOutSample(_source, _target, _samples);
+		var target = _source.length === _target.length ? _target : find_out.target;
+		var sample = _source.length === _target.length ? _samples : find_out.sample;
+		var leached = leachedUnknown(target, sample);
+
+		return separatedOrdered(target, leached);			
 	}	
 
-	var getType = function(_by)	{
-		var types = [];
+	var findOutSample = function(_source, _target, _samples)	{
+		var targets = [];
+		var samples = [];
 
-		for(var i = 0, len = _by.length ; i < len ; i++)	{
-			var value = _by[i].value;
+		for(var i = 0, len = _source.length ; i < len ; i++)	{
+			var source = _source[i];
+			var is_target = _utils.get_json_in_array(source.sample, _target, "sample");
+			var is_sample = _utils.get_json_in_array(source.sample, _samples, "sample");
 
-			if($.inArray(value, types) < 0)	{
-				types.push(value);
-			}
+			targets.push(is_target);
+			samples.push(is_sample);
 		}
-		return types;
+		return {
+			target : targets,
+			sample : samples
+		};
 	}
 
-	var separatedOrdered = function(_by, _leached)	{
-		var types = getType(_by);
+	var leachedUnknown = function(_target, _samples)	{
+		var temp;
+		var by_len = _target.length, taget_len = _samples.length;
+
+		for(var i = 0, len = _target.length ; i < len ; i++)	{
+			var by = _target[i].sample;
+			var index = _utils.findObjectIndexInArray(by, _samples, "sample");
+			if(index > 0)	{
+				temp = _samples[index];
+				_samples[index] = _samples[i];
+				_samples[i] = temp;
+			}
+		}	
+		return {
+			known : _samples.slice(0, by_len),
+			unknown : _samples.slice(by_len, taget_len)
+		}
+	}
+
+	var separatedOrdered = function(_target, _leached)	{
+		var types = getType(_target);
 		types.sort(function(_a, _b)	{
 			return _a >_b ? 1 : -1;
 		});
@@ -43,8 +71,8 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 			var type = types[i];
 			var one_group = [];
 
-			for(var j = 0, leng = _by.length ; j < leng ; j++)	{
-				var _d = _by[j];
+			for(var j = 0, leng = _target.length ; j < leng ; j++)	{
+				var _d = _target[j];
 				if(type === _d.value)	{
 					var _p = _utils.get_json_in_array(_d.sample, _leached.known, "sample");
 					_d.gene = _p.gene;
@@ -58,23 +86,17 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		return result;
 	}
 
-	var leachedUnknown = function(_by, _target)	{
-		var temp;
-		var by_len = _by.length, taget_len = _target.length;
+	var getType = function(_target)	{
+		var types = [];
 
-		for(var i = 0, len = _by.length ; i < len ; i++)	{
-			var by = _by[i].sample;
-			var index = _utils.findObjectIndexInArray(by, _target, "sample");
-			if(index > 0)	{
-				temp = _target[index];
-				_target[index] = _target[i];
-				_target[i] = temp;
+		for(var i = 0, len = _target.length ; i < len ; i++)	{
+			var value = _target[i].value;
+
+			if($.inArray(value, types) < 0)	{
+				types.push(value);
 			}
-		}		
-		return {
-			known : _target.slice(0, by_len),
-			unknown : _target.slice(by_len, taget_len)
 		}
+		return types;
 	}
 
 	var exclusiveGroup = function(_groups, _length)	{
@@ -99,29 +121,12 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		})
 
 		_groups.sort(function(_a, _b)	{
-			// var a = makeSortStr(_a, _genes, _mutations);
-			// var b = makeSortStr(_b, _genes, _mutations);
 			var a = makeSortStr(_a.gene, _genes) + makeSortStr(_a.type, _mutations);
 			var b = makeSortStr(_b.gene, _genes) + makeSortStr(_b.type, _mutations);			
 			return a > b ? -1 : 1;
 		});
 		return _groups;
 	}
-
-	// var makeSortStr = function(_item, _genes, _mutations)	{
-	// 	var index = "";
-
-	// 	for(var i = 0, len = _item.gene.length ; i < len ; i++)	{
-	// 		var gene_i = +(_genes.indexOf(_item.gene[i]) === -1 ? 
-	// 					_genes.length + 1 : _genes.indexOf(_item.gene[i]));
-	// 		var muts_i = +(_mutations.indexOf(_item.type[i]) === -1 ? 
-	// 					_mutations.length + 1 : _mutations.indexOf(_item.type[i]));
-
-	// 		index += "" + (Number(gene_i) + Number(muts_i));
-	// 	}
-	// 	console.log(index)
-	// 	return index;
-	// }
 
 	var makeSortStr = function(_item, _target)	{
 		var zero = makeZeroArray(_target);
@@ -143,6 +148,18 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		return result;
 	}
 
+	var spliceAndUnshiftExclusive = function(_sample_list)	{
+		var vo = _VO.VO;
+
+		for(var i = 0, len = vo.getPatient().length ; i < len ; i++)	{
+			var patient = vo.getPatient()[i].sample;
+			var patient_index = _sample_list.indexOf(patient);
+			_sample_list.splice(patient_index, 1);	
+			_sample_list.unshift(patient);
+		}
+		return _sample_list;
+	}
+
 	return {
 		sample : bySample,
 		gene : byGene,
@@ -150,6 +167,7 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		qvalue : byQvalue,
 		separate : separatedOrdered,
 		exclusiveGroup : exclusiveGroup,
-		exclusive : sortByExclusive
+		exclusive : sortByExclusive,
+		spliceAndUnshiftExclusive : spliceAndUnshiftExclusive
 	}
 });

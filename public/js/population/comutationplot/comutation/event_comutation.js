@@ -19,7 +19,7 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 
 		target.transition().duration(10)
 		.style("stroke", "black")
-		.style("stroke-width", 2);
+		.style("stroke-width", 1);
 	}
 
 	var event_mouseout = function(_d)	{
@@ -32,13 +32,14 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 			return _utils.colour(_utils.define_mutation_name(_d.type)); 
 		})
 		.style("stroke-width", function(_d) { 
-			return 1; 
+			return 0.1; 
 		});
 	}
 
 	var move_scroll = function()	{
 		var target_1 = $("#comutationplot_sample");
-		var target_2 = $("#comutationplot_heatmap");
+		// var target_2 = $("#comutationplot_heatmap");
+		var target_2 = $("#comutationplot_border");
 		var target_3 = $("#comutationplot_groups");
 
 		target_2.scroll(function()	{

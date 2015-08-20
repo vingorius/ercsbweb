@@ -9,12 +9,12 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group"], funct
 		var svg = d3.select("#comutationplot_groups")
 		.append("svg")
 		.attr("class", "comutationplot_groups")
-		.attr("width", size.width)
+		.attr("width", size.width * size.magnification)
 		.attr("height", size.height)
 		.append("g")
 		.attr("transform", "translate(0, 0)");
 
-		var bar_init_x = _utils.ordinalScale(vo.getInitSample(), size.margin.left, size.width - size.margin.left);
+		var bar_init_x = _utils.ordinalScale(vo.getInitSample(), size.margin.left, ((size.width * size.magnification) - size.margin.left));
 		var bar_init_y = 8;
 
 		for(var i = 0, len = _data.data.length ; i < len ; i++)	{
@@ -22,11 +22,11 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group"], funct
 			var name = _data.name[i];
 			var y_pos = (i * 20) + size.margin.top;
 
-			makeGroupBar(name, group, svg, { x : 0, y : y_pos }, { x : bar_init_x, y : bar_init_y }, _data.colour);
+			makeGroupBar(name, group, svg, size, { x : 0, y : y_pos }, { x : bar_init_x, y : bar_init_y }, _data.colour);
 		}
 	}
 
-	var makeGroupBar = function(_name, _group, _svg, _pos, _range, _colour)	{
+	var makeGroupBar = function(_name, _group, _svg, _size, _pos, _range, _colour)	{
 		var bar_g = _svg.append("g")
 		.attr("class", "comutationplot_bar_group_g")
 		.attr("transform", "translate(" + _pos.x + ", " + _pos.y + ")");
@@ -48,7 +48,7 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group"], funct
 			return _range.x(_d.sample);
 		})
 		.attr("y", -_range.y)
-		.attr("width", _range.x.rangeBand() * 0.8)
+		.attr("width", _range.x.rangeBand() / _size.left_between)
 		.attr("height", _range.y);
 	}
 

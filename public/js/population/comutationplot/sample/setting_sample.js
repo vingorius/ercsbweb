@@ -60,6 +60,9 @@ define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], fun
 	return function(_mutation_list, _samples, _importance)	{
 		var count_sample = count_by_order(_mutation_list, _importance);
 		var size = _size.define_size("comutationplot_sample", 20, 20, 0, 0);
+		size.magnification = 3;
+		size.left_between = 1.5;
+		size.top_between = 1.2;
 		var title_size = _size.define_size("comutationplot_sample_yaxis_title", 20, 20, 20, 20);
 		var max = Math.ceil(get_max(count_sample) / 10) * 10;
 		var y = _utils.linearScale(0, max, (size.height - (size.margin.bottom / 2)), (size.margin.top * 1.5));
@@ -70,7 +73,7 @@ define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], fun
 			data : count_sample,
 			size : size,
 			max : max,
-			x : _utils.ordinalScale(_samples, size.margin.left, (size.width - size.margin.left)), 
+			x : _utils.ordinalScale(_samples, 0, size.width * size.magnification), 
 			y : y
 		});
 		_view.titleView({

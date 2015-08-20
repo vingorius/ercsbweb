@@ -4,6 +4,7 @@ var VO = "population/comutationplot/vo_comutationplot";
 define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], function(_utils, _size, _VO)	{
 	return 	function(_data) {
 		var data = _data || {};
+		var size = _data.size;
 
 		var scroll_status = function()	{
 			var scroll = $("#comutationplot_border");
@@ -54,7 +55,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var rects = d3.selectAll(".comutationplot_bar_group_rects");
 			var old = $("#comutationplot_groups").width();
 			var now = old + (old * calculate_value());
-			var x = _utils.ordinalScale(_VO.VO.getSample(), 0, now);
+			var x = _utils.ordinalScale(_VO.VO.getSample(), 0, now * size.magnification);
 	
 			if(old > now)	{
 				return;
@@ -68,7 +69,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var rects = d3.selectAll(".comutationplot_bar_group_rects");
 
 			group
-			.attr("width", _value);
+			.attr("width", _value * size.magnification);
 
 			rects
 			.transition().duration(400)
@@ -76,7 +77,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 				return _x(_d.sample);
 			})
 			.attr("width", function(_d)	{
-				return _x.rangeBand() * 0.8;
+				return _x.rangeBand() / size.left_between;
 			});
 		}
 
@@ -85,7 +86,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var rects = d3.selectAll(".comutationplot_sample_bars");
 			var old = $("#comutationplot_sample").width();
 			var now = old + (old * calculate_value());
-			var x = _utils.ordinalScale(_VO.VO.getSample(), 0, now);
+			var x = _utils.ordinalScale(_VO.VO.getSample(), 0, now * size.magnification);
 
 			if(old > now)	{ 
 				return;
@@ -99,7 +100,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var rects = d3.selectAll(".comutationplot_sample_bars");
 
 			sample
-			.attr("width", _value);
+			.attr("width", _value * size.magnification);
 
 			d3.selectAll(".comutationplot_sample_bargroup")
 			.transition().duration(400)
@@ -109,7 +110,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 
 			rects
 			.attr("width", function(_d ) {
-				return _x.rangeBand() * 0.8; 
+				return _x.rangeBand() / size.left_between; 
 			});
 		}
 
@@ -119,8 +120,8 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var origin = $("#comutationplot_border");
 			var old = origin.width();
 			var now = old + (old * calculate_value());
-			var x = _utils.ordinalScale(_VO.VO.getSample(), 0, now);
-			var y = _utils.ordinalScale(_VO.VO.getGene(), 0, (origin.height() - data.size.margin.bottom));
+			var x = _utils.ordinalScale(_VO.VO.getSample(), 0, now * size.magnification);
+			var y = _utils.ordinalScale(_VO.VO.getGene(), 0, (origin.height() - size.margin.bottom));
 
 			if(old > now)	{ 
 				return; 
@@ -138,9 +139,9 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			_VO.VO.setWidth(_value);
 
 			comutation
-			.attr("width", _value);
+			.attr("width", _value * size.magnification);
 			origin
-			.css("width", _value);
+			.css("width", _value * size.magnification);
 
 			groups
 			.transition().duration(400)
@@ -154,7 +155,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			rects
 			.attr("x", 0)
 			.attr("width", function(_d) { 
-				return _x.rangeBand() * 0.8; 
+				return _x.rangeBand() / size.left_between; 
 			});
 		}
 
@@ -170,7 +171,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			var comutation_rects = d3.selectAll(".comutationplot_cells");
 			var vo = _VO.VO;
 			var y = _utils.ordinalScale(vo.getInitGene(), 0, (vo.getInitHeight() - vo.getInitMarginBottom()));
-			var x = _utils.ordinalScale(vo.getInitSample(), 0, vo.getInitWidth());
+			var x = _utils.ordinalScale(vo.getInitSample(), 0, vo.getInitWidth() * size.magnification);
 
 			vo.setGene(vo.getInitGene());
 			vo.setSample(vo.getInitSample());
@@ -196,7 +197,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 				sample_rects
 				.transition().duration(400)
 				.attr("width", function(_d ) {
-					return x.rangeBand(); 
+					return x.rangeBand() / size.left_between; 
 				});
 			}, 300);
 			
@@ -209,7 +210,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 				d3.selectAll(".comutationplot_pq_bars")
 				.transition().duration(400)
 				.attr("height", function(_d)	{
-					return y.rangeBand() / 1.2;
+					return y.rangeBand() / size.top_between;
 				});
 			}, 400);
 
@@ -228,7 +229,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 				d3.selectAll(".comutationplot_gene_bars")
 				.transition().duration(400)
 				.attr("height", function(_d)	{
-					return y.rangeBand() / 1.2;
+					return y.rangeBand() / size.top_between;
 				});
 			}, 400);
 

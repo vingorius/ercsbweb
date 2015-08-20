@@ -17,7 +17,8 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 			, e.pageX, e.pageY
 		);
 
-		target.transition().duration(10)
+		target
+		.transition().duration(250)
 		.style("stroke", "black")
 		.style("stroke-width", 1);
 	}
@@ -28,12 +29,10 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 
 		_utils.tooltip();
 
-		target.transition().duration(10)
+		target
+		.transition().duration(250)
 		.style("stroke", function(_d) { 
-			return _utils.colour(_utils.define_mutation_name(_d.type)); 
-		})
-		.style("stroke-width", function(_d) { 
-			return 0.1; 
+			return null; 
 		});
 	}
 
@@ -55,8 +54,11 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 	}
 
 	var redraw_xaxis = function(_sorting_data, _size)	{
+		var magnification = 3;
+		var left_between = 1.5;
+		var top_between = 1.2;
 		var sample = _sort.spliceAndUnshiftExclusive(_VO.VO.getSample());
-		var x = _utils.ordinalScale(sample, _VO.VO.getMarginLeft(), (_VO.VO.getWidth() - _VO.VO.getMarginLeft()));
+		var x = _utils.ordinalScale(sample, 0, _VO.VO.getWidth() * magnification);
 		var y = _utils.ordinalScale(_VO.VO.getGene(), _VO.VO.getMarginTop(), (_VO.VO.getHeight() - _VO.VO.getMarginTop()));
 
 		d3.selectAll(".comutationplot_sample_bargroup")
@@ -67,7 +69,7 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 
 		d3.selectAll(".comutationplot_sample_bars")
 		.attr("width", function(_d) { 
-			return x.rangeBand(); 
+			return x.rangeBand() / left_between; 
 		});
 
 		d3.selectAll(".comutationplot_bar_group_rects")
@@ -89,7 +91,7 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 		.transition().duration(400)
 		.attr("x", 0)
 		.attr("width", function(_d) { 
-			return x.rangeBand(); 
+			return x.rangeBand() / left_between; 
 		});
 	}
 

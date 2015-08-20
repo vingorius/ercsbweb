@@ -71,6 +71,7 @@ define("chart/legend/setting_legend", ["utils", "size", "chart/legend/view_legen
 	}
 
 	return function(_data, _id, _option, _importance)	{
+		console.log(_data)
 		var size = _size.define_size(_id, 10, 0, 0, 0);
 		size.rect_size = 15;
 		_data.type_list = align_by_importance(_data.type_list, get_importance_name(_importance));

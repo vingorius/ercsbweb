@@ -58,37 +58,30 @@ router.get('/readtsv', function(req, res) {
 });
 
 // 다음은 xls 파일을 읽어 worksheet별로 저장된 CoMutataion 데이터를 파싱하여 객체를 만드는 코드이다.
-var xlsx = require('xlsx');
+var xls2json = require('xls-to-json');
 router.get('/readExcel', function(req, res) {
-
-	var workbook = xlsx.readFile('public/datas/a.xls');
-	var worksheet1 = workbook.Sheets[workbook.SheetNames[0]];
-	var worksheet2 = workbook.Sheets[workbook.SheetNames[1]];
-	//console.log(worksheet1);
-	var mutation_list = {
-		sample: [],
-		gene: [],
-		type: []
+	var input_file = {
+		input: 'public/datas/a.xls',
+		output: null,
 	};
-	for (var cell in worksheet1) {
-		/* all keys that do not begin with "!" correspond to cell addresses */
-		if (cell[0] === '!') continue;
-		var value = worksheet1[cell].v;
-		switch (cell.charAt(0)) {
-			case 'A':
-				mutation_list.sample.push(value);
-				break;
-			case 'B':
-				mutation_list.gene.push(value);
-				break;
-			case 'C':
-				mutation_list.type.push(value);
-				break;
-		}
-		//console.log(z + "=" + JSON.stringify(worksheet1[z].v));
-	}
-	//res.json(worksheet1);
-	res.json(mutation_list);
+
+	var to = {};
+	input_file.sheet = 'mutation';
+	xls2json(input_file, function(err, result) {
+		if (err) return err;
+		to.mutation = result;
+		input_file.sheet = 'gene';
+		xls2json(input_file, function(err, result) {
+			if (err) return err;
+			to.gene = result;
+			input_file.sheet = 'group';
+			xls2json(input_file, function(err, result) {
+				if (err) return err;
+				to.group = result;
+				res.json(to);
+			});
+		});
+	});
 });
 
 module.exports = router;

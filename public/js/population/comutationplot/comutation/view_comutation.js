@@ -8,10 +8,12 @@ define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_com
 		var e = _event || null;
 		var vo = _VO.VO;
 
+		$("#comutationplot_heatmap").width(size.width * size.magnification);
+
 		var svg = d3.select("#comutationplot_heatmap")
 		.append("svg")
 		.attr("class", "comutationplot_heatmap")
-		.attr("width", size.width)
+		.attr("width", size.width * size.magnification)
 		.attr("height", size.height)
 		.append("g")
 		.attr("transform", "translate(0, 0)");
@@ -47,22 +49,22 @@ define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_com
 		.attr("class", "comutationplot_cells")
 		.attr("x", 0)
 		.attr("y", 0)
-		.style("stroke", function(_d) { 
-			return _utils.colour(_utils.define_mutation_name(_d.type)); 
-		})
+		// .style("stroke", function(_d) { 
+		// 	return _utils.colour(_utils.define_mutation_name(_d.type)); 
+		// })
+		// .style("stroke-width", function(_d) { 
+		// 	return 0.1;
+		// })
 		.style("fill", function(_d) { 
 			return _utils.colour(_utils.define_mutation_name(_d.type)); 
-		})
-		.style("stroke-width", function(_d) { 
-			return 0.1;
 		})
 		.on("mouseover", e.m_over)
 		.on("mouseout", e.m_out)
 		.attr("width", function(_d) { 
-			return data.x.rangeBand() * 0.8; 
+			return data.x.rangeBand() / size.left_between; 
 		})
 		.attr("height", function(_d) { 
-			return data.y.rangeBand() / 1.2; 
+			return data.y.rangeBand() / size.top_between; 
 		});
 
 		e.move_scroll();

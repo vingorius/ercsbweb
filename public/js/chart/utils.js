@@ -100,20 +100,45 @@ define("utils", [], function()  {
 	}
 
 	var define_mutation_name = function(_name)  {
-		if((/MISSENSE/i).test(_name)) { return "Missense"; }
-		else if((/NONSENSE/i).test(_name)) { return "Nonsense"; }
-		else if((/(SPLICE_SITE)|(SPLICE_SITE_SNP)/i).test(_name)) { return "Splice_Site"; }
-		else if((/(SYNONYMOUS)|(SILENT)/i).test(_name)) { return "Synonymous"; }
-		else if((/(FRAME_SHIFT_INS)|(FRAME_SHIFT_DEL)/i).test(_name)) { return "Frame_shift_indel"; }
-		else if((/(IN_FRAME_INS)|(IN_FRAME_DEL)/i).test(_name)) { return "In_frame_indel"; }
-		else if((/(NONSTOP)/i).test(_name)) { return "Nonstop"; }
-		else if((/AMPLIFICATION/i).test(_name)) { return "Amplification"; }
-		else if((/HOMOZYGOUS_DELETION/i).test(_name)) { return "Deletion"; }
+		if((/MISSENSE/i).test(_name)) { 
+			return "Missense"; 
+		}
+		else if((/NONSENSE/i).test(_name)) { 
+			return "Nonsense"; 
+		}
+		else if((/(SPLICE_SITE)|(SPLICE_SITE_SNP)/i).test(_name)) { 
+			return "Splice_Site"; 
+		}
+		else if((/(SYNONYMOUS)|(SILENT)/i).test(_name)) { 
+			return "Synonymous"; 
+		}
+		else if((/(FRAME_SHIFT_INS)|(FRAME_SHIFT_DEL)/i).test(_name)) { 
+			return "Frame_shift_indel"; 
+		}
+		else if((/(IN_FRAME_INS)|(IN_FRAME_DEL)/i).test(_name)) { 
+			return "In_frame_indel"; 
+		}
+		else if((/(NONSTOP)/i).test(_name)) { 
+			return "Nonstop"; 
+		}
+		else if((/AMPLIFICATION/i).test(_name)) { 
+			return "Amplification"; 
+		}
+		else if((/HOMOZYGOUS_DELETION/i).test(_name)) { 
+			return "Homozygous_Deletion"; 
+		}
 	}
 
 	var defineMutType = function(_name)	{
-		if((/(AMPLIFICATION) | (DELETION)/i).test(_name)) { return "CNV"; }
-		else { return "Somatic"; }
+		if((/(AMPLIFICATION) | (DELETION)/i).test(_name)) { 
+			return "CNV"; 
+		}
+		// else if((/(INDEL) | (SPLICE_SITE)/i).test(_name)) { 
+		// 	return "SNP"; 
+		// }
+		else { 
+			return "MUT"; 
+		}
 	}
 
 	var colour = function(_value)   {
@@ -126,10 +151,10 @@ define("utils", [], function()  {
 			"Frame_shift_indel":"#F68D3B",
 			"Splice_Site":"#583D5F",
 			"Synonymous":"#5CB755",
-			"Nonstop" : "#000",
-			"Amplification" : "#000",
-			"Homozygous_Deletion" : "#000",
-			"Othre":"#B5612E",
+			"Nonstop" : "#120193",
+			"Amplification" : "#FFBDE0",
+			"Homozygous_Deletion" : "#BDE0FF",
+			"Other":"#B5612E",
 			"pq":"#C2C4C9",
 			"Primary Solid Tumor":"#F64747",
 			"Solid Tissue Normal":"#446CB3",
@@ -195,7 +220,7 @@ define("utils", [], function()  {
 			div.html(_contents);		// Html 태그를 포함한 문자열을 삽입 할 때에는 html() 함수를 사용하는 것이 낫다.
 			div.css("top", _y - padding_top);
 			div.css("left", _x - padding_left);
-			div.css("font-size", "0.4em")
+			div.css("font-size", 12)
 			div.css("font-family", "trebuchet ms")
 			div.css("font-weight", "bold")
 			div.css("opacity", 0.8);

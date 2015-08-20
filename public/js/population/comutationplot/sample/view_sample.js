@@ -9,7 +9,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		var svg = d3.select("#comutationplot_sample")
 		.append("svg")
 		.attr("class", "comutationplot_sample")
-		.attr("width", size.width)
+		.attr("width", size.width * size.magnification)
 		.attr("height", size.height)
 		.append("g")
 		.attr("transform", "translate(0, 0)");
@@ -34,16 +34,16 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.attr("y", function(_d) { 
 			return data.y(_d.start + _d.count); 
 		})
-		.attr("width", data.x.rangeBand() * 0.8)
+		.attr("width", data.x.rangeBand() / size.left_between)
 		.attr("height", function(_d) { 
 			return (size.height - (size.margin.bottom / 2)) - data.y(_d.count); 
 		})
-		.style("stroke", function(_d) { 
-			return _utils.colour(_utils.define_mutation_name(_d.type)); 
-		})
-		.style("stroke-width", function(_d) { 
-			return 0.1;
-		})
+		// .style("stroke", function(_d) { 
+		// 	return _utils.colour(_utils.define_mutation_name(_d.type)); 
+		// })
+		// .style("stroke-width", function(_d) { 
+		// 	return 0.1;
+		// })
 		.style("fill", function(_d) { 
 			return _utils.colour(_utils.define_mutation_name(_d.type)); 
 		})

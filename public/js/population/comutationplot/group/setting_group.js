@@ -59,12 +59,18 @@ define(GROUP + "setting_group", ["utils", "size", SORT, GROUP + "view_group"], f
 	}
 
 	return function(_group_list, _samples)	{
+		_group_list.sort(function(_a, _b)	{
+			return _a.length < _b.length ? -1 : 1;
+		});
 		var group_names = getGroupName(_group_list);
 		var all_group = grouping(_group_list, _samples);
 		var init_height = modifySize(all_group);
 		$("#comutationplot_groups").css("height", init_height);
 		$("#comutationplot_groups_name").css("height", init_height);
 		var size = _size.define_size("comutationplot_groups", 20, 20, 0, 0);
+		size.magnification = 3;
+		size.left_between = 1.5;
+		size.top_between = 1.2;
 		var name_size = _size.define_size("comutationplot_groups_name", 20, 20, 20, 20);
 
 		_view.view({

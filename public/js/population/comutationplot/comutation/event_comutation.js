@@ -17,8 +17,9 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 			e.pageX, e.pageY
 		);
 
-		target.transition().duration(10)
-		.style("stroke", "black")
+		target
+		.transition().duration(250)
+		.style("stroke", "#000")
 		.style("stroke-width", 1);
 	}
 
@@ -27,13 +28,19 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 
 		_utils.tooltip();
 
-		target.transition().duration(10)
-		.style("stroke", function(_d) { 
-			return _utils.colour(_utils.define_mutation_name(_d.type)); 
-		})
-		.style("stroke-width", function(_d) { 
-			return 0.1; 
+		target
+		.transition().duration(250)
+		.style("stroke", function(_d)	{
+			return null;
 		});
+
+		// target.transition().duration(10)
+		// .style("stroke", function(_d) { 
+		// 	return _utils.colour(_utils.define_mutation_name(_d.type)); 
+		// })
+		// .style("stroke-width", function(_d) { 
+		// 	return 0.1; 
+		// });
 	}
 
 	var move_scroll = function()	{

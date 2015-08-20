@@ -17,10 +17,11 @@ define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _siz
 		var separate = _sort.group(_group, _group, vo.getFormatedData().sample);
 		var ex = loopingGroup(separate);
 		var samples = _sort.spliceAndUnshiftExclusive(getSampleName(ex));
+		magnification = 3;
 		vo.setSample(samples);
 		vo.setSortOrder([]);
 
-		var x = _utils.ordinalScale(vo.getSample(), vo.getMarginLeft(), (vo.getWidth() - vo.getMarginLeft()));
+		var x = _utils.ordinalScale(vo.getSample(), 0, vo.getWidth() * magnification);
 		var y = _utils.ordinalScale(vo.getGene(), 0, vo.getHeight() - vo.getMarginBottom())
 		var group = d3.select(_this);
 		var sample = d3.selectAll(".comutationplot_sample_bargroup");
@@ -38,10 +39,11 @@ define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _siz
 		loopingMultiSort(vo.getSortOrder(), _group);
 		var ex = loopingGroup(sort_order);
 		var samples = _sort.spliceAndUnshiftExclusive(getSampleName(ex));
+		magnification = 3;
 		vo.setSortOrder(sort_order);
 		vo.setSample(samples);
 
-		var x = _utils.ordinalScale(vo.getSample(), vo.getMarginLeft(), (vo.getWidth() - vo.getMarginLeft()));
+		var x = _utils.ordinalScale(vo.getSample(), 0, vo.getWidth() * magnification);
 		var y = _utils.ordinalScale(vo.getGene(), 0, vo.getHeight() - vo.getMarginBottom())
 		var group = d3.select(_this);
 		var sample = d3.selectAll(".comutationplot_sample_bargroup");
@@ -108,6 +110,7 @@ define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _siz
 	}
 
 	var name_over = function(_d)	{
+		var target = d3.select(this);
 		var e = d3.event;
 
 		_utils.tooltip(
@@ -118,10 +121,23 @@ define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _siz
 			+ "</span>",
 			e.pageX, e.pageY
 		);
+
+		target
+		.transition().duration(250)
+		.style("stroke", "#000")
+		.style("stroke-width", 1);
 	}
 
 	var name_out = function(_d)	{
+		var target = d3.select(this);
+
 		_utils.tooltip();
+
+		target
+		.transition().duration(250)
+		.style("stroke", function(_d)	{
+			return null;
+		});
 	}
 
 	return 	{

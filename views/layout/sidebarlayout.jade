@@ -1,24 +1,21 @@
 extends ../layout/basiclayout
 
 block append stylesheets
-    link(rel='stylesheet', href='/stylesheets/simplesidebar.css')
+    link(rel='stylesheet', href='/stylesheets/fixedsidebar.css')
+    link(rel='stylesheet', href='/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css')
 
 block content
-    div#wrapper
-        div#sidebar-wrapper
-            //- div.text-right
-            //-     a#menu-toggle(href='#menu-toggle',style={'color':'#333'})
-            //-         i#icon-toggle.side-menu-icon.glyphicon.glyphicon-chevron-left
 
-            block leftmenu
+    div.sidebar.collapse.in
+        block leftmenu
 
+    div.seperator
 
-        div#page-content-wrapper
-            div.container-fluid
-                //- div.row
-                //-     div.col-lg-12
-                block rightcontent
+    div.content
+        block rightcontent
+
 block append scripts
+    script(src='/bower_components/jquery-ui/jquery-ui.js')
     script.
         $(document).ready(function() {
             /*
@@ -29,4 +26,11 @@ block append scripts
             //-     $("#wrapper").toggleClass("toggled");
             //-     $(this).find("i").toggleClass("glyphicon-chevron-left glyphicon-chevron-right");
             //- });
+            $('.seperator').click(function(e) {
+                e.preventDefault();
+                //- $('.sidebar').toggleClass('in',500,'easeOutSine');
+                $('.sidebar').toggle();
+                $('.seperator').toggleClass('toggled',500,'easeOutSine');
+                $('.content').toggleClass('toggled',500,'easeOutSine');
+            });
         });        

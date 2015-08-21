@@ -1,0 +1,32 @@
+extends ../layout/basiclayout
+
+block append stylesheets
+    link(rel='stylesheet', href='/stylesheets/simplesidebar.css')
+
+block content
+    div#wrapper
+        div#sidebar-wrapper
+            //- div.text-right
+            //-     a#menu-toggle(href='#menu-toggle',style={'color':'#333'})
+            //-         i#icon-toggle.side-menu-icon.glyphicon.glyphicon-chevron-left
+
+            block leftmenu
+
+
+        div#page-content-wrapper
+            div.container-fluid
+                //- div.row
+                //-     div.col-lg-12
+                block rightcontent
+block append scripts
+    script.
+        $(document).ready(function() {
+            /*
+            * 좌측 메뉴 우상단에 있는 축소/확대 버튼을 토글한다.
+            */
+            //- $("#menu-toggle").click(function(e) {
+            //-     e.preventDefault();
+            //-     $("#wrapper").toggleClass("toggled");
+            //-     $(this).find("i").toggleClass("glyphicon-chevron-left glyphicon-chevron-right");
+            //- });
+        });        

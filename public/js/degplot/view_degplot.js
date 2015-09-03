@@ -1,17 +1,17 @@
 var DEG = "degplot/";
 
 define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(_utils, _size, _e)	{
-	var find_min_max = function(_min_max, _key)	{
+	var minAndMax = function(_min_max, _key)	{
 		for(var i = 0, len = _min_max.length ; i < len ; i++)	{
 			if(_min_max[i][_key])	{ return _min_max[i][_key]; }
 		}
 	}
 
-	var create_row = function(_tbody)	{
+	var mkRow = function(_tbody)	{
 		return _tbody.insertRow(-1);
 	}
 
-	var create_cell = function(_column, _row, _data)	{
+	var mkCell = function(_column, _row, _data)	{
 		for (var i = 0, len = Object.keys(_column).length ; i < len ; i++)	{
 			var cell_data = _column[Object.keys(_column)[i]];
 
@@ -19,16 +19,19 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 			
 			if(cell_data.constructor === Number && _row.cells[i].id === "")	{
 				_row.cells[i].innerHTML = "";
+
 				d3.select(_row.cells[i]).datum({
 					id : Object.keys(_column)[i],
 					data : cell_data
 				});
+
 				d3.select(_row.cells[i]).style("background-color", function(_d) {
-					var minmax = find_min_max(_data.min_max, Object.keys(_column)[i]);
+					var minmax = minAndMax(_data.min_max, Object.keys(_column)[i]);
 					return _data.backgroundcolor(_utils.colour(Object.keys(_column)[i]), 
 						cell_data, minmax.min, minmax.max)
 				})
-				.on("mouseover", _e.cell_over).on("mouseout", _e.cell_out);
+				.on("mouseover", _e.cell_over)
+				.on("mouseout", _e.cell_out);
 			}
 		}
 	}
@@ -36,7 +39,7 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 	var lever = function(_id, _data, _width, _height)	{
 		var key = _id.substring(_id.indexOf("_") + 1, _id.length);
 		var margin = 5;
-		var minmax = find_min_max(_data.min_max, key);
+		var minmax = minAndMax(_data.min_max, key);
 
 		var svg = d3.select("#" + _id)
 		.append("svg")
@@ -66,12 +69,14 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 			bgcolor : _data.backgroundcolor
 		}])
 		.attr("class", "degplot_lever_rect")
-		.attr("x", _width - margin).attr("y", _height / 2)
-		.attr("width", 5).attr("height", _height / 2.5)
+		.attr("x", _width - margin)
+		.attr("y", _height / 2)
+		.attr("width", 5)
+		.attr("height", _height / 2.5)
 		.call(_e.drag);
 	}
 
-	var range_gradient = function(_id, _start, _end, _width, _height)	{
+	var gradient = function(_id, _start, _end, _width, _height)	{
 		var pre_id = "";
 		var margin = 5;
 
@@ -108,7 +113,7 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 		.on("click", _e.color_cell);
 	}
 
-	var make_span_option = function(_data, _si, _width, _height)	{
+	var mkSpanWithOpt = function(_data, _si, _width, _height)	{
 		var option = _size.mkdiv({
 			attribute : "", style : { float : "left",
 			"padding-left" : "5px",
@@ -135,23 +140,36 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 		return option;
 	}
 
-	var make_range_component = function(_data, _si, _width, _height)	{
+	var mkRangeComponent = function(_data, _si, _width, _height)	{
 		var range_component = 
 		document.querySelector("#degplot_color_bar_body");
 
 		for(var i = 0, len = _si.length ; i < len ; i++)	{
 			var row = _size.mkdiv();
 			var component = _size.mkdiv({
-				attribute : "", style : { float : "left", }
+				attribute : "", 
+				style : { 
+					float : "left", 
+				}
 			});
-			var option = make_span_option(_data, _si[i], _width, _height);
+			var option = mkSpanWithOpt(_data, _si[i], _width, _height);
 			var comp_lever = _size.mkdiv({
-				attribute : { id : "lever_" + _si[i], },
-				style : { "width" : _width * 0.8 + "px", "height" : _height + "px" }
+				attribute : { 
+					id : "lever_" + _si[i]
+				},
+				style : { 
+					"width" : _width * 0.8 + "px", 
+					"height" : _height + "px" 
+				}
 			});
 			var comp_gradient = _size.mkdiv({
-				attribute : { id : _si[i], },
-				style : { "width" : _width * 0.8 + "px", "height" : _height + "px" }
+				attribute : { 
+					id : _si[i] 
+				},
+				style : {
+				 "width" : _width * 0.8 + "px", 
+				 "height" : _height + "px" 
+				}
 			});
 
 			component.appendChild(comp_lever);
@@ -161,7 +179,7 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 			range_component.appendChild(row);
 
 			lever("lever_" + _si[i], _data, _width * 0.8, _height);	
-			range_gradient(_si[i], "#FFFFFF", _utils.colour(_si[i]), _width * 0.8, _height);
+			gradient(_si[i], "#FFFFFF", _utils.colour(_si[i]), _width * 0.8, _height);
 		}
 	}
 
@@ -174,10 +192,10 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 		var width = config_div.clientWidth - padding_left - padding_right, height = 30;
 
 		for(var i = 0, len = data.length ; i < len ; i++)	{
-			create_cell(data[i], create_row(tbody), _data);
+			mkCell(data[i], mkRow(tbody), _data);
 		}
 		_e.rowspan(tbody.rows);
-		make_range_component(_data, _data.si, width, height);
+		mkRangeComponent(_data, _data.si, width, height);
 
 		$(".degplot_colorselector").simplecolorpicker({ picker : true }).on("change", _e.select_color)
 

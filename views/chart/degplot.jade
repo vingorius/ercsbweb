@@ -8,7 +8,7 @@ block content
 		span#loading_text 
 		div.double-bounce1
 		div.double-bounce2
-	div.container.chart_base_container
+	div.container.chart_container
 		//- include chart_header.jade
 		div.table_component(style={"float" : "left"})
 			table.table.table-bordered.table-responsive
@@ -33,5 +33,7 @@ block content
 block append scripts
 	script(src='/bower_components/jquery-simplecolorpicker/jquery.simplecolorpicker.js')
 	script(src='/bower_components/html2canvas/build/html2canvas.js')
-	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
+	script(src='/bower_components/requirejs/require.js')
+	script(src='/js/chart/init.js')
+	script(src='/js/chart/start.js', onload='startChart("deg")')
 

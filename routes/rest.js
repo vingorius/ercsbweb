@@ -151,6 +151,7 @@ router.get('/tumorportal_cmp', function(req, res, next) {
 router.get('/comutationplot', function(req, res, next) {
 	var p_cancer_type = req.query.cancer_type;
 	var p_sample_id = req.query.sample_id;
+	//console.log('/comutationplot', p_cancer_type, p_sample_id);
 
 	var transfer_object = {
 		status: 0,
@@ -321,15 +322,23 @@ router.get('/needleplot', function(req, res, next) {
 	var transfer_object = {
 		status: 0,
 		message: 'OK',
-		data: {
-			name: gene,
-			title: cancer_type.toUpperCase() + ': ' + gene + ',' + transcript,
-			x_axis_title: 'aa',
-			y_axis_title: '# Mutations',
-			public_list: [],
-			patient_list: [],
-			graph: {},
-		}
+	};
+
+	if (cancer_type === undefined || sample_id === undefined || gene === undefined || transcript === undefined) {
+		transfer_object.status = 1000;
+		transfer_object.message = 'No parameter';
+		res.json(transfer_object);
+		return;
+	}
+
+	transfer_object.data = {
+		name: gene,
+		title: cancer_type.toUpperCase() + ': ' + gene + ',' + transcript,
+		x_axis_title: 'aa',
+		y_axis_title: '# Mutations',
+		public_list: [],
+		patient_list: [],
+		graph: {},
 	};
 
 	getConnection(function(connection) {
@@ -353,21 +362,41 @@ router.get('/needleplot', function(req, res, next) {
 
 router.get('/pathwayplot', function(req, res, next) {
 	var cancer_type = req.query.cancer_type;
+	var sample_id = req.query.sample_id;
 	var seq = req.query.seq;
+
 	var transfer_object = {
 		status: 0,
 		message: 'OK',
-		data: {
-			cancer_type: cancer_type,
-			seq: seq,
-			pathway_list: []
-		}
 	};
+
+	if (cancer_type === undefined || sample_id === undefined || seq === undefined) {
+		transfer_object.status = 1000;
+		transfer_object.message = 'No parameter';
+		res.json(transfer_object);
+		return;
+	}
+
+	transfer_object.data = {
+		cancer_type: cancer_type,
+		seq: seq,
+		pathway_list: [],
+		gene_list: []
+	};
+
+
 	getConnection(function(connection) {
 		connection.query('CALL omics_data.getPathwayplot(?,?)', [cancer_type, seq], function(err, rows) {
 			if (err) throw err;
 			transfer_object.data.pathway_list = rows[0];
-			res.json(transfer_object);
+			// res.json(transfer_object);
+			connection.query('CALL omics_data.getPathwayplotGeneList(?,?,?)', [cancer_type, seq, sample_id], function(err, rows) {
+				if (err) throw err;
+				transfer_object.data.gene_list = rows[0].map(function(_d) {
+					return _d.gene_id;
+				});
+				res.json(transfer_object);
+			});
 		});
 	});
 });

@@ -2,3 +2,12 @@ extends ../../layout/analysislayout
 
 block rightcontent
     h1 Pathways
+    include luad1.svg
+    div.tooltip_chart(style={ "display" : "none" })
+block append stylesheets
+    //- link(rel='stylesheet', href='/stylesheets/chart/chart.css')
+    link(rel='stylesheet', href='/stylesheets/analysis/pathwayplot.css')
+block append scripts
+    script(src='/js/chart/init.js')
+    script(src='/bower_components/requirejs/require.js')
+    script(src='/js/analysis/pathwayplot/init_pathwayplot.js', onload='init_pathwayplot("NONE", "#{sample.type}", "#{sample.id}", "#{sample.seq}")')

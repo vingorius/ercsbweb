@@ -1,0 +1,37 @@
+extends ../layout/basiclayout
+
+block content
+	div.container.chart_container(style={"margin" : "20px", "width" : "1590px"})
+		div
+			div#comutationplot_sample_yaxis_title(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
+			div#comutationplot_sample(style={'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1200px', 'height': '100px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
+			div#comutationplot_empty_rm(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', "height" : "100px"})
+		div
+			div#comutationplot_groups_name(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px'})
+			div#comutationplot_groups(style={'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1200px', 'height': '0px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
+			div#comutationplot_scale(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', "height" : "50px"})
+		div
+			div#comutationplot_gene(style={'padding': '0px', 'margin': '0px', 'float': 'left', 'width': '150px', 'height': '600px'})
+			div#comutationplot_border(style={'padding': '0px', 'margin': '0px', 'float': 'left', 'width': '1200px', 'height': '600px', 'overflow-x' : 'scroll', 'overflow-y': 'hidden'})
+				div#comutationplot_heatmap(style={'padding': '0px', 'margin': '0px', 'width': '1200px', 'height': '580px', 'border' : '1px solid rgb(236, 236, 236)'})
+			div#comutationplot_pq(style={'padding': '0px', 'margin': '0px', 'float': 'left', 'width': '150px', 'height': '600px'})
+		div
+			div#comutationplot_gene_title(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
+			div#comutationplot_legend(style={'float' : 'left', 'padding': '0px', 'margin': '0px', 'width': '1200px', 'height': '150px'})
+			div#comutationplot_pq_title(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
+	div.loading(style={ "display" : "none" }) 
+		span#loading_text
+		div.double-bounce1
+		div.double-bounce2
+	div.tooltip_chart(style={ "display" : "none" })
+block append scripts
+	script(src='/bower_components/canvg-gabelerner/StackBlur.js')
+	script(src='/bower_components/canvg-gabelerner/rgbcolor.js')
+	script(src='/bower_components/imagesloaded/imagesloaded.pkgd.js')
+	script(src='/js/chart/init.js')
+	script(src='/bower_components/requirejs/require.js')
+	script(src='/js/population/comutationplot/init_comutationplot.js', onload='init_comutationplot("ERCSB")')
+block append stylesheets
+	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')
+	link(rel='stylesheet', href='/stylesheets/chart/chart.css')
+	link(rel='stylesheet', href='/stylesheets/population/comutationplot.css')

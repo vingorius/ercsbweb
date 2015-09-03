@@ -76,7 +76,6 @@ block rightcontent
         //-         //-     input(type='radio',name='c')
         //-         //-     span.sub_menu_span HGMD
 
-
         div.col-lg-12
             div
                 table#table('data-url'='/models/patient/getSampleVariantList?sample_id=#{sample.id}&cancer_type=#{sample.type}')
@@ -88,7 +87,7 @@ block rightcontent
                     span#loading_text
                     div.double-bounce1
                     div.double-bounce2
-                div.container.chart_container
+                div.container.chart_container(style={'width' : '1200px', 'margin-left' : 'auto', 'margin-right' : 'auto', 'padding-top' : '50px'})
                     div.row
                         div#needleplot_view(style={'padding': '0px', 'margin': '0px', 'width': '1000px', 'height': '400px', 'overflow' : 'hidden', "float" : 'left'})
                         div#needleplot_legend(style={'padding': '0px', 'margin': '0px', 'width': '200px', 'height': '200px', 'overflow' : 'hidden', 'float' : "left"})

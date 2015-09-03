@@ -2,7 +2,7 @@
 var request = require('supertest');
 var assert = require('assert');
 var getConnection = require('../routes/modules/mysql_connection');
-var host = 'http://localhost:3000';
+var host = 'http://localhost';
 
 describe('Login Test Suite', function() {
     var user = {
@@ -94,9 +94,9 @@ describe('Login Test Suite', function() {
                     done();
                 });
         });
-        it('login ' + user.toString() + ' /menus/menu0 페이지에 접근할 수 있어야 한다.', function(done) {
+        it('login ' + user.toString() + ' /menus/ 페이지에 접근할 수 있어야 한다.', function(done) {
             agent
-                .get('/menus/menu0')
+                .get('/menus/')
                 .expect(200) //Moved Temporarily
                 .end(function(err, res) {
                     if (err) return done(err);
@@ -116,9 +116,9 @@ describe('Login Test Suite', function() {
                 });
         });
 
-        it('logout이후에는  /menus/menu0 페이지에 접근할 수 없어야 한다.', function(done) {
+        it('logout이후에는  /menus/ 페이지에 접근할 수 없어야 한다.', function(done) {
             agent
-                .get('/menus/menu0')
+                .get('/menus/')
                 .expect(302) //Moved Temporarily
                 .end(function(err, res) {
                     if (err) return done(err);
@@ -143,9 +143,9 @@ describe('Login Test Suite', function() {
                     done();
                 });
         });
-        it('login ' + user.toString() + ' /menus/menu0 페이지에 접근할 수 있어야 한다.', function(done) {
+        it('login ' + user.toString() + ' /menus/ 페이지에 접근할 수 있어야 한다.', function(done) {
             agent
-                .get('/menus/menu0')
+                .get('/menus/')
                 .expect(200) //Moved Temporarily
                 .end(function(err, res) {
                     if (err) return done(err);
@@ -163,9 +163,9 @@ describe('Login Test Suite', function() {
                     done();
                 });
         });
-        it('다른 Agent로 로그인 없이 /menus/menu0 페이지에 접근할 수 있어야 한다.', function(done) {
+        it('다른 Agent로 로그인 없이 /menus/ 페이지에 접근할 수 있어야 한다.', function(done) {
             request(host)
-                .get('/menus/menu0')
+                .get('/menus/')
                 .set('Cookie', cookie)
                 .expect(200) //Moved Temporarily
                 .end(function(err, res) {

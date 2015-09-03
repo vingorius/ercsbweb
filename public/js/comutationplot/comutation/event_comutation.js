@@ -1,36 +1,25 @@
 var COMUTATION = "comutationplot/comutation/";
 
 define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _size)	{
-	var event_mouseover = function(_d)	{
-		var target = d3.select(this);
-		var e = d3.event;
-
+	var mouseover = function(_d)	{
 		this.parentNode.parentNode.appendChild(this.parentNode);
 
 		_utils.tooltip(
-			e, 
-			"x : <span style='color : red;'>"  
-			+ _d.sample 
-			+ "</span></br>y : <span style='color : red;'>" 
-			+ _d.gene
-			+ "</span></br>type : <span style='color : red;'>" 
-			+ _d.type 
-			+ "</span>", 
-			e.pageX, e.pageY
-		);
+			this, 
+			"x : " + _d.sample + "</br>y : " + _d.gene + "</br>type : " + _d.type
+			, "rgba(15, 15, 15, 0.6)");
 
-		target.transition().duration(10)
+		d3.select(this)
+		.transition().duration(10)
 		.style("stroke", "black")
 		.style("stroke-width", 2);
 	}
 
-	var event_mouseout = function(_d)	{
-		var target = d3.select(this);
-		var e = d3.event;
-
+	var mouseout = function(_d)	{
 		_utils.tooltip();
 
-		target.transition().duration(10)
+		d3.select(this)
+		.transition().duration(10)
 		.style("stroke", function(_d) { 
 			return _utils.colour(_d.type[0]); 
 		})
@@ -39,7 +28,7 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 		});
 	}
 
-	var move_scroll = function()	{
+	var moveScroll = function()	{
 		var target_1 = $("#comutationplot_sample");
 		var target_2 = $("#comutationplot_heatmap");
 
@@ -48,8 +37,8 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 		});
 	}
 	return {
-		m_over : event_mouseover,
-		m_out : event_mouseout,
-		move_scroll : move_scroll
+		m_over : mouseover,
+		m_out : mouseout,
+		move_scroll : moveScroll
 	}
 })

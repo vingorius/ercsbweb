@@ -17,7 +17,9 @@ block content
 	div.tooltip_chart(style={ "display" : "none" })
 block append scripts
 	script(src='/bower_components/html2canvas/build/html2canvas.js')
-	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
+	script(src='/bower_components/requirejs/require.js')
+	script(src='/js/chart/init.js')
+	script(src='/js/chart/start.js', onload='startChart("needle")')
 block append stylesheets
 	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')
 	link(rel='stylesheet', href='/stylesheets/chart/chart.css')

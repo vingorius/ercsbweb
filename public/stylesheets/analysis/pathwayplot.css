@@ -1,0 +1,23 @@
+/* Custom tooltip style css attribute */
+.tooltip_chart {
+	font-size: 15px;
+	line-height: 25px;
+	padding: 10px;
+	color : #FFF;
+	border-radius: 5px;
+	border: 1px solid #FFF;
+	display: block;
+	z-index: 1000;
+}
+/* Custom animation for svg shape border that is Ant type css style attribute */
+@-webkit-keyframes marching_ants {
+	to {
+		stroke-dashoffset: 100%;
+	}
+}
+.pathwayplot_gene_rect_target {
+	stroke: #FFF400;
+	stroke-dasharray: 2,2;
+	stroke-width: 2.5px;
+	-webkit-animation: marching_ants 10s linear infinite;
+}

@@ -2,30 +2,24 @@ var XY = "xyplot/";
 
 define(XY + "event_xyplot", ["utils", "size"], function(_utils, _size)	{
 	var get_mouseover = function(_d)	{
-		var target = d3.select(this);
-		var e = d3.event;
 		var radius = 3;
 
-		target.transition().duration(100)
+		d3.select(this)
+		.transition().duration(100)
 		.attr("r", radius * 2.5);
 
-		_utils.tooltip(e
-			, "<strong>Title : <span style='color:red'>"
-			+ _d.title
-			+ "</span></br> X : <span style='color:red'>"
-			+ Number(_d.x).toFixed(5)
-			+ "</span></br> Y : <span style='color:red'>"
-			+ Number(_d.y).toFixed(5)
-			+ "</span>"
-			, e.pageX, e.pageY - 40);
+		_utils.tooltip(this
+			, "title : " + _d.title + "</br> x : "
+			+ Number(_d.x).toFixed(5) + "</br> y : " + Number(_d.y).toFixed(5)
+			, "rgba(15, 15, 15, 0.6)");
 	}
 
 	var get_mouseout = function(_d)	{
-		var target = d3.select(this);
-		var e = d3.event;
 		var radius = 3;
 
-		target.transition().duration(100).attr("r", radius);
+		d3.select(this)
+		.transition().duration(100)
+		.attr("r", radius);
 
 		_utils.tooltip();
 	}

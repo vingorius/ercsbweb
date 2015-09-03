@@ -13,7 +13,7 @@ define(DEG + "setting_degplot", ["utils", "size", DEG + "view_degplot"], functio
 		}));
 	}
 
-	var color_list = function()	{
+	var colour = function()	{
 		return [
 			"#ea3b29", "#f68d3b", "#f2ee7e",
 			"#5cb755", "#3e87c2", "#252766",
@@ -25,22 +25,21 @@ define(DEG + "setting_degplot", ["utils", "size", DEG + "view_degplot"], functio
 		return d3.hsl(_color);
 	}
 
-	var background_color = function(_rgb, _value, _min, _max)	{
+	var backgroundColor = function(_rgb, _value, _min, _max)	{
 		if(_value > _max)	{
 			_value = _max;
 		}
 		var hsl_color = hsl(_rgb);
-		var color_lightness = hsl_color.l;
 		var si_color_scale = d3.scale.linear()
 		.domain([_max, _min])
-		.range([color_lightness, 1]);
+		.range([hsl_color.l, 1]);
 
 		hsl_color.l = si_color_scale(_value);
 
 		return hsl_color;
 	}
 
-	var count_si = function(_data)	{
+	var countSi = function(_data)	{
 		var keys = Object.keys(_data);
 		var result = [];
 
@@ -53,23 +52,21 @@ define(DEG + "setting_degplot", ["utils", "size", DEG + "view_degplot"], functio
 	}
 
 	return function(_data)	{
-		var data = _data || [];
-		var tbody = document.querySelector(".degplot_tbody");
-		var si = count_si(data.data.pathway_list[0]);
+		var si = countSi(_data.data.pathway_list[0]);
 		var si_min_max = [];
 
 		for(var i = 0, len = si.length ; i < len ; i++)	{
 			var a_si = {};
-			_utils.defineProp(a_si, max(data.data.pathway_list, si[i]), "max");
-			_utils.defineProp(a_si, min(data.data.pathway_list, si[i]), "min");
+			_utils.defineProp(a_si, max(_data.data.pathway_list, si[i]), "max");
+			_utils.defineProp(a_si, min(_data.data.pathway_list, si[i]), "min");
 			si_min_max.push(_utils.defineProp({}, a_si, si[i]));
 		}
 
 		_view.view({
-			data : data.data.pathway_list, 
-			tbody : tbody,
-			backgroundcolor : background_color,
-			colors : color_list,
+			data : _data.data.pathway_list, 
+			tbody : document.querySelector(".degplot_tbody"),
+			backgroundcolor : backgroundColor,
+			colors : colour,
 			max : max,
 			min : min,
 			si : si,

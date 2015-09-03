@@ -30,16 +30,22 @@ $(function() {
 			title: 'Gene',
 			sortable: true,
 			align: 'center',
+			formatter: function(value, row) {
+				//var params = [row.cancer_type, row.sample_id, row.gene, row.transcript];
+				return '<a href="#" id="gene">' + value + '</a> ';
+			},
+			events: 'tsEvents', // needleplot.js
 		}, {
 			field: 'transcript',
 			title: 'Transcript',
-			sortable: true,
+			sortable: false,
+			visible: false,
 			align: 'center',
 			formatter: function(value, row) {
 				//var params = [row.cancer_type, row.sample_id, row.gene, row.transcript];
 				return '<a href="#" id="transcript">' + value + '</a> ';
 			},
-			events: 'tsEvents', // needleplot.js
+			// events: 'tsEvents', // needleplot.js
 		}, {
 			field: 'class',
 			title: 'Classification',
@@ -59,6 +65,17 @@ $(function() {
 			field: 'pdomain',
 			title: 'Protein Domain',
 			align: 'center',
+			formatter: function(value, row) {
+				if (value === undefined || value === '') return '';
+				var info = '<a href="#"><i class="fa fa-info-circle" data-toggle="tooltip" data-placement="top" title="' + row.pdomain_desc + '"></i></a>';
+				var span = '<span>' + value + ' </span>';
+				return span + info;
+			}
+		}, {
+			field: 'pdomain_desc',
+			title: 'Domain Description',
+			align: 'center',
+			visible: false,
 		}, {
 			field: 'patientsOfPosition',
 			title: 'Frq. in Gene',
@@ -87,6 +104,8 @@ $(function() {
 	});
 
 	table.on('load-success.bs.table', function(_event, _data, _args) {
+		$('[data-toggle="tooltip"]').tooltip();
+
 		var data = _data[0];
 		Init.requireJs(
 			"analysis_needle",
@@ -101,11 +120,15 @@ $(function() {
 	});
 
 	window.tsEvents = {
-		'click #transcript': function(_event, _value, _row, _index) {
+		'click #gene': function(_event, _value, _row, _index) {
 			Init.requireJs(
 				"analysis_needle",
 				"/rest/needleplot?cancer_type=" + _row.cancer_type + "&sample_id=" + _row.sample_id + "&gene=" + _row.gene + "&transcript=" + _row.transcript
 			);
 		}
 	};
+
+	// Jquery UI tooltip init.
+	//$(document).tooltip();
+	$('[data-toggle="tooltip"]').tooltip();
 });

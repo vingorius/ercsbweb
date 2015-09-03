@@ -1,5 +1,8 @@
 /* DEG Plot 
 --------------------------------------- */
+.chart_container {
+	width : 1600px;
+}
 .deg_color_range_axis path,
 .deg_color_range_axis line 	{
 	fill : none;

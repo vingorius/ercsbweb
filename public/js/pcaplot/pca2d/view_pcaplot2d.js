@@ -1,11 +1,17 @@
 var _2D = "pcaplot/pca2d/";
 
 define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], function(_utils, _size, _event)	{
-	var interface_figure = function(_data, _x, _y, _svg, _type)	{
+	var interfaceFigure = function(_data, _x, _y, _svg, _type)	{
 		switch(_type)	{
-			case "circle" : return circles(_data, _x, _y, _svg); break;
-			case "rect" : return rectangle(_data, _x, _y, _svg); break;
-			case "triangle" : return triangle(_data, _x, _y, _svg); break;
+			case "circle" : 
+				return circles(_data, _x, _y, _svg); 
+			break;
+			case "rect" : 
+				return rectangle(_data, _x, _y, _svg); 
+			break;
+			case "triangle" : 
+				return triangle(_data, _x, _y, _svg); 
+			break;
 		}
 	}
 
@@ -34,9 +40,7 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 	}
 
 	var view = function(_data)	{
-		var data = _data || [];
-		var size = data.size;
-		var e = _event || null;
+		var size = _data.size;
 
 		var svg = d3.select("#pcaplot_view_2d")
 		.append("svg")
@@ -47,10 +51,14 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 		.attr("transform", "translate(0, 0)");
 
 		var xAxis = d3.svg.axis()
-		.scale(data.x).orient("bottom").ticks(5);
+		.scale(_data.x)
+		.orient("bottom")
+		.ticks(5);
 
 		var yAxis = d3.svg.axis()
-		.scale(data.y).orient("left").ticks(5);
+		.scale(_data.y)
+		.orient("left")
+		.ticks(5);
 
 		svg.append("g")
 		.attr("class", "pca x axis")
@@ -59,8 +67,7 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 
 		svg.append("g")
 		.attr("class", "label_pcaplot_pc1")
-		.attr("transform", "translate(" + (size.rwidth / 2) + ", " 
-			+ (size.height - size.margin.top) + ")")
+		.attr("transform", "translate(" + (size.rwidth / 2) + ", " + (size.height - size.margin.top) + ")")
 		.append("text")
 		.text("PC1");
 
@@ -71,19 +78,24 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 
 		svg.append("g")
 		.attr("class", "label_pcaplot_pc2")
-		.attr("transform", "translate(" + (size.margin.left / 2) + ", " 
-			+ (size.rheight / 2) + ")")
-		.append("text").text("PC2").attr("transform", "rotate(-90)");
+		.attr("transform", "translate(" + (size.margin.left / 2) + ", " + (size.rheight / 2) + ")")
+		.append("text")
+		.text("PC2")
+		.attr("transform", "rotate(-90)");
 
-		for(var i = 0, len = data.data.sample_list.length ; i < len ; i++)	{
-			var pca = data.data.sample_list[i];
+		for(var i = 0, len = _data.data.sample_list.length ; i < len ; i++)	{
+			var pca = _data.data.sample_list[i];
 
-			interface_figure(data, pca.PC1, pca.PC2, svg, data.type(pca.TYPE).figure)
+			interfaceFigure(_data, pca.PC1, pca.PC2, svg, _data.type(pca.TYPE).figure)
 			.data([pca])
-			.on("mouseover", e.m_over)
-			.on("mouseout", e.m_out)
-			.style("stroke", function(_d) { return _utils.colour(pca.TYPE); })
-			.style("fill", function(_d) { return _utils.colour(pca.TYPE); });
+			.on("mouseover", _event.m_over)
+			.on("mouseout", _event.m_out)
+			.style("stroke", function(_d) { 
+				return _utils.colour(pca.TYPE); 
+			})
+			.style("fill", function(_d) { 
+				return _utils.colour(pca.TYPE); 
+			});
 		}
 	}
 

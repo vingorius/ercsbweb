@@ -1,7 +1,7 @@
 //var express = require('express');
 var request = require('supertest');
 var assert = require('assert');
-var host = 'http://localhost:3000';
+var host = 'http://localhost';
 
 describe('Tumorportal CMP Test Suite', function() {
     it('path가 존재하여야 한다.', function(done) {

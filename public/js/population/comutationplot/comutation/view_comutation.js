@@ -2,24 +2,28 @@ var COMUTATION = "population/comutationplot/comutation/";
 var VO = "population/comutationplot/vo_comutationplot";
 
 define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_comutation", VO], function(_utils, _size, _event, _VO)	{
+	var getAlteration = function(_type)	{
+		var type = _utils.definitionMutationName(_type);
+
+		return alteration = _utils.alterationPrecedence(type);
+	}
+
 	var view = function(_data)	{
-		var data = _data || [];
-		var size = data.size;
-		var e = _event || null;
+		var size = _data.size;
 		var vo = _VO.VO;
 
-		$("#comutationplot_heatmap").width(size.width * size.magnification);
+		$("#" + _data.class_name + "_heatmap").width(size.width * size.magnification);
 
-		var svg = d3.select("#comutationplot_heatmap")
+		var svg = d3.select("#" + _data.class_name + "_heatmap")
 		.append("svg")
-		.attr("class", "comutationplot_heatmap")
-		.attr("width", size.width * size.magnification)
+		.attr("class", _data.class_name + "_heatmap")
+		.attr("width", _data.is_patient ? size.width : size.width * size.magnification)
 		.attr("height", size.height)
 		.append("g")
 		.attr("transform", "translate(0, 0)");
 
 		var yAxis = d3.svg.axis()
-		.scale(data.y)
+		.scale(_data.y)
 		.orient("left");
 
 		svg.append("g")
@@ -27,48 +31,64 @@ define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_com
 		.attr("transform", "translate(0, 0)")
 		.call(yAxis);
 
-		var patient_path = svg.append("path")
-		.attr("class", "comutationplot_patient_path")
-		.attr("d", function(_d)	{
-			var patient = vo.getPatient();
-			patient = data.x(patient[patient.length - 1].sample) + data.x.rangeBand();
-			return "M " + patient + " 0 L " + patient + " " + size.height;
-		});
+		var ts = {};
 
-		var cell_group = svg.selectAll(".comutationplot_cellgroup")
-		.data(data.all_data)
+		var cell_group = svg.selectAll("." + _data.class_name + "_cellgroup")
+		.data(_data.all_data)
 		.enter().append("g")
-		.attr("class", "comutationplot_cellgroup")
-		.attr("transform", function(_d)	{
-			_d.x = data.x;
-			_d.y = data.y;
-			return "translate(" + data.x(_d.sample) + ", " + data.y(_d.gene) +")";
+		.attr("class", _data.class_name + "_cellgroup")
+		.attr("transform", function(_d, _i)	{
+			var target = $(this)[0];
+			var parent = target.parentNode;
+
+			_d.x = _data.x;
+			_d.y = _data.y;
+
+			if(getAlteration(_d.type).alteration === "Somatic Mutaion")	{
+				parent.appendChild(target);
+			}
+			return "translate(" + _data.x(_d.sample) + ", " + _data.y(_d.gene) +")";
 		});
 
 		var cell = cell_group.append("rect")
-		.attr("class", "comutationplot_cells")
+		.attr("class", function(_d) {
+			return "" + _data.class_name + "_cells " + _d.sample + "-" + _d.gene;	
+		})
 		.attr("x", 0)
-		.attr("y", 0)
-		// .style("stroke", function(_d) { 
-		// 	return _utils.colour(_utils.define_mutation_name(_d.type)); 
-		// })
-		// .style("stroke-width", function(_d) { 
-		// 	return 0.1;
-		// })
+		.attr("y", function(_d)	{
+			if(getAlteration(_d.type).alteration === "CNV")	{
+				return 0;
+			} 
+			else {
+				return (_data.y.rangeBand() / 2) - ((_data.y.rangeBand() / 2.5) / 2); 
+			}
+		})
+		.style("stroke", function(_d) { 
+			return "#fff"; 
+		})
+		.style("stroke-width", function(_d) { 
+			return 0;
+		})
 		.style("fill", function(_d) { 
-			return _utils.colour(_utils.define_mutation_name(_d.type)); 
+			return _utils.colour(_utils.definitionMutationName(_d.type)); 
 		})
-		.on("mouseover", e.m_over)
-		.on("mouseout", e.m_out)
-		.attr("width", function(_d) { 
-			return data.x.rangeBand() / size.left_between; 
-		})
-		.attr("height", function(_d) { 
-			return data.y.rangeBand() / size.top_between; 
+		.on("mouseover", _event.m_over)
+		.on("mouseout", _event.m_out)
+		.attr("width", _data.is_patient ? _data.x.rangeBand() : _data.x.rangeBand() / size.left_between)
+		.attr("height", function(_d) {
+			if(getAlteration(_d.type).alteration === "CNV")	{
+				_d.sign = 0;
+				return _data.y.rangeBand() / size.top_between; 
+			} 
+			else {
+				_d.sign = 2;
+				return (_data.y.rangeBand() / 3) / size.top_between; 
+			}
 		});
 
-		e.move_scroll();
+		_event.move_scroll();
 	}
+
 	return {
 		view : view
 	}

@@ -1,44 +1,42 @@
 define("size", [], function()   {
-	var make_a_division = function(_order)    {
-		var order = _order || {};
+	var makeDiv = function(_order)    {
 		var div = document.createElement("div");
 
-		Object.keys(order).map(function(_d)  {
+		if(!_order)	{
+			return div;
+		}
+
+		Object.keys(_order).map(function(_d)  {
 			if(_d === "attribute")  { 
-				set_a_division_attr(div, order[_d]); 
+				setAttr(div, _order[_d]); 
 			}
 			else if(_d === "style") { 
-				set_a_division_css(div, order[_d]); 
+				setCss(div, _order[_d]); 
 			}
 		});
 		return div;
 	}
 
-	var set_a_division_attr = function(_div, _order)    {
-		var div = _div || null;
-		var order = _order || {};
-
-		Object.keys(order).map(function(_d) {
-			div.setAttribute(_d, order[_d]);
+	var setAttr = function(_div, _order)    {
+		Object.keys(_order).map(function(_d) {
+			_div.setAttribute(_d, _order[_d]);
 		});
 	}
 
-	var set_a_division_css = function(_div, _order)   {
-		var div = _div || null;
-		var order = _order || {};
-
-		Object.keys(order).map(function(_d) {
-			div.style[_d] = order[_d];
+	var setCss = function(_div, _order)   {
+		Object.keys(_order).map(function(_d) {
+			_div.style[_d] = _order[_d];
 		});
 	}
 
-	var define_size = function()  {
+	var definitionSize = function()  {
 		if(arguments.length < 1 || arguments.length !== 5)    {
 			return undefined;
 		}
 
-		var width = get_original_size(arguments[0]).width;
-		var height = get_original_size(arguments[0]).height;
+		var target = $("#" + arguments[0]);
+		var width = target.width();
+		var height = target.height();
 
 		return {
 			width : width,
@@ -54,18 +52,8 @@ define("size", [], function()   {
 		}
 	}
 
-	var get_original_size = function(_id)   {
-		var layout = $("#" + _id);
-
-		return {
-			width : layout.width(),
-			height : layout.height()
-		}
-	}
-
 	return {
-		define_size : define_size,
-		get_original_size : get_original_size,
-		mkdiv : make_a_division 
+		definitionSize : definitionSize,
+		mkdiv : makeDiv 
 	};
 });

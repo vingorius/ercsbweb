@@ -1,5 +1,4 @@
-/* Needle plot
----------------------------------------------- */
+/* Needle Plot style css attribute */
 #needleplot_view  {
 	overflow: scroll;
 }
@@ -43,6 +42,7 @@
 .needle_gene_full_path_g    {
 	fill : #DADFE1;
 }
+/* Preserve event css attirubute during processing transition */
 .preserve_events	{
 	pointer-events : none;
 }

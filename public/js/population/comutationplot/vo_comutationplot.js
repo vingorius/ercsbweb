@@ -5,12 +5,10 @@ define(VO, ["utils"], function(_utils)	{
 		var init_sample = [];
 		var init_gene = [];
 		var init_mutation = [];
-		var init_patient = [];
 		var sample_list = [];
 		var formated_data = [];
 		var gene_list = [];
 		var mutation_list = [];
-		var patient_list = [];
 		var sort_order = [];
 		var init_layout_width = 0;
 		var init_layout_height = 0;
@@ -46,12 +44,6 @@ define(VO, ["utils"], function(_utils)	{
 			},
 			setMutation : function(_mutation_list)	{
 				mutation_list = _mutation_list;
-			},
-			setInitPatient : function(_init_patient)	{
-				init_patient = _init_patient;
-			},
-			setPatient : function(_patient_list)	{
-				patient_list = _patient_list;
 			},
 			setSortOrder : function(_sort_order)	{
 				sort_order = _sort_order;
@@ -112,12 +104,6 @@ define(VO, ["utils"], function(_utils)	{
 			},
 			getMutation : function()	{
 				return mutation_list;
-			},
-			getInitPatient : function()	{
-				return init_patient;
-			},
-			getPatient : function()	{
-				return patient_list;
 			},
 			getSortOrder : function()	{
 				return sort_order;

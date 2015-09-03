@@ -1,3 +1,6 @@
+.chart_container {
+	width : 1600px;
+}
 .xyplot_fdrlevelline	{
 	stroke: #2C3E50;
 	stroke-dasharray : 3, 3;

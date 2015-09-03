@@ -12,8 +12,10 @@ var Init = (function()	{
 
 			require(["router", "utils"], function(_router, _utils)	{
 				(function()	{
-					_utils.remove_svg("svg");
-					_utils.loading(_chartName, ".chart_container");
+					if(document.querySelector(".chart_container") !== null)	{
+						_utils.removeSvg("svg");
+						_utils.loading(_chartName, ".chart_container").start();
+					}
 					_router(_chartName, _dataUrl);
 				}());
 			});

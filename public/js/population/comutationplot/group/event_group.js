@@ -12,18 +12,16 @@ define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _siz
 		return result;
 	}
 
-	var name_click = function(_this, _group)	{
-		var vo = _VO.VO;
-		var separate = _sort.group(_group, _group, vo.getFormatedData().sample);
-		var ex = loopingGroup(separate);
-		var samples = _sort.spliceAndUnshiftExclusive(getSampleName(ex));
-		magnification = 3;
-		vo.setSample(samples);
-		vo.setSortOrder([]);
+	var clickSort = function(_this, _sort_order, _d)	{
+		var ex = _sort.loopingGroup(_sort_order);
+		var samples = getSampleName(ex);
+		magnification = 2;
 
-		var x = _utils.ordinalScale(vo.getSample(), 0, vo.getWidth() * magnification);
-		var y = _utils.ordinalScale(vo.getGene(), 0, vo.getHeight() - vo.getMarginBottom())
-		var group = d3.select(_this);
+		_VO.VO.setSample(samples);
+		_VO.VO.setSortOrder(_sort_order);
+
+		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, _VO.VO.getWidth() * magnification);
+		var y = _utils.ordinalScale(_VO.VO.getGene(), 0, _VO.VO.getHeight() - _VO.VO.getMarginBottom())
 		var sample = d3.selectAll(".comutationplot_sample_bargroup");
 		var comutation = d3.selectAll(".comutationplot_cellgroup");
 
@@ -32,118 +30,52 @@ define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _siz
 		changeComutation(x, y, comutation);
 	}
 
-	var multi_click = function(_this, _group)	{
-		var vo = _VO.VO;
-		var sort_order = (vo.getSortOrder().length < 1) ? 
-		_sort.group(_group, _group, vo.getFormatedData().sample) : 
-		loopingMultiSort(vo.getSortOrder(), _group);
-		var ex = loopingGroup(sort_order);
-		var samples = _sort.spliceAndUnshiftExclusive(getSampleName(ex));
-		magnification = 3;
-		vo.setSortOrder(sort_order);
-		vo.setSample(samples);
-
-		var x = _utils.ordinalScale(vo.getSample(), 0, vo.getWidth() * magnification);
-		var y = _utils.ordinalScale(vo.getGene(), 0, vo.getHeight() - vo.getMarginBottom())
-		var group = d3.select(_this);
-		var sample = d3.selectAll(".comutationplot_sample_bargroup");
-		var comutation = d3.selectAll(".comutationplot_cellgroup");
-
-		changeGroup(x);	
-		changeSample(x, sample);
-		changeComutation(x, y, comutation);	
-	}
-
-	var loopingMultiSort = function(_sort_order, _group)	{
-		var vo = _VO.VO;
-		var result = [];
-
-		for(var i = 0, len = _sort_order.length ; i < len ; i++)	{
-			var sort_order = _sort_order[i];
-			var separate = _sort.group(sort_order, _group, vo.getFormatedData().sample);
-			
-			$.merge(result, separate);
-		}
-		return result;
-	}
-
-	var loopingGroup = function(_separate)	{
-		var result = [];
-
-		for(var i = 0, len = _separate.length ; i < len ; i++)	{
-			var separate = _separate[i];
-			var ex = _sort.exclusiveGroup(separate, separate.length);
-
-			$.merge(result, ex);
-		}
-		return result;
-	}
-
 	var changeGroup = function(_x)	{
-		var group_rects = d3.selectAll(".comutationplot_bar_group_rects");
-
-		group_rects
-		.transition().duration(400)
-		.attr("x", function(_d)	{
-			_d.x = _x;
-			return _x(_d.sample);
-		});
+		_utils.attributeXY(d3.selectAll(".comutationplot_bar_group_rects"), "x", _x, "sample", false);
 	}
 
 	var changeSample = function(_x, _sample)	{
-		_sample
-		.transition().duration(400)
-		.attr("transform", function(_d)	{
-			_d.x = _x;
-			return "translate(" + _x(_d.sample) + ", 0)";
-		});
+		_utils.translateXY(_sample, _x, 0, "sample", false, false);
 	}
 
 	var changeComutation = function(_x, _y, _comutation)	{
-		_comutation
-		.transition().duration(400)
-		.attr("transform", function(_d)	{
-			_d.x = _x;
-			_d.y = _y;
-			return "translate(" + _x(_d.sample) + ", " + _y(_d.gene) + ")";
-		});
+		_utils.translateXY(_comutation, _x, _y, "sample", "gene", false, false);
 	}
 
-	var name_over = function(_d)	{
-		var target = d3.select(this);
-		var e = d3.event;
-
+	var nameMouseover = function(_this, _name, _data)	{			
 		_utils.tooltip(
-			e, 
-			"sample : <span style='color : red;'>"  
-			+ _d.sample 
-			+ (!_d.value ? "" : "</span></br>value : <span style='color : red;'>" + _d.value)
-			+ "</span>",
-			e.pageX, e.pageY
-		);
+			_this, 
+			"<b>Clinical " + _name + "</b></br>sample : "  + _data.sample 
+			+ "</br>value : " + (!_data.value ? "NA" : _data.value),
+			"rgba(15, 15, 15, 0.6)");
 
-		target
+		d3.select(_this)
 		.transition().duration(250)
 		.style("stroke", "#000")
 		.style("stroke-width", 1);
 	}
 
-	var name_out = function(_d)	{
-		var target = d3.select(this);
+	var explainMouseover = function(_d)	{
+		_utils.tooltip(
+			this, "<b>" + _d.name + "</b></br>click to sort </br>alt + click add to key",
+			"rgba(178, 0, 0, 0.6)");
+	}
 
+	var commonMouseout = function(_this, _type)		{
+		if(_type === "rect")	{
+			d3.select(_this)
+			.transition().duration(250)
+			.style("stroke", function(_d)	{
+				return null;
+			});
+		}
 		_utils.tooltip();
-
-		target
-		.transition().duration(250)
-		.style("stroke", function(_d)	{
-			return null;
-		});
 	}
 
 	return 	{
-		nclick : name_click,
-		mclick : multi_click,
-		nover : name_over,
-		nout : name_out
+		clickSort : clickSort,
+		nover : nameMouseover,
+		eover : explainMouseover,
+		mout : commonMouseout
 	}
 });

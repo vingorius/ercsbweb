@@ -5,7 +5,7 @@ var GENE = "comutationplot/gene/";
 var SAMPLE = "comutationplot/sample/";
 var PQ = "comutationplot/pq/";
 var COMUTS_NAVI = "comutationplot/navigation/";
-var LEGEND = "legend/setting_legend";
+var LEGEND = "chart/legend/setting_legend";
 
 define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "setting_gene", PQ + "setting_pq", SAMPLE + "setting_sample", COMUTS_NAVI + "setting_comutationnavigation", LEGEND ], function(_utils, _VO, _setting_comutation, _setting_gene, _setting_pq, _setting_sample, _setting_comutationnavigation, _setting_legend)	{
 	var get_list_by_key = function(_key, _list)	{
@@ -17,7 +17,6 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 				result.push(list[i][key]);
 			}
 		}
-		console.log(result);
 		return result;
 	}
 	var get_all_data = (function()	{
@@ -38,7 +37,7 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 
 			if(index > samples.length - 1)  {  return;  }
 
-			sampleColumn = _utils.search_in_jsonarray(samples[index], "name", sample_list);
+			sampleColumn = _utils.searchObjArray(samples[index], "name", sample_list);
 
 			sampleColumn.gene_list.forEach(function(_d, _i)  {
 				aberrations = get_all_aberration_list(_d);
@@ -78,8 +77,8 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		var result = { type : [], value : [] };
 
 		gene.forEach(function(_d, _i)   {
-			if($.inArray(_utils.define_mutation_name(_d.type), result.type) < 0)    {
-				result.type.push(_utils.define_mutation_name(_d.type));
+			if($.inArray(_utils.definitionMutationName(_d.type), result.type) < 0)    {
+				result.type.push(_utils.definitionMutationName(_d.type));
 			}
 			result.value.push(_d.value);
 		});
@@ -102,7 +101,7 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		var group_array = define_groups(_group_list);
 
 		for(var i = 0, len = _data.length ; i < len ; i++)	{
-			var group = _utils.get_json_in_array(_data[i].sample_group, group_array, "group_name");
+			var group = _utils.getObjInArray(_data[i].sample_group, group_array, "group_name");
 			if(group)	{
 				group.group_list.push(_data[i]);
 			}
@@ -125,16 +124,17 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		var result = _result || { type_list : [], value_list : [] };
 
 		list.map(function(_d, _i)   {
-			if(_utils.check_array_in_json(_d))  {
-				get_mutation_list(_utils.get_array_in_json(_d)[0], result);
+			if(_utils.isArrayInObj(_d))  {
+				get_mutation_list(_utils.getArrayInObj(_d)[0], result);
 			}
 			else {
-				typeName = _utils.define_mutation_name(_d.type);
+				typeName = _utils.definitionMutationName(_d.type);
 				if($.inArray(typeName, result.type_list) < 0) { 
 					result.type_list.push(typeName); 
 				}
 			}
 		});
+		result.type_list.splice(6, 1);
 		return result;
 	}
 
@@ -154,7 +154,7 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 
 		for (var i = 0, len = _all.length ; i < len ; i++)	{
 			for(var j = 0, leng = _all[i].type.length ; j < leng ; j++)	{
-				var mutation = _utils.get_json_in_array(_all[i].type[j], mutations, "name");
+				var mutation = _utils.getObjInArray(_all[i].type[j], mutations, "name");
 				if(mutation)	{
 					mutation.importance += 1;
 				}
@@ -232,7 +232,6 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 			var sample = _data.sample_list[i];
 			var geneStr = makeImportanceGeneStr(sample.gene_list, mappingGene);
 			sample.sort_text = geneStr;
-			console.log(geneStr)
 		}
 		_data.sample_list.sort(function(_a, _b)	{
 			return (_a.sort_text > _b.sort_text) ? 1 : -1;
@@ -259,19 +258,24 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		_VO.VO.setGene(genes);
 
 		var all_data = get_all_data(sample_list, samples);
-		console.log(all_data)
 		var importance = mutation_importance(all_data, mutations);
 		var importance_name = importance_by_name(importance);
 		var groups = group_by_sample(all_data, _data.data.group_list);
 		var after_sort_groups = sort_by_groupname(groups);
 
-		_utils.remove_svg("comutationplot_legend");
+		_utils.removeSvg("comutationplot_legend");
 		
 		_setting_comutation(after_sort_groups, samples, genes, _data);
 		_setting_gene(after_sort_groups, genes, importance_name);
 		_setting_pq(_data.data.symbol_list, genes);
 		_setting_sample(after_sort_groups, samples, importance_name);
 		_setting_comutationnavigation(samples, genes);
-		_setting_legend(mutations, "comutationplot_legend", null, importance);
+		_setting_legend({
+			data : mutations,
+			view_id : "comutationplot_legend",
+			type : "generic mutation",
+			chart : "comutation",
+		});
+		// _setting_legend(mutations, "comutationplot_legend", null, importance);
 	};
 });

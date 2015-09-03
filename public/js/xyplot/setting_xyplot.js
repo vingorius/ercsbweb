@@ -11,7 +11,7 @@ define(XY + "setting_xyplot", ["utils", "size", XY + "view_xyplot"], function(_u
 
 	return function(_data)	{
 		var data = _data || [];
-		var size = _size.define_size("xyplot_view", 20, 20, 20, 20);
+		var size = _size.definitionSize("xyplot_view", 20, 20, 20, 20);
 		var radius = 3;
 
 		var xmax = get_max("x", data.data.plot_list);
@@ -24,7 +24,7 @@ define(XY + "setting_xyplot", ["utils", "size", XY + "view_xyplot"], function(_u
 		var y = _utils.linearScale(ymin, ymax, size.rheight, size.margin.top)
 		.clamp(true);
 
-		  _utils.remove_svg("xyplot_view");
+		  _utils.removeSvg("xyplot_view");
 
 		_view.view({
 			data : data,

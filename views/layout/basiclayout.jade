@@ -1,25 +1,25 @@
 doctype html
 html
-    meta(charset='utf-8')
-    meta(content='IE=edge', http-equiv='X-UA-Compatible')
-    meta(content='', name='description')
-    meta(content='', name='author')
-    meta(name='viewport', content='width=device-width, initial-scale=1')
-    head
-        title= title
-        block stylesheets
-            link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.css')
-            link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.css')
-            link(rel='stylesheet', href='/bower_components/fontawesome/css/font-awesome.css')
-            link(rel='stylesheet', href='/stylesheets/style.css')
-    body
-            block header
-                include header.jade
-            block content
-            //- block footer
-            //-     include footer.jade
-            block scripts
-                script(src='/bower_components/jquery/dist/jquery.js')
-                script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
-                script(src='/bower_components/d3/d3.js')
-                script(src='/js/main.js')
+	meta(charset='utf-8')
+	meta(content='IE=edge,chrome=1', http-equiv='X-UA-Compatible')
+	meta(content='', name='description')
+	meta(content='', name='author')
+	meta(name='viewport', content='width=device-width, initial-scale=1.0')
+	head
+		title= title
+		block stylesheets
+			link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap.min.css')
+			link(rel='stylesheet', href='/bower_components/bootstrap/dist/css/bootstrap-theme.min.css')
+			link(rel='stylesheet', href='/bower_components/fontawesome/css/font-awesome.min.css')
+			link(rel='stylesheet', href='/stylesheets/style.css')
+	body
+		block header
+			include header.jade
+		block content
+		//- block footer
+		//-     include footer.jade
+		block scripts
+			script(src='/bower_components/jquery/dist/jquery.min.js')
+			script(src='/bower_components/bootstrap/dist/js/bootstrap.min.js')
+			script(src='/bower_components/d3/d3.js')
+			script(src='/js/main.js')

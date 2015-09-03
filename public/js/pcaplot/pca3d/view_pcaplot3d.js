@@ -2,9 +2,9 @@ var _3D = "pcaplot/pca3d/";
 
 define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
-		var data = _data || {};
-		var size = data.size;
-		var v = data.vector;
+		var data = _data;
+		var size = _data.size;
+		var v = _data.vector;
 		var default_axis = { x : 0.5, y : -0.5, z : 0 };
 		var event_targets = [];
 
@@ -24,7 +24,7 @@ define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], funct
 		renderer.setSize(size.rwidth, size.rheight);
 		renderer.setClearColor(0xFFFFFF);
 
-		data.div.appendChild(renderer.domElement);
+		_data.div.appendChild(renderer.domElement);
 
 		object3d.rotation.x = default_axis.x;
 		object3d.rotation.y = default_axis.y;
@@ -141,7 +141,8 @@ define(_3D + "view_pcaplot3d", ["utils", "size", _3D + "event_pcaplot3d"], funct
 		window.onmouseup = e.win_m_up;
 		window.onmousemove = e.win_m_move;
 
-		$("#pcaplot_view_3d canvas").on("mousemove", e.ray_mouse_move)
+		$("#pcaplot_view_3d canvas")
+		.on("mousemove", e.raytracingMousemove);
 
 		renderer.render(scene, camera);
 

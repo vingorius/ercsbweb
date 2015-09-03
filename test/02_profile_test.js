@@ -2,7 +2,7 @@
 var request = require('supertest');
 var assert = require('assert');
 var getConnection = require('../routes/modules/mysql_connection');
-var host = 'http://localhost:3000';
+var host = 'http://localhost';
 
 describe('Profile Test Suite', function() {
     var user = {

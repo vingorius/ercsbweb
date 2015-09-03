@@ -1,36 +1,22 @@
 extends ../layout/basiclayout
 
 block append stylesheets
-    link(rel='stylesheet', href='/stylesheets/fixedsidebar.css')
-    link(rel='stylesheet', href='/bower_components/jquery-ui/themes/smoothness/jquery-ui.min.css')
+	link(rel='stylesheet', href='/stylesheets/sidebarlayout.css')
 
 block content
 
-    div.sidebar.collapse.in
-        block leftmenu
+	div#sidebar.sidebar
+		block leftmenu
 
-    div.seperator
+	div#seperator.seperator
+		div#seperatorbar.seperatorbar
+			div#threedot.threedot
+				i.glyphicon.glyphicon-option-vertical
+			div#directionmark.directionmark
+				i#directionicon.fa.fa-chevron-left.fa-3x
 
-    div.content
-        block rightcontent
+	div#maincontent.maincontent
+		block rightcontent
 
 block append scripts
-    script(src='/bower_components/jquery-ui/jquery-ui.js')
-    script.
-        $(document).ready(function() {
-            /*
-            * 좌측 메뉴 우상단에 있는 축소/확대 버튼을 토글한다.
-            */
-            //- $("#menu-toggle").click(function(e) {
-            //-     e.preventDefault();
-            //-     $("#wrapper").toggleClass("toggled");
-            //-     $(this).find("i").toggleClass("glyphicon-chevron-left glyphicon-chevron-right");
-            //- });
-            $('.seperator').click(function(e) {
-                e.preventDefault();
-                //- $('.sidebar').toggleClass('in',500,'easeOutSine');
-                $('.sidebar').toggle();
-                $('.seperator').toggleClass('toggled',500,'easeOutSine');
-                $('.content').toggleClass('toggled',500,'easeOutSine');
-            });
-        });        
+	script(src='/js/sidebarlayout.js')

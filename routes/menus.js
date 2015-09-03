@@ -21,6 +21,11 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/:folder/:page', function(req, res, next) {
+	//console.log(loc, res.locals.sample.id, res.locals.sample.type);
+	// 사용자가 화면 주소를 복사하여 다른 브라우저를 열고 붙여넣기했을 때 이 값이 없이 들어올 수 있다.
+	if (!res.locals.sample.id || !res.locals.sample.type)
+	 	res.redirect('/menus');
+
 	var loc = 'menus/' + req.params.folder + '/' + req.params.page;
 	res.render(loc);
 });

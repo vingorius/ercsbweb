@@ -1,99 +1,162 @@
 define("chart/legend/view_legend", ["utils", "size"], function(_utils, _size)    {
-	var interface_figure = function(_data, _size, _svg, _type)	{
-		switch(_data.figure(_type).figure)	{
-			case "circle" : return circles(_data, _size, _svg, _type); break;
-			case "rect" : return rectangle(_data, _size, _svg, _type); break;
-			case "triangle" : return triangle(_data, _size, _svg, _type); break;
+	var interfaceAlteration = function(_data, _g)	{
+		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
+			var type = _data.data.type_list[i];
+			var figure = makeFigureAlteration(_data, _g, type.alteration, type.name);			
 		}
 	}
 
-	var circles = function(_data, _size, _svg, _type)	{
-		return _svg.append("circle")
-		.attr("class", "legend_circles")
-		.attr("cx", _data.arranged(_type, "figure", _data.size_set, _size).x + _size.rect_size / 2)
-		.attr("cy", _data.arranged(_type, "figure", _data.size_set, _size).y + _size.rect_size / 2)
-		.attr("r", _size.rect_size / 2);
+	var makeFigureAlteration = function(_data, _g, _alteration, _name)	{
+		switch(_alteration)	{
+			case "CNV" : 
+				return figureOfCnv(_data, _g, _name);
+			break;
+			case "mRNA Expression (log2FC)" :  
+				return figureOfExp(_data, _g, _name);
+			break;
+			case "Somatic Mutaion" : 
+				return figureOfSomatic(_data, _g, _name);
+			break;
+		}
 	}
 
-	var rectangle = function(_data, _size, _svg, _type)	{
-		return _svg.append("rect")
-		.attr("class", "legend_rect")
-		.attr("x", _data.arranged(_type, "figure", _data.size_set, _size).x)
-		.attr("y", _data.arranged(_type, "figure", _data.size_set, _size).y)
-		.attr("width", _size.rect_size)
-		.attr("height", _size.rect_size);
+	var figureOfCnv = function(_data, _g, _name)	{
+		var width = 4.5;
+		var height = 15;
+
+		return _g.append("rect")
+		.attr("class", "legend_figure_cnv")
+		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
+		.attr("y", _data.arranged(_name, "figure", _data.size_set, _data.size).y)
+		.attr("width", width)
+		.attr("height", height)
+		.style("fill", _utils.colour(_utils.definitionMutationName(_name)));
 	}
 
-	var triangle = function(_data, _size, _svg, _type)	{
-		return _svg.append("path")
-		.attr("class", "pcaplots_triangle")	
-		.attr("d", d3.svg.symbol().type("triangle-up"))
-		.attr("transform", 
-			"translate(" 
-			+ _data.arranged(_type, "figure", _data.size_set, _size).x 
-			+  ", " 
-			+ _data.arranged(_type, "figure", _data.size_set, _size).y 
-			+ ")"
-		);
+	var figureOfExp = function(_data, _g, _name)	{
+		var width = 4.5;
+		var height = 15;
+
+		return _g.append("rect")
+		.attr("class", "legend_figure_exp")
+		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
+		.attr("y", _data.arranged(_name, "figure", _data.size_set, _data.size).y)
+		.attr("width", width)
+		.attr("height", height)
+		.style("stroke", _utils.colour(_utils.definitionMutationName(_name)));
+	}
+
+	var figureOfSomatic = function(_data, _g, _name)	{
+		var width = 4.5;
+		var height = 15;
+
+		return _g.append("rect")
+		.attr("class", "legend_figure_somatic")
+		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
+		.attr("y", (_data.arranged(_name, "figure", _data.size_set, _data.size).y + height) - 10)
+		.attr("width", width)
+		.attr("height", height / 3)
+		.style("fill", _utils.colour(_utils.definitionMutationName(_name)));
+	}
+
+	var interfaceNeedleplot = function(_data, _g)	{
+		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
+			var type = _data.data.type_list[i];
+			var figure = figureOfNeedleplot(_data, _g, type.name);
+		}
+	}
+
+	var figureOfNeedleplot = function(_data, _g, _name)	{
+		var radius = 15;
+
+		return _g.append("circle")
+		.attr("class", "legend_figure_needleplot")
+		.attr("cx", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
+		.attr("cy", (_data.arranged(_name, "figure", _data.size_set, _data.size).y + radius) - 7)
+		.attr("r", radius / 5)
+		.style("fill", _utils.colour(_utils.definitionMutationName(_name)));
+	}
+	
+	var interfacePcaPlot = function(_data, _g)	{
+		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
+			var type = _data.data.type_list[i];
+			var figure = makeFigureName(_data, _g, type.name);
+		}
+	}
+
+	var makeFigureName = function(_data, _g, _name)	{
+		switch(_name)	{
+			case "Primary Solid Tumor" :
+				return figureOfPcaplot1(_data, _g, _name);
+			break; 
+			case "Solid Tissue Normal" : 
+				return figureOfPcaplot2(_data, _g, _name);
+			break;
+		}
+	}
+
+	var figureOfPcaplot1 = function(_data, _g, _name)	{
+		var radius = 5;
+
+		return _g.append("circle")
+		.attr("class", "legend_figure_pcaplot")
+		.attr("cx", _data.arranged(_name, "figure", _data.size_set, _data.size).x + radius)
+		.attr("cy", _data.arranged(_name, "figure", _data.size_set, _data.size).y + radius * 1.5)
+		.attr("r", radius)
+		.style("fill", _utils.colour(_name));
+	}
+
+	var figureOfPcaplot2 = function(_data, _g, _name)	{
+		var rect_size = 10;
+
+		return _g.append("rect")
+		.attr("class", "legend_figure_pcaplot")
+		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
+		.attr("y", _data.arranged(_name, "figure", _data.size_set, _data.size).y + (rect_size / 5) * 1.5)
+		.attr("width", rect_size)
+		.attr("height", rect_size)
+		.style("fill", _utils.colour(_name));
 	}
 
 	var view = function(_data)  {
-		var data = _data || {};
-		var size = data.size;
+		var size = _data.size;
 
-		
-
-		var svg = d3.select("#" + data.id)
+		var svg = d3.select("#" + _data.id)
 		.append("svg")
-		.attr("class", data.id)
+		.attr("class", _data.id)
 		.attr("width", size.width)
 		.attr("height", size.height)
 		.append("g")
 		.attr("transform", "translate(0, 0)");
 
 		var legendGroup = svg.selectAll(".legendGroup")
-		.data(data.data.type_list)
+		.data(_data.data.type_list)
 		.enter().append("g")
 		.attr("class", "legendGroup")
 		.attr("transform", function(_d) {
 			return "translate(" + size.margin.left + ", " + size.margin.top + ")";
 		});
-		
-		if(data.figure)	{
-			for(var i = 0, len = data.data.type_list.length ; i < len ; i++)	{
-				var type = data.data.type_list[i];
 
-				interface_figure(data, size, legendGroup, type)
-				.style("fill", function(_d) { 
-					return _utils.colour(type); 
-				});
-			}
+		if(_data.chart === "comutation")	{
+			interfaceAlteration(_data, legendGroup);
 		}
-		else {
-			var rect = legendGroup.append("rect")
-			.attr("x", function(_d) { 
-				return data.arranged(_d, "figure", data.size_set, size).x; 
-			})
-			.attr("y", function(_d) { 
-				return data.arranged(_d, "figure", data.size_set, size).y; 
-			})
-			.attr("width", size.rect_size)
-			.attr("height", size.rect_size)
-			.style("fill", function(_d) { 
-				return _utils.colour(_d);
-			});
+		else if(_data.chart === "needleplot")		{
+			interfaceNeedleplot(_data, legendGroup);
+		}
+		else if(_data.chart === "pcaplot")	{
+			interfacePcaPlot(_data, legendGroup);
 		}
 
 		var text = legendGroup.append("text")
 		.attr("class", "legend_text")
 		.attr("x", function(_d) { 
-			return data.arranged(_d, "text", data.size_set, size).x; 
+			return _data.arranged(_d.name, "text", _data.size_set, size).x; 
 		})
 		.attr("y", function(_d) { 
-			return data.arranged(_d, "text", data.size_set, size).y; 
+			return _data.arranged(_d.name, "text", _data.size_set, size).y; 
 		})
 		.text(function(_d) { 
-			return _d; 
+			return _d.name; 
 		});
 	}
 	return {

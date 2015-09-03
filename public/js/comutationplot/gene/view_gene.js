@@ -2,9 +2,7 @@ var GENE = "comutationplot/gene/";
 
 define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
-		var data = _data || {};
-		var size = data.size;
-		var e = _event || null;
+		var size = _data.size;
 
 		var svg = d3.select("#comutationplot_gene")
 		.append("svg")
@@ -15,12 +13,12 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.attr("transform", "translate(0, 0)");
 
 		var xAxis = d3.svg.axis()
-		.scale(data.x)
+		.scale(_data.x)
 		.orient("bottom")
-		.tickValues([0, data.max / 2, data.max]);
+		.tickValues([0, _data.max / 2, _data.max]);
 
 		var yAxis = d3.svg.axis()
-		.scale(data.y)
+		.scale(_data.y)
 		.orient("right");
 
 		svg.append("g")
@@ -33,12 +31,12 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.attr("transform", "translate(" + (size.width - size.margin.right) + ", 0)")
 		.call(yAxis)
 		.selectAll("text")
-		.on("mouseover", e.axis_m_over)
-		.on("mouseout", e.axis_m_out);
+		.on("mouseover", _event.axis_m_over)
+		.on("mouseout", _event.axis_m_out);
 
 		svg.append("g")
 		.data([{ 
-			data : data.data, 
+			data : _data.data, 
 			size : size, 
 			status : false 
 		}])
@@ -46,7 +44,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 1.5) + ", " + (size.height - 2) + ")")
 		.append("text")
 		.text("#mutations")
-		.on("click", e.sort_by_value);
+		.on("click", _event.sort_by_value);
 
 		$(".gene_explain")
 		.tooltip({
@@ -56,7 +54,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		});
 
 		var bar_group = svg.selectAll(".comutationplot_gene_bargroup")
-		.data(data.data)
+		.data(_data.data)
 		.enter().append("g")
 		.attr("class", "comutationplot_gene_bargroup") 
 		.attr("transform", "translate(0, 0)");
@@ -70,14 +68,14 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.style("fill", function(_d) { 
 			return _utils.colour(_d.type); 
 		})
-		.on("mouseover", e.bar_m_over)
-		.on("mouseout",e.bar_m_out)
+		.on("mouseover", _event.bar_m_over)
+		.on("mouseout",_event.bar_m_out)
 		.attr("x", function(_d) { 
-			_d.x = data.x; 
+			_d.x = _data.x; 
 			return _d.x(_d.start + _d.count); 
 		})
 		.attr("y", function(_d) { 
-			_d.y = data.y; 
+			_d.y = _data.y; 
 			return _d.y(_d.gene); 
 		})
 		.attr("width", function(_d) { 

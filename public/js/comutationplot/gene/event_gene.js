@@ -2,56 +2,46 @@ var GENE = "comutationplot/gene/";
 var VO = "comutationplot/vo_comutationplot";
 
 define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	{
-	var get_axis_mouseover = function(_d)	{
-		var target = d3.select(this);
-
-		target.transition().duration(100)
+	var axisMouseover = function(_d)	{
+		d3.select(this)
+		.transition().duration(100)
 		.style("font-size", 14);
 	}
 
-	var get_axis_mouseout = function(_d)	{
-		var target = d3.select(this);
-
-		target.transition().duration(100)
+	var axisMouseout = function(_d)	{
+		d3.select(this).
+		transition().duration(100)
 		.style("font-size", 12);
 	}
 
-	var get_bar_mouseover = function(_d)	{
-		var target = d3.select(this);
-		var e = d3.event;
-
+	var barMouseover = function(_d)	{
 		_utils.tooltip(
-			e, 
-			"Gene : <span style='color : red;'>" 
-			+ _d.gene 
-			+ "</span></br>Count : <span style='color : red;'>" 
-			+ _d.count
-			+ "</span>", 
-			e.pageX, e.pageY
-		);
+			this, 
+			"gene : " + _d.gene + "</br>count : " + _d.count, 
+			"rgba(15, 15, 15, 0.6)");
 
-		target.transition().duration(100)
+		d3.select(this).
+		transition().duration(100)
 		.style("stroke", "black");
 	}
 
-	var get_bar_mouseout = function(_d)	{
-		var target = d3.select(this);
-		var e = d3.event;
-		
+	var barMouseout = function(_d)	{
 		_utils.tooltip();
-		target.transition().duration(100)
+		
+		d3.select(this)
+		.transition().duration(100)
 		.style("stroke", "#BFBFBF");
 	}
 
 	var ascending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "count") > _utils.get_list_sum(_b.list, "count")) ? 1 : -1;
+		return (_utils.getSumOfList(_a.list, "count") > _utils.getSumOfList(_b.list, "count")) ? 1 : -1;
 	}
 
 	var descending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.list, "count") < _utils.get_list_sum(_b.list, "count")) ? 1 : -1;
+		return (_utils.getSumOfList(_a.list, "count") < _utils.getSumOfList(_b.list, "count")) ? 1 : -1;
 	}
 
-	var sorting_get_name = function(_sorting_data)	{
+	var sortingByName = function(_sorting_data)	{
 		var result = [];
 
 		for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
@@ -60,7 +50,7 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 		return result;
 	}
 
-	var redraw_yaxis = function(_sorting_data, _size)	{
+	var redraw = function(_sorting_data, _size)	{
 		var vo = _VO.VO;
 		var y = _utils.ordinalScale(vo.getGene(), _size.margin.top, (_size.height - _size.margin.top));
 		var x = _utils.ordinalScale(vo.getSample(),vo.getMarginLeft(), (vo.getWidth() - vo.getMarginLeft()));
@@ -91,7 +81,7 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 		});
 	}
 
-	var sort_by_value = function(_d)	{
+	var sortByValue = function(_d)	{
 		var sort_data;
 
 		if(_d.status)	{
@@ -102,14 +92,14 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 			sort_data =_d.data.sort(descending);
 			_d.status = true;
 		}
-		_VO.VO.setGene(sorting_get_name(sort_data));
-		redraw_yaxis(sorting_get_name(sort_data), _d.size);
+		_VO.VO.setGene(sortingByName(sort_data));
+		redraw(sortingByName(sort_data), _d.size);
 	}
 	return {
-		axis_m_over : get_axis_mouseover,
-		axis_m_out : get_axis_mouseout,
-		bar_m_over : get_bar_mouseover,
-		bar_m_out : get_bar_mouseout,
-		sort_by_value : sort_by_value
+		axis_m_over : axisMouseover,
+		axis_m_out : axisMouseout,
+		bar_m_over : barMouseover,
+		bar_m_out : barMouseout,
+		sort_by_value : sortByValue
 	}
 });

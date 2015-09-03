@@ -10,7 +10,18 @@ var SORT = "population/comutationplot/sort_comutationplot";
 var LEGEND = "chart/legend/setting_legend";
 
 define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setting_comutation", GENE + "setting_gene", PQ + "setting_pq", SAMPLE + "setting_sample", COMUTS_NAVI + "setting_comutationnavigation", LEGEND, SORT ], function(_utils, _VO, _setting_group, _setting_comutation, _setting_gene, _setting_pq, _setting_sample, _setting_comutationnavigation, _setting_legend, _sort)	{
-	/* get only gene or sample make for axis and nessecery for sorting mutation */
+	var isQvalue = function(_gene_list)	{
+		var is = false;
+
+		for(var i = 0, len = _gene_list.length ; i < len ; i++)	{
+			var q = _gene_list[i].q;
+			if(q)	{
+				is = true;
+			}
+		}
+		return is;
+	}
+
 	var getOnlyGeneSampleName = function(_key, _list)	{
 		var result = [];
 
@@ -22,50 +33,64 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 		}
 		return result;
 	}
+
 	var getOnlyGeneSampleData = function(_list)	{
 		var gene_datas = [];
 		var sample_datas = [];
 
 		for(var i = 0, len = _list.length ; i < len ; i++)	{
 			var item = _list[i];
-			var is_gene_datas = _utils.get_json_in_array(item.gene, gene_datas, "gene");
-			var is_sample_datas = _utils.get_json_in_array(item.sample, sample_datas, "sample");
 
-			if(!is_gene_datas)	{
-				gene_datas.push({
-					gene : item.gene,
-					sample : [ item.sample ],
-					type : [ item.type ]
-				});
-			}
-			else {
-				is_gene_datas.sample.push(item.sample);	
-				is_gene_datas.type.push(item.type);
-			}
-			if(!is_sample_datas)	{
-				sample_datas.push({
-					sample : item.sample,
-					gene : [ item.gene ],
-					type : [ item.type ]
-				});
-			}
-			else {
-				is_sample_datas.gene.push(item.gene);
-				is_sample_datas.type.push(item.type);
-			}
+			makeGene(item, gene_datas);
+			makeSample(item, sample_datas);
 		}
 		return {
 			gene : gene_datas,
 			sample : sample_datas
 		}
 	}
-	/* after get mutation,it makes mutation list */
+
+	var makeGene = function(_item, _array)	{
+		var is_gene_datas = _utils.getObjInArray(_item.gene, _array, "gene");
+
+		if(!is_gene_datas)	{
+			_array.push({
+				gene : _item.gene,
+				sample : [ _item.sample ],
+				type : [ _item.type ]
+			});
+		}
+		else {
+			is_gene_datas.sample.push(_item.sample);	
+			is_gene_datas.type.push(_item.type);
+		}
+		return _array;
+	}
+
+	var makeSample = function(_item, _array)		{
+		var is_sample_datas = _utils.getObjInArray(_item.sample, _array, "sample");
+
+		if(!is_sample_datas)	{
+			_array.push({
+				sample : _item.sample,
+				gene : [ _item.gene ],
+				type : [ _item.type ]
+			});
+		}
+		else {
+			is_sample_datas.gene.push(_item.gene);
+			is_sample_datas.type.push(_item.type);	
+		}
+		return _array;
+	}
+
 	var getOnlyMutations = function(_mutation_list)  {
 		var result = { type_list : [] };
 
 		for(var i = 0, len = _mutation_list.length ; i < len ; i++)	{
-			var type = _utils.define_mutation_name(_mutation_list[i].type);
+			var type = _utils.definitionMutationName(_mutation_list[i].type);
 			var type_list = result.type_list;
+
 			if($.inArray(type, type_list) < 0)	{
 				type_list.push(type);
 			}
@@ -78,7 +103,7 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 
 		for(var i = 0, len = _patient_list.length ; i < len ; i++)	{
 			var patient = _patient_list[i];
-			var is_patient = _utils.get_json_in_array(patient.sample, result, "sample");
+			var is_patient = _utils.getObjInArray(patient.sample, result, "sample");
 
 			if(!is_patient)	{
 				result.push({
@@ -94,84 +119,78 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 		}
 		return result;
 	}
-	
-	var addPatientToMutation = function(_mutation_list, _patient_list)	{
-		for(var i = 0, len = _patient_list.length ; i < len ; i++)	{
-			var patient = _patient_list[i];
 
-			_mutation_list.unshift(patient);
-		}
-		return _mutation_list;
-	}
-	/* ========================== Mutation Importance start ===========================  */
-	var define_mutations = function(_mutation_list)	{
-		var mutation_array = [];
+	var loopingGroup = function(_group_list, _target_list, _index)	{
+		var vo = _VO.VO;
+		var index = _index || 0;
+		var target_list;
+		var separate;
 
-		for(var i = 0, len = _mutation_list.length ; i < len ; i++)	{
-			var mutations = _utils.defineProp({}, _mutation_list[i], "name");
-			_utils.defineProp(mutations, 0, "importance");
-			mutation_array.push(mutations);
-		}
-		return mutation_array;
-	}
-
-	var mutation_importance = function(_all, _mutation_list)	{
-		var mutations = define_mutations(_mutation_list.type_list);
-
-		for (var i = 0, len = _all.length ; i < len ; i++)	{
-			for(var j = 0, leng = _all[i].type.length ; j < leng ; j++)	{
-				var mutation = _utils.get_json_in_array(_all[i].type[j], mutations, "name");
-				if(mutation)	{
-					mutation.importance += 1;
+		for(var i = 0, len = _group_list.length ; i < len ; i++)		{
+			var group = _group_list[i];
+			if(i === 0)	{
+				target_list = _sort.group(group, group, vo.getFormatedData().sample);
+			}
+			else {
+				var ex = [];
+				for(var j = 0, leng = target_list.length ; j < leng ; j++)	{
+					var target = target_list[j];
+					$.merge(ex, _sort.group(target, group, vo.getFormatedData().sample));
 				}
+				target_list = ex;
 			}
 		}
-		return mutations.sort(function(_a, _b)	{
-			return (_a.importance > _b.importance) ? 1 : -1;
-		});
+		return loopingExclusive(target_list);
 	}
-	/* Stacked value sequance by importance of sample / gene name */
-	var importance_by_name = function(_importance)	{	
+
+	var loopingExclusive = function(_separate)	{
 		var result = [];
 
-		for(var i = 0, len = _importance.length ; i < len ; i++)	{
-			result.push(_importance[i].name);
+		for(var i = 0, len = _separate.length ; i < len ; i++)	{
+			var separate = _separate[i];
+			var ex = _sort.exclusiveGroup(separate, separate.length);
+
+			$.merge(result, ex);
 		}
 		return result;
 	}
-	/* ========================== Mutation Importance end ===========================  */
+	
 	return function(_data)	{
 		var vo = _VO.VO;
-		var gene_list = _data.data.gene_list;
-		var patient_list = formatedPatient(_data.data.patient_list);
-		var mutation_list = addPatientToMutation(_data.data.mutation_list, _data.data.patient_list);
-		vo.setInitPatient(patient_list);
-		vo.setPatient(patient_list);
-		var gene_names = getOnlyGeneSampleName("gene", gene_list);
-		var samples = getOnlyGeneSampleName("sample", mutation_list);
+		var patient_list = (_data.data.patient_list.length < 1) ? [] : formatedPatient(_data.data.patient_list);
+		var gene_names = getOnlyGeneSampleName("gene", _data.data.gene_list);
 		vo.setInitGene(gene_names);
 		vo.setGene(gene_names);
-		var mutations = getOnlyMutations(mutation_list);
+		var mutations = getOnlyMutations(_data.data.mutation_list);
+		vo.setFormatedData(getOnlyGeneSampleData(_data.data.mutation_list));
+		_data.data.group_list.sort(function(_a, _b)	{
+			var rtn = _a.name.length < _b.name.length ? -1 : 1;
+			return rtn;
+		});
+		var exclusive_defalut_grouping = _sort.grouping(_data.data.group_list, vo.getFormatedData().sample);
+		var looped_group = loopingGroup(exclusive_defalut_grouping);
+		var sample_names = getOnlyGeneSampleName("sample", looped_group);
+
 		vo.setInitMutation(mutations.type_list);
 		vo.setMutation(mutations.type_list);
-		var importance = mutation_importance(_data, mutations);
-		var importance_name = importance_by_name(importance);
-		vo.setFormatedData(getOnlyGeneSampleData(mutation_list));
-		var exclusive_sample = _sort.exclusiveGroup(vo.getFormatedData().sample, samples.length);
-		var sample_names = _sort.spliceAndUnshiftExclusive(getOnlyGeneSampleName("sample", exclusive_sample));
 		vo.setInitSample(sample_names);
 		vo.setSample(sample_names);
 
-		var groups = _sort.group(_data.data.group_list[0].data, _data.data.group_list[0].data, vo.getFormatedData().sample);	
+		_utils.removeSvg("comutationplot_legend");	
 
-		_utils.remove_svg("comutationplot_legend");
-
-		_setting_group(_data.data.group_list, vo.getFormatedData().sample);
-		_setting_comutation(mutation_list, sample_names, gene_names);
-		_setting_gene(_data, gene_names, importance_name);
-		_setting_pq(gene_list, gene_names);
-		_setting_sample(mutation_list, sample_names, importance_name);
+		_setting_comutation(_data.data.mutation_list, _data.data.patient_list, sample_names, gene_names);
+		_setting_gene(_data, gene_names);
+		if(isQvalue(_data.data.gene_list))	{
+			_setting_pq(_data.data.gene_list, gene_names);
+		}	
+		_setting_group(_data.data.group_list, _data.data.patient_list, vo.getFormatedData().sample);
+		_setting_sample(_data.data.mutation_list, _data.data.patient_list, sample_names);
 		_setting_comutationnavigation(sample_names, gene_names);
-		_setting_legend(mutations, "comutationplot_legend", null, importance);
+		_setting_legend({
+			data : mutations,
+			view_id : "comutationplot_legend",
+			type : "generic mutation",
+			chart : "comutation",
+		});
 	};
 });

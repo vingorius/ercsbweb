@@ -1,20 +1,20 @@
 var GROUP = "population/comutationplot/group/";
 var VO = "population/comutationplot/vo_comutationplot";
+var SORT = "population/comutationplot/sort_comutationplot";
 
-define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group"], function(_utils, _size, _VO, _e)	{
+define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT], function(_utils, _size, _VO, _e, _sort)	{
 	var view = function(_data)	{
 		var size = _data.size;
-		var vo = _VO.VO;
 
-		var svg = d3.select("#comutationplot_groups")
+		var svg = d3.select("#" + _data.class_name + "_groups")
 		.append("svg")
-		.attr("class", "comutationplot_groups")
-		.attr("width", size.width * size.magnification)
+		.attr("class", "" + _data.class_name + "_groups")
+		.attr("width", _data.patients ? size.width : size.width * size.magnification)
 		.attr("height", size.height)
 		.append("g")
 		.attr("transform", "translate(0, 0)");
 
-		var bar_init_x = _utils.ordinalScale(vo.getInitSample(), size.margin.left, ((size.width * size.magnification) - size.margin.left));
+		var bar_init_x = _utils.ordinalScale((_data.patients ? _data.patients : _VO.VO.getInitSample()), 0, (_data.patients ? size.width : _VO.VO.getInitWidth() * size.magnification));
 		var bar_init_y = 8;
 
 		for(var i = 0, len = _data.data.length ; i < len ; i++)	{
@@ -22,40 +22,49 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group"], funct
 			var name = _data.name[i];
 			var y_pos = (i * 20) + size.margin.top;
 
-			makeGroupBar(name, group, svg, size, { x : 0, y : y_pos }, { x : bar_init_x, y : bar_init_y }, _data.colour);
+			makeGroupBar(_data.class_name, name, group, svg, size, { x : 0, y : y_pos }, { x : bar_init_x, y : bar_init_y }, _data.colour);
 		}
 	}
 
-	var makeGroupBar = function(_name, _group, _svg, _size, _pos, _range, _colour)	{
+	var makeGroupBar = function(_class, _name, _group, _svg, _size, _pos, _range, _colour)	{
 		var bar_g = _svg.append("g")
-		.attr("class", "comutationplot_bar_group_g")
+		.attr("class", _class + "_bar_group_g")
 		.attr("transform", "translate(" + _pos.x + ", " + _pos.y + ")");
 
-		var bar_rect = bar_g.selectAll(".comutationplot_bar_group_rects")
-		.data(_group)
+		var bar_rect = bar_g.selectAll("rect")
+		.data(_group.length ? _group : [ _group ])
 		.enter().append("rect")
-		.attr("class", "comutationplot_bar_group_rects")
+		.attr("class", _class + "_bar_group_rects")
 		.style("fill", function(_d)	{
+			_d.name = _name;
+
 			if(!_d.value)	{
 				return "#d5dddd";
 			}
 			return _colour(_name, _d.value);
 		})
-		.on("mouseover", _e.nover)
-		.on("mouseout", _e.nout)
+		.on("mouseover", function(_d)	{
+			_e.nover(this, _name, _d);
+		})
+		.on("mouseout", function()	{
+			_e.mout(this, "rect");
+		})
 		.attr("x", function(_d)	{
-			_d.x = _range.x;
 			return _range.x(_d.sample);
 		})
 		.attr("y", -_range.y)
-		.attr("width", _range.x.rangeBand() / _size.left_between)
+		.attr("width", function(_d)	{
+			if(!_group.length)	{
+				return _range.x.rangeBand();
+			}
+			return _range.x.rangeBand() / _size.left_between;
+		})
 		.attr("height", _range.y);
 	}
 
 	var nameView = function(_data)	{
 		var size = _data.name_size;
-		var vo = _VO.VO;
-		var bar_init_x = _utils.ordinalScale(vo.getInitSample(), _data.size.margin.left, (_data.size.width - _data.size.margin.left));
+		var bar_init_x = _utils.ordinalScale(_VO.VO.getInitSample(), _data.size.margin.left, (_data.size.width - _data.size.margin.left));
 
 		var svg = d3.select("#comutationplot_groups_name")
 		.append("svg")
@@ -81,24 +90,27 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group"], funct
 
 		var name_text = name_g.append("text")
 		.data([{
-			x : _x
+			name : _name,
+			x : _x,
+			order : true
 		}])
 		.attr("class", "comutationplot_name_group_text")
 		.text(_name)
-		.on("click", function(_d)	{
-			if(event.altKey)	{
-				_e.mclick(this, _group);
+		.on("mouseover", _e.eover)
+		.on("mouseout", _e.mout)
+		.on("click", function(_d)	{	
+			var sort_order;
+
+			if(d3.event.altKey)	{
+				sort_order = _sort.loopingMultiSort(_VO.VO.getSortOrder(), _group, _d.order);
+				_e.clickSort(this, sort_order, _d);
 			}
 			else{
-				_e.nclick(this, _group);
+				_VO.VO.setSortOrder([]);
+				sort_order = _sort.group(_group, _group, _VO.VO.getFormatedData().sample);
+				_e.clickSort(this, sort_order, _d);
 			}
 		});
-
-		$(name_text).tooltip({
-			container : "body",
-			title : "sort (alt + click add subtype)",
-			placement : "right"
-		})
 	}
 
 	return	{

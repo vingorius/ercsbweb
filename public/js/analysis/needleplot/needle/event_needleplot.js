@@ -1,50 +1,84 @@
 var NEEDLE = "analysis/needleplot/needle/";
 
 define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)    {
-	var get_mouseover = function(_d)   {
+	var eventMouseover = function(_d)   {
 		var contents = "";
-		var target = $(this);
-		target[0].parentNode.parentNode.parentNode.appendChild(target[0].parentNode.parentNode);
-		var position = _utils.getPosition(target[0]);	
+		var e = d3.event;
+		var target = d3.select(this);
+		var group = target[0][0].parentNode.parentNode;
+		var source = group.parentNode;
+		_d.child_index = _d.child_index ? _d.child_index : getNowElementIndexOfChild(group, source.childNodes);
 
 		switch(_d.target)	{
-			case "marker" : contents = "<strong>type : <span style='color:red'>" + _d.type + "</span></br> value : <span style='color:red'>" + _d.count + "</span></br> position : <span style='color:red'>" + _d.position + "</span>"; break;
-			case "graph" : contents = "<strong>text : <span style='color:red'>" + _d.text + "</span></br> section : <span style='color:red'>" + _d.start + " - " + _d.end + "</span>"; break;
-			case "patient" : contents = "<strong>id : <span style='color:red'>" + _d.id + "</span></br> type : <span style='color:red'>" + _d.type + "</span></br> aachange : <span style='color:red'>" + _d.aachange + "</span></br> position : <span style='color:red'>" + _d.position + "</span>"; break;
+			case "marker" : 
+				contents = "<b>" + _d.type + "</b></br> value : " + _d.count + "</br> position : " + _d.position; 
+				break;
+			case "graph" : 
+				contents = "<b>" + _d.text + "</b></br> section : " + _d.start + " - " + _d.end; 
+				break;
+			case "patient" : 
+				contents = "<b>" + _d.id + "</b></br> type : " + _d.type + "</br> aachange : " + _d.aachange + "</br> position : " + _d.position; 
+				break;
 		}
 
-		d3.select(this).transition().duration(100).style("stroke-width", 2);
-		_utils.tooltip(d3.event , contents, position.left, position.top + 50);
+		_utils.frontElement(group, source);
+		_utils.tooltip(this, contents, "rgba(15, 15, 15, 0.6)");
+		
+		target
+		.transition().duration(200)
+		.style("stroke", function(_d)	{
+			return d3.rgb(_d.colour || _utils.colour(_utils.definitionMutationName(_d.type))).darker(2);
+		})
+		.style("stroke-width", "2px");
 	}
 
-	var get_mouseout = function(_d)    {
-		d3.select(this).transition().duration(100).style("stroke-width", 0);
+	var eventMouseout = function(_d)    {
+		var target = d3.select(this);
+		var group = target[0][0].parentNode.parentNode;
+
+		_utils.behindElement(group, _d.child_index, group.parentNode);
 		_utils.tooltip();
+
+		target
+		.transition().duration(200)
+		.style("stroke-width", function(_d)	{
+			return 0;
+		});
 	}
 
-	var show_front_circle = function()  {
-		var svg_g = $(".needleplot_view_needleplot g");
-		var paths = d3.selectAll(".marker_figures_path");
+	var getNowElementIndexOfChild = function(_target, _source)	{
+		for(var i = 0, len = _source.length ; i < len ; i++)	{
+			var child = d3.select(_source[i]);
+			var target = d3.select(_target);
 
-		paths.forEach(function(_d, _i) {
+			if(child.attr("transform") === target.attr("transform"))	{
+				return i;
+			}
+		}
+	}
+
+	var frontCircle = function()  {
+		d3.selectAll(".marker_figures_path").forEach(function(_d, _i) {
 			_d.sort(function(_a, _b)    {
 				var a = d3.select(_a).datum();
 				var b = d3.select(_b).datum();
 				var result = (a.count + a.y < a.count + b.y) ? 1 : -1;
 				return result;
 			});
-			append_parent(_d);
+			frontFromParent(_d);
 		});
 	}
 
-	var append_parent = function(_childs)    {
+	var frontFromParent = function(_childs)    {
 		_childs.forEach(function(_d)    {
-			_d.parentNode.parentNode.parentNode.appendChild(_d.parentNode.parentNode)
+			var group = _d.parentNode.parentNode;
+
+			_utils.frontElement(group, group.parentNode);
 		});
 	}
 	return {
-		m_over : get_mouseover,
-		m_out : get_mouseout,
-		front : show_front_circle
+		mover : eventMouseover,
+		mout : eventMouseout,
+		front : frontCircle
 	}
 })

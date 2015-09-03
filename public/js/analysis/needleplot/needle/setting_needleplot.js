@@ -4,16 +4,13 @@ var LEGEND = "chart/legend/setting_legend";
 
 define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplot", LEGEND, NEEDLE_NAVI + "setting_needlenavigation"], function(_utils, _size, _view, _setting_legend, _setting_navigation)   {
 	return function(_data)  {
-		var data = _data || [];
-		var size = _size.define_size("needleplot_view", 20, 40, 20, 0);
+		var size = _size.definitionSize("needleplot_view", 20, 40, 20, 0);
 		size.graph_width = 20;
-		var cSize = _size.define_size("needleplot_count", 5, 5, 5, 5);
 
-		var get_same_position_list = function(_public_list)    {
-			var public_list = _public_list || [];
+		var getSamePositionList = function(_public_list)    {
 			var result = [];
 
-			public_list.map(function(_d)    {
+			_public_list.map(function(_d)    {
 				if($.inArray(_d.position, result) < 0) {
 					result.push(_d.position);
 				}
@@ -21,41 +18,39 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 			return result;
 		}
 
-		var get_yaxis_max = function() {
-			var public_list = get_same_position_list(data.data.public_list);
-			var plus_num = 1;
+		var getMaximumY = function() {
+			var public_list = getSamePositionList(_data.data.public_list || _data.data.sample_list);
 			var result = 0;
 
 			public_list.map(function(_d)    {
-				(result > _utils.get_json_array_in_array(_d, data.data.public_list, "position").length) 
-				? result = result : result = _utils.get_json_array_in_array(_d, data.data.public_list, "position").length;
+				(result > _utils.getObjArrInArray(_d, _data.data.public_list || _data.data.sample_list, "position").length) 
+				? result = result : result = _utils.getObjArrInArray(_d, _data.data.public_list || _data.data.sample_list, "position").length;
 			});
-			return result + plus_num;
+			return result + 1;
 		}
 
-		var reform_needle_data = function()    {
-			var samePosition = get_same_position_list(data.data.public_list);
+		var reformData = function()    {
+			var same_pos_list = getSamePositionList(_data.data.public_list || _data.data.sample_list);
 			var result = [];
 
-			samePosition.map(function(_d)   {
-				var subResult = [];
-				_utils.get_json_array_in_array(_d, data.data.public_list, "position").map(function(_e)   {
-					subResult = reform_needle_json(_e, subResult);
+			same_pos_list.map(function(_d)   {
+				var sub_result = [];
+				_utils.getObjArrInArray(_d, _data.data.public_list || _data.data.sample_list, "position").map(function(_e)   {
+					sub_result = reformJson(_e, sub_result);
 				});
 				result.push({ 
 					position : _d, 
-					public_list : subResult
+					public_list : sub_result
 				});
 			});
-			return stacked_markers(result);
+			return makeStack(result);
 		}
 
-		var reform_needle_json = function(_e, _result)   {
-			var emptyJson = new Object();
+		var reformJson = function(_e, _result)   {
 			var result = _result || [];
-			var alreadyTypeData = _utils.get_json_in_array(_e.type, result, "type");
+			var already_type = _utils.getObjInArray(_e.type, result, "type");
 
-			if(!alreadyTypeData) {
+			if(!already_type) {
 				result.push({ 
 					id : [_e.id], 
 					type : _e.type, 
@@ -65,17 +60,15 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 				});
 			}
 			else {
-				alreadyTypeData.count += 1;
-				alreadyTypeData.id.push(_e.id);
-				alreadyTypeData.aachange.push(_e.aachange);
+				already_type.count += 1;
+				already_type.id.push(_e.id);
+				already_type.aachange.push(_e.aachange);
 			}
 			return result;
 		}
 
-		var stacked_markers = function(_array)  {
-			var array = _array || [];
-
-			array.forEach(function(_d, _i)  {
+		var makeStack = function(_array)  {
+			_array.forEach(function(_d, _i)  {
 				_d.public_list.forEach(function(_e, _j) {
 					if(_j ===0) { 
 						_e.y = 0; 
@@ -85,15 +78,16 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 					}
 				});
 			});
-			return array;
+			return _array;
 		}
 
-		var get_mutation_name = function() {
+		var getMutationName = function() {
 			var result = [];
+			var list = _data.data.public_list || _data.data.sample_list;
 
-			data.data.public_list.forEach(function(_d)   {
-				if($.inArray(_utils.define_mutation_name(_d.type), result) < 0)  {
-					result.push(_utils.define_mutation_name(_d.type));
+			list.forEach(function(_d)   {
+				if($.inArray(_utils.definitionMutationName(_d.type), result) < 0)  {
+					result.push(_utils.definitionMutationName(_d.type));
 				}
 			});
 			return { 
@@ -101,17 +95,18 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 			};
 		} 
 
-		var mutation_importance = function()	{
+		var mutationImportance = function()	{
 			var result = [];
+			var list = _data.data.public_list || _data.data.sample_list;
 
-			data.data.public_list.forEach(function(_d)   {
-				var mutation = _utils.get_json_in_array(_utils.define_mutation_name(_d.type), result, "name");
+			list.forEach(function(_d)   {
+				var mutation = _utils.getObjInArray(_utils.definitionMutationName(_d.type), result, "name");
 				if(mutation)   { 
 					mutation.importance += 1; 
 				}	
 				else {
 					result.push({ 
-						name : _utils.define_mutation_name(_d.type), 
+						name : _utils.definitionMutationName(_d.type), 
 						importance : 0 
 					});
 				}
@@ -122,45 +117,45 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 			return result;
 		}
 
-		var page_percent = function(_div, _page)	{
+		var percentPage = function(_div, _page)	{
 			return (_div > _page) ? (_page / _div).toFixed(1) : (_div / _page).toFixed(1);
 		}
 
-		var set_radius = function(_count) {
-			var count = _count || 0;
-			var page = document.body.clientWidth;
-			var radius_per =  page_percent(size.width, page);
+		var setRadius = function(_count) {
+			var radius_per =  percentPage(size.width, document.body.clientWidth);
 			
-			return Math.sqrt(count) * (5 * radius_per);
+			return Math.sqrt(_count) * (5 * radius_per);
 		} 
 
-		var set_fontsize = function()	{
-			var page = document.body.clientWidth;
-			var fontsize_per = page_percent(size.width, page);
+		var setFontSize = function()	{
+			var fontsize_per = percentPage(size.width, document.body.clientWidth);
 
 			return (12 * fontsize_per).toFixed(0) + "px";
 		}
 
-		var ymax = get_yaxis_max();
-		var stacked = reform_needle_data();
-		var mutations = get_mutation_name();
+		var ymax = getMaximumY();
+		var stacked = reformData();
 
-		_utils.remove_svg(".needleplot_view_yaxis");
-		_utils.remove_svg(".needleplot_view");
+		_utils.removeSvg(".needleplot_view_yaxis");
+		_utils.removeSvg(".needleplot_view");
 
-		 _setting_legend(mutations, "needleplot_legend", null, mutation_importance());
-		
+		_setting_legend({
+			data : getMutationName(),
+			view_id : "needleplot_legend",
+			type : "generic mutation",
+			chart : "needleplot",
+			importance : mutationImportance()
+		});
 		_view.view({
-			data : data,
+			data : _data,
 			stacked : stacked,
 			size : size,
-			csize : cSize,
-			x : _utils.linearScale(0, data.data.graph[0].length, size.margin.left, size.rwidth).clamp(true),
+			x : _utils.linearScale(0, _data.data.graph[0].length, size.margin.left, size.rwidth).clamp(true),
 			y : _utils.linearScale(ymax, 0, size.margin.top, (size.rheight - size.graph_width)).clamp(true),
 			ymax : ymax,
-			radius : set_radius,
-			fontsize : set_fontsize
+			radius : setRadius,
+			fontsize : setFontSize
 		});
-		_setting_navigation(data, stacked, ymax);
+		_setting_navigation(_data, stacked, ymax);
 	}
 });

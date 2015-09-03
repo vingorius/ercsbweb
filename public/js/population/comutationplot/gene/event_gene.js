@@ -3,55 +3,49 @@ var VO = "population/comutationplot/vo_comutationplot";
 
 define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	{
 	var get_axis_mouseover = function(_d)	{
-		var target = d3.select(this);
-
-		target.transition().duration(100)
-		.style("font-size", 12);
+		d3.select(this)
+		.transition().duration(100)
+		.style("font-size", "12px");
 	}
 
-	var get_axis_mouseout = function(_d)	{
-		var target = d3.select(this);
-
-		target.transition().duration(100)
-		.style("font-size", 8);
-	}
-
-	var get_bar_mouseover = function(_d)	{
-		var target = d3.select(this);
-		var e = d3.event;
-
+	var barMouseover = function(_d)	{
 		_utils.tooltip(
-			e, 
-			"type : <span style='color : red;'>" 
-			+ _d.type 
-			+ "</span></br>count : <span style='color : red;'>" 
-			+ _d.count
-			+ "</span>", 
-			e.pageX, e.pageY
-		);
+			this, "type : " + _d.type  + "</br>count : "  + _d.count, 
+			"rgba(15, 15, 15, 0.6)");
 
-		target.transition().duration(100)
-		.style("stroke", "black");
+		d3.select(this)
+		.transition().duration(100)
+		.style("stroke", "black")
+		.style("stroke-width", 1);
 	}
 
-	var get_bar_mouseout = function(_d)	{
-		var target = d3.select(this);
-		var e = d3.event;
-		
+	var explainMouseover = function(_d)	{
+		_utils.tooltip(this, "Sort by samples", "rgba(178, 0, 0, 0.6)");
+	}
+
+	var commonMouseout = function(_this, _type)	{
+		if(_type === "axis")	{
+			d3.select(_this)
+			.transition().duration(100)
+			.style("font-size", "8px");
+		}
+		else if(_type === "bar")	{
+			d3.select(_this)
+			.transition().duration(100)
+			.style("stroke", null);
+		}
 		_utils.tooltip();
-		target.transition().duration(100)
-		.style("stroke", "#BFBFBF");
 	}
 
 	var ascending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.types, "count") > _utils.get_list_sum(_b.types, "count")) ? 1 : -1;
+		return (_utils.getSumOfList(_a.types, "count") > _utils.getSumOfList(_b.types, "count")) ? 1 : -1;
 	}
 
 	var descending = function(_a, _b)	{
-		return (_utils.get_list_sum(_a.types, "count") < _utils.get_list_sum(_b.types, "count")) ? 1 : -1;
+		return (_utils.getSumOfList(_a.types, "count") < _utils.getSumOfList(_b.types, "count")) ? 1 : -1;
 	}
 
-	var sorting_get_name = function(_sorting_data)	{
+	var sortingByName = function(_sorting_data)	{
 		var result = [];
 
 		for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
@@ -60,38 +54,21 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 		return result;
 	}
 
-	var redraw_yaxis = function(_sorting_data, _size)	{
-		var vo = _VO.VO;
-		var y = _utils.ordinalScale(vo.getGene(), 0, (_size.height - _size.margin.bottom));
-		var x = _utils.ordinalScale(vo.getSample(),vo.getMarginLeft(), (vo.getWidth() - vo.getMarginLeft()));
+	var redraw = function(_sorting_data, _size)	{
+		var magnification = 2;
+		var left_between = 1.5;
+		var top_between = 1.2;
+		var y = _utils.ordinalScale(_VO.VO.getGene(), 0, (_size.height - _size.margin.bottom));
+		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, (_VO.VO.getWidth() * magnification));
 
-		d3.selectAll(".comutationplot_gene_yaxis")
-		.transition().duration(400)
-		.call(d3.svg.axis().scale(y).orient("right"));
-
-		d3.selectAll(".comutationplot_gene_bargroup")
-		.transition().duration(400)
-		.attr("transform", function(_d)	{
-			return "translate(0, " + y(_d.gene) + ")";
-		});
-
-		d3.selectAll(".comutationplot_cellgroup")
-		.transition().duration(400)
-		.attr("transform", function(_d)	{
-			if(!x(_d.sample))	{
-				return "translate(" + _d.x(_d.sample) + ", " + y(_d.gene) +")";	
-			}
-			return "translate(" + x(_d.sample) + ", " + y(_d.gene) +")";	
-		});
-
-		d3.selectAll(".comutationplot_pq_bargroup")
-		.transition().duration(400)
-		.attr("transform", function(_d)	{
-			return "translate(0, " + y(_d.gene) + ")"
-		});
+		_utils.callAxis(d3.selectAll(".comutationplot_gene_yaxis"), y, "right");
+		_utils.translateXY(d3.selectAll(".comutationplot_pq_bargroup"), 0, y, 0, "gene", false, false);
+		_utils.translateXY(d3.selectAll(".comutationplot_gene_bargroup"), 0, y, 0, "gene", false, false);
+		_utils.translateXY(d3.selectAll(".comutationplot_cellgroup"), x, y, "sample", "gene", false, false);
+		_utils.translateXY(d3.selectAll(".comutationplot_patient_cellgroup"), 0, y, "sample", "gene", true, false);
 	}
 
-	var sort_by_value = function(_d)	{
+	var sortByValue = function(_d)	{
 		var sort_data;
 
 		if(_d.status)	{
@@ -102,14 +79,15 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 			sort_data =_d.data.sort(descending);
 			_d.status = true;
 		}
-		_VO.VO.setGene(sorting_get_name(sort_data));
-		redraw_yaxis(sorting_get_name(sort_data), _d.size);
+		_VO.VO.setGene(sortingByName(sort_data));
+		redraw(sortingByName(sort_data), _d.size);
 	}
+	
 	return {
-		axis_m_over : get_axis_mouseover,
-		axis_m_out : get_axis_mouseout,
-		bar_m_over : get_bar_mouseover,
-		bar_m_out : get_bar_mouseout,
-		sort_by_value : sort_by_value
+		axisOver : get_axis_mouseover,
+		barOver : barMouseover,
+		explainOver : explainMouseover,
+		mouseout : commonMouseout,
+		sortByValue : sortByValue
 	}
 });

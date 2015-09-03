@@ -1,51 +1,55 @@
 var COMUTATION = "population/comutationplot/comutation/";
 
 define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _size)	{
+	var getAllType = function(_all_child, _sign)	{
+		var cnv = "", somatic = "", exp = "";
+
+		for(var i = 0, len = _all_child.length ; i < len ; i++)	{
+			var child = _all_child[i].__data__;
+			var alter_type = _utils.definitionMutationName(child.type);
+			var type = _utils.alterationPrecedence(alter_type);
+
+			if(type.alteration === "CNV")	{
+				cnv += alter_type + "</br>";
+			}
+			else if(type.alteration === "mRNA Expression (log2FC)")	{
+				exp += alter_type + "</br>";
+			}
+			else {
+				somatic += alter_type + "</br>";
+			}
+		}
+		return _sign === 0 ? cnv : _sign === 1 ? exp : _sign === 2 ? somatic : "";
+	}
+
 	var event_mouseover = function(_d)	{
 		var target = d3.select(this);
-		var e = d3.event;
-
-		this.parentNode.parentNode.appendChild(this.parentNode);
+		var class_name = target.attr("class");
+		var sample_name = class_name.substring(class_name.indexOf(" ") + 1, class_name.indexOf("-"));
+		var gene_name = class_name.substring(class_name.indexOf("-") + 1, class_name.length);
+		var all_type = getAllType($("." + sample_name + "-" + gene_name), _d.sign);
 
 		_utils.tooltip(
-			e, 
-			"x : <span style='color : red;'>"  
-			+ _d.sample 
-			+ "</span></br>y : <span style='color : red;'>" 
-			+ _d.gene
-			+ "</span>",
-			e.pageX, e.pageY
-		);
+			this, 
+			"<b>Gene mutations</b></br> x : " + _d.sample + "</br>y : " + _d.gene
+			+ "</br>" + all_type, "rgba(15, 15, 15, 0.6)");
 
 		target
-		.transition().duration(250)
-		.style("stroke", "#000")
+		.style("stroke", "#333")
 		.style("stroke-width", 1);
 	}
 
 	var event_mouseout = function(_d)	{
-		var target = d3.select(this);
-
 		_utils.tooltip();
 
-		target
-		.transition().duration(250)
+		d3.select(this)
 		.style("stroke", function(_d)	{
 			return null;
 		});
-
-		// target.transition().duration(10)
-		// .style("stroke", function(_d) { 
-		// 	return _utils.colour(_utils.define_mutation_name(_d.type)); 
-		// })
-		// .style("stroke-width", function(_d) { 
-		// 	return 0.1; 
-		// });
 	}
 
 	var move_scroll = function()	{
 		var target_1 = $("#comutationplot_sample");
-		// var target_2 = $("#comutationplot_heatmap");
 		var target_2 = $("#comutationplot_border");
 		var target_3 = $("#comutationplot_groups");
 

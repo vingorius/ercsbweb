@@ -2,11 +2,9 @@ var NEEDLE_NAVI = "analysis/needleplot/navigation/";
 
 define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "event_needlenavigation"], function(_utils, _size, _event)	{
 	var box = function(_svg, _size, _data)	{
-		var svg = _svg || null;
 		var size = _size || {};
-		var data = _data || [];
 
-		var box_g = svg.insert("g", "g")
+		var box_g = _svg.insert("g", "g")
 		.data([{ 
 			x : 0, 
 			y : 0, 
@@ -55,7 +53,7 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 			right : right_border,
 			left : left_border,
 			size : size, 
-			data : data
+			data : _data
 		});
 
 		box
@@ -67,8 +65,7 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 	}
 
 	var view = function(_data)	{
-		var data = _data || {};
-		var size = data.size;
+		var size = _data.size;
 
 		var svg = d3.select("#needleplot_navigation")
 		.append("svg")
@@ -79,19 +76,19 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 		.attr("transform", "translate(0, 0)");
 
 		var xAxis = d3.svg.axis()
-		.scale(data.x)
+		.scale(_data.x)
 		.orient("bottom");
 
 		var yAxis = d3.svg.axis()
-		.scale(data.y)
+		.scale(_data.y)
 		.orient("left");   
 
 		var bar_group = svg.selectAll(".navibar_2_group")
-		.data(data.stacked)
+		.data(_data.stacked)
 		.enter().append("g")
 		.attr("class", "navibar_2_group") 
 		.attr("transform", function(_d) { 
-			return "translate(" + data.x(_d.position) + ", " + -size.margin.top + ")"; 
+			return "translate(" + _data.x(_d.position) + ", " + -size.margin.top + ")"; 
 		})
 
 		var stacked_bar = bar_group.selectAll("rect")  
@@ -99,20 +96,19 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 			return _d.public_list; 
 		})
 		.enter().append("rect")
-		.attr("class", function(_d) { 
-			return "stacked_hbar_navi2"; 
-		})
+		.attr("class", "stacked_hbar_navi2")
 		.attr("x", 0)
 		.attr("y", function(_d) { 
-			return data.y(_d.y + _d.count); 
+			return _data.y(_d.y + _d.count); 
 		})
 		.attr("width", 1)
 		.attr("height", function(_d) { 
-			return (size.height + size.margin.top) - data.y(_d.count); 
+			return (size.height + size.margin.top) - _data.y(_d.count); 
 		});
 
-		box(svg, size, data);
+		box(svg, size, _data);
 	}
+	
 	return {
 		view : view
 	}

@@ -6,7 +6,7 @@ block content
 		div.double-bounce1
 		div.double-bounce2
 	canvas.empty_canvas(style={ "display" : "none" })
-	div.container.chart_base_container
+	div.container.chart_container
 		div.row
 			div#comutationplot_empty_lt(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
 			div#comutationplot_sample(style={'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1100px', 'height': '100px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
@@ -26,7 +26,9 @@ block append scripts
 	script(src='/bower_components/canvg-gabelerner/canvg.js')
 	script(src='/bower_components/imagesloaded/imagesloaded.pkgd.js')
 	script(src='/bower_components/html2canvas/build/html2canvas.js')
-	script(src='/bower_components/requirejs/require.js', data-main='/js/index')
+	script(src='/bower_components/requirejs/require.js')
+	script(src='/js/chart/init.js')
+	script(src='/js/chart/start.js', onload='startChart("comutation")')
 block append stylesheets
 	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')
 	link(rel='stylesheet', href='/stylesheets/chart/chart.css')

@@ -8,17 +8,17 @@ define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 		var INTERSECTED;
 		var tooltip_x = 0, tooltip_y = 0;
 
-		var win_mousedown =  function(_event)	{ 
+		var windowMousedown =  function(_event)	{ 
 			check_click = true;
 			ex = _event.clientX;
 			ey = _event.clientY;
 		}
 
-		var win_mouseup = function(_event)	{ 
+		var windowMouseup = function(_event)	{ 
 			check_click = false;
 		}
 
-		var win_mousemove = function(_event)	{
+		var windowMousemove = function(_event)	{
 			var cx, cy;
 
 			if(check_click)	{
@@ -35,10 +35,10 @@ define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 			}
 		}
 
-		var ray_mouse_move = function(_event)	{
+		var raytracingMousemove = function(_event)	{
 			_event.preventDefault();
 
-			_ray_mouse.x = (_event.clientX / _sizes.rwidth) * 2 - 1;
+			_ray_mouse.x = (_event.offsetX / _sizes.rwidth) * 2 - 1;
 			_ray_mouse.y = -(_event.offsetY / _sizes.rheight) * 2 + 1;
 			_ray_mouse.z = 0.5;
 
@@ -48,10 +48,10 @@ define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 
 		var animate = function()	{
 			requestAnimationFrame(animate);
-			render_raycaster();
+			renderRaycaster();
 		}
 
-		var render_raycaster = function()	{
+		var renderRaycaster = function()	{
 			_raycaster.setFromCamera(_ray_mouse, _camera);
 			var intersects = _raycaster.intersectObjects(_event_targets, false);
 
@@ -59,32 +59,29 @@ define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 				for(var i = 0, len = _event_targets.length ; i < len ; i++)	{
 					if(_event_targets[i].uuid === intersects[0].object.uuid)	{
 						var data = intersects[0].object.__data__;
-						_utils.tooltip("ray_event", 
-						"<strong>sample : <span style='color:red'>"
-						+ data.sample
-						+ "</span></br> type : <span style='color:red'>"
-						+ data.type
-						+ "</span></br> pc1 : <span style='color:red'>"
-						+ Number(data.pc1).toFixed(5)
-						+ "</span></br> pc2 : <span style='color:red'>"
-						+ Number(data.pc2).toFixed(5)
-						+ "</span></br> pc3 : <span style='color:red'>"
-						+ Number(data.pc3).toFixed(5)
-						+ "</span>"
-						, tooltip_x, tooltip_y)
+
+						_utils.tooltip({ x : tooltip_x, y : tooltip_y }, 
+						"sample : " + data.sample
+						+ "</br> type : " + data.type
+						+ "</br> pc1 : " + Number(data.pc1).toFixed(5)
+						+ "</br> pc2 : " + Number(data.pc2).toFixed(5)
+						+ "</br> pc3 : " + Number(data.pc3).toFixed(5) 
+						, "rgba(15, 15, 15, 0.6)")
 					}
 				}
 			}
-			else { _utils.tooltip(); }
+			else { 
+				_utils.tooltip(); 
+			}
 			_renderer.render(_scene, _camera);
 		}
 
 		return {
-			win_m_down : win_mousedown,
-			win_m_up : win_mouseup,
-			win_m_move : win_mousemove,
-			ray_mouse_move : ray_mouse_move,
-			ray_render : render_raycaster,
+			win_m_down : windowMousedown,
+			win_m_up : windowMouseup,
+			win_m_move : windowMousemove,
+			raytracingMousemove : raytracingMousemove,
+			ray_render : renderRaycaster,
 			animate : animate
 		}
 	}	

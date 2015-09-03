@@ -1,12 +1,12 @@
 var GENE = "comutationplot/gene/";
 
 define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function(_utils, _size, _view)	{
-	var count_by_order = function(_all_data, _importance)	{
+	var countByOrder = function(_all_data, _importance)	{
 		var all_data = _all_data || [];
 		var gene_list = [];
 
 		for(var i = 0, len = all_data.length ; i < len ; i++)	{
-			var check = _utils.get_json_in_array(all_data[i].gene, gene_list, "name");
+			var check = _utils.getObjInArray(all_data[i].gene, gene_list, "name");
 			if(!check)	{
 				gene_list.push({
 					name : all_data[i].gene,
@@ -25,18 +25,18 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 		var list = _list || [];
 
 		for(var i = 0, len = list.length ; i < len ; i++)	{
-			list[i].list = count_mutation(list[i].list);
+			list[i].list = countMutation(list[i].list);
 		}
 		return list;
 	}
 
-	var count_mutation = function(_mutation)    {
+	var countMutation = function(_mutation)    {
 		var mutation = _mutation || [];
 		var result = [];
 
 		for(var i = 0, len = mutation.length ; i < len ; i++)   {
 			for(var j = 0, lens = mutation[i].type.length ; j < lens ; j++) {
-				var check = _utils.get_json_in_array(mutation[i].type[j], result, "type");
+				var check = _utils.getObjInArray(mutation[i].type[j], result, "type");
 				if(!check) {
 					result.push({
 						gene : [mutation[i].gene],
@@ -59,7 +59,7 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 		var data = _data || [];
 
 		data.map(function(_d)   {
-			_d = sort_by_mutation(_d, _importance);
+			_d = sortByMutation(_d, _importance);
 			$.each(_d.list, function(_i)    {
 				if(_i === 0)    {
 					_d.list[_i].start = 0;
@@ -72,7 +72,7 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 		return data;
 	}
 
-	var get_max = function(_data)	{
+	var getMax = function(_data)	{
 		var data = _data || [];
 
 		return d3.max(data.map(function(_d) {
@@ -84,23 +84,23 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 		}));
 	}
 
-	var sort_by_list = function(_list, _importance)	{
+	var sortByList = function(_list, _importance)	{
 		_list.sort(function(_a, _b)	{
 			return (_importance.indexOf(_a.type) < _importance.indexOf(_b.type)) ? 1 : -1
 		});
 	}
 
-	var sort_by_mutation = function(_d, _importance)	{
-		sort_by_list(_d.list, _importance);
+	var sortByMutation = function(_d, _importance)	{
+		sortByList(_d.list, _importance);
 		return _d;
 	}
 
 	return function(_all_data, _genes, _importance)	{
-		var count_gene = count_by_order(_all_data, _importance);
-		var size = _size.define_size("comutationplot_gene", 20, 20, 20, 70);
-		var max = get_max(count_gene);
+		var count_gene = countByOrder(_all_data, _importance);
+		var size = _size.definitionSize("comutationplot_gene", 20, 20, 20, 70);
+		var max = getMax(count_gene);
 
-		_utils.remove_svg("comutationplot_gene");
+		_utils.removeSvg("comutationplot_gene");
 
 		_view.view({
 			data : count_gene,

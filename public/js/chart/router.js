@@ -1,17 +1,34 @@
 var ANALYSIS_NEEDLE = "analysis/needleplot/needle/setting_needleplot";
 var MUTATIONALLANDSCAPE_COMUTATION = "population/comutationplot/interface_comutationplot";
+var ANALYSIS_PATHWAY = "analysis/pathwayplot/pathway/setting_pathwayplot";
 
-define( "router", [ "utils", ANALYSIS_NEEDLE, MUTATIONALLANDSCAPE_COMUTATION ], function(_utils, _aNeedle, _mlsComutation)	{
+/* Old chart */
+var COMUTS_INTER = "comutationplot/interface_comutationplot";
+var DEG = "degplot/setting_degplot";
+var XY = "xyplot/setting_xyplot";
+var MA = "maplot/setting_maplot";
+var PCA = "pcaplot/interface_pcaplot";
+var NEEDLE = "needleplot/needle/setting_needleplot";
+var FLOW = "flowplot/setting_flowplot";
+
+define( "router", [ "utils", ANALYSIS_NEEDLE, MUTATIONALLANDSCAPE_COMUTATION, ANALYSIS_PATHWAY, XY, MA, DEG, PCA, COMUTS_INTER ], function(_utils, _aNeedle, _mlsComutation, _aPathway, _xy, _ma, _deg, _pca, _comutation)	{
 	var getFunction = function(_chartName)	{
 		return {
 			analysis_needle : _aNeedle,
-			mutational_landscape_comutation : _mlsComutation
+			analysis_pathway : _aPathway,
+			mutational_landscape_comutation : _mlsComutation,
+
+			xy : _xy,
+			ma : _ma,
+			deg : _deg,
+			pca : _pca,
+			needle : _aNeedle,
+			comutation : _comutation
 		}[_chartName];
 	}
 
 	var checkResStatus = function(_res)	{
-		if(_res.status === 1001)	{
-			alert(_res.message);
+		if(_res.message !== "OK" && _res.lenght < 1)	{
 			window.history.back();
 		}
 	}
@@ -24,18 +41,12 @@ define( "router", [ "utils", ANALYSIS_NEEDLE, MUTATIONALLANDSCAPE_COMUTATION ], 
 		})
 		.done(function(_res)	{
 			_callback(_res);
-			fade_in();
-			getFunction(_chartName)(_res); 
-			fade_out();
+			getFunction(_chartName)(_res);
+		
+			if(document.querySelector(".chart_container") !== null)	{
+				_utils.loading(null, ".chart_container").end(); 
+			}
 		});
-	}
-
-	var fade_in = function()	{
-		$(".chart_container").fadeIn(1000);
-	}
-
-	var fade_out = function()	{
-		$(".loading").fadeOut();
 	}
 
 	return function(_chartName, _dataUrl)	{

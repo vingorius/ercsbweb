@@ -13,20 +13,18 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 		var undo = function(_d)	{
 			if(paths_stack.length === 1 || save_circles.length === 1)	{
-				alert("마지막 선택입니다.");
 				return;
 			}
-
-			undo_path(paths_stack[paths_stack.length - 1]);
-			undo_table(save_circles[save_circles.length - 1]);
-			undo_selected_cells(save_circles[save_circles.length - 1]);
+			undoPath(paths_stack[paths_stack.length - 1]);
+			undoTable(save_circles[save_circles.length - 1]);
+			undoSelectedCells(save_circles[save_circles.length - 1]);
 
 			save_paths.pop();
 			paths_stack.pop();
 			save_circles.pop();
 		}
 
-		var undo_selected_cells = function(_target)	{
+		var undoSelectedCells = function(_target)	{
 			for (var i = 0, len = selected_circles.length ; i < len ; i++)	{
 				for(var j = 0, leng = _target.length ; j < leng ; j++)	{
 					if(_target[j] === selected_circles[i])	{
@@ -36,13 +34,12 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 			}
 		}
 
-		var undo_path = function(_target)	{
+		var undoPath = function(_target)	{
 			d3.selectAll(_target).remove();
 		}
 
-		var undo_table = function(_target)		{
+		var undoTable = function(_target)		{
 			var tbody = document.querySelector("#result_body");
-			var index_array = [];
 
 			for (var i = tbody.rows.length - 1, len = 0 ; i >= len ; i--)	{
 				var row = tbody.rows[i];
@@ -55,12 +52,13 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 			}
 		}
 
-		var save_all_paths = function()	{
+		var savedAllPaths = function()	{
 			var reform_paths = [];
 			var index = 0;
 
 			for(var i = 0, len = save_paths.length ; i < len ; i++)	{
 				var empty_paths = [];
+
 				for(var j = (i === 0) ? 0 : save_paths[i - 1].length, leng = save_paths[i].length ; j < leng ; j++)	{
 					empty_paths.push(save_paths[i][j]);
 					if(save_paths[i][j].id)	{
@@ -72,7 +70,7 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 			paths_stack = reform_paths;
 		}
 
-		var arrow_btn_click = function(_d)	{
+		var arrowClick = function(_d)	{
 			var type = this.id.substring(this.id.lastIndexOf("_") + 1, this.id.length);
 
 			(type === "up")	?
@@ -80,34 +78,29 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 			: $('.spinner input').val((parseFloat($('.spinner input').val()) - 0.01).toFixed(2));
 		}
 
-		var get_mouseover = function(_d)	{
-			var e = d3.event;
-
-			_utils.tooltip(e
-				, "<strong>Title : <span style='color:red'>" + _d.title
-				+ "</span></br> X : <span style='color:red'>" 
-				+ Number(_d.x).toFixed(5)
-				+ "</span></br> Y : <span style='color:red'>" 
-				+ Number(_d.y).toFixed(5)
-				+ "</span></br> P : <span style='color:red'>"
+		var mouseover = function(_d)	{
+			_utils.tooltip(this
+				, "title : " + _d.title + "</br> x : " 
+				+ Number(_d.x).toFixed(5) + "</br> y : " 
+				+ Number(_d.y).toFixed(5) + "</br> p : "
 				+ Number(_d.value).toExponential(5)
-				, e.pageX, e.pageY);
+				, "rgba(15, 15, 15, 0.6)");
 		}
 
-		var get_mouseout = function(_d)	{
-			var e = d3.event;
-
+		var mouseout = function(_d)	{
 			_utils.tooltip();
 		}
 
-		var click_redraw = function()  {
+		var redraw = function()  {
 			var value = $('.spinner input').val();
-			var circles = d3.selectAll(".maplot_circles");
 
-			circles.style("fill", function(_d) { return data.color(_d, value); })
+			d3.selectAll(".maplot_circles")
+			.style("fill", function(_d) { 
+				return data.color(_d, value); 
+			});
 		}
 
-		var click_download = function()  {
+		var download = function()  {
 			var download_data = 'GENE, X, Y, P';
 
 			selected_circles.forEach(function(_d, _i)   {
@@ -120,31 +113,29 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 				+ encodeURIComponent(download_data));
 		}
 
-		var delete_table_item = function(_table)	{
-			var table_size = _table.rows.length;
-
-			for(var i = 0 ; i < table_size ; i++)    {
+		var delTableItems = function(_table)	{
+			for(var i = 0, len = _table.rows.length ; i < len ; i++)    {
 				_table.deleteRow(0);
 			}
 		}
 
-		var click_reset = function()	{
+		var reset = function()	{
 			var table = document.querySelector("#result_body");
-			var paths_g = d3.selectAll("#maplot_select_path path");
 
-			delete_table_item(table);
-			paths_g.remove();
+			delTableItems(table);
+			d3.selectAll("#maplot_select_path path")
+			.remove();
 
 			selected_circles = [];
 		}
 
-		var row_mouseevent = function(_circle, _radius)	{
+		var rowMouseEvent = function(_circle, _radius)	{
 			(this.event.type === "mouseover") ?
 			_circle.transition().duration(250).attr("r", _radius * 2) :
 			_circle.transition().duration(250).attr("r", _radius);
 		}
 
-		var make_rowcell = function(_index, _circle, _table)	{
+		var makeRowCells = function(_index, _circle, _table)	{
 			var radius = _circle.attr("r");
 			var row = _table.insertRow(-1);
 			row.insertCell(0).innerHTML = "<strong>" + (_index + 1);
@@ -157,21 +148,21 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 			row.insertCell(3).innerHTML = Number(_circle.datum().y).toFixed(4);
 			row.insertCell(4).innerHTML = Number(_circle.datum().value).toExponential(5);
 
-			row.onmouseover = function()  { row_mouseevent(_circle, radius); }
-			row.onmouseout = function()  { row_mouseevent(_circle, radius); }
+			row.onmouseover = function()  { rowMouseEvent(_circle, radius); }
+			row.onmouseout = function()  { rowMouseEvent(_circle, radius); }
 		}
 
-		var draw_table = function() {
+		var drawTable = function() {
 			var table = document.querySelector("#result_body");
 
-			delete_table_item(table);
+			delTableItems(table);
 
 			selected_circles.forEach(function(_d, _i)   {
-				make_rowcell(_i, _d, table);
+				makeRowCells(_i, _d, table);
 			});
 		}
 
-		var ray_tracing = function (point, vs) {
+		var rayTracing = function (point, vs) {
 			var xi, xj, i, intersect;
 			var x = point[0];
 			var y = point[1];
@@ -186,12 +177,10 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 				if (intersect) { inside = !inside };
 			}
-
 			return inside;
 		}
 
 		var dragStart = function() {
-			var paths = d3.selectAll("#maplot_select_path");
 			coords = [];
 		}
 
@@ -199,12 +188,17 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 			var line = d3.svg.line();
 			var gs = d3.selectAll("#maplot_select_path");
 
-			gs.append("path").attr({ d: line(coords) });
+			gs.append("path")
+			.attr({ 
+				d: line(coords) 
+			});
 
 			if (terminator) {
-				if(coords.length < 1)	{ return; }
-
-				gs.append("path").attr({
+				if(coords.length < 1)	{ 
+					return; 
+				}
+				gs.append("path")
+				.attr({
 					id: "terminator",
 					d: line([coords[0], coords[coords.length-1]])
 				});
@@ -217,18 +211,24 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 			drawPath();
 		}
 
-		var get_min_max_coords = function(_value) {
-			var value = _value || [];
-
+		var getCoords = function(_value) {
 			return {
-				xMin : d3.min(value.map(function(_d) { return _d[0]; })),
-				xMax : d3.max(value.map(function(_d) { return _d[0]; })),
-				yMin : d3.min(value.map(function(_d) { return _d[1]; })),
-				yMax : d3.max(value.map(function(_d) { return _d[1]; }))
+				xMin : d3.min(_value.map(function(_d) { 
+					return _d[0]; 
+				})),
+				xMax : d3.max(_value.map(function(_d) { 
+					return _d[0]; 
+				})),
+				yMin : d3.min(_value.map(function(_d) { 
+					return _d[1]; 
+				})),
+				yMax : d3.max(_value.map(function(_d) { 
+					return _d[1]; 
+				}))
 			}
 		}
 
-		var find_intersection = function(_selected_circles, _end_selected_circles)		{
+		var findIntersection = function(_selected_circles, _end_selected_circles)		{
 			var empty_circles = [];
 
 			for(var i = 0, len = _end_selected_circles.length ; i < len ; i++)	{
@@ -249,7 +249,7 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 		var dragEnd = function() {
 			var end_selected_circles = [];
-			var area = get_min_max_coords(coords);
+			var area = getCoords(coords);
 
 			all_circles.each(function(d, i) {
 				var x =d3.select(this).attr("cx");
@@ -257,9 +257,8 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 				point = [x, y];
 
-				if(area.xMin < x && area.xMax > x
-					&& area.yMin < y && area.yMax > y)  {
-					if (ray_tracing(point, coords)) {
+				if(area.xMin < x && area.xMax > x && area.yMin < y && area.yMax > y)  {
+					if (rayTracing(point, coords)) {
 						end_selected_circles.push(d3.select(this))
 					}
 				}
@@ -268,13 +267,13 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 			end_selected_circles.sort(function(_a, _b)  {
 				return (_a.datum().value > _b.datum().value) ? 1 : -1;
 			});
-			find_intersection(selected_circles, end_selected_circles)
+			findIntersection(selected_circles, end_selected_circles)
 
 			drawPath(true);
-			draw_table();
+			drawTable();
 
 			save_paths.push(d3.selectAll("#maplot_select_path path")[0]);
-			save_all_paths();
+			savedAllPaths();
 		}
 
 		var drag = d3.behavior.drag()
@@ -285,12 +284,12 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 		return {
 			data : data,
 			drag : drag,
-			arrow : arrow_btn_click,
-			m_over : get_mouseover,
-			m_out : get_mouseout,
-			redraw : click_redraw,
-			download : click_download,
-			reset : click_reset,
+			arrow : arrowClick,
+			m_over : mouseover,
+			m_out : mouseout,
+			redraw : redraw,
+			download : download,
+			reset : reset,
 			undo : undo
 		}
 	}

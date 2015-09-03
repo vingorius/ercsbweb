@@ -2,9 +2,7 @@ var PQ = "population/comutationplot/pq/";
 
 define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
-		var data = _data || {};
-		var size = data.size;
-		var e = _event || null;
+		var size = _data.size;
 
 		var svg = d3.select("#comutationplot_pq")
 		.append("svg")
@@ -15,9 +13,9 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		.attr("transform", "translate(0, 0)");
 
 		var xAxis = d3.svg.axis()
-		.scale(data.x)
+		.scale(_data.x)
 		.orient("bottom")
-		.tickValues([0, data.max / 2, data.max]);
+		.tickValues([0, _data.max / 2, _data.max]);
 
 		svg.append("g")
 		.attr("class", "comutationplot_pq_xaxis")
@@ -25,11 +23,11 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		.call(xAxis);
 
 		var bar_group = svg.selectAll(".comutationplot_pq_bargroup")
-		.data(data.data)
+		.data(_data.data)
 		.enter().append("g")
 		.attr("class", "comutationplot_pq_bargroup") 
 		.attr("transform", function(_d)	{
-			return "translate(0, " + data.y(_d.gene) + ")"
+			return "translate(0, " + _data.y(_d.gene) + ")"
 		});
 
 		var stacked_bar = bar_group.selectAll("rect")  
@@ -38,8 +36,10 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		})
 		.enter().append("rect")
 		.attr("class", "comutationplot_pq_bars")
-		.on("mouseover", e.m_over)
-		.on("mouseout", e.m_out)
+		.on("mouseover", _event.m_over)
+		.on("mouseout", function()	{
+			_event.m_out(this, "bar");
+		})
 		.attr("x", function(_d) { 
 			return size.margin.left; 
 		})
@@ -47,14 +47,13 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 			return 0;
 		})
 		.attr("width", function(_d) { 
-			return data.x(_utils.log(_d.q)) - size.margin.left; 
+			return _data.x(_utils.log(_d.q)) - size.margin.left; 
 		})
-		.attr("height", data.y.rangeBand() / 1.2);
+		.attr("height", _data.y.rangeBand() / 1.2);
 	}
 
 	var titleView = function(_data)	{
 		var size = _data.title_size;
-		var e = _event || null;
 
 		var svg = d3.select("#comutationplot_pq_title")
 		.append("svg")
@@ -65,19 +64,18 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		.attr("transform", "translate(0, 0)");
 
 		svg.append("g")
-		.data([{ data : _data.data, size : _data.size, status : false }])
+		.data([{ 
+			data : _data.data, 
+			size : _data.size, 
+			status : false 
+		}])
 		.attr("class", "pq_explain")
 		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")")
 		.append("text")
 		.text("#q value")
-		.on("click", e.sort_by_value);
-
-		$(".pq_explain")
-		.tooltip({
-			container : "body",
-			title : "sort by q value",
-			placement : "bottom"
-		});
+		.on("mouseover", _event.e_over)
+		.on("mouseout", _event.m_out)
+		.on("click", _event.sortByValue);
 	}
 
 	return {

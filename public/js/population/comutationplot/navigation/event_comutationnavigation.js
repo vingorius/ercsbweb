@@ -3,172 +3,110 @@ var VO = "population/comutationplot/vo_comutationplot";
 
 define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], function(_utils, _size, _VO)	{
 	return 	function(_data) {
-		var data = _data || {};
 		var size = _data.size;
 
-		var scroll_status = function()	{
-			var scroll = $("#comutationplot_border");
-			// var scroll = $("#comutationplot_heatmap");
-
-			if(get_input_value() === 100)	{ 
-				scroll.css("overflow", "hidden"); 
-			}
-			else { 
-				scroll.css("overflow-x", "scroll"); 
-			}
-		}
-
-		var get_click = function()	{
+		var eventClick = function()	{
 			var target = $(this)[0];
 			var type = target.id.substring(target.id.lastIndexOf("_") + 1, target.id.length);
 			var sign = (type === "up") ? 1 : -1;
 
-			if(((get_input_value() / 100) * sign) + get_input_value() <= 100)	{
+			if(((getInputValue() / 100) * sign) + getInputValue() <= 100)	{
 				return;
 			}
-			change_input_value(sign);
-			scroll_status();
-			scale_sample();
-			scale_group();
-			scale_comutation();
+			changeInputValue(sign);
+			sampleScale();
+			groupScale();
+			comutationScale();
 		}
 
-		var get_input_value = function()    {
+		var getInputValue = function()    {
 			var input = $("#comutationplot_scale_input");
 
 			return Number(input.val().substring(0, input.val().length - 1));
 		}
 
-		var change_input_value = function(_sign, _value)   {
-			var input = $("#comutationplot_scale_input");
+		var changeInputValue = function(_sign, _value)   {
 			var value = _value || 10;
 
-			input.val(Number(get_input_value() + (value * _sign)) + "%");
+			$("#comutationplot_scale_input")
+			.val(Number(getInputValue() + (value * _sign)) + "%");
 		}
 
-		var calculate_value = function()	{
-			return (get_input_value() - 100) / 100;
+		var calculatedValue = function()	{
+			return (getInputValue() - 100) / 100;
 		}
 
-		var scale_group = function()	{
-			var group = d3.select(".comutationplot_groups");
-			var rects = d3.selectAll(".comutationplot_bar_group_rects");
+		var groupScale = function()	{
 			var old = $("#comutationplot_groups").width();
-			var now = old + (old * calculate_value());
+			var now = old + (old * calculatedValue());
 			var x = _utils.ordinalScale(_VO.VO.getSample(), 0, now * size.magnification);
 	
 			if(old > now)	{
 				return;
 			}			
-
-			redraw_group(now, x);
+			groupRedraw(now, x);
 		}
 
-		var redraw_group = function(_value, _x)	{
-			var group = d3.select(".comutationplot_groups");
+		var groupRedraw = function(_value, _x)	{
 			var rects = d3.selectAll(".comutationplot_bar_group_rects");
 
-			group
+			d3.select(".comutationplot_groups")
 			.attr("width", _value * size.magnification);
+			
+			_utils.attributeXY(rects, "x", _x, "sample", false);
 
 			rects
-			.transition().duration(400)
-			.attr("x", function(_d)	{
-				return _x(_d.sample);
-			})
 			.attr("width", function(_d)	{
 				return _x.rangeBand() / size.left_between;
 			});
 		}
 
-		var scale_sample = function()	{
-			var sample = d3.select(".comutationplot_sample");
-			var rects = d3.selectAll(".comutationplot_sample_bars");
+		var sampleScale = function()	{
 			var old = $("#comutationplot_sample").width();
-			var now = old + (old * calculate_value());
+			var now = old + (old * calculatedValue());
 			var x = _utils.ordinalScale(_VO.VO.getSample(), 0, now * size.magnification);
 
 			if(old > now)	{ 
 				return;
 			}
-
-			redraw_sample(now, x);
+			sampleRedraw(now, x);
 		}
 
-		var redraw_sample = function(_value, _x)	{
-			var sample = d3.select(".comutationplot_sample");
-			var rects = d3.selectAll(".comutationplot_sample_bars");
-
-			sample
+		var sampleRedraw = function(_value, _x)	{
+			d3.select(".comutationplot_sample")
 			.attr("width", _value * size.magnification);
 
-			d3.selectAll(".comutationplot_sample_bargroup")
-			.transition().duration(400)
-			.attr("transform", function(_d)	{
-				return "translate(" + _x(_d.sample) + ", 0)";
-			});
-
-			rects
-			.attr("width", function(_d ) {
-				return _x.rangeBand() / size.left_between; 
-			});
+			_utils.translateXY(d3.selectAll(".comutationplot_sample_bargroup"), _x, 0, "sample", 0, false, false);
+			_utils.attributeSize(d3.selectAll(".comutationplot_sample_bars"), "width", _x, size.left_between);
 		}
 
-		var scale_comutation = function()	{
-			var groups = d3.selectAll(".comutationplot_cellgroup");
-			var rects = d3.selectAll(".comutationplot_cells");
+		var comutationScale = function()	{
 			var origin = $("#comutationplot_border");
 			var old = origin.width();
-			var now = old + (old * calculate_value());
+			var now = old + (old * calculatedValue());
 			var x = _utils.ordinalScale(_VO.VO.getSample(), 0, now * size.magnification);
 			var y = _utils.ordinalScale(_VO.VO.getGene(), 0, (origin.height() - size.margin.bottom));
 
 			if(old > now)	{ 
 				return; 
 			}
-			
-			redraw_comutation(now, x, y);
+			comutationRedraw(now, x, y);
 		}
 
-		var redraw_comutation = function(_value, _x, _y)	{
-			var comutation = d3.select(".comutationplot_heatmap");
-			var groups = d3.selectAll(".comutationplot_cellgroup");
-			var rects = d3.selectAll(".comutationplot_cells");
-			var origin = $("#comutationplot_heatmap");
-
+		var comutationRedraw = function(_value, _x, _y)	{
 			_VO.VO.setWidth(_value);
 
-			comutation
+			d3.select(".comutationplot_heatmap")
 			.attr("width", _value * size.magnification);
-			origin
+			$("#comutationplot_heatmap")
 			.css("width", _value * size.magnification);
 
-			groups
-			.transition().duration(400)
-			.attr("transform", function(_d)	{
-				if(!_y(_d.gene))	{
-				return "translate(" + _x(_d.sample) + ", " + _y(_d.gene) +")";	
-				}
-				return "translate(" + _x(_d.sample) + ", " + _y(_d.gene) +")";
-			});
-
-			rects
-			.attr("x", 0)
-			.attr("width", function(_d) { 
-				return _x.rangeBand() / size.left_between; 
-			});
+			_utils.attributeSize(d3.selectAll(".comutationplot_cells"), "width", _x, size.left_between);
+			_utils.translateXY(d3.selectAll(".comutationplot_cellgroup"), _x, _y, "sample", "gene", false, false);
+			_utils.translateXY(d3.selectAll(".comutationplot_patient_cellgroup"), 0, 0, "sample", "gene", true, true);
 		}
 
-		var timeout = function(_func, _sec)	{
-			setTimeout(_func, _sec);
-		}	
-
-		var get_init = function(_d)	{
-			var sample = d3.select(".comutationplot_sample");
-			var sample_rects = d3.selectAll(".comutationplot_sample_bars");
-			var comutation = d3.select(".comutationplot_heatmap");
-			var comutation_groups = d3.selectAll(".comutationplot_cellgroup");
-			var comutation_rects = d3.selectAll(".comutationplot_cells");
+		var getInit = function(_d)	{
 			var vo = _VO.VO;
 			var y = _utils.ordinalScale(vo.getInitGene(), 0, (vo.getInitHeight() - vo.getInitMarginBottom()));
 			var x = _utils.ordinalScale(vo.getInitSample(), 0, vo.getInitWidth() * size.magnification);
@@ -176,77 +114,46 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			vo.setGene(vo.getInitGene());
 			vo.setSample(vo.getInitSample());
 
-			redraw_sample(vo.getInitWidth(), x);
-			redraw_group(vo.getInitWidth(), x);
-			redraw_comutation(vo.getInitWidth(), x, y);
+			sampleRedraw(vo.getInitWidth(), x);
+			groupRedraw(vo.getInitWidth(), x);
+			comutationRedraw(vo.getInitWidth(), x, y);
 			
-			if(get_input_value() === 100)	{
-				change_input_value(-1, 0);
+			if(getInputValue() === 100)	{
+				changeInputValue(-1, 0);
 			}
 
-			change_input_value(-1, (get_input_value() - 100));
-			scroll_status();
-
-			timeout(function() { 
-				d3.selectAll(".comutationplot_sample_bargroup")
-				.transition().duration(400)
-				.attr("transform", function(_d)	{
-					return "translate(" + x(_d.sample) + ", 0)";
-				});
-
-				sample_rects
-				.transition().duration(400)
-				.attr("width", function(_d ) {
-					return x.rangeBand() / size.left_between; 
-				});
-			}, 300);
+			changeInputValue(-1, (getInputValue() - 100));
 			
-			timeout(function() { 
-				d3.selectAll(".comutationplot_pq_bargroup")
-				.transition().duration(400)
-				.attr("transform", function(_d)	{
-					return "translate(0, " + y(_d.gene) + ")"
-				});
-				d3.selectAll(".comutationplot_pq_bars")
-				.transition().duration(400)
-				.attr("height", function(_d)	{
-					return y.rangeBand() / size.top_between;
-				});
-			}, 400);
+			_utils.callAxis(d3.selectAll(".comutationplot_gene_yaxis"), y, "right");
+			_utils.translateXY(d3.selectAll(".comutationplot_pq_bargroup"), 0, y, 0, "gene", false, false);	
+			_utils.translateXY(d3.selectAll(".comutationplot_gene_bargroup"), 0, y, 0, "gene", false, false);
 
-			timeout(function() { 
-				d3.selectAll(".comutationplot_gene_yaxis")
-				.transition().duration(400)
-				.call(d3.svg.axis().scale(y).orient("right")); 
-			}, 400);
-
-			timeout(function() { 
-				d3.selectAll(".comutationplot_gene_bargroup")
-				.transition().duration(400)
-				.attr("transform", function(_d)	{
-					return "translate(0, " + y(_d.gene) + ")";
-				});
-				d3.selectAll(".comutationplot_gene_bars")
-				.transition().duration(400)
-				.attr("height", function(_d)	{
-					return y.rangeBand() / size.top_between;
-				});
-			}, 400);
-
-			timeout(function() { 
-				d3.selectAll(".comutationplot_cellgroup")
-				.transition().duration(400)
-				.attr("transform", function(_d)	{
-					if(!x(_d.sample))	{
-						return "translate(" + _d.x(_d.sample) + ", " + _d.y(_d.gene) +")";	
-					}
-					return "translate(" + x(_d.sample) + ", " + y(_d.gene) +")";	
-				}); 
-			}, 500);
+			$("#comutationplot_sample, #comutationplot_border, #comutationplot_groups").scrollLeft(0);
 		}
+
+		var initOver = function(_d)	{
+			_utils.tooltip(this, "<b>Initialization</b>", "rgba(178, 0, 0, 0.6)");
+		}
+
+		var upOver = function(_d)	{
+			_utils.tooltip(this, "<b>Scale up </br> maximun(infinity)</b>", "rgba(178, 0, 0, 0.6)");
+		}
+
+		var downOver = function(_d)	{
+			_utils.tooltip(this, "<b>Scale down </br> minimum(100%)</b>", "rgba(178, 0, 0, 0.6)");
+		}
+
+		var mOut = function(_d)	{
+			_utils.tooltip();
+		}
+
 		return {
-			click : get_click,
-			init : get_init
+			initover : initOver,
+			upover : upOver,
+			downover : downOver,
+			out : mOut,
+			click : eventClick,
+			init : getInit
 		}
 	}
 });

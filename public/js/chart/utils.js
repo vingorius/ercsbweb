@@ -3,12 +3,21 @@ define("utils", [], function()  {
 		var result = "";
 
 		for(var i = 0, len = _str.length ; i < len ; i++)	{
-			if((/\d/).test(_str[i]))	{
+			if((/(\d)|(\D)/).test(_str[i]))	{
 				result += _str[i];
 			}
 		}
+		return parseFloat(result);
+	}
 
-		return Number(result);
+	var frontElement = function(_target_element, _source_element)	{
+		if(_target_element.nextSibling)	{
+			_source_element.appendChild(_target_element);
+		}
+	}
+
+	var behindElement = function(_target_element, _target_index, _source_element)	{
+		_source_element.insertBefore(_target_element, _source_element.childNodes[_target_index - 1]);
 	}
 
 	var ordinalScale = function(domain, range_start, range_end) {
@@ -23,47 +32,10 @@ define("utils", [], function()  {
 		.range([range_start, range_end]);
 	}
 
-	var get_array_in_json = function(_json)   {
-		var result = [];
-
-		$.each(Object.keys(_json), function(_i, _d) {
-			if(_json[_d].constructor === Array) {
-				result.push(_json[_d]);
-			}
-		});
-
-		return result;
-	}
-
-	var check_array_in_json  = function(_json)  {
-		var result = false;
-
-		$.each(Object.keys(_json), function(_i, _d) {
-			if(_json[_d].constructor === Array) {
-				result = true;
-			}
-		});
-
-		return result;
-	}
-
-	var search_in_jsonarray = function(_value, _key, _jsonarray)    {
-		var result;
-
-		$.each(_jsonarray, function(_i, _d) {
-			if(_d[_key] === _value) {
-				result = _d;
-			}
-		});
-
-		return result;
-	}
-
-	var get_json_in_array = function(_name, _array, _key)  {
+	var getObjInArray = function(_name, _array, _key)  {
 		for(var _i in _array)   {
 			if(_name === _array[_i][_key]) { return _array[_i]; }
 		}
-
 		return undefined;
 	}
 
@@ -75,18 +47,51 @@ define("utils", [], function()  {
 		}
 	}
 
-	var get_json_array_in_array = function(_name, _array, _key) {
+	var getObjArrInArray = function(_name, _array, _key) {
 		var result = [];
 
 		for(var _i in _array)   {
-			if(_name === _array[_i][_key]) { result.push(_array[_i]); }
+			if(_name === _array[_i][_key]) { 
+				result.push(_array[_i]); 
+			}
 		}
-
 		return result;
 	}
 
-	var remove_svg = function() {
+	var isArrayInObj  = function(_json)  {
+		var result = false;
 
+		$.each(Object.keys(_json), function(_i, _d) {
+			if(_json[_d].constructor === Array) {
+				result = true;
+			}
+		});
+		return result;
+	}
+
+	var getArrayInObj = function(_json)   {
+		var result = [];
+
+		$.each(Object.keys(_json), function(_i, _d) {
+			if(_json[_d].constructor === Array) {
+				result.push(_json[_d]);
+			}
+		});
+		return result;
+	}
+
+	var searchObjArray = function(_value, _key, _jsonarray)    {
+		var result;
+
+		$.each(_jsonarray, function(_i, _d) {
+			if(_d[_key] === _value) {
+				result = _d;
+			}
+		});
+		return result;
+	}
+
+	var removeSvg = function() {
 		if(arguments.length < 1)    {
 			return;
 		}
@@ -99,27 +104,72 @@ define("utils", [], function()  {
 		}
 	}
 
-	var define_mutation_name = function(_name)  {
+	var alterationPrecedence = function(_alteration)	{
+		if((/(AMPLIFICATION)|(HOMOZYGOUS_DELETION)/i).test(_alteration))	{
+			return { alteration : "CNV", priority : cnvPrecedence(_alteration) };
+		}
+		else if((/(EXPRESSION)/).test(_alteration))	{
+			return { alteration : "mRNA Expression (log2FC)", priority : mutationPrecedence(_alteration) };
+		}
+		else {
+			return { alteration : "Somatic Mutaion", priority : mutationPrecedence(_alteration) };
+		}
+	}
+
+	var mutationPrecedence = function(_mutation)	{
+		return {
+			"Nonsense_mutation" : 9,
+			"Splice_Site" : 8,
+			"Translation_Start_Site" : 7,
+			"Missense_mutation" : 6,
+			"Nonstop_mutation" : 5,
+			"Frame_shift_indel" : 4,
+			"In_frame_indel" : 3,
+			"RNA" : 2,
+			"Silent" : 1,
+		}[_mutation];
+	}
+
+	var cnvPrecedence = function(_cnv)	{
+		return {
+			"Amplification" : 11,
+			"Homozygous_Deletion" : 10
+		}[_cnv];
+	}
+
+	// var expPrecedence = function(_exp)	{
+	// 	return {
+
+	// 	}[_exp];
+	// }
+
+	var definitionMutationName = function(_name)  {
 		if((/MISSENSE/i).test(_name)) { 
-			return "Missense"; 
+			return "Missense_mutation"; 
 		}
 		else if((/NONSENSE/i).test(_name)) { 
-			return "Nonsense"; 
+			return "Nonsense_mutation"; 
 		}
 		else if((/(SPLICE_SITE)|(SPLICE_SITE_SNP)/i).test(_name)) { 
 			return "Splice_Site"; 
 		}
-		else if((/(SYNONYMOUS)|(SILENT)/i).test(_name)) { 
-			return "Synonymous"; 
+		else if((/(SILENT)/i).test(_name)) { 
+			return "Silent"; 
 		}
-		else if((/(FRAME_SHIFT_INS)|(FRAME_SHIFT_DEL)/i).test(_name)) { 
+		else if((/(TRANSLATION)/i).test(_name))	{
+			return "Translation_Start_Site";
+		}
+		else if((/(RNA)/i).test(_name))	{
+			return "RNA";
+		}
+		else if((/(FRAME_SHIFT_)/i).test(_name)) { 
 			return "Frame_shift_indel"; 
 		}
-		else if((/(IN_FRAME_INS)|(IN_FRAME_DEL)/i).test(_name)) { 
+		else if((/(IN_FRAME_)/i).test(_name)) { 
 			return "In_frame_indel"; 
 		}
 		else if((/(NONSTOP)/i).test(_name)) { 
-			return "Nonstop"; 
+			return "Nonstop_mutation"; 
 		}
 		else if((/AMPLIFICATION/i).test(_name)) { 
 			return "Amplification"; 
@@ -129,38 +179,27 @@ define("utils", [], function()  {
 		}
 	}
 
-	var defineMutType = function(_name)	{
-		if((/(AMPLIFICATION) | (DELETION)/i).test(_name)) { 
-			return "CNV"; 
-		}
-		// else if((/(INDEL) | (SPLICE_SITE)/i).test(_name)) { 
-		// 	return "SNP"; 
-		// }
-		else { 
-			return "MUT"; 
-		}
-	}
-
 	var colour = function(_value)   {
 		var value = _value || "";
 
 		return {
-			"Missense":"#3E87C2",
-			"Nonsense":"#EA3B29",
-			"In_frame_indel":"#F2EE7E",
-			"Frame_shift_indel":"#F68D3B",
-			"Splice_Site":"#583D5F",
-			"Synonymous":"#5CB755",
-			"Nonstop" : "#120193",
 			"Amplification" : "#FFBDE0",
 			"Homozygous_Deletion" : "#BDE0FF",
-			"Other":"#B5612E",
-			"pq":"#C2C4C9",
-			"Primary Solid Tumor":"#F64747",
-			"Solid Tissue Normal":"#446CB3",
-			"si_log_p":"#ea3b29",
-			"si_up_log_p":"#5cb755",
-			"si_down_log_p":"#3e87c2"
+			"Nonsense_mutation" : "#EA3B29",
+			"Splice_Site" : "#800080",
+			"Translation_Start_Site" : "#aaa8aa",
+			"Missense_mutation" : "#3E87C2",
+			"Nonstop_mutation" : "#070078",
+			"Frame_shift_indel" : "#F68D3B",
+			"In_frame_indel" : "#F2EE7E",
+			"RNA" : "#ffdf97",
+			"Silent" : "#5CB755",
+			"pq" : "#C2C4C9",
+			"Primary Solid Tumor" : "#F64747",
+			"Solid Tissue Normal" : "#446CB3",
+			"si_log_p" : "#ea3b29",
+			"si_up_log_p" : "#5cb755",
+			"si_down_log_p" : "#3e87c2"
 		}[value];
 	}
 
@@ -181,7 +220,7 @@ define("utils", [], function()  {
 		return result;
 	}
 
-	var opposite_color = function(_rgb) {
+	var oppositeColor = function(_rgb) {
 		var r1, g2, b2, r2, g2, b2;
 		var rgb_hex = strcut(_rgb, 2);
 
@@ -196,34 +235,27 @@ define("utils", [], function()  {
 		return "#" + r2 + g2 + b2;
 	}
 
-	var getElementPostion = function(_element)	{
-		var position = $(_element).offset();
-
-		return {
-			left : position.left,
-			top : position.top
-		}
-	}
-
-	var tooltip = function(_event, _contents, _x, _y)   {
+	var tooltip = function(_element, _contents, _color)   {
 		var div = $('.tooltip_chart');
-		var padding_left = getNum($("#wrapper").css("padding-left"));
-		var padding_top = getNum($("#wrapper").css("padding-top"));
-		var space = 5;
 
 		if(arguments.length < 1) {
 			div.empty();
 			div.hide();
+			return;
 		}
 		else   {
+			if(!_element.tagName)	{
+				div.css("left", _element.x);
+				div.css("top", _element.y);
+			}
+			else {
+				var client = _element.getBoundingClientRect();
+				div.css("left", client.left + client.width);
+				div.css("top", client.top + client.height);
+			}
 			div.css("position", "absolute");
-			div.html(_contents);		// Html 태그를 포함한 문자열을 삽입 할 때에는 html() 함수를 사용하는 것이 낫다.
-			div.css("top", _y - padding_top);
-			div.css("left", _x - padding_left);
-			div.css("font-size", 12)
-			div.css("font-family", "trebuchet ms")
-			div.css("font-weight", "bold")
-			div.css("opacity", 0.8);
+			div.html(_contents);		
+			div.css("background-color", _color);
 			div.show();
 		}
 	}
@@ -243,40 +275,7 @@ define("utils", [], function()  {
 		a.dispatchEvent(html_event);		
 	}
 
-	var preserve_events = function(_event)	{
-		var e = event || d3.event;
-
-		e.stopPropagation();
-		e.preventDefault();
-	}
-
-	var getClass = function(_name)	{
-		for (var i = 0, len = document.getElementsByTagName("*").length ; i < len ; i++)	{
-			if(document.getElementsByTagName("*")[i].className === _name)	{
-				return document.getElementsByTagName("*")[i];
-			}
-		} 
-	}
-
-	var get_tag_by_identification = function(_text)	{
-		return getClass(_text) || document.getElementById(_text);
-	}
-
-	var find_pathname = function(_pathname)	{
-		return _pathname.substring(_pathname.lastIndexOf("/") + 1,
-			_pathname.indexOf("plot"));
-	}
-
-	var define_prop = function(_obj, _value, _key)	{
-		return Object.defineProperty(_obj, _key, {
-			value : _value,
-			writable : true,
-			configurable : true,
-			enumrable : false
-		});
-	}
-
-	var get_list_sum = function(_array, _key)	{
+	var getSumOfList = function(_array, _key)	{
 		try {
 			var result = 0;
 
@@ -296,27 +295,35 @@ define("utils", [], function()  {
 	}
 
 	var loading = function(_name, _target)	{
-		var loading_div = $(".loading").fadeIn();
+		var loading_div = $(".loading");
 		var chart_div = $(_target);
-		var chart_width = chart_div.width();
-		var chart_height = chart_div.height();
-		var doc_width = document.documentElement.clientWidth;
-		var doc_height = document.documentElement.clientHeight;
+		var bcr = document.querySelector(".chart_container").getBoundingClientRect();
 
-		$("#loading_text")
-		.css("top", -50)
-		.css("left", -25)
-		.text("Loading  . . .");
+		return {
+			start : function()	{
+				chart_div.fadeOut();
+				loading_div.fadeIn();
 
-		loading_div
-		.css("top", (doc_height - chart_height / 2) / 3)
-		.css("left", chart_width / 1.5);
+				$("#loading_text")
+				.css("top", -50)
+				.css("left", -20)
+				.text("Loading");
+
+				loading_div
+				.css("top", (bcr.top + (bcr.height > 900 ? 900 : bcr.height)) / 2)
+				.css("left", ((bcr.left + bcr.width) - getNum(chart_div.css("margin-right"))) / 1.9);				
+			},
+			end : function()	{
+				chart_div.fadeIn();
+				loading_div.fadeOut();
+			}
+		}
 	}
 
-	var preserveEventInterrupt = function(_target)	{
-		var target = $(_target);
+	var preserveEventInterrupt = function(_target, _type)	{
+		var target = _type === 0 ? d3.select(_target) : _target;
 
-		if(target.is(".preserve_events"))	{
+		if((/preserve_events/i).test(target.attr("class")))	{
 			var classList = target.attr("class").split(" ");
 			var className = "";
 
@@ -330,19 +337,11 @@ define("utils", [], function()  {
 					}
 				}
 			}
-
 			target.attr("class", className);
 		}
 		else {
-			target.addClass("preserve_events");
+			// target.addClass("preserve_events");
 		}		
-	}
-	/* bit operation 에서 >> 11 은 나누기 2048, >> 7 은 나누기 128
-	즉 문자 하나의 유니코드 값을 구해서 2048 로 나눈 값이 존재하면  */
-	var getByteLength = function(_str, _byte, _index, _char)	{
-		for(_byte = _index = 0 ; _char = _str.charCodeAt(_index++) ; _byte += _char >> 11 ? 3 : _char >> 7 ? 2 : 1);
-			
-		return _byte;
 	}
 
 	var getTextSize = function(_txt, _font_size)	{
@@ -358,35 +357,113 @@ define("utils", [], function()  {
 		};
 	}
 
+	var orderGroup = function(_value)	{
+		return {
+			"male" : 0,
+			"female" : 1,
+			"lung mucinous adenocarcinoma" : 4,
+			"lung bronchioloalveolar carcinoma mucinous" : 7,
+			"lung solid pattern predominant adenocarcinoma" : 9,
+			"lung papillary adenocarcinoma" : 2,
+			"lung micropapillary adenocarcinoma" : 5,
+			"lung adenocarcinoma- not otherwise specified (nos)" : 10,
+			"lung bronchioloalveolar carcinoma nonmucinous" : 8,
+			"mucinous (colloid) carcinoma" : 1,
+			"lung acinar adenocarcinoma" : 0,
+			"lung adenocarcinoma mixed subtype" : 6,
+			"lung clear cell adenocarcinoma" : 3,
+			"ERCSB" : 0,
+			"TCGA" : 1,
+			"non-smoker" : 0,
+			"smoker" : 1,
+			"reformed" : 2
+		}[_value]
+	}
+
+	var translateXY = function(_element, _x_scale, _y_scale, _x_key, _y_key, _self_x, _self_y)	{
+		_element
+		.transition().duration(400)
+		.attr("transform", function(_d)	{
+			var x = _x_scale === 0 || _x_key === 0 ? _self_x ? _d.x(_d[_x_key]) : 0 : _x_scale(_d[_x_key]);
+			var y = _y_scale === 0 || _y_key === 0 ? _self_y ? _d.y(_d[_y_key]) : 0 : _y_scale(_d[_y_key]);
+
+			return "translate(" + x +  ", " + y  +  ")";
+		});
+	}
+
+	var attributeXY = function(_element, _type, _scale, _key, _self)		{
+		_element
+		.attr("class", _element.attr("class") + " preserve_events");
+
+		_element
+		.transition().duration(400)
+		.attr(_type, function(_d)	{
+			var pos = _self ? _d[_type](_d[_key]) : _scale(_d[_key]);
+
+			return pos;
+		})
+		.each("end", function()	{
+			preserveEventInterrupt(_element, 1);
+		});
+	}
+
+	var attributeSize = function(_element, _type, _scale, _divide)	{
+		_element
+		.transition().duration(400)
+		.attr(_type, function(_d)	{
+			var size = _scale.rangeBand() / _divide;
+
+			return size;
+		});
+	}
+
+	var callAxis = function(_element, _scale, _way)	{
+		_element
+		.transition().duration(400)
+		.call(d3.svg.axis().scale(_scale).orient(_way));
+	}
+
+	var defineProp = function(_obj, _value, _key)	{
+		return Object.defineProperty(_obj, _key, {
+			value : _value,
+			writable : true,
+			configurable : true,
+			enumrable : false
+		});
+	}
+
 	return {
 		getNum : getNum,
+		frontElement : frontElement,
+		behindElement : behindElement,
 		ordinalScale : ordinalScale,
 		linearScale : linearScale,
-		get_array_in_json : get_array_in_json,
-		check_array_in_json : check_array_in_json,
-		search_in_jsonarray : search_in_jsonarray,
-		get_json_in_array : get_json_in_array,
+		getObjInArray : getObjInArray,
 		findObjectIndexInArray : findObjectIndexInArray,
-		get_json_array_in_array : get_json_array_in_array,
-		remove_svg : remove_svg,
-		define_mutation_name : define_mutation_name,
-		defineMutType : defineMutType,
+		getObjArrInArray : getObjArrInArray,
+		isArrayInObj : isArrayInObj,
+		getArrayInObj : getArrayInObj,
+		searchObjArray : searchObjArray,
+		removeSvg : removeSvg,
+		alterationPrecedence : alterationPrecedence,
+		cnvPrecedence : cnvPrecedence,
+		mutationPrecedence : mutationPrecedence,
+		definitionMutationName : definitionMutationName,
 		colour : colour,
 		strcut : strcut,
-		opposite_color : opposite_color,
+		oppositeColor : oppositeColor,
 		tooltip : tooltip,
 		log : log,
 		download : download,
-		getClass : getClass,
-		getTag : get_tag_by_identification,
-		find_pathname : find_pathname,
-		preserve_events : preserve_events,
-		defineProp : define_prop,
-		get_list_sum : get_list_sum,
+		getSumOfList : getSumOfList,
 		loading : loading,
-		getPosition : getElementPostion,
-		preserveInterrupt : preserveEventInterrupt,
-		getByteLength : getByteLength,
+		preserveEventInterrupt : preserveEventInterrupt,
 		getTextSize : getTextSize,
+		orderGroup : orderGroup,
+		translateXY : translateXY,
+		attributeXY : attributeXY,
+		attributeSize : attributeSize,
+		callAxis : callAxis,
+		defineProp : defineProp
 	};
 });

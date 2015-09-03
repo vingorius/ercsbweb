@@ -32,45 +32,44 @@ define("legend/view_legend", ["utils", "size"], function(_utils, _size)    {
 	}
 
 	var view = function(_data)  {
-		var data = _data || {};
-		var size = data.size;
+		var size = _data.size;
 
-		var svg = d3.select("#" + data.id)
+		var svg = d3.select("#" + _data.id)
 		.append("svg")
-		.attr("class", data.id)
+		.attr("class", _data.id)
 		.attr("width", size.width)
 		.attr("height", size.height)
 		.append("g")
 		.attr("transform", "translate(0, 0)");
 
 		var legendGroup = svg.selectAll(".legendGroup")
-		.data(data.data.type_list)
+		.data(_data.data.type_list)
 		.enter().append("g")
 		.attr("class", "legendGroup")
 		.attr("transform", function(_d) {
 			return "translate(" + size.margin.left + ", " + size.margin.top + ")";
 		});
 
-		if(data.figure)	{
-			for(var i = 0, len = data.data.type_list.length ; i < len ; i++)	{
-				var type = data.data.type_list[i];
+		if(_data.figure)	{
+			for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
+				var type = _data.data.type_list[i];
 
-				interface_figure(data, size, legendGroup, type)
+				interface_figure(_data, size, legendGroup, type)
 				.style("fill", function(_d) { return _utils.colour(type); });
 			}
 		}
 		else {
 			var rect = legendGroup.append("rect")
-			.attr("x", function(_d) { return data.location(_d).rx; })
-			.attr("y", function(_d) { return data.location(_d).ry; })
+			.attr("x", function(_d) { return _data.location(_d).rx; })
+			.attr("y", function(_d) { return _data.location(_d).ry; })
 			.attr("width", size.rect_size)
 			.attr("height", size.rect_size)
 			.style("fill", function(_d) { return _utils.colour(_d);});
 		}
 
 		var text = legendGroup.append("text")
-		.attr("x", function(_d) { return data.location(_d).tx; })
-		.attr("y", function(_d) { return data.location(_d).ty; })
+		.attr("x", function(_d) { return _data.location(_d).tx; })
+		.attr("y", function(_d) { return _data.location(_d).ty; })
 		.text(function(_d) { return _d; });
 	}
 

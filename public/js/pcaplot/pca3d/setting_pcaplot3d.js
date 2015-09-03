@@ -2,15 +2,10 @@ var _3D = "pcaplot/pca3d/";
 
 define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], function(_utils, _size, _view)	{
 	return function(_data, _min_max)	{
-		var data = _data || [];
-		var min_max = _min_max || new Function();
-		var size = _size.define_size("pcaplot_view_3d", 30, 30, 30, 30);
-		var div = document.querySelector("#pcaplot_view_3d");
-
-		var x_minmax = min_max(data, "PC1");
-		var y_minmax = min_max(data, "PC2");
-		var z_minmax = min_max(data, "PC3");
-
+		var size = _size.definitionSize("pcaplot_view_3d", 30, 30, 30, 30);
+		var x_minmax = _min_max(_data, "PC1");
+		var y_minmax = _min_max(_data, "PC2");
+		var z_minmax = _min_max(_data, "PC3");
 		var square_size = {
 			x : { start : -170, end : 170 },
 			y : { start : -170, end : 170 },
@@ -24,7 +19,7 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 		var z = _utils.linearScale(z_minmax.min, z_minmax.max, 
 			square_size.z.start, square_size.z.end);
 
-		var calculate_vector = function(_x, _y, _z)	{
+		var calculateVector = function(_x, _y, _z)	{
 			return new THREE.Vector3(_x, _y, _z);
 		}
 
@@ -77,7 +72,7 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			return canvas;
 		}
 
-		var pca_figure = function(_type)	{
+		var figureType = function(_type)	{
 			return {
 				"Primary Solid Tumor" : drawCircle(_utils.colour(_type)),
 				"Solid Tissue Normal" : drawRect(_utils.colour(_type))
@@ -127,7 +122,7 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 		}
 
 		var createFigure = function(_figure)	{
-			var canvas = pca_figure(_figure);
+			var canvas = figureType(_figure);
 
 			return createCanvas(canvas);
 		}
@@ -138,25 +133,25 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			return createCanvas(canvas);
 		}
 
-		var reform_value = function(_json, _value)	{
+		var reformValue = function(_json, _value)	{
 			return (_json.constructor === Function) ?
 			_json(_value) : _json;
 		}
 
-		var create_axis = function(_scene, _axis_list, _position)	{
+		var mkAxis = function(_scene, _axis_list, _position)	{
 			var result;
 
 			for(var i = 0, len = _axis_list.length ; i < len ; i++)	{
 				result = createText(_axis_list[i]);
-				result.position.x = reform_value(_position.x, _axis_list[i]);
-				result.position.y = reform_value(_position.y, _axis_list[i]);
-				result.position.z = reform_value(_position.z, _axis_list[i]);
+				result.position.x = reformValue(_position.x, _axis_list[i]);
+				result.position.y = reformValue(_position.y, _axis_list[i]);
+				result.position.z = reformValue(_position.z, _axis_list[i]);
 
 				_scene.add(result);
 			}
 		}
 
-		var cal_axis_list = function(_period, _min, _max)	{
+		var calculatedAxis = function(_period, _min, _max)	{
 			var result = [];
 
 			for(var i = _min, len = _max ; i < len ; i++)	{
@@ -165,7 +160,7 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			return result;
 		}
 
-		var set_axis_list = function(_min, _max, _count)	{
+		var setAxisList = function(_min, _max, _count)	{
 			var number_cal = Math.floor((_max - _min) / _count);
 			var number_format = number_cal * .1;
 			var number_period = 0;
@@ -177,14 +172,14 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			else {
 				number_period = Math.ceil(number_format) * number_multi;	 		
 			}
-			return cal_axis_list(number_period, _min, _max);
+			return calculatedAxis(number_period, _min, _max);
 		}
 
 		_view.view({
-			data : data,
+			data : _data,
 			size : size,
 			square : square_size,
-			div : div,
+			div : document.querySelector("#pcaplot_view_3d"),
 			max : {
 				x : x_minmax.max,
 				y : y_minmax.max,
@@ -198,11 +193,11 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			x : x,
 			y : y,
 			z : z,
-			vector : calculate_vector,
+			vector : calculateVector,
 			figure : createFigure,
 			text : createText,
-			scale : set_axis_list,
-			axis : create_axis
+			scale : setAxisList,
+			axis : mkAxis
 		});
 
 	}

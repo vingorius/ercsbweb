@@ -2,9 +2,7 @@ var GENE = "population/comutationplot/gene/";
 
 define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
-		var data = _data || {};
-		var size = data.size;
-		var e = _event || null;
+		var size = _data.size;
 
 		var svg = d3.select("#comutationplot_gene")
 		.append("svg")
@@ -15,12 +13,12 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.attr("transform", "translate(0, 0)");
 
 		var xAxis = d3.svg.axis()
-		.scale(data.x)
+		.scale(_data.x)
 		.orient("bottom")
-		.tickValues([0, data.max / 2, data.max]);
+		.tickValues([0, _data.max / 2, _data.max]);
 
 		var yAxis = d3.svg.axis()
-		.scale(data.y)
+		.scale(_data.y)
 		.orient("right");
 
 		svg.append("g")
@@ -33,15 +31,17 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.attr("transform", "translate(" + (size.width - size.margin.right) + ", 0)")
 		.call(yAxis)
 		.selectAll("text")
-		.on("mouseover", e.axis_m_over)
-		.on("mouseout", e.axis_m_out);
+		.on("mouseover", _event.axisOver)
+		.on("mouseout", function()	{
+			_event.mouseout(this, "axis");
+		});
 
 		var bar_group = svg.selectAll(".comutationplot_gene_bargroup")
-		.data(data.data)
+		.data(_data.data)
 		.enter().append("g")
 		.attr("class", "comutationplot_gene_bargroup") 
 		.attr("transform", function(_d)	{
-			return "translate(0, " + data.y(_d.gene) + ")";
+			return "translate(0, " + _data.y(_d.gene) + ")";
 		});
 
 		var stacked_bar = bar_group.selectAll("rect")  
@@ -51,16 +51,18 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.enter().append("rect")
 		.attr("class", "comutationplot_gene_bars")
 		.style("fill", function(_d) { 
-			return _utils.colour(_utils.define_mutation_name(_d.type)); 
+			return _utils.colour(_utils.definitionMutationName(_d.type)); 
 		})
-		.on("mouseover", e.bar_m_over)
-		.on("mouseout",e.bar_m_out)
+		.on("mouseover", _event.barOver)
+		.on("mouseout", function()	{
+			_event.mouseout(this, "bar");
+		})
 		.attr("x", function(_d) { 
-			_d.x = data.x; 
+			_d.x = _data.x; 
 			return _d.x(_d.start + _d.count); 
 		})
 		.attr("y", function(_d) { 
-			_d.y = data.y; 
+			_d.y = _data.y; 
 			return 0; 
 		})
 		.attr("width", function(_d) { 
@@ -92,15 +94,12 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.attr("class", "gene_explain")
 		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")")
 		.append("text")
-		.text("#mutations")
-		.on("click", e.sort_by_value);
-
-		$(".gene_explain")
-		.tooltip({
-			container : "body",
-			title : "sort by mutation value",
-			placement : "bottom"
-		});
+		.text("#sample count")
+		.on("mouseover", _event.explainOver)
+		.on("mouseout", function()	{
+			_event.mouseout(this, "explain");
+		})
+		.on("click", _event.sortByValue);
 	}
 
 	return {

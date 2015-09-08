@@ -3,7 +3,7 @@ var VO = "comutationplot/vo_comutationplot";
 
 define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_comutation", VO], function(_utils, _size, _view, _VO)	{
 	return function(_all_data, _samples, _genes, _data)	{
-		var size = _size.definitionSize("comutationplot_heatmap", 20, 20, 20, 20);
+		var size = _size.initSize("comutationplot_heatmap", 20, 20, 20, 20);
 
 		_VO.VO.setInitWidth(size.width);
 		_VO.VO.setInitHeight(size.height);

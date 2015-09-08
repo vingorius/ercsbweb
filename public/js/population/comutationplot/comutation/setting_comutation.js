@@ -5,7 +5,7 @@ define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_c
 	var definePatient = function(_patient_list, _genes)	{
 		var patient_heatmap = $("#comutationplot_patient_heatmap");
 		patient_heatmap.width(5).height(580);
-		var size = _size.definitionSize("comutationplot_patient_heatmap", 0, 0, 0, 0);
+		var size = _size.initSize("comutationplot_patient_heatmap", 0, 0, 0, 0);
 		var patients = getPatientList(_patient_list);
 		size.left_between = 1.5;
 		size.top_between = 1.2;
@@ -35,7 +35,7 @@ define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_c
 	}
 
 	return function(_all_data, _patient_list, _samples, _genes)	{
-		var size = _size.definitionSize("comutationplot_heatmap", 0, 0, 0, 0);
+		var size = _size.initSize("comutationplot_heatmap", 0, 0, 0, 0);
 		size.magnification = 2;
 		size.left_between = 1.5;
 		size.top_between = 1.2;
@@ -45,18 +45,9 @@ define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_c
 		}
 
 		_VO.VO.setInitWidth(size.width);
-		_VO.VO.setInitHeight(size.height + 2);
-		_VO.VO.setInitMarginTop(size.margin.top);
-		_VO.VO.setInitMarginBottom(size.margin.bottom);
-		_VO.VO.setInitMarginLeft(size.margin.left);
-		_VO.VO.setInitMarginRight(size.margin.right);
-
+		_VO.VO.setInitHeight(size.height);
 		_VO.VO.setWidth(size.width);
 		_VO.VO.setHeight(size.height);
-		_VO.VO.setMarginTop(size.margin.top);
-		_VO.VO.setMarginBottom(size.margin.bottom);
-		_VO.VO.setMarginLeft(size.margin.left);
-		_VO.VO.setMarginRight(size.margin.right);
 
 		_utils.removeSvg("comutationplot_heatmap");
 		
@@ -67,7 +58,7 @@ define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_c
 			genes : _genes,
 			size : size,
 			x : _utils.ordinalScale(_samples, 0, size.width * size.magnification),
-			y : _utils.ordinalScale(_genes,0, size.height)
+			y : _utils.ordinalScale(_genes, 0, size.height)
 		});
 	}
 });

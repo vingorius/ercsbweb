@@ -26,13 +26,13 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 
 		svg.append("g")
 		.data([{ data : data.data, size : size, status : false }])
-		.attr("class", "pq_explain")
+		.attr("class", "comutationplot_pq_sort_label")
 		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 2) + ", " + (size.height - 2) + ")")
 		.append("text")
 		.text("#q value")
 		.on("click", e.sort_by_value);
 
-		$(".pq_explain")
+		$(".comutationplot_pq_sort_label")
 		.tooltip({
 			container : "body",
 			title : "sort by q value",

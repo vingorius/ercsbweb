@@ -17,7 +17,7 @@ define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_com
 		.orient("left");
 
 		svg.append("g")
-		.attr("class", "comutationplot_yaxis")
+		.attr("class", "comutationplot_heatmap_yaxis")
 		.attr("transform", "translate(0, 0)")
 		.call(yAxis);
 

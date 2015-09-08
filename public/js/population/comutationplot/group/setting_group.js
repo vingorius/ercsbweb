@@ -54,7 +54,7 @@ define(GROUP + "setting_group", ["utils", "size", SORT, GROUP + "view_group"], f
 
 		for(var i = 0, len = _patient_list.length ; i < len ; i++)	{
 			var patient = _patient_list[i];
-			var is_patient = _utils.getObjInArray(patient.sample, result, "sample");
+			var is_patient = _utils.getObject(patient.sample, result, "sample");
 
 			if(!is_patient)	{
 				result.push({
@@ -91,7 +91,7 @@ define(GROUP + "setting_group", ["utils", "size", SORT, GROUP + "view_group"], f
 
 	var definePatient = function(_height, _patient_list, _group_names)		{
 		$("#comutationplot_patient_groups").width(5).height(_height);
-		var size = _size.definitionSize("comutationplot_patient_groups", 20, 20, 0, 0);
+		var size = _size.initSize("comutationplot_patient_groups", 20, 20, 0, 0);
 		size.left_between = 1.5;
 		size.top_between = 1.2;
 
@@ -127,11 +127,11 @@ define(GROUP + "setting_group", ["utils", "size", SORT, GROUP + "view_group"], f
 		var init_height = modifySize(all_group);
 		$("#comutationplot_groups").css("height", init_height);
 		$("#comutationplot_groups_name").css("height", init_height);
-		var size = _size.definitionSize("comutationplot_groups", 20, 20, 0, 0);
+		var size = _size.initSize("comutationplot_groups", 20, 20, 0, 0);
 		size.magnification = 2;
 		size.left_between = 1.5;
 		size.top_between = 1.2;
-		var name_size = _size.definitionSize("comutationplot_groups_name", 20, 20, 20, 20);
+		var name_size = _size.initSize("comutationplot_groups_name", 20, 20, 20, 20);
 
 		if(_patient_list.length > 0)	{
 			var patient = formatedPatient(_patient_list);

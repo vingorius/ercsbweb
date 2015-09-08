@@ -27,9 +27,9 @@ define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)  
 		target
 		.transition().duration(200)
 		.style("stroke", function(_d)	{
-			return d3.rgb(_d.colour || _utils.colour(_utils.definitionMutationName(_d.type))).darker(2);
+			return d3.rgb(_d.colour || _utils.colour(_utils.defMutName(_d.type))).darker(2);
 		})
-		.style("stroke-width", "2px");
+		.style("stroke-width", 2);
 	}
 
 	var eventMouseout = function(_d)    {
@@ -58,7 +58,7 @@ define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)  
 	}
 
 	var frontCircle = function()  {
-		d3.selectAll(".marker_figures_path").forEach(function(_d, _i) {
+		d3.selectAll(".needleplot_marker_figure_inpath").forEach(function(_d, _i) {
 			_d.sort(function(_a, _b)    {
 				var a = d3.select(_a).datum();
 				var b = d3.select(_b).datum();

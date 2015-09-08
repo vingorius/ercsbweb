@@ -6,7 +6,7 @@ define(PATHWAY + "view_pathwayplot", ["utils", "size", PATHWAY + "event_pathwayp
 			var g = _g[i];
 			var g_id = g.attr("id");
 			var name = g_id.substring(g_id.lastIndexOf("_") + 1, g_id.length).toUpperCase();
-			var gene_in_data = _utils.getObjInArray(name, _data, "gene_id");
+			var gene_in_data = _utils.getObject(name, _data, "gene_id");
 			var frequency = !gene_in_data ? null : gene_in_data.frequency;
 			var is_activated = !gene_in_data ? null : gene_in_data.active;
 			var data_set = makeDataSet(name, frequency, is_activated);
@@ -82,32 +82,7 @@ define(PATHWAY + "view_pathwayplot", ["utils", "size", PATHWAY + "event_pathwayp
 		return base_color;
 	}
 
-	// var fillGradient = function(_gradient)	{
-	// 	_gradient
-	// 	.style("fill", "url(#pathwayplot_gradient_frequency)");
-
-	// 	var defs = d3.select("svg").append("defs");
-	// 	var linear_gradient = defs.append("linearGradient")
-	// 	.attr("id", "pathwayplot_gradient_frequency")
-	// 	.attr("x1", "0")
-	// 	.attr("y1", "0")
-	// 	.attr("x2", "100%")
-	// 	.attr("y2", "0");
-
-	// 	makeStopElement(linear_gradient, "gradient_frequency_stop_inactivated", "0%", "blue");
-	// 	makeStopElement(linear_gradient, "gradient_frequency_stop_middle", "50%", "white");
-	// 	makeStopElement(linear_gradient, "gradient_frequency_stop_activated", "100%", "red");
-	// }
-
-	// var makeStopElement = function(_source, _id, _offset, _stop_color)	{
-	// 	_source.append("stop")
-	// 	.attr("id", _id)
-	// 	.attr("offset", _offset)
-	// 	.attr("stop-color", _stop_color);
-	// }
-
 	var view = function(_data)	{
-		// fillGradient(_data.gradient);
 		getInfoForRect(_data.g, _data.data.pathway_list, _data.data.gene_list);
 	}
 

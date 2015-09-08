@@ -3,6 +3,6 @@
 .chart_container {
 	width : 1600px;
 }
-.label_pcaplot_pc1 text, .label_pcaplot_pc2 text {
+.pcaplot_2d_pc1label text, .pcaplot_2d_pc2label text {
 	font-weight: bold;
 }

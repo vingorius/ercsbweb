@@ -24,7 +24,7 @@ define(MA + "view_maplot", ["utils", "size", MA + "event_maplot"], function(_uti
 		.attr("transform", "translate(0, 0)");
 
 		var maplot_path_g = svg.append("g")
-        	.attr("id", "maplot_select_path");
+        	.attr("id", "maplot_select_line");
 
 		var xAxis = d3.svg.axis()
 		.scale(_data.x)

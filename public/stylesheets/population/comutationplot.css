@@ -9,7 +9,8 @@
 .comutationplot_border_path	{
 	stroke : rgb(236, 236, 236);
 }
-.comutationplot_gene_xaxis text, .comutationplot_pq_xaxis text 	{
+.comutationplot_gene_xaxis text, 
+.comutationplot_pq_xaxis text 	{
 	font-size: 8px;
 	font-weight: normal;
 }
@@ -18,10 +19,7 @@
 	font-size: 8px;
 	font-weight: normal;
 }
-.comutationplot_sample_yaxis text	{
-	fill : #626262;
-	font-size: 8px;
-}
+.comutationplot_sample_yaxis text,
 .comutationplot_name_group_text		{
 	fill : #626262;
 	font-size: 8px;
@@ -30,34 +28,28 @@
 	stroke : #A00000;
 	z-index: 1200;
 }
-.comutationplot_gene_yaxis path, .comutationplot_gene_yaxis line {
+.comutationplot_gene_yaxis path, 
+.comutationplot_gene_yaxis line {
 	stroke : #fff;
 	stroke-width : 1;
 	shape-rendering : crispEdges;
 }
-.comutationplot_gene_xaxis path, .comutationplot_pq_xaxis path, .comutationplot_sample_yaxis path {
+.comutationplot_gene_xaxis path, 
+.comutationplot_gene_xaxis line,
+.comutationplot_pq_xaxis path, 
+.comutationplot_pq_xaxis line, 
+.comutationplot_sample_yaxis path, 
+.comutationplot_sample_yaxis line,
+{
 	fill : none;
 	stroke : #BFBFBF;
 	stroke-width : 1;
 	shape-rendering : crispEdges;
-}
-.comutationplot_gene_xaxis line, .comutationplot_pq_xaxis line, .comutationplot_sample_yaxis line  {
-	fill : none;
-	stroke : #BFBFBF;
-	stroke-width : 1;
-	shape-rendering : crispEdges;
-}
-.comutationplot_gene_bars	{
-	stroke : #BFBFBF;
-	stroke-width : 0.5;
 }
 .comutationplot_pq_bars {
 	fill : #BFBFBF;
-	stroke : #BFBFBF;
-	stroke-width : 1;
 }
-
-.comutationplot_yaxis path  {
+.comutationplot_heatmap_yaxis path  {
 	fill : none;
 	stroke : #fff;
 	stroke-width : 1;
@@ -66,9 +58,9 @@
 #comutationplot_heatmap	{
 	overflow: hidden;
 }
-.gene_explain text, 
-.pq_explain text,
-.sample_explain text 	{
+.comutationplot_gene_sort_label text, 
+.comutationplot_pq_sort_label text,
+.comutationplot_sample_sort_label text 	{
 	font-size: 11px;
 	font-weight: bold;
 	font-style: italic;

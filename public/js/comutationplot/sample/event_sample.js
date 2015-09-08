@@ -15,11 +15,11 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 	}
 
 	var ascending = function(_a, _b)	{
-		return (_utils.getSumOfList(_a.list, "count") > _utils.getSumOfList(_b.list, "count")) ? 1 : -1;
+		return (_utils.getSumList(_a.list, "count") > _utils.getSumList(_b.list, "count")) ? 1 : -1;
 	}
 
 	var descending = function(_a, _b)	{
-		return (_utils.getSumOfList(_a.list, "count") < _utils.getSumOfList(_b.list, "count")) ? 1 : -1;
+		return (_utils.getSumList(_a.list, "count") < _utils.getSumList(_b.list, "count")) ? 1 : -1;
 	}
 
 	var sortingName = function(_sorting_data)	{

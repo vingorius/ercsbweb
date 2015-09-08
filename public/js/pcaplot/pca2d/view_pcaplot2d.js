@@ -17,7 +17,7 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 
 	var circles = function(_data, _x, _y, _svg)	{
 		return _svg.append("circle")
-		.attr("class", "pcaplots_circles")
+		.attr("class", "pcaplot_circles")
 		.attr("cx", _data.x(_x))
 		.attr("cy", _data.y(_y))
 		.attr("r", _data.radius);
@@ -25,7 +25,7 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 
 	var rectangle = function(_data, _x, _y, _svg)	{
 		return _svg.append("rect")
-		.attr("class", "pcaplots_rect")
+		.attr("class", "pcaplot_rect")
 		.attr("x", _data.x(_x) - _data.radius)
 		.attr("y", _data.y(_y) - _data.radius)
 		.attr("width", _data.radius * 2)
@@ -34,7 +34,7 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 
 	var triangle = function(_data, _x, _y, _svg)	{
 		return _svg.append("path")
-		.attr("class", "pcaplots_triangle")	
+		.attr("class", "pcaplot_triangle")	
 		.attr("d", d3.svg.symbol().type("triangle-up"))
 		.attr("transform", "translate(" + _data.x(_x) +  ", " + _data.y(_y) + ")");
 	}
@@ -61,23 +61,23 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 		.ticks(5);
 
 		svg.append("g")
-		.attr("class", "pca x axis")
+		.attr("class", "pcaplot_xaxis")
 		.attr("transform", "translate(0, " + size.rheight + ")")
 		.call(xAxis);
 
 		svg.append("g")
-		.attr("class", "label_pcaplot_pc1")
+		.attr("class", "pcaplot_2d_pc1label")
 		.attr("transform", "translate(" + (size.rwidth / 2) + ", " + (size.height - size.margin.top) + ")")
 		.append("text")
 		.text("PC1");
 
 		svg.append("g")
-		.attr("class", "pca y axis")
+		.attr("class", "pcaplot_yaxis")
 		.attr("transform", "translate(" + size.margin.left + ", 0)")
 		.call(yAxis);
 
 		svg.append("g")
-		.attr("class", "label_pcaplot_pc2")
+		.attr("class", "pcaplot_2d_pc2label")
 		.attr("transform", "translate(" + (size.margin.left / 2) + ", " + (size.rheight / 2) + ")")
 		.append("text")
 		.text("PC2")

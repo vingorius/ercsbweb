@@ -6,7 +6,7 @@ define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], fun
 		var sample_list = [];
 
 		for(var i = 0, len = all_data.length ; i < len ; i++)	{
-			var check = _utils.getObjInArray(all_data[i].sample, sample_list, "name");
+			var check = _utils.getObject(all_data[i].sample, sample_list, "name");
 			if(!check)	{
 				sample_list.push({
 					name : all_data[i].sample,
@@ -36,7 +36,7 @@ define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], fun
 
 		for(var i = 0, len = mutation.length ; i < len ; i++)   {
 			for(var j = 0, lens = mutation[i].type.length ; j < lens ; j++) {
-				var check = _utils.getObjInArray(mutation[i].type[j], result, "type");
+				var check = _utils.getObject(mutation[i].type[j], result, "type");
 				if(!check) {
 					result.push({
 						sample : [mutation[i].sample],
@@ -97,7 +97,7 @@ define(SAMPLE + "setting_sample", ["utils", "size", SAMPLE + "view_sample"], fun
 
 	return function(_all_data, _samples, _importance)	{
 		var count_sample = count_by_order(_all_data, _importance);
-		var size = _size.definitionSize("comutationplot_sample", 30, 10, 20, 20);
+		var size = _size.initSize("comutationplot_sample", 30, 10, 20, 20);
 		var max = get_max(count_sample);
 
 		_utils.removeSvg("comutationplot_sample");

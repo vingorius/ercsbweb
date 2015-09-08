@@ -30,7 +30,7 @@ define(PQ + "setting_pq", ["utils", "size", PQ + "view_pq"], function(_utils, _s
 	return function(_symbol_list, _genes)	{
 		var pq_data = get_pq(_symbol_list);
 		var max = get_max(pq_data);
-		var size = _size.definitionSize("comutationplot_pq", 20, 20, 20, 70);
+		var size = _size.initSize("comutationplot_pq", 20, 20, 20, 70);
 
 		_utils.removeSvg("comutationplot_pq");
 

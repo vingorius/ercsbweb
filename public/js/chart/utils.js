@@ -10,49 +10,63 @@ define("utils", [], function()  {
 		return parseFloat(result);
 	}
 
-	var frontElement = function(_target_element, _source_element)	{
-		if(_target_element.nextSibling)	{
-			_source_element.appendChild(_target_element);
+	var getObjectMax = function(_list, _key)	{
+		return d3.max(_list.map(function(_d)	{
+			return _d[_key];
+		}));
+	}
+
+	var frontElement = function(_target, _source)	{
+		if(_target.nextSibling)	{
+			_source.appendChild(_target);
 		}
 	}
 
-	var behindElement = function(_target_element, _target_index, _source_element)	{
-		_source_element.insertBefore(_target_element, _source_element.childNodes[_target_index - 1]);
+	var behindElement = function(_target, _index, _source)	{
+		_source.insertBefore(_target, _source.childNodes[_index - 1]);
 	}
 
-	var ordinalScale = function(domain, range_start, range_end) {
+	var ordinalScale = function(_domain, _start, _end) {
 		return d3.scale.ordinal()
-		.domain(domain)
-		.rangeBands([range_start, range_end]);
+		.domain(_domain)
+		.rangeBands([_start, _end]);
 	}
 
-	var linearScale = function(domain_start, domain_end, range_start, range_end) {
+	var linearScale = function(_d_start, _d_end, _r_start, _end) {
 		return d3.scale.linear()
-		.domain([domain_start, domain_end])
-		.range([range_start, range_end]);
+		.domain([_d_start, _d_end])
+		.range([_r_start, _end]);
 	}
 
-	var getObjInArray = function(_name, _array, _key)  {
-		for(var _i in _array)   {
-			if(_name === _array[_i][_key]) { return _array[_i]; }
+	var getObject = function(_name, _array, _key)  {
+		for(var i = 0, len = _array.length ; i < len ; i++) 	{
+			var obj = _array[i];
+
+			if(obj[_key] === _name)	{
+				return obj;
+			}
 		}
 		return undefined;
 	}
 
-	var findObjectIndexInArray = function(_name, _array, _key)	{
+	var getObjectIndex = function(_name, _array, _key)	{
 		for(var i = 0, len = _array.length ; i < len ; i++)	{
-			if(_array[i][_key] === _name)	{
+			var obj = _array[i][_key];
+
+			if(obj === _name)	{
 				return i;
 			}
 		}
 	}
 
-	var getObjArrInArray = function(_name, _array, _key) {
+	var getObjectArray = function(_name, _array, _key) {
 		var result = [];
 
-		for(var _i in _array)   {
-			if(_name === _array[_i][_key]) { 
-				result.push(_array[_i]); 
+		for(var i = 0, len = _array.length ; i < len ; i++)	{
+			var obj = _array[i];
+
+			if(obj[_key] === _name)	{
+				result.push(obj);
 			}
 		}
 		return result;
@@ -61,33 +75,39 @@ define("utils", [], function()  {
 	var isArrayInObj  = function(_json)  {
 		var result = false;
 
-		$.each(Object.keys(_json), function(_i, _d) {
-			if(_json[_d].constructor === Array) {
+		for(var i = 0, len = Object.keys(_json).length ; i < len ; i++)		{
+			var construct = _json[Object.keys(_json)[i]].constructor;
+
+			if(construct === Array)	{
 				result = true;
 			}
-		});
+		}
 		return result;
 	}
 
 	var getArrayInObj = function(_json)   {
 		var result = [];
 
-		$.each(Object.keys(_json), function(_i, _d) {
-			if(_json[_d].constructor === Array) {
-				result.push(_json[_d]);
+		for(var i = 0, len = Object.keys(_json).length ; i < len ; i++)		{
+			var obj = _json[Object.keys(_json)[i]];
+
+			if(obj.constructor == Array)	{
+				result.push(obj);
 			}
-		});
+		}
 		return result;
 	}
 
 	var searchObjArray = function(_value, _key, _jsonarray)    {
 		var result;
 
-		$.each(_jsonarray, function(_i, _d) {
-			if(_d[_key] === _value) {
-				result = _d;
+		for(var i = 0, len = _jsonarray.length ; i < len ; i++)	{
+			var value = _jsonarray[i];
+
+			if(value[_key] === _value)	{
+				result = value;
 			}
-		});
+		}
 		return result;
 	}
 
@@ -109,7 +129,7 @@ define("utils", [], function()  {
 			return { alteration : "CNV", priority : cnvPrecedence(_alteration) };
 		}
 		else if((/(EXPRESSION)/).test(_alteration))	{
-			return { alteration : "mRNA Expression (log2FC)", priority : mutationPrecedence(_alteration) };
+			return { alteration : "mRNA Expression (log2FC)", priority : expPrecedence(_alteration) };
 		}
 		else {
 			return { alteration : "Somatic Mutaion", priority : mutationPrecedence(_alteration) };
@@ -132,18 +152,18 @@ define("utils", [], function()  {
 
 	var cnvPrecedence = function(_cnv)	{
 		return {
-			"Amplification" : 11,
-			"Homozygous_Deletion" : 10
+			"Amplification" : 12,
+			"Homozygous_Deletion" : 11
 		}[_cnv];
 	}
 
-	// var expPrecedence = function(_exp)	{
-	// 	return {
+	var expPrecedence = function(_exp)	{
+		return {
+			
+		}[_exp];
+	}
 
-	// 	}[_exp];
-	// }
-
-	var definitionMutationName = function(_name)  {
+	var defMutName = function(_name)  {
 		if((/MISSENSE/i).test(_name)) { 
 			return "Missense_mutation"; 
 		}
@@ -183,8 +203,10 @@ define("utils", [], function()  {
 		var value = _value || "";
 
 		return {
+			// CNV
 			"Amplification" : "#FFBDE0",
 			"Homozygous_Deletion" : "#BDE0FF",
+			// Somatic mutation
 			"Nonsense_mutation" : "#EA3B29",
 			"Splice_Site" : "#800080",
 			"Translation_Start_Site" : "#aaa8aa",
@@ -194,48 +216,19 @@ define("utils", [], function()  {
 			"In_frame_indel" : "#F2EE7E",
 			"RNA" : "#ffdf97",
 			"Silent" : "#5CB755",
+			// P & Q value
 			"pq" : "#C2C4C9",
+			// Pca plot
 			"Primary Solid Tumor" : "#F64747",
 			"Solid Tissue Normal" : "#446CB3",
+			// Deg plot
 			"si_log_p" : "#ea3b29",
 			"si_up_log_p" : "#5cb755",
 			"si_down_log_p" : "#3e87c2"
 		}[value];
 	}
 
-	var strcut = function(_string, _measure)  {
-		var result = [];
-		var empty = [];
-
-		for(var i = 1, len = _string.length ; i <= len + 1 ; i++)    {
-			if(_string[i - 1])		{
-				empty.push(_string[i - 1]);
-			}
-			if(i % _measure === 0)  {
-				result.push(empty);
-				empty = [];
-			}
-		}
-
-		return result;
-	}
-
-	var oppositeColor = function(_rgb) {
-		var r1, g2, b2, r2, g2, b2;
-		var rgb_hex = strcut(_rgb, 2);
-
-		r1 = parseInt("0x" + rgb_hex[0][0].concat(rgb_hex[0][1]));
-		g1 = parseInt("0x" + rgb_hex[1][0].concat(rgb_hex[1][1]));
-		b1 = parseInt("0x" + rgb_hex[2][0].concat(rgb_hex[2][1]));
-
-		r2 = (255 - r1).toString(16);
-		g2 = (255 - g1).toString(16);
-		b2 = (255 - b1).toString(16);
-
-		return "#" + r2 + g2 + b2;
-	}
-
-	var tooltip = function(_element, _contents, _color)   {
+	var tooltip = function(_element, _contents, _rgba)   {
 		var div = $('.tooltip_chart');
 
 		if(arguments.length < 1) {
@@ -253,9 +246,9 @@ define("utils", [], function()  {
 				div.css("left", client.left + client.width);
 				div.css("top", client.top + client.height);
 			}
-			div.css("position", "absolute");
 			div.html(_contents);		
-			div.css("background-color", _color);
+			div.css("position", "absolute");
+			div.css("background-color", _rgba);
 			div.show();
 		}
 	}
@@ -275,7 +268,7 @@ define("utils", [], function()  {
 		a.dispatchEvent(html_event);		
 	}
 
-	var getSumOfList = function(_array, _key)	{
+	var getSumList = function(_array, _key)	{
 		try {
 			var result = 0;
 
@@ -298,6 +291,7 @@ define("utils", [], function()  {
 		var loading_div = $(".loading");
 		var chart_div = $(_target);
 		var bcr = document.querySelector(".chart_container").getBoundingClientRect();
+		var default_width = 900;
 
 		return {
 			start : function()	{
@@ -310,8 +304,8 @@ define("utils", [], function()  {
 				.text("Loading");
 
 				loading_div
-				.css("top", (bcr.top + (bcr.height > 900 ? 900 : bcr.height)) / 2)
-				.css("left", ((bcr.left + bcr.width) - getNum(chart_div.css("margin-right"))) / 1.9);				
+				.css("top", (bcr.top + (bcr.height > default_width ? default_width : bcr.height)) / 2)
+				.css("left", (bcr.left > 500 ? bcr.width : bcr.right) / 2);				
 			},
 			end : function()	{
 				chart_div.fadeIn();
@@ -320,7 +314,7 @@ define("utils", [], function()  {
 		}
 	}
 
-	var preserveEventInterrupt = function(_target, _type)	{
+	var preserveInterrupt = function(_target, _type)	{
 		var target = _type === 0 ? d3.select(_target) : _target;
 
 		if((/preserve_events/i).test(target.attr("class")))	{
@@ -339,9 +333,6 @@ define("utils", [], function()  {
 			}
 			target.attr("class", className);
 		}
-		else {
-			// target.addClass("preserve_events");
-		}		
 	}
 
 	var getTextSize = function(_txt, _font_size)	{
@@ -357,7 +348,7 @@ define("utils", [], function()  {
 		};
 	}
 
-	var orderGroup = function(_value)	{
+	var groupOrder = function(_value)	{
 		return {
 			"male" : 0,
 			"female" : 1,
@@ -383,11 +374,14 @@ define("utils", [], function()  {
 	var translateXY = function(_element, _x_scale, _y_scale, _x_key, _y_key, _self_x, _self_y)	{
 		_element
 		.transition().duration(400)
-		.attr("transform", function(_d)	{
+		.attr("transform", function(_d, _i)	{
+			// 파이어폭스에서 translate(0, 0) 의 값을 가졌을 때, 정상적인 값이 return 되지 않고 빈값이 반환되어 그림이 사라진다.
+			// 대처방안으로 0이 아닌 0 이상의 값을 초기값으로 주었을 때, 정상적으로 작동한다.
+			// 0일때, 왜 안되는지는 아직 잘 모르겠다.
 			var x = _x_scale === 0 || _x_key === 0 ? _self_x ? _d.x(_d[_x_key]) : 0 : _x_scale(_d[_x_key]);
 			var y = _y_scale === 0 || _y_key === 0 ? _self_y ? _d.y(_d[_y_key]) : 0 : _y_scale(_d[_y_key]);
 
-			return "translate(" + x +  ", " + y  +  ")";
+			return  "translate(" + x +  ", " + y  +  ")";
 		});
 	}
 
@@ -403,7 +397,7 @@ define("utils", [], function()  {
 			return pos;
 		})
 		.each("end", function()	{
-			preserveEventInterrupt(_element, 1);
+			preserveInterrupt(_element, 1);
 		});
 	}
 
@@ -432,38 +426,75 @@ define("utils", [], function()  {
 		});
 	}
 
+	var oppositeColor = function(_rgb) {
+		if((/#/i).test(_rgb))	{
+			_rgb = _rgb.substring(1, _rgb.length);
+		}
+
+		var r1, g2, b2, r2, g2, b2;
+		var rgb_hex = strCut(_rgb, 2);
+
+		r1 = parseInt("0x" + rgb_hex[0][0].concat(rgb_hex[0][1]));
+		g1 = parseInt("0x" + rgb_hex[1][0].concat(rgb_hex[1][1]));
+		b1 = parseInt("0x" + rgb_hex[2][0].concat(rgb_hex[2][1]));
+
+		r2 = (255 - r1).toString(16);
+		g2 = (255 - g1).toString(16);
+		b2 = (255 - b1).toString(16);
+
+		return "#" + r2 + g2 + b2;
+	}
+
+	var strCut = function(_string, _measure)  {
+		var result = [];
+		var empty = [];
+
+		for(var i = 1, len = _string.length ; i <= len + 1 ; i++)    {
+			if(_string[i - 1])		{
+				empty.push(_string[i - 1]);
+			}
+			if(i % _measure === 0)  {
+				result.push(empty);
+				empty = [];
+			}
+		}
+		return result;
+	}
+
 	return {
 		getNum : getNum,
+		getObjectMax : getObjectMax,
 		frontElement : frontElement,
 		behindElement : behindElement,
 		ordinalScale : ordinalScale,
 		linearScale : linearScale,
-		getObjInArray : getObjInArray,
-		findObjectIndexInArray : findObjectIndexInArray,
-		getObjArrInArray : getObjArrInArray,
+		getObject : getObject,
+		getObjectIndex : getObjectIndex,
+		getObjectArray : getObjectArray,
 		isArrayInObj : isArrayInObj,
 		getArrayInObj : getArrayInObj,
 		searchObjArray : searchObjArray,
 		removeSvg : removeSvg,
 		alterationPrecedence : alterationPrecedence,
 		cnvPrecedence : cnvPrecedence,
+		expPrecedence : expPrecedence,
 		mutationPrecedence : mutationPrecedence,
-		definitionMutationName : definitionMutationName,
+		defMutName : defMutName,
 		colour : colour,
-		strcut : strcut,
-		oppositeColor : oppositeColor,
 		tooltip : tooltip,
 		log : log,
 		download : download,
-		getSumOfList : getSumOfList,
+		getSumList : getSumList,
 		loading : loading,
-		preserveEventInterrupt : preserveEventInterrupt,
+		preserveInterrupt : preserveInterrupt,
 		getTextSize : getTextSize,
-		orderGroup : orderGroup,
+		groupOrder : groupOrder,
 		translateXY : translateXY,
 		attributeXY : attributeXY,
 		attributeSize : attributeSize,
 		callAxis : callAxis,
-		defineProp : defineProp
+		defineProp : defineProp,
+		oppositeColor : oppositeColor,
+		strCut : strCut
 	};
 });

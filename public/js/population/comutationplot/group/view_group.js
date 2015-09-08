@@ -5,14 +5,8 @@ var SORT = "population/comutationplot/sort_comutationplot";
 define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT], function(_utils, _size, _VO, _e, _sort)	{
 	var view = function(_data)	{
 		var size = _data.size;
-
-		var svg = d3.select("#" + _data.class_name + "_groups")
-		.append("svg")
-		.attr("class", "" + _data.class_name + "_groups")
-		.attr("width", _data.patients ? size.width : size.width * size.magnification)
-		.attr("height", size.height)
-		.append("g")
-		.attr("transform", "translate(0, 0)");
+		var svg = _size.mkSvg("#" + _data.class_name + "_groups"
+			, (_data.patients ? size.width : size.width * size.magnification), size.height);
 
 		var bar_init_x = _utils.ordinalScale((_data.patients ? _data.patients : _VO.VO.getInitSample()), 0, (_data.patients ? size.width : _VO.VO.getInitWidth() * size.magnification));
 		var bar_init_y = 8;
@@ -65,13 +59,7 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT],
 	var nameView = function(_data)	{
 		var size = _data.name_size;
 		var bar_init_x = _utils.ordinalScale(_VO.VO.getInitSample(), _data.size.margin.left, (_data.size.width - _data.size.margin.left));
-
-		var svg = d3.select("#comutationplot_groups_name")
-		.append("svg")
-		.attr("width", size.width)
-		.attr("height", size.height)
-		.append("g")
-		.attr("transform", "translate(0, 0)");
+		var svg = _size.mkSvg("#comutationplot_groups_name", size.width, size.height);
 
 		for(var i = 0, len = _data.data.length ; i < len ; i++)	{
 			var group = _data.data[i];
@@ -101,7 +89,7 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT],
 		.on("click", function(_d)	{	
 			var sort_order;
 
-			if(d3.event.altKey)	{
+			if(d3.event.altKey && _VO.VO.getSortOrder().length > 0)	{
 				sort_order = _sort.loopingMultiSort(_VO.VO.getSortOrder(), _group, _d.order);
 				_e.clickSort(this, sort_order, _d);
 			}

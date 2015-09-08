@@ -1,4 +1,6 @@
-define("chart/legend/view_legend", ["utils", "size"], function(_utils, _size)    {
+var LEGEND = "chart/legend/";
+
+define(LEGEND + "view_legend", ["utils", "size", LEGEND + "event_legend"], function(_utils, _size, _event)    {
 	var interfaceAlteration = function(_data, _g)	{
 		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
 			var type = _data.data.type_list[i];
@@ -26,11 +28,11 @@ define("chart/legend/view_legend", ["utils", "size"], function(_utils, _size)   
 
 		return _g.append("rect")
 		.attr("class", "legend_figure_cnv")
+		.style("fill", _utils.colour(_utils.defMutName(_name)))
 		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
 		.attr("y", _data.arranged(_name, "figure", _data.size_set, _data.size).y)
 		.attr("width", width)
-		.attr("height", height)
-		.style("fill", _utils.colour(_utils.definitionMutationName(_name)));
+		.attr("height", height);
 	}
 
 	var figureOfExp = function(_data, _g, _name)	{
@@ -39,11 +41,12 @@ define("chart/legend/view_legend", ["utils", "size"], function(_utils, _size)   
 
 		return _g.append("rect")
 		.attr("class", "legend_figure_exp")
+		.style("fill", "#fff")
+		.style("stroke", _utils.colour(_utils.defMutName(_name)))
 		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
 		.attr("y", _data.arranged(_name, "figure", _data.size_set, _data.size).y)
 		.attr("width", width)
-		.attr("height", height)
-		.style("stroke", _utils.colour(_utils.definitionMutationName(_name)));
+		.attr("height", height);
 	}
 
 	var figureOfSomatic = function(_data, _g, _name)	{
@@ -52,11 +55,11 @@ define("chart/legend/view_legend", ["utils", "size"], function(_utils, _size)   
 
 		return _g.append("rect")
 		.attr("class", "legend_figure_somatic")
+		.style("fill", _utils.colour(_utils.defMutName(_name)))
 		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
 		.attr("y", (_data.arranged(_name, "figure", _data.size_set, _data.size).y + height) - 10)
 		.attr("width", width)
-		.attr("height", height / 3)
-		.style("fill", _utils.colour(_utils.definitionMutationName(_name)));
+		.attr("height", height / 3);
 	}
 
 	var interfaceNeedleplot = function(_data, _g)	{
@@ -71,20 +74,20 @@ define("chart/legend/view_legend", ["utils", "size"], function(_utils, _size)   
 
 		return _g.append("circle")
 		.attr("class", "legend_figure_needleplot")
+		.style("fill", _utils.colour(_utils.defMutName(_name)))
 		.attr("cx", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
 		.attr("cy", (_data.arranged(_name, "figure", _data.size_set, _data.size).y + radius) - 7)
-		.attr("r", radius / 5)
-		.style("fill", _utils.colour(_utils.definitionMutationName(_name)));
+		.attr("r", radius / 5);
 	}
 	
 	var interfacePcaPlot = function(_data, _g)	{
 		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
 			var type = _data.data.type_list[i];
-			var figure = makeFigureName(_data, _g, type.name);
+			var figure = makeFigurePca(_data, _g, type.name);
 		}
 	}
 
-	var makeFigureName = function(_data, _g, _name)	{
+	var makeFigurePca = function(_data, _g, _name)	{
 		switch(_name)	{
 			case "Primary Solid Tumor" :
 				return figureOfPcaplot1(_data, _g, _name);
@@ -100,10 +103,10 @@ define("chart/legend/view_legend", ["utils", "size"], function(_utils, _size)   
 
 		return _g.append("circle")
 		.attr("class", "legend_figure_pcaplot")
+		.style("fill", _utils.colour(_name))
 		.attr("cx", _data.arranged(_name, "figure", _data.size_set, _data.size).x + radius)
 		.attr("cy", _data.arranged(_name, "figure", _data.size_set, _data.size).y + radius * 1.5)
-		.attr("r", radius)
-		.style("fill", _utils.colour(_name));
+		.attr("r", radius);
 	}
 
 	var figureOfPcaplot2 = function(_data, _g, _name)	{
@@ -111,11 +114,11 @@ define("chart/legend/view_legend", ["utils", "size"], function(_utils, _size)   
 
 		return _g.append("rect")
 		.attr("class", "legend_figure_pcaplot")
+		.style("fill", _utils.colour(_name))
 		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
 		.attr("y", _data.arranged(_name, "figure", _data.size_set, _data.size).y + (rect_size / 5) * 1.5)
 		.attr("width", rect_size)
-		.attr("height", rect_size)
-		.style("fill", _utils.colour(_name));
+		.attr("height", rect_size);
 	}
 
 	var view = function(_data)  {
@@ -157,7 +160,9 @@ define("chart/legend/view_legend", ["utils", "size"], function(_utils, _size)   
 		})
 		.text(function(_d) { 
 			return _d.name; 
-		});
+		})
+		.on("mouseover", _event.mouseover)
+		.on("mouseout", _event.mouseout);
 	}
 	return {
 		view : view

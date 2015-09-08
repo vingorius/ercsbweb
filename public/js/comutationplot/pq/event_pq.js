@@ -24,11 +24,11 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 	}
 
 	var ascending = function(_a, _b)	{
-		return (_utils.getSumOfList(_a.list, "q") > _utils.getSumOfList(_b.list, "q")) ? 1 : -1;
+		return (_utils.getSumList(_a.list, "q") > _utils.getSumList(_b.list, "q")) ? 1 : -1;
 	}
 
 	var descending = function(_a, _b)	{
-		return (_utils.getSumOfList(_a.list, "q") < _utils.getSumOfList(_b.list, "q")) ? 1 : -1;
+		return (_utils.getSumList(_a.list, "q") < _utils.getSumList(_b.list, "q")) ? 1 : -1;
 	}
 
 	var sortingName = function(_sorting_data)	{

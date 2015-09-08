@@ -10,18 +10,6 @@ var SORT = "population/comutationplot/sort_comutationplot";
 var LEGEND = "chart/legend/setting_legend";
 
 define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setting_comutation", GENE + "setting_gene", PQ + "setting_pq", SAMPLE + "setting_sample", COMUTS_NAVI + "setting_comutationnavigation", LEGEND, SORT ], function(_utils, _VO, _setting_group, _setting_comutation, _setting_gene, _setting_pq, _setting_sample, _setting_comutationnavigation, _setting_legend, _sort)	{
-	var isQvalue = function(_gene_list)	{
-		var is = false;
-
-		for(var i = 0, len = _gene_list.length ; i < len ; i++)	{
-			var q = _gene_list[i].q;
-			if(q)	{
-				is = true;
-			}
-		}
-		return is;
-	}
-
 	var getOnlyGeneSampleName = function(_key, _list)	{
 		var result = [];
 
@@ -51,7 +39,7 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 	}
 
 	var makeGene = function(_item, _array)	{
-		var is_gene_datas = _utils.getObjInArray(_item.gene, _array, "gene");
+		var is_gene_datas = _utils.getObject(_item.gene, _array, "gene");
 
 		if(!is_gene_datas)	{
 			_array.push({
@@ -68,7 +56,7 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 	}
 
 	var makeSample = function(_item, _array)		{
-		var is_sample_datas = _utils.getObjInArray(_item.sample, _array, "sample");
+		var is_sample_datas = _utils.getObject(_item.sample, _array, "sample");
 
 		if(!is_sample_datas)	{
 			_array.push({
@@ -88,10 +76,10 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 		var result = { type_list : [] };
 
 		for(var i = 0, len = _mutation_list.length ; i < len ; i++)	{
-			var type = _utils.definitionMutationName(_mutation_list[i].type);
+			var type = _utils.defMutName(_mutation_list[i].type);
 			var type_list = result.type_list;
 
-			if($.inArray(type, type_list) < 0)	{
+			if($.inArray(type, type_list) < 0 && type)	{
 				type_list.push(type);
 			}
 		}
@@ -103,7 +91,7 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 
 		for(var i = 0, len = _patient_list.length ; i < len ; i++)	{
 			var patient = _patient_list[i];
-			var is_patient = _utils.getObjInArray(patient.sample, result, "sample");
+			var is_patient = _utils.getObject(patient.sample, result, "sample");
 
 			if(!is_patient)	{
 				result.push({
@@ -120,22 +108,19 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 		return result;
 	}
 
-	var loopingGroup = function(_group_list, _target_list, _index)	{
-		var vo = _VO.VO;
-		var index = _index || 0;
+	var loopingGroup = function(_group_list)	{
 		var target_list;
-		var separate;
 
 		for(var i = 0, len = _group_list.length ; i < len ; i++)		{
 			var group = _group_list[i];
 			if(i === 0)	{
-				target_list = _sort.group(group, group, vo.getFormatedData().sample);
+				target_list = _sort.group(group, group, _VO.VO.getFormatedData().sample);
 			}
 			else {
 				var ex = [];
 				for(var j = 0, leng = target_list.length ; j < leng ; j++)	{
 					var target = target_list[j];
-					$.merge(ex, _sort.group(target, group, vo.getFormatedData().sample));
+					$.merge(ex, _sort.group(target, group, _VO.VO.getFormatedData().sample));
 				}
 				target_list = ex;
 			}
@@ -171,7 +156,6 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 		var looped_group = loopingGroup(exclusive_defalut_grouping);
 		var sample_names = getOnlyGeneSampleName("sample", looped_group);
 
-		vo.setInitMutation(mutations.type_list);
 		vo.setMutation(mutations.type_list);
 		vo.setInitSample(sample_names);
 		vo.setSample(sample_names);
@@ -180,12 +164,10 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 
 		_setting_comutation(_data.data.mutation_list, _data.data.patient_list, sample_names, gene_names);
 		_setting_gene(_data, gene_names);
-		if(isQvalue(_data.data.gene_list))	{
-			_setting_pq(_data.data.gene_list, gene_names);
-		}	
+		_setting_pq(_data.data.gene_list, gene_names);
 		_setting_group(_data.data.group_list, _data.data.patient_list, vo.getFormatedData().sample);
 		_setting_sample(_data.data.mutation_list, _data.data.patient_list, sample_names);
-		_setting_comutationnavigation(sample_names, gene_names);
+		_setting_comutationnavigation();
 		_setting_legend({
 			data : mutations,
 			view_id : "comutationplot_legend",

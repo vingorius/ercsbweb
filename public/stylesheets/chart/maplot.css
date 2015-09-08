@@ -10,7 +10,7 @@
 	height : 500px;
 	overflow-y : auto;
 }
-#maplot_select_path	path {
+#maplot_select_line	path {
 	stroke : #26d632;
 }
 /* Comutation Plot navigation custom spinner css style code that used to bootstrap */

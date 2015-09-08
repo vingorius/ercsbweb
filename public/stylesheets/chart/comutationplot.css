@@ -43,7 +43,7 @@
 	stroke-width : 1;
 }
 
-.comutationplot_yaxis path  {
+.comutationplot_heatmap_yaxis path  {
 	fill : none;
 	stroke : #fff;
 	stroke-width : 1;
@@ -63,9 +63,9 @@
 #comutationplot_heatmap	{
 	overflow: hidden;
 }
-.gene_explain text, 
-.pq_explain text,
-.sample_explain text 	{
+.comutationplot_gene_sort_label text, 
+.comutationplot_pq_sort_label text,
+.comutationplot_sample_sort_label text 	{
 	font-size: 12px;
 	font-style: italic;
 }

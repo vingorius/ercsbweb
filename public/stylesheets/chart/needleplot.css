@@ -3,7 +3,7 @@
 #needleplot_view  {
 	overflow: scroll;
 }
-.navi_2_box_right, .navi_2_box_left {
+.needleplot_navigation_rightarea, .needleplot_navigation_leftarea {
 	fill : #96281B;
 	stroke : #96281B;
 }
@@ -22,10 +22,10 @@
 	padding: 0px;
 	height: 10%;
 }
-.needle_graphs_text {
+.needleplot_graph_intext {
 	font-size: 50%;
 }
-.needle_graphs_text {
+.needleplot_graph_intext {
 	fill : #fff;
 	font-size: 11px;
 }
@@ -33,9 +33,9 @@
 	fill : #000;
 	opacity: 0.05;
 }
-.needle_select_box  {
+.needleplot_navigation_viewarea  {
 	fill : #E4F1FE;
 }
-.needle_gene_full_path_g    {
+.needleplot_gene_fullpath_group    {
 	fill : #DADFE1;
 }

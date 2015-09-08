@@ -4,13 +4,11 @@ var SORT = "population/comutationplot/sort_comutationplot";
 
 define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _size, _VO, _sort)	{
 	var barMouseover = function(_d)	{
-		_utils.tooltip(
-			this, "<b>" + _d.sample + "</b></br>type: " + _utils.definitionMutationName(_d.type) 
-			+ "</br>count : " + _d.count, "rgba(15, 15, 15, 0.6)");
+		_utils.tooltip(this, "<b>" + _d.name + "</b></br>" + _utils.defMutName(_d.type) + " : " + _d.count, "rgba(15, 15, 15, 0.6)");
 
 		d3.select(this)
-		.transition().duration(250)
-		.style("stroke", "black")
+		.transition().duration(50)
+		.style("stroke", "#333")
 		.style("stroke-width", 1);
 	}
 
@@ -19,29 +17,30 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 			d3.select(_this)
 			.transition().duration(250)
 			.style("stroke", function(_d) { 
-				return null; 
-			});
+				return "#fff"; 
+			})
+			.style("stroke-width", 0);
 		}
 		_utils.tooltip();		
 	}
 
 	var explainMouseover = function(_d)	{
-		_utils.tooltip(this, "Sort by mutations", "rgba(178, 0, 0, 0.6)");
+		_utils.tooltip(this, "sort by mutations", "rgba(178, 0, 0, 0.6)");
 	}
 
 	var ascending = function(_a, _b)	{
-		return (_utils.getSumOfList(_a.types, "count") > _utils.getSumOfList(_b.types, "count")) ? 1 : -1;
+		return (_utils.getSumList(_a.types, "count") > _utils.getSumList(_b.types, "count")) ? 1 : -1;
 	}
 
 	var descending = function(_a, _b)	{
-		return (_utils.getSumOfList(_a.types, "count") < _utils.getSumOfList(_b.types, "count")) ? 1 : -1;
+		return (_utils.getSumList(_a.types, "count") < _utils.getSumList(_b.types, "count")) ? 1 : -1;
 	}
 
 	var sortingByName = function(_sorting_data)	{
 		var result = [];
 
 		for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
-			result.push(_sorting_data[i].sample);
+			result.push(_sorting_data[i].name);
 		}
 		return result;
 	}
@@ -49,16 +48,14 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 	var redraw = function(_sorting_data, _size)	{
 		var magnification = 2;
 		var left_between = 1.5;
-		var top_between = 1.2;
-		var sample = _VO.VO.getSample();
-		var x = _utils.ordinalScale(sample, 0, _VO.VO.getWidth() * magnification);
-		var y = _utils.ordinalScale(_VO.VO.getGene(), _VO.VO.getMarginTop(), (_VO.VO.getHeight() - _VO.VO.getMarginTop()));
+		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, _VO.VO.getWidth() * magnification);
+		var y = _utils.ordinalScale(_VO.VO.getGene(), 0, _VO.VO.getHeight());
 
 		_utils.attributeSize(d3.selectAll(".comutationplot_cells"), "width", x, left_between);
 		_utils.attributeSize(d3.selectAll(".comutationplot_sample_bars"), "width", x, left_between);
 		_utils.attributeXY(d3.selectAll(".comutationplot_bar_group_rects"), "x", x, "sample", false, false);
 		_utils.translateXY(d3.selectAll(".comutationplot_cellgroup"), x, y, "sample", "gene", false, false);
-		_utils.translateXY(d3.selectAll(".comutationplot_sample_bargroup"), x, 0, "sample", 0, false, false);
+		_utils.translateXY(d3.selectAll(".comutationplot_sample_bargroup"), x, 0, "name", 0, false, false);
 	}
 
 	var sortByValue = function(_d)	{

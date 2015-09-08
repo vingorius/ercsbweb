@@ -5,21 +5,43 @@ var router = express.Router();
 router.get('/getSampleVariantList', function(req, res, next) {
 	var cancer_type = req.query.cancer_type;
 	var sample_id = req.query.sample_id;
-	// console.log(sample_id,cancer_type);
+	var frequency = req.query.frequency;
+	var classification = req.query.classification;
+	var cosmic = req.query.cosmic;
+
+	console.log(req.query);
+	if (cancer_type === undefined || sample_id === undefined || frequency === undefined || classification === undefined || cosmic === undefined) {
+		return res.status(400).send('Not sufficient paramerters');
+	}
+
 	getConnection(function(connection) {
-		connection.query('CALL omics_data.getNeedleplotPatientVariantList(?,?)', [cancer_type, sample_id], function(err, rows) {
+		connection.query('CALL omics_data.getPersonalVaiantsSummary(?,?,?,?,?)', [cancer_type, sample_id, classification, cosmic, frequency], function(err, rows) {
 			if (err) throw err;
-			rows[0].forEach(function(_data) {
-				var d = JSON.parse(_data.pdomain_json);
-				//console.log(d[0].regions);
-				var domain = getDomain(d[0].regions, _data.pos);
-				_data.pdomain = domain.id;
-				_data.pdomain_desc = domain.desc;
-			});
+			// rows[0].forEach(function(_data) {
+			// 	// var d = JSON.parse(_data.pdomain_json);
+			// 	// //console.log(d[0].regions);
+			// 	// var domain = getDomain(d[0].regions, _data.pos);
+			// 	// _data.pdomain = domain.id;
+			// 	// _data.pdomain_desc = domain.desc;
+			// });
 
 			res.json(rows[0]);
 		});
 	});
+	// getConnection(function(connection) {
+	// 	connection.query('CALL omics_data.getNeedleplotPatientVariantList(?,?)', [cancer_type, sample_id], function(err, rows) {
+	// 		if (err) throw err;
+	// 		rows[0].forEach(function(_data) {
+	// 			var d = JSON.parse(_data.pdomain_json);
+	// 			//console.log(d[0].regions);
+	// 			var domain = getDomain(d[0].regions, _data.pos);
+	// 			_data.pdomain = domain.id;
+	// 			_data.pdomain_desc = domain.desc;
+	// 		});
+	//
+	// 		res.json(rows[0]);
+	// 	});
+	// });
 });
 
 /*
@@ -34,7 +56,7 @@ var getDomain = function(regions, pos) {
 		desc: ''
 	};
 
-	for(var i =0; i < regions.length;i++){
+	for (var i = 0; i < regions.length; i++) {
 		if (Number(pos) >= Number(regions[i].metadata.start) && Number(pos) <= Number(regions[i].metadata.end)) {
 			domain.id = regions[i].metadata.identifier;
 			domain.desc = regions[i].metadata.description;

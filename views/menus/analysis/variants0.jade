@@ -1,0 +1,103 @@
+extends ../../layout/analysislayout
+block append stylesheets
+    link(rel='stylesheet', href='/bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css')
+    link(rel='stylesheet', href='/bower_components/bootstrap-table/dist/bootstrap-table.min.css')
+    link(rel='stylesheet', href='/stylesheets/chart/chart.css')
+    link(rel='stylesheet', href='/stylesheets/analysis/needleplot.css')
+    style.
+        .slider.slider-horizontal{
+            width: 150px;
+        }
+        #ex1Slider .slider-selection {
+            background: #BABABA;
+        }
+        .box_container {
+            //- padding-top: 20px;
+        }
+        .box_main_title {
+            color: #286090;
+            font-size: 18px;
+        }
+        .box_title {
+            color: #286090;
+            font-size: 16px;
+        }
+        .highlight{
+            background-color: red
+        }        
+block rightcontent
+    div
+        //- div.col-lg-2(style={'line-height': '28px'}) 
+        //-     div.row
+        //-         i.fa.fa-cog.fa-lg
+        //-         span.sub_menu_span.box_main_title Filter By
+        //-     div.row.box_container
+        //-         i.fa.fa-caret-right
+        //-         span.sub_menu_span.box_title Frequency
+        //-             i.fa.fa-question.text-right(style={'padding-left': '28px','font-size': '12px'})
+        //-         div
+        //-             input#ex1(data-slider-id='ex1Slider', type='text', data-slider-min='0', data-slider-max='20', data-slider-step='1', data-slider-value='8')
+        //-     div.row.box_container
+        //-         i.fa.fa-caret-right
+        //-         span.sub_menu_span.box_title Genotype  
+        //-         div
+        //-             input(type='radio',name='a',checked)
+        //-             span.sub_menu_span Heterozgous
+        //-         div
+        //-             input(type='radio',name='a')
+        //-             span.sub_menu_span Homozygous
+        //- 
+        //-     div.row.box_container
+        //-         i.fa.fa-caret-right
+        //-         span.sub_menu_span.box_title Classification            
+        //-         div
+        //-             input(type='radio',name='b',checked)
+        //-             span.sub_menu_span All
+        //-         div
+        //-             input(type='radio',name='b')
+        //-             span.sub_menu_span Stop gain,Lost
+        //-         div
+        //-             input(type='radio',name='b')
+        //-             span.sub_menu_span INDEL,Frameshift
+        //-         div
+        //-             input(type='radio',name='b')
+        //-             span.sub_menu_span Splice Site
+        //-         div
+        //-             input(type='radio',name='b')
+        //-             span.sub_menu_span Non-synonymous
+        //- 
+        //-     div.row.box_container
+        //-         i.fa.fa-caret-right
+        //-         span.sub_menu_span.box_title In Cancer Genes            
+        //-         div
+        //-             input(type='radio',name='c',checked)
+        //-             span.sub_menu_span COSMIC
+        //-         //- div
+        //-         //-     input(type='radio',name='c')
+        //-         //-     span.sub_menu_span HGMD
+
+        div.col-lg-12
+            div
+                table#table('data-url'='/models/patient/getSampleVariantList?sample_id=#{sample.id}&cancer_type=#{sample.type}')
+
+            div
+                div
+                    h4#needleplot-title
+                div.loading(style={ "display" : "none" }) 
+                    span#loading_text
+                    div.double-bounce1
+                    div.double-bounce2
+                div.container.chart_container(style={'width' : '1200px', 'margin-left' : 'auto', 'margin-right' : 'auto', 'padding-top' : '50px'})
+                    div.row
+                        div#needleplot_view(style={'padding': '0px', 'margin': '0px', 'width': '1000px', 'height': '400px', 'overflow' : 'hidden', "float" : 'left'})
+                        div#needleplot_legend(style={'padding': '0px', 'margin': '0px', 'width': '200px', 'height': '200px', 'overflow' : 'hidden', 'float' : "left"})
+                    div.row
+                        div#needleplot_navigation(style={'padding': '0px', 'width': '1000px', 'height': '70px', 'background-color' : '#F9F9F9'})
+    div.tooltip_chart(style={ "display" : "none" })
+
+block append scripts
+    script(src='/bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
+    script(src='/bower_components/bootstrap-table/dist/bootstrap-table.min.js')
+    script(src='/js/analysis/variant.js')
+    script(src='/js/chart/init.js')
+    script(src='/bower_components/requirejs/require.js')

@@ -16,9 +16,14 @@ describe('Patient Test Suite', function() {
 				done();
 			});
 	});
+    it('getSampleVariantList Request Parameter Check', function(done) {
+		request(host)
+			.get('/models/patient/getSampleVariantList?sample_id=Pat99&cancer_type=luad&frequency=0&classification=All') //&cosmic=Y ')
+            .expect(400, done);
+	});
     it('getSampleVariantList JSON Data Format Check', function(done) {
 		request(host)
-			.get('/models/patient/getSampleVariantList?cancer_type=luad&sample_id=Pat99')
+			.get('/models/patient/getSampleVariantList?sample_id=Pat99&cancer_type=luad&frequency=0&classification=Missense_Mutation%2CNonstop_Mutation%2CFrame_Shift_Ins%2CFrame_Shift_Del&&cosmic=Y ')
 			.end(function(err, res) {
 				if (err) return done(err);
 				var data = res.body;

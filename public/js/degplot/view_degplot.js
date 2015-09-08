@@ -55,7 +55,7 @@ define(DEG + "view_degplot", ["utils", "size", DEG + "event_degplot"], function(
 		.tickValues([minmax.min, minmax.max]);
 
 		svg.append("g")
-		.attr("class", "deg_color_range_axis")
+		.attr("class", "degplot_axis_color_range")
 		.attr("transform", "translate(" + margin + ", " + (_height * 0.7) + ")")
 		.call(xAxis);
 

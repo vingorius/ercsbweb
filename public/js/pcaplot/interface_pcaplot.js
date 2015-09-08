@@ -46,7 +46,7 @@ define(PCA, ["utils", "size", LEGEND, _2D, _3D], function(_utils, _size, _settin
 		var result = [];
 
 		for(var i = 0, len = _data.length ; i < len ; i++)	{
-			var is_type = _utils.getObjInArray(_data[i].TYPE, result, "name");
+			var is_type = _utils.getObject(_data[i].TYPE, result, "name");
 
 			if(!is_type)	{
 				result.push({

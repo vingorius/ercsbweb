@@ -6,7 +6,7 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 
 		for(var i = 0, len = _all_child.length ; i < len ; i++)	{
 			var child = _all_child[i].__data__;
-			var alter_type = _utils.definitionMutationName(child.type);
+			var alter_type = _utils.defMutName(child.type);
 			var type = _utils.alterationPrecedence(alter_type);
 
 			if(type.alteration === "CNV")	{
@@ -35,6 +35,7 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 			+ "</br>" + all_type, "rgba(15, 15, 15, 0.6)");
 
 		target
+		.transition().duration(50)
 		.style("stroke", "#333")
 		.style("stroke-width", 1);
 	}
@@ -43,8 +44,12 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 		_utils.tooltip();
 
 		d3.select(this)
+		.transition().duration(250)
 		.style("stroke", function(_d)	{
-			return null;
+			return "#fff";
+		})
+		.style("stroke-width", function(_d)	{
+			return 0;
 		});
 	}
 

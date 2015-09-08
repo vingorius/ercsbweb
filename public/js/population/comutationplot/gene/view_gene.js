@@ -3,19 +3,12 @@ var GENE = "population/comutationplot/gene/";
 define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
 		var size = _data.size;
-
-		var svg = d3.select("#comutationplot_gene")
-		.append("svg")
-		.attr("class", "comutationplot_gene")
-		.attr("width", size.width)
-		.attr("height", size.height)
-		.append("g")
-		.attr("transform", "translate(0, 0)");
+		var svg = _size.mkSvg("#comutationplot_gene", size.width, size.height);
 
 		var xAxis = d3.svg.axis()
 		.scale(_data.x)
 		.orient("bottom")
-		.tickValues([0, _data.max / 2, _data.max]);
+		.tickValues([0, (_data.max / 2), _data.max]);
 
 		var yAxis = d3.svg.axis()
 		.scale(_data.y)
@@ -41,7 +34,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.enter().append("g")
 		.attr("class", "comutationplot_gene_bargroup") 
 		.attr("transform", function(_d)	{
-			return "translate(0, " + _data.y(_d.gene) + ")";
+			return "translate(0, " + _data.y(_d.name) + ")";
 		});
 
 		var stacked_bar = bar_group.selectAll("rect")  
@@ -51,7 +44,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.enter().append("rect")
 		.attr("class", "comutationplot_gene_bars")
 		.style("fill", function(_d) { 
-			return _utils.colour(_utils.definitionMutationName(_d.type)); 
+			return _utils.colour(_utils.defMutName(_d.type)); 
 		})
 		.on("mouseover", _event.barOver)
 		.on("mouseout", function()	{
@@ -75,15 +68,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 
 	var titleView = function(_data)	{
 		var size = _data.title_size;
-		var e = _event || null;
-
-		var svg = d3.select("#comutationplot_gene_title")
-		.append("svg")
-		.attr("class", "comutationplot_gene_title")
-		.attr("width", size.width)
-		.attr("height", size.height)
-		.append("g")
-		.attr("transform", "translate(0, 0)");
+		var svg = _size.mkSvg("#comutationplot_gene_title", size.width, size.height);
 
 		svg.append("g")
 		.data([{ 
@@ -91,7 +76,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 			size : _data.size, 
 			status : false 
 		}])
-		.attr("class", "gene_explain")
+		.attr("class", "comutationplot_gene_sort_label")
 		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")")
 		.append("text")
 		.text("#sample count")

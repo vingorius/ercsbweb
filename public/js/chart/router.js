@@ -8,8 +8,6 @@ var DEG = "degplot/setting_degplot";
 var XY = "xyplot/setting_xyplot";
 var MA = "maplot/setting_maplot";
 var PCA = "pcaplot/interface_pcaplot";
-var NEEDLE = "needleplot/needle/setting_needleplot";
-var FLOW = "flowplot/setting_flowplot";
 
 define( "router", [ "utils", ANALYSIS_NEEDLE, MUTATIONALLANDSCAPE_COMUTATION, ANALYSIS_PATHWAY, XY, MA, DEG, PCA, COMUTS_INTER ], function(_utils, _aNeedle, _mlsComutation, _aPathway, _xy, _ma, _deg, _pca, _comutation)	{
 	var getFunction = function(_chartName)	{
@@ -29,6 +27,7 @@ define( "router", [ "utils", ANALYSIS_NEEDLE, MUTATIONALLANDSCAPE_COMUTATION, AN
 
 	var checkResStatus = function(_res)	{
 		if(_res.message !== "OK" && _res.lenght < 1)	{
+			console.log("failed message is ", _res.message);
 			window.history.back();
 		}
 	}

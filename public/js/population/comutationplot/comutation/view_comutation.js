@@ -3,7 +3,7 @@ var VO = "population/comutationplot/vo_comutationplot";
 
 define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_comutation", VO], function(_utils, _size, _event, _VO)	{
 	var getAlteration = function(_type)	{
-		var type = _utils.definitionMutationName(_type);
+		var type = _utils.defMutName(_type);
 
 		return alteration = _utils.alterationPrecedence(type);
 	}
@@ -14,24 +14,17 @@ define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_com
 
 		$("#" + _data.class_name + "_heatmap").width(size.width * size.magnification);
 
-		var svg = d3.select("#" + _data.class_name + "_heatmap")
-		.append("svg")
-		.attr("class", _data.class_name + "_heatmap")
-		.attr("width", _data.is_patient ? size.width : size.width * size.magnification)
-		.attr("height", size.height)
-		.append("g")
-		.attr("transform", "translate(0, 0)");
+		var svg = _size.mkSvg("#" + _data.class_name + "_heatmap"
+			, (_data.is_patient ? size.width : size.width * size.magnification), size.height);
 
 		var yAxis = d3.svg.axis()
 		.scale(_data.y)
 		.orient("left");
 
 		svg.append("g")
-		.attr("class", "comutationplot_yaxis")
+		.attr("class", "comutationplot_heatmap_yaxis")
 		.attr("transform", "translate(0, 0)")
 		.call(yAxis);
-
-		var ts = {};
 
 		var cell_group = svg.selectAll("." + _data.class_name + "_cellgroup")
 		.data(_data.all_data)
@@ -70,7 +63,7 @@ define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_com
 			return 0;
 		})
 		.style("fill", function(_d) { 
-			return _utils.colour(_utils.definitionMutationName(_d.type)); 
+			return _utils.colour(_utils.defMutName(_d.type)); 
 		})
 		.on("mouseover", _event.m_over)
 		.on("mouseout", _event.m_out)

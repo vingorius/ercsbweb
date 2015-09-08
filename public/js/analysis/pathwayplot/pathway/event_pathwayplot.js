@@ -14,16 +14,16 @@ define(PATHWAY + "event_pathwayplot", ["utils", "size"], function(_utils, _size)
 		script.src = "/js/analysis/pathwayplot/pathway/test.js";
 		var head = document.querySelector("head");
 		var is_js = document.querySelector("script[src*=test]");
-		/* 
-			클릭 할 때마다 불러오는건 무리가 있다. 
-			View 가 호출이 완료 되기전에 한번 스크립트 태그를 불러오고, 그 후에 해당 파일안에 있는 
-			함수를 이벤트 호출 때마다 사용하는편이 낫다.
-		*/
+		 
+		// 클릭 할 때마다 불러오는건 무리가 있다. 
+		// View 가 호출이 완료 되기전에 한번 스크립트 태그를 불러오고, 그 후에 해당 파일안에 있는 
+		// 함수를 이벤트 호출 때마다 사용하는편이 낫다.
+		
 		if(is_js === null)	{
 			head.appendChild(script);
-			// head.removeChild(script);
+			head.removeChild(script);
 		}
-		console.log(temp.test.test());
+		// console.log(temp.test.test());
 	}
 
 	var mouseOver = function(_d)	{

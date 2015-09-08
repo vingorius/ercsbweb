@@ -7,18 +7,59 @@ $(function() {
 			return value;
 		}
 	});
+	$('#classification_all').click(function() {
+		// console.log(this.checked);
+		if (this.checked) {
+			$('input[type=checkbox][name=classification]').prop('checked', false);
+		}
+	});
+	$('input[type=checkbox][name=classification]').click(function() {
+		// console.log(this.checked);
+		if (this.checked && $('#classification_all').prop('checked')) {
+			$('#classification_all').prop('checked', false);
+		}
+	});
+	$('#filterButton').click(function(e) {
+		console.log($('#ex1').val());
+		console.log(getClassificationParameter());
+		console.log($('input[type=checkbox][name=cosmic]').prop('checked'));
+		$('#table').bootstrapTable('refresh', {});
+	});
+
+	var getClassificationParameter = function() {
+		if ($('#classification_all').prop('checked')) {
+			return $('#classification_all').val();
+		}
+		var checked = [];
+		$('input[type=checkbox][name=classification]:checked').each(function(_i, _o) {
+			checked.push(_o.value);
+		});
+		return checked.join(',');
+	};
+
 	var table = $('#table');
 	table.bootstrapTable({
-		// url: '/models/patient/getSampleVariantList',
+		url: '/models/patient/getSampleVariantList',
 		classes: 'table',
 		method: 'get',
 		cache: true, // False to disable caching of AJAX requests.
-		showColumns: true,
-		showRefresh: true,
+		// showColumns: true,
+		// showRefresh: true,
 		// sortName: 'gene',
 		// sortName: 'patientsOfPosition',
 		// sortable: true,
 		// sortOrder: 'desc',
+		pagination: true,
+		pageSize: 5,
+		queryParams: function(params) {
+			params.sample_id = $('#sample_id').val();
+			params.cancer_type = $('#cancer_type').val();
+			params.frequency = $('#ex1').val();
+			params.classification = getClassificationParameter();
+			params.cosmic = $('input[type=checkbox][name=cosmic]').prop('checked') ? 'Y' : 'N';
+			console.log('params:', params);
+			return params;
+		},
 		rowStyle: function(row, index) { // make first row active
 			if (index === 0) return {
 				classes: 'info'
@@ -49,6 +90,7 @@ $(function() {
 		}, {
 			field: 'class',
 			title: 'Classification',
+			sortable: true,
 			align: 'center',
 			formatter: function(value, row) {
 				return value.replace('_Mutation', '');
@@ -82,8 +124,8 @@ $(function() {
 			sortable: true,
 			align: 'center',
 			formatter: function(value, row) {
-				var pct = (row.patientsOfPosition / row.patientsOfTranscript) * 100;
-				// console.log(row);
+				var pct = 0;
+				if (row.patientsOfTranscript !== 0) pct = (row.patientsOfPosition / row.patientsOfTranscript) * 100;
 				return pct.toFixed(2) + '%' + ' (' + row.patientsOfPosition + '/' + row.patientsOfTranscript + ')';
 			}
 		}, {
@@ -92,8 +134,8 @@ $(function() {
 			sortable: true,
 			align: 'center',
 			formatter: function(value, row) {
-				var pct = (row.patientsOfPosition / row.patientsOfCancer) * 100;
-				// console.log(row);
+				var pct = 0;
+				if (row.patientsOfCancer !== 0) pct = (row.patientsOfPosition / row.patientsOfCancer) * 100;
 				return pct.toFixed(2) + '%' + ' (' + row.patientsOfPosition + '/' + row.patientsOfCancer + ')';
 			}
 		}, {
@@ -104,8 +146,14 @@ $(function() {
 	});
 
 	table.on('load-success.bs.table', function(_event, _data, _args) {
-		$('[data-toggle="tooltip"]').tooltip();
+		if (_data === undefined || _data.length === 0) {
+			// Remove previous chart...
+			$("div[id^=needleplot]").css("display", "none");
+			return;
+		}
 
+		$('[data-toggle="tooltip"]').tooltip();
+		$("div[id^=needleplot]").css("display", "block");
 		var data = _data[0];
 		Init.requireJs(
 			"analysis_needle",

@@ -1,4 +1,6 @@
-define("chart/legend/setting_legend", ["utils", "size", "chart/legend/view_legend"], function(_utils, _size, _view)   {
+var LEGEND = "chart/legend/";
+
+define(LEGEND + "setting_legend", ["utils", "size", LEGEND + "view_legend"], function(_utils, _size, _view)   {
 	var checkBox = function(_size)	{
 		var horizontal = (_size.rect_size * 3);
 
@@ -101,7 +103,7 @@ define("chart/legend/setting_legend", ["utils", "size", "chart/legend/view_legen
 
 	return function(_opt)	{
 		var type = _opt.type;
-		var size = _size.definitionSize(_opt.view_id, 10, 0, 0, 0);
+		var size = _size.initSize(_opt.view_id, 10, 0, 0, 0);
 		size.rect_size = 15;
 
 		switch(type)	{

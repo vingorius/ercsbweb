@@ -12,6 +12,16 @@ block rightcontent
 			div#comutationplot_patient_groups(style={'float': 'left', 'padding': '0px', 'margin-right' : '5px', 'width': '0px', 'height': '0px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
 			div#comutationplot_groups(style={'border' : '1px solid #fff', 'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1200px', 'height': '0px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
 			div#comutationplot_scale(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', "height" : "50px"})
+				div.input-group.input-group-xs.spinner#comutationplot_scale_div
+					input.form-control.input-sm#comutationplot_scale_input(type='text', value='100%', disabled=true)
+					div.input-group-btn-vertical#comutationplot_vertical_div
+						button.btn.btn-xs.btn-default#comutationplot_draw_up(type='button')
+							i.fa.fa-caret-up.fa-xs#comutationplot_up_i
+						button.btn.btn-xs.btn-dafault#comutationplot_draw_down(type='botton')
+							i.fa.fa-caret-down.fa-xs#comutationplot_down_i
+				div.input-btn
+					button.btn.btn-xs.btn-default#comutationplot_initial_button
+						i.glyphicon.glyphicon-refresh
 		div
 			div#comutationplot_gene(style={'padding': '0px', 'margin': '0px', 'float': 'left', 'width': '150px', 'height': '600px'})
 			div#comutationplot_patient_heatmap(style={'border' : '1px solid rgb(236, 236, 236)', 'padding' : '0px', 'margin-right' : '2.5px', 'width': '0px', 'height': '0px', 'float' : 'left', 'overflow-x' : 'hidden', 'overflow-y' : 'hidden'})
@@ -28,12 +38,10 @@ block rightcontent
 		div.double-bounce2
 	div.tooltip_chart(style={ "display" : "none" })
 block append scripts
-	script(src='/bower_components/canvg-gabelerner/StackBlur.js')
-	script(src='/bower_components/canvg-gabelerner/rgbcolor.js')
 	script(src='/bower_components/imagesloaded/imagesloaded.pkgd.js')
-	script(src='/js/chart/init.js')
 	script(src='/bower_components/requirejs/require.js')
-	script(src='/js/population/comutationplot/init_comutationplot.js', onload='init_comutationplot("NONE", "#{sample.type}", "#{sample.id}")')
+	script(src='/js/chart/init.js')
+	script(src='/js/chart/start.js', onload='init_comutationplot("NONE", "#{sample.type}", "#{sample.id}")')
 block append stylesheets
 	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')
 	link(rel='stylesheet', href='/stylesheets/chart/chart.css')

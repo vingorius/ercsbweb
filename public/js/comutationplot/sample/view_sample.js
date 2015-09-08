@@ -26,13 +26,13 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 
 		svg.append("g")
 		.data([{ data : data.data, size : size, status : false }])
-		.attr("class", "sample_explain")
+		.attr("class", "comutationplot_sample_sort_label")
 		.attr("transform", "translate(" + (size.margin.left * 1.5) + ", " + (size.margin.top * 1.5) + ")")
 		.append("text")
 		.text("#samples count")
 		.on("click", e.sort_by_value);
 
-		$(".sample_explain")
+		$(".comutationplot_sample_sort_label")
 		.tooltip({
 			container : "body",
 			title : "sort by sample value",

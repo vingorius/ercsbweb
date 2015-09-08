@@ -2,14 +2,12 @@ var SORT = "population/comutationplot/sort_comutationplot";
 var VO = "population/comutationplot/vo_comutationplot";
 
 define(SORT, ["utils", VO], function(_utils, _VO)	{
-	var byGroup = function(_source, _target, _samples, _order)	{
+	var byGroup = function(_source, _target, _samples)	{
 		var find_out = findOutSample(_source, _target, _samples);
 		var target = find_out.target;
 		var sample = _source.length === _target.length ? _samples : find_out.sample;
-		var leached = leachedUnknown(target, sample);
-		var order = _order;
 
-		return separatedOrdered(target, leached, order);			
+		return separatedOrdered(target, leachedUnknown(target, sample));			
 	}
 
 	var grouping = function(_group_list, _samples)	{
@@ -37,8 +35,8 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 
 		for(var i = 0, len = _source.length ; i < len ; i++)	{
 			var source = _source[i];
-			var is_target = _utils.getObjInArray(source.sample, _target, "sample");
-			var is_sample = _utils.getObjInArray(source.sample, _samples, "sample");
+			var is_target = _utils.getObject(source.sample, _target, "sample");
+			var is_sample = _utils.getObject(source.sample, _samples, "sample");
 
 			if(is_target.value !== "NA")	{
 				targets.push(is_target);
@@ -56,8 +54,8 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		var by_len = _target.length, taget_len = _samples.length;
 
 		for(var i = 0, len = _target.length ; i < len ; i++)	{
-			var by = _target[i].sample;
-			var index = _utils.findObjectIndexInArray(by, _samples, "sample");
+			var index = _utils.getObjectIndex(_target[i].sample, _samples, "sample");
+
 			if(index > 0)	{
 				temp = _samples[index];
 				_samples[index] = _samples[i];
@@ -75,8 +73,8 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		var result = [];
 
 		types.sort(function(_a, _b)	{
-			var a = _utils.orderGroup(_a);
-			var b = _utils.orderGroup(_b);
+			var a = _utils.groupOrder(_a);
+			var b = _utils.groupOrder(_b);
 
 			return a > b ? 1 : -1;
 		});
@@ -88,7 +86,7 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 			for(var j = 0, leng = _target.length ; j < leng ; j++)	{
 				var _d = _target[j];
 				if(type === _d.value)	{
-					var _p = _utils.getObjInArray(_d.sample, _leached.known, "sample");
+					var _p = _utils.getObject(_d.sample, _leached.known, "sample");
 					_d.gene = _p.gene;
 					_d.type = _p.type;
 					one_group.push(_d);
@@ -174,9 +172,9 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		for(var i = 0, len = _item.length ; i < len ; i++)	{
 			var _i = _item[i];
 			var index = _target.indexOf(_i);
-			var type = _utils.alterationPrecedence(_utils.definitionMutationName(_type[i])).priority;
+			var type = _utils.alterationPrecedence(_utils.defMutName(_type[i])).priority;
 			
-			zero[index] = "" + (((type < 10) ? "0" + type : type)  || 0);
+			zero[index] = (((type < 10) ? "0" + type : type)  || 0).toString();
 		}
 		return zero.join("");
 	}
@@ -190,6 +188,76 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		return result;
 	}
 
+	var countOrder = function(_data, _name)	{
+		var item_list = [];
+
+		for(var i = 0, len = _data.length ; i < len ; i++)	{
+			var item = _data[i];
+			var type = _utils.defMutName(item.type);
+			var is_item = _utils.getObject(item[_name], item_list, "name");
+
+			if(!is_item)	{
+				item_list.push({
+					name : item[_name],
+					types : [{
+						name : item[_name],
+						type : type,
+						count : 1
+					}],
+					counts : 1
+				});
+			}
+			else {
+				var is_type = _utils.getObject(type, is_item.types, "type");
+
+				if(!is_type)	{
+					is_item.types.push({
+						name : item[_name],
+						type : type,
+						count : 1
+					});
+				}
+				else {
+					is_type.count += 1;
+				}
+				is_item.counts += 1;
+			}
+		}
+		return stacked(item_list);
+	}
+
+	var stacked = function(_list)	{
+		for(var i = 0, len = _list.length ; i < len ; i++)	{
+			var stack = _list[i];
+			stack.types = sortMutation(stack.types);
+
+			for(var j = 0, leng = stack.types.length ; j < leng ; j++)	{
+				var type = stack.types[j];
+
+				if(j === 0)	{
+					type.start = 0;
+				}
+				else {
+					var pre_type = stack.types[j - 1];
+					type.start = pre_type.count + pre_type.start;
+				}
+			}
+		}
+		return _list;
+	}
+
+	var sortMutation = function(_types)	{
+		return _types.sort(function(_a, _b)	{
+			var a = _utils.alterationPrecedence(_utils.defMutName(_a.type));
+			var b = _utils.alterationPrecedence(_utils.defMutName(_b.type));
+
+			var a_priority = a.alteration === "CNV" ? a.priority + 20 : a.priority;
+			var b_priority = b.alteration === "CNV" ? b.priority + 20 : b.priority;
+
+			return (a_priority < b_priority) ? 1 : -1;
+		});
+	}
+
 	return {
 		group : byGroup,
 		grouping : grouping,
@@ -197,6 +265,7 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		exclusiveGroup : exclusiveGroup,
 		exclusive : sortByExclusive,
 		loopingMultiSort : loopingMultiSort,
-		loopingGroup : loopingGroup
+		loopingGroup : loopingGroup,
+		countOrder : countOrder
 	}
 });

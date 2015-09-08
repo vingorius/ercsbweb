@@ -20,7 +20,7 @@ define(MA + "setting_maplot", ["utils", "size", MA + "view_maplot"], function(_u
 	}
 
 	return function(_data)	{
-		var size = _size.definitionSize("maplot_view", 20, 20, 20, 20);
+		var size = _size.initSize("maplot_view", 20, 20, 20, 20);
 		var cut_off = _data.data.cutoff_value;
 		var x_buf = 1;
 		var y_buf = 1;

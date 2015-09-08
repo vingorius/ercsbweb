@@ -3,14 +3,8 @@ var SAMPLE = "population/comutationplot/sample/";
 define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
 		var size = _data.size;
-
-		var svg = d3.select("#" + _data.class_name + "_sample")
-		.append("svg")
-		.attr("class", _data.class_name + "_sample")
-		.attr("width", _data.is_patient ? size.width : size.width * size.magnification)
-		.attr("height", size.height)
-		.append("g")
-		.attr("transform", "translate(0, 0)");
+		var svg = _size.mkSvg("#" + _data.class_name + "_sample"
+			, (_data.is_patient ? size.width : size.width * size.magnification), size.height);
 
 		var bar_group = svg.selectAll("." + _data.class_name + "_sample_bargroup")
 		.data(_data.data)
@@ -20,7 +14,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 			_d.x = _data.x;
 			_d.y = _data.y;
 
-			return "translate(" + _data.x(_d.sample) + ", 0)";
+			return "translate(" + _data.x(_d.name) + ", 0)";
 		});
 
 		var stacked_bar = bar_group.selectAll("rect")  
@@ -37,14 +31,8 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.attr("height", function(_d) { 
 			return (size.height - (size.margin.bottom / 2)) - _data.y(_d.count); 
 		})
-		// .style("stroke", function(_d) { 
-		// 	return _utils.colour(_utils.define_mutation_name(_d.type)); 
-		// })
-		// .style("stroke-width", function(_d) { 
-		// 	return 0.1;
-		// })
 		.style("fill", function(_d) { 
-			return _utils.colour(_utils.definitionMutationName(_d.type)); 
+			return _utils.colour(_utils.defMutName(_d.type)); 
 		})
 		.on("mouseover", _event.m_over)
 		.on("mouseout", function(){ 
@@ -54,14 +42,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 
 	var titleView = function(_data)	{
 		var size = _data.title_size;
-
-		var svg = d3.select("#comutationplot_sample_yaxis_title")
-		.append("svg")
-		.attr("class", "comutationplot_sample_yaxis_title")
-		.attr("width", size.width)
-		.attr("height", size.height)
-		.append("g")
-		.attr("transform", "translate(0, 0)");
+		var svg = _size.mkSvg("#comutationplot_sample_yaxis_title", size.width, size.height);
 
 		var yAxis = d3.svg.axis()
 		.scale(_data.y)
@@ -79,7 +60,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 			size : size, 
 			status : false 
 		}])
-		.attr("class", "sample_explain")
+		.attr("class", "comutationplot_sample_sort_label")
 		.attr("transform", "translate(" + size.margin.left + ", " + (size.height - size.margin.left / 2) + ")")
 		.append("text")
 		.text("#mutation count")

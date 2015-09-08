@@ -6,7 +6,7 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 		var gene_list = [];
 
 		for(var i = 0, len = all_data.length ; i < len ; i++)	{
-			var check = _utils.getObjInArray(all_data[i].gene, gene_list, "name");
+			var check = _utils.getObject(all_data[i].gene, gene_list, "name");
 			if(!check)	{
 				gene_list.push({
 					name : all_data[i].gene,
@@ -36,7 +36,7 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 
 		for(var i = 0, len = mutation.length ; i < len ; i++)   {
 			for(var j = 0, lens = mutation[i].type.length ; j < lens ; j++) {
-				var check = _utils.getObjInArray(mutation[i].type[j], result, "type");
+				var check = _utils.getObject(mutation[i].type[j], result, "type");
 				if(!check) {
 					result.push({
 						gene : [mutation[i].gene],
@@ -97,7 +97,7 @@ define( GENE + "setting_gene", ["utils", "size", (GENE + "view_gene")], function
 
 	return function(_all_data, _genes, _importance)	{
 		var count_gene = countByOrder(_all_data, _importance);
-		var size = _size.definitionSize("comutationplot_gene", 20, 20, 20, 70);
+		var size = _size.initSize("comutationplot_gene", 20, 20, 20, 70);
 		var max = getMax(count_gene);
 
 		_utils.removeSvg("comutationplot_gene");

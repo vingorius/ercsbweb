@@ -1,5 +1,5 @@
 define("size", [], function()   {
-	var makeDiv = function(_order)    {
+	var mkDiv = function(_order)    {
 		var div = document.createElement("div");
 
 		if(!_order)	{
@@ -29,7 +29,7 @@ define("size", [], function()   {
 		});
 	}
 
-	var definitionSize = function()  {
+	var initSize = function()  {
 		if(arguments.length < 1 || arguments.length !== 5)    {
 			return undefined;
 		}
@@ -52,8 +52,18 @@ define("size", [], function()   {
 		}
 	}
 
+	var mkSvg = function(_target, _width, _height)	{
+		return d3.select(_target).append("svg")
+		.attr("class", _target.substring(1, _target.length))
+		.attr("width", _width)
+		.attr("height", _height)
+		.append("g")
+		.attr("transform", "translate(0, 0)");
+	}
+
 	return {
-		definitionSize : definitionSize,
-		mkdiv : makeDiv 
+		initSize : initSize,
+		mkdiv : mkDiv ,
+		mkSvg : mkSvg
 	};
 });

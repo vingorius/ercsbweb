@@ -1,204 +1,72 @@
 var express = require('express');
 var getConnection = require('./modules/mysql_connection');
 var plot = require('./modules/plot');
+var to = require('./modules/transfer_object');
 var router = express.Router();
 
-router.get('/', function(req, res, next) {
-	res.render('chart/index', {
-		title: 'Express'
-	});
-});
+// For Test
+// router.get('/', function(req, res, next) {
+// 	res.render('chart/index', {
+// 		title: 'Express'
+// 	});
+// });
 
 // For Test
-router.get('/sleep3', function(req, res, next) {
-	setTimeout(function() {
-		res.send('sleep 3s');
-		res.end();
-	}, 3000);
-});
+// router.get('/sleep3', function(req, res, next) {
+// 	setTimeout(function() {
+// 		res.send('sleep 3s');
+// 		res.end();
+// 	}, 3000);
+// });
 
 
 // For Test
-router.get('/delay3', function(req, res, next) {
-	var transfer_object = {
-		status: 0,
-		message: 'OK',
-		data: {
-			title: 'MA Plot',
-			x_axis_title: 'AveExpr',
-			y_axis_title: 'LogFC',
-			cutoff_value: 0.01,
-			plot_list: []
-		}
-	};
-	getConnection(function(connection) {
-		connection.query('select sleep(5)', function(err, rows) {
-			if (err) throw err;
-			transfer_object.data.plot_list = rows[0];
-			res.json(transfer_object);
-		});
-	});
-});
-
-
-router.get('/comutationplot2', function(req, res, next) {
-	var transfer_object = {
-		status: 0,
-		message: 'OK',
-		data: {
-			id: '2',
-			name: 'Lung Cancer',
-			type: 'LUCA',
-			sample_list: [],
-			symbol_list: [],
-			group_list: []
-		}
-	};
-	getConnection(function(connection) {
-		connection.query('CALL getComutationplotMutation()', function(mut_err, mut_rows) {
-			if (mut_err) throw mut_err;
-			//transfer_object.data.sample_list = mut_rows[0];
-			var sample_list = [];
-			mut_rows[0].forEach(function(data) {
-				var sample = plot.getSample(sample_list, data.sample);
-				var aberration = plot.newAberration(data.type, data.value);
-
-				if (sample === undefined) {
-					sample = plot.newSample('id', data.sample, data.group, []);
-					sample_list.push(sample);
-				}
-				var gene = plot.getGene(sample.gene_list, data.hugo);
-				if (gene === undefined) {
-					gene = plot.newGene(data.hugo, []);
-					sample.gene_list.push(gene);
-				}
-				gene.aberration_list.push(aberration);
-
-			});
-			transfer_object.data.sample_list = sample_list;
-			//console.log(transfer_object.data.sample_list[5]);
-
-			connection.query('CALL getComutationplotMutsig()', function(sig_err, sig_rows) {
-				if (sig_err) throw sig_err;
-				transfer_object.data.symbol_list = sig_rows[0];
-				connection.query('CALL getComutationplotGroup()', function(grp_err, grp_rows) {
-					if (grp_err) throw grp_err;
-
-					transfer_object.data.group_list =
-						grp_rows[0].map(function(data) {
-							return data.group;
-						});
-					res.json(transfer_object);
-				});
-			});
-		});
-	});
-});
-
-// Tumorportal 데이터를 가지고 그려봄.
-router.get('/tumorportal_cmp', function(req, res, next) {
-	var p_type = req.query.type || 'BRCA';
-	var transfer_object = {
-		status: 0,
-		message: 'OK',
-		data: {
-			id: 'id',
-			name: 'TumorPortal Cancer Type: BRCA',
-			type: 'LUCA',
-			sample_list: [],
-			symbol_list: [],
-			group_list: []
-		}
-	};
-	getConnection(function(connection) {
-		connection.query('select SaveSortedPatientListIfNot(?)', [p_type], function(err, rows) {
-			if (err) throw err;
-
-			connection.query('CALL getComutationplotTumorMutation(?)', [p_type], function(mut_err, mut_rows) {
-				if (mut_err) throw mut_err;
-				//transfer_object.data.sample_list = mut_rows[0];
-				var sample_list = [];
-				mut_rows[0].forEach(function(data) {
-					var sample = plot.getSample(sample_list, data.sample);
-					var aberration = plot.newAberration(data.type, data.value);
-
-					if (sample === undefined) {
-						sample = plot.newSample('id', data.sample, data.group, []);
-						sample_list.push(sample);
-					}
-					var gene = plot.getGene(sample.gene_list, data.hugo);
-					if (gene === undefined) {
-						gene = plot.newGene(data.hugo, []);
-						sample.gene_list.push(gene);
-					}
-					gene.aberration_list.push(aberration);
-
-				});
-				transfer_object.data.sample_list = sample_list;
-
-				connection.query('CALL getComutationplotTumorMutsig(?)', [p_type], function(sig_err, sig_rows) {
-					if (sig_err) throw sig_err;
-					transfer_object.data.symbol_list = sig_rows[0];
-					transfer_object.data.group_list = ['group'];
-					res.json(transfer_object);
-				});
-			});
-		});
-
-	});
-});
-
+// router.get('/delay3', function(req, res, next) {
+// 	var transfer_object = to.default();
+// 	transfer_object.data = {
+// 		title: 'MA Plot',
+// 		x_axis_title: 'AveExpr',
+// 		y_axis_title: 'LogFC',
+// 		cutoff_value: 0.01,
+// 		plot_list: []
+// 	};
+// 	getConnection(function(connection) {
+// 		connection.query('select sleep(5)', function(err, rows) {
+// 			if (err) throw err;
+// 			transfer_object.data.plot_list = rows[0];
+// 			res.json(transfer_object);
+// 		});
+// 	});
+// });
+//
 router.get('/comutationplot', function(req, res, next) {
-	var p_cancer_type = req.query.cancer_type;
-	var p_sample_id = req.query.sample_id;
-	//console.log('/comutationplot', p_cancer_type, p_sample_id);
+	var cancer_type = req.query.cancer_type;
+	var sample_id = req.query.sample_id;
+	if (cancer_type === undefined || cancer_type === undefined) {
+		return res.json(to.noparameter());
+	}
 
-	var transfer_object = {
-		status: 0,
-		message: 'OK',
-		data: {
-			id: 'id',
-			name: 'Co Mutation Plot with TCGA',
-			type: p_cancer_type.toUpperCase(),
-			mutation_list: [],
-			gene_list: [],
-			group_list: [],
-			patient_list: [],
-		}
+	var transfer_object = to.default();
+	transfer_object.data = {
+		id: 'id',
+		name: 'Co Mutation Plot with TCGA',
+		type: cancer_type.toUpperCase(),
+		mutation_list: [],
+		gene_list: [],
+		group_list: [],
+		patient_list: [],
 	};
 
 	getConnection(function(connection) {
-		connection.query('CALL omics_data.getComutationplotMutationList(?)', [p_cancer_type], function(mut_err, mut_rows) {
+		connection.query('CALL omics_data.getComutationplotMutationList(?)', [cancer_type], function(mut_err, mut_rows) {
 			if (mut_err) throw mut_err;
 			transfer_object.data.mutation_list = mut_rows[0];
 
-			connection.query('CALL omics_data.getComutationplotMutationGeneList(?)', [p_cancer_type], function(sig_err, sig_rows) {
+			connection.query('CALL omics_data.getComutationplotMutationGeneList(?)', [cancer_type], function(sig_err, sig_rows) {
 				if (sig_err) throw sig_err;
 				transfer_object.data.gene_list = sig_rows[0];
-				connection.query('CALL omics_data.getComutationplotMutationGroupList(?)', [p_cancer_type], function(group_err, group_rows) {
+				connection.query('CALL omics_data.getComutationplotMutationGroupList(?)', [cancer_type], function(group_err, group_rows) {
 					if (group_err) throw group_err;
-
-					// var his_group = {
-					// 	name: 'histological_type',
-					// 	data: []
-					// };
-					// var gender_group = {
-					// 	name: 'gender',
-					// 	data: []
-					// };
-					//
-					// group_rows[0].forEach(function(_data) {
-					// 	his_group.data.push({
-					// 		'sample': _data.sample_id,
-					// 		'value': _data.histological_type
-					// 	});
-					// 	gender_group.data.push({
-					// 		'sample': _data.sample_id,
-					// 		'value': _data.gender
-					// 	});
-					// });
-					// transfer_object.data.group_list.push(his_group);
-					// transfer_object.data.group_list.push(gender_group);
 
 					var groupList = [];
 					var keys = Object.keys(group_rows[0][0]);
@@ -219,7 +87,7 @@ router.get('/comutationplot', function(req, res, next) {
 					});
 					transfer_object.data.group_list = groupList;
 
-					connection.query('CALL omics_data.getComutationplotMutationPatientList(?,?)', [p_cancer_type, p_sample_id], function(patient_err, patient_rows) {
+					connection.query('CALL omics_data.getComutationplotMutationPatientList(?,?)', [cancer_type, sample_id], function(patient_err, patient_rows) {
 						if (patient_err) throw patient_err;
 						transfer_object.data.patient_list = patient_rows[0];
 
@@ -230,22 +98,17 @@ router.get('/comutationplot', function(req, res, next) {
 		});
 	});
 });
-router.get('/comutationplotForERCSB', function(req, res, next) {
-	// var p_cancer_type = req.query.cancer_type;
-	// var p_sample_id = req.query.sample_id;
 
-	var transfer_object = {
-		status: 0,
-		message: 'OK',
-		data: {
-			id: 'id',
-			name: 'Co Mutation Plot with TCGA + Lung104',
-			type: 'LUAD',
-			mutation_list: [],
-			gene_list: [],
-			group_list: [],
-			patient_list: [],
-		}
+router.get('/comutationplotForERCSB', function(req, res, next) {
+	var transfer_object = to.default();
+	transfer_object.data = {
+		id: 'id',
+		name: 'Co Mutation Plot with TCGA + Lung104',
+		type: 'LUAD',
+		mutation_list: [],
+		gene_list: [],
+		group_list: [],
+		patient_list: [],
 	};
 
 	getConnection(function(connection) {
@@ -291,18 +154,115 @@ router.get('/comutationplotForERCSB', function(req, res, next) {
 	});
 });
 
+router.get('/comutationplot2', function(req, res, next) {
+	var transfer_object = to.default();
+	transfer_object.data = {
+		id: '2',
+		name: 'Lung Cancer',
+		type: 'LUCA',
+		sample_list: [],
+		symbol_list: [],
+		group_list: []
+	};
+	getConnection(function(connection) {
+		connection.query('CALL getComutationplotMutation()', function(mut_err, mut_rows) {
+			if (mut_err) throw mut_err;
+			//transfer_object.data.sample_list = mut_rows[0];
+			var sample_list = [];
+			mut_rows[0].forEach(function(data) {
+				var sample = plot.getSample(sample_list, data.sample);
+				var aberration = plot.newAberration(data.type, data.value);
+
+				if (sample === undefined) {
+					sample = plot.newSample('id', data.sample, data.group, []);
+					sample_list.push(sample);
+				}
+				var gene = plot.getGene(sample.gene_list, data.hugo);
+				if (gene === undefined) {
+					gene = plot.newGene(data.hugo, []);
+					sample.gene_list.push(gene);
+				}
+				gene.aberration_list.push(aberration);
+
+			});
+			transfer_object.data.sample_list = sample_list;
+			//console.log(transfer_object.data.sample_list[5]);
+
+			connection.query('CALL getComutationplotMutsig()', function(sig_err, sig_rows) {
+				if (sig_err) throw sig_err;
+				transfer_object.data.symbol_list = sig_rows[0];
+				connection.query('CALL getComutationplotGroup()', function(grp_err, grp_rows) {
+					if (grp_err) throw grp_err;
+
+					transfer_object.data.group_list =
+						grp_rows[0].map(function(data) {
+							return data.group;
+						});
+					res.json(transfer_object);
+				});
+			});
+		});
+	});
+});
+
+// Tumorportal 데이터를 가지고 그려봄.
+router.get('/tumorportal_cmp', function(req, res, next) {
+	var p_type = req.query.type || 'BRCA';
+	var transfer_object = to.default();
+	transfer_object.data = {
+		id: 'id',
+		name: 'TumorPortal Cancer Type: BRCA',
+		type: 'LUCA',
+		sample_list: [],
+		symbol_list: [],
+		group_list: []
+	};
+	getConnection(function(connection) {
+		connection.query('select SaveSortedPatientListIfNot(?)', [p_type], function(err, rows) {
+			if (err) throw err;
+
+			connection.query('CALL getComutationplotTumorMutation(?)', [p_type], function(mut_err, mut_rows) {
+				if (mut_err) throw mut_err;
+				//transfer_object.data.sample_list = mut_rows[0];
+				var sample_list = [];
+				mut_rows[0].forEach(function(data) {
+					var sample = plot.getSample(sample_list, data.sample);
+					var aberration = plot.newAberration(data.type, data.value);
+
+					if (sample === undefined) {
+						sample = plot.newSample('id', data.sample, data.group, []);
+						sample_list.push(sample);
+					}
+					var gene = plot.getGene(sample.gene_list, data.hugo);
+					if (gene === undefined) {
+						gene = plot.newGene(data.hugo, []);
+						sample.gene_list.push(gene);
+					}
+					gene.aberration_list.push(aberration);
+
+				});
+				transfer_object.data.sample_list = sample_list;
+
+				connection.query('CALL getComutationplotTumorMutsig(?)', [p_type], function(sig_err, sig_rows) {
+					if (sig_err) throw sig_err;
+					transfer_object.data.symbol_list = sig_rows[0];
+					transfer_object.data.group_list = ['group'];
+					res.json(transfer_object);
+				});
+			});
+		});
+
+	});
+});
 
 router.get('/maplot', function(req, res, next) {
-	var transfer_object = {
-		status: 0,
-		message: 'OK',
-		data: {
-			title: 'MA Plot',
-			x_axis_title: 'AveExpr',
-			y_axis_title: 'LogFC',
-			cutoff_value: 0.01,
-			plot_list: []
-		}
+	var transfer_object = to.default();
+	transfer_object.data = {
+		title: 'MA Plot',
+		x_axis_title: 'AveExpr',
+		y_axis_title: 'LogFC',
+		cutoff_value: 0.01,
+		plot_list: []
 	};
 	getConnection(function(connection) {
 		connection.query('CALL getMAPlot()', function(err, rows) {
@@ -319,16 +279,10 @@ router.get('/needleplot', function(req, res, next) {
 	var gene = req.query.gene;
 	var transcript = req.query.transcript;
 
-	var transfer_object = {
-		status: 0,
-		message: 'OK',
-	};
+	var transfer_object = to.default();
 
 	if (cancer_type === undefined || sample_id === undefined || gene === undefined || transcript === undefined) {
-		transfer_object.status = 1000;
-		transfer_object.message = 'No parameter';
-		res.json(transfer_object);
-		return;
+		return res.json(to.noparameter());
 	}
 
 	transfer_object.data = {
@@ -365,16 +319,10 @@ router.get('/pathwayplot', function(req, res, next) {
 	var sample_id = req.query.sample_id;
 	var seq = req.query.seq;
 
-	var transfer_object = {
-		status: 0,
-		message: 'OK',
-	};
+	var transfer_object = to.default();
 
 	if (cancer_type === undefined || sample_id === undefined || seq === undefined) {
-		transfer_object.status = 1000;
-		transfer_object.message = 'No parameter';
-		res.json(transfer_object);
-		return;
+		return res.json(to.noparameter());
 	}
 
 	transfer_object.data = {
@@ -404,43 +352,31 @@ router.get('/pathwayplot', function(req, res, next) {
 
 router.get('/needleplot_old', function(req, res, next) {
 	var gene = req.query.gene;
-	var transfer_object = {
-		status: 0,
-		message: 'OK',
-		data: {
-			name: gene,
-			graph: {},
-			title: gene + ': [Somatic Mutation Rate: 0.8%]',
-			x_axis_title: 'aa',
-			y_axis_title: '# Mutations',
-			sample_list: []
-		}
+	var transfer_object = to.default();
+	transfer_object.data = {
+		name: gene,
+		graph: {},
+		title: gene + ': [Somatic Mutation Rate: 0.8%]',
+		x_axis_title: 'aa',
+		y_axis_title: '# Mutations',
+		sample_list: []
 	};
 	if (gene === undefined) {
-		transfer_object.status = 1000;
-		transfer_object.message = 'No parameter';
-		res.json(transfer_object);
-		return;
+		return res.json(to.noparameter());
 	}
 	getConnection(function(connection) {
 		connection.query('CALL `needleplot.aachange`(?)', [gene], function(err, rows) {
 			if (err) throw err;
 
 			if (rows[0].length === 0) {
-				transfer_object.status = 1001;
-				transfer_object.message = 'No Data Found';
-				res.json(transfer_object);
-				return;
+				return res.json(to.nodatafound());
 			}
 			transfer_object.data.sample_list = rows[0];
 			//    res.json(transfer_object);
 			connection.query('CALL `needleplot.graph`(?)', [gene], function(g_err, g_rows) {
 				if (g_err) throw g_err;
 				if (g_rows[0].length === 0) {
-					transfer_object.status = 1001;
-					transfer_object.message = 'No Data Found';
-					res.json(transfer_object);
-					return;
+					return res.json(to.nodatafound());
 				}
 
 				var graph = JSON.parse(g_rows[0][0].json_data);
@@ -454,23 +390,20 @@ router.get('/needleplot_old', function(req, res, next) {
 
 router.get('/xyplot', function(req, res, next) {
 	var gene = req.query.gene;
-	var transfer_object = {
-		status: 0,
-		message: 'OK',
-		data: {
-			title: 'DrGap Plot',
-			x_axis: {
-				title: 'log(mutation rate)',
-				start: 0.1,
-				end: 0.1
-			},
-			y_axis: {
-				title: '-log(p-value)',
-				start: 0.1,
-				end: 0.1
-			},
-			plot_list: []
-		}
+	var transfer_object = to.default();
+	transfer_object.data = {
+		title: 'DrGap Plot',
+		x_axis: {
+			title: 'log(mutation rate)',
+			start: 0.1,
+			end: 0.1
+		},
+		y_axis: {
+			title: '-log(p-value)',
+			start: 0.1,
+			end: 0.1
+		},
+		plot_list: []
 	};
 	getConnection(function(connection) {
 		connection.query('CALL getXYPlot()', function(err, rows) {
@@ -524,24 +457,16 @@ var getMaxMin = function(plot_list) {
 };
 
 router.get('/degplot', function(req, res, next) {
-	var transfer_object = {
-		status: 0,
-		message: 'OK',
-		data: {
-			pathwayList: []
-		}
-	};
+	var transfer_object = to.default();
 
 	getConnection(function(connection) {
 		connection.query('CALL getDEGpathway()', function(err, rows) {
 			if (err) throw err;
+			transfer_object.data = {};
 			transfer_object.data.pathway_list = rows[0];
 			res.json(transfer_object);
 		});
 	});
-
-
 });
-
 
 module.exports = router;

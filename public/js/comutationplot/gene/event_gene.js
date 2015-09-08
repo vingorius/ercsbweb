@@ -34,11 +34,11 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 	}
 
 	var ascending = function(_a, _b)	{
-		return (_utils.getSumOfList(_a.list, "count") > _utils.getSumOfList(_b.list, "count")) ? 1 : -1;
+		return (_utils.getSumList(_a.list, "count") > _utils.getSumList(_b.list, "count")) ? 1 : -1;
 	}
 
 	var descending = function(_a, _b)	{
-		return (_utils.getSumOfList(_a.list, "count") < _utils.getSumOfList(_b.list, "count")) ? 1 : -1;
+		return (_utils.getSumList(_a.list, "count") < _utils.getSumList(_b.list, "count")) ? 1 : -1;
 	}
 
 	var sortingByName = function(_sorting_data)	{

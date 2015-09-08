@@ -11,11 +11,11 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 			width : size.rwidth, 
 			height : size.height 
 		}])
-		.attr("class", "needle_select_box")
+		.attr("class", "needleplot_navigation_viewarea")
 		.attr("transform", "translate(0, 0)");
 
 		var box = box_g.append("rect")
-		.attr("class", "navi_box")
+		.attr("class", "needleplot_navigation_selectedarea")
 		.attr("x", function(_d) { 
 			return _d.x + size.margin.left; 
 		})
@@ -31,7 +31,7 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 		.attr("cursor", "move");
 
 		var right_border = box_g.append("rect")
-		.attr("class", "navi_2_box_right")
+		.attr("class", "needleplot_navigation_rightarea")
 		.attr("x", function(_d)	{ 
 			return size.rwidth; 
 		})
@@ -41,7 +41,7 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 		.attr("cursor", "ew-resize");
 
 		var left_border = box_g.append("rect")
-		.attr("class", "navi_2_box_left")
+		.attr("class", "needleplot_navigation_leftarea")
 		.attr("x", 0)
 		.attr("y", 0)
 		.attr("width", size.margin.left)
@@ -83,10 +83,10 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 		.scale(_data.y)
 		.orient("left");   
 
-		var bar_group = svg.selectAll(".navibar_2_group")
+		var bar_group = svg.selectAll(".needleplot_navigation_minibargroup")
 		.data(_data.stacked)
 		.enter().append("g")
-		.attr("class", "navibar_2_group") 
+		.attr("class", "needleplot_navigation_minibargroup") 
 		.attr("transform", function(_d) { 
 			return "translate(" + _data.x(_d.position) + ", " + -size.margin.top + ")"; 
 		})
@@ -96,7 +96,7 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 			return _d.public_list; 
 		})
 		.enter().append("rect")
-		.attr("class", "stacked_hbar_navi2")
+		.attr("class", "needleplot_navigation_minibar")
 		.attr("x", 0)
 		.attr("y", function(_d) { 
 			return _data.y(_d.y + _d.count); 

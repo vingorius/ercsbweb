@@ -2,7 +2,8 @@ var NEEDLE_NAVI = "analysis/needleplot/navigation/";
 
 define(NEEDLE_NAVI + "setting_needlenavigation", ["utils", "size", NEEDLE_NAVI + "view_needlenavigation"], function(_utils, _size, _view)	{
 	return function(_data, _stacked, _ymax) 	{
-		var size = _size.definitionSize("needleplot_navigation", 10, 20, 20, 0);
+		var size = _size.initSize("needleplot_navigation", 10, 20, 20, 0);
+		size.graph_width = 20;
 		
 		_utils.removeSvg(".needleplot_navigation");
 

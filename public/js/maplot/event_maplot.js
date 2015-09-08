@@ -123,7 +123,7 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 			var table = document.querySelector("#result_body");
 
 			delTableItems(table);
-			d3.selectAll("#maplot_select_path path")
+			d3.selectAll("#maplot_select_line path")
 			.remove();
 
 			selected_circles = [];
@@ -186,7 +186,7 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 		var drawPath = function(terminator) {
 			var line = d3.svg.line();
-			var gs = d3.selectAll("#maplot_select_path");
+			var gs = d3.selectAll("#maplot_select_line");
 
 			gs.append("path")
 			.attr({ 
@@ -272,7 +272,7 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 			drawPath(true);
 			drawTable();
 
-			save_paths.push(d3.selectAll("#maplot_select_path path")[0]);
+			save_paths.push(d3.selectAll("#maplot_select_line path")[0]);
 			savedAllPaths();
 		}
 

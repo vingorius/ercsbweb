@@ -40,13 +40,13 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 			size : size, 
 			status : false 
 		}])
-		.attr("class", "gene_explain")
+		.attr("class", "comutationplot_gene_sort_label")
 		.attr("transform", "translate(" + (size.rwidth + size.margin.left * 1.5) + ", " + (size.height - 2) + ")")
 		.append("text")
 		.text("#mutations")
 		.on("click", _event.sort_by_value);
 
-		$(".gene_explain")
+		$(".comutationplot_gene_sort_label")
 		.tooltip({
 			container : "body",
 			title : "sort by mutation value",

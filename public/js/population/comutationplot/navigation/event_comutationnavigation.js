@@ -7,8 +7,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 
 		var eventClick = function()	{
 			var target = $(this)[0];
-			var type = target.id.substring(target.id.lastIndexOf("_") + 1, target.id.length);
-			var sign = (type === "up") ? 1 : -1;
+			var sign = ((/up/i).test(target.id)) ? 1 : -1;
 
 			if(((getInputValue() / 100) * sign) + getInputValue() <= 100)	{
 				return;
@@ -76,7 +75,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			d3.select(".comutationplot_sample")
 			.attr("width", _value * size.magnification);
 
-			_utils.translateXY(d3.selectAll(".comutationplot_sample_bargroup"), _x, 0, "sample", 0, false, false);
+			_utils.translateXY(d3.selectAll(".comutationplot_sample_bargroup"), _x, 0, "name", 0, false, false);
 			_utils.attributeSize(d3.selectAll(".comutationplot_sample_bars"), "width", _x, size.left_between);
 		}
 
@@ -108,7 +107,7 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 
 		var getInit = function(_d)	{
 			var vo = _VO.VO;
-			var y = _utils.ordinalScale(vo.getInitGene(), 0, (vo.getInitHeight() - vo.getInitMarginBottom()));
+			var y = _utils.ordinalScale(vo.getInitGene(), 0, vo.getInitHeight());
 			var x = _utils.ordinalScale(vo.getInitSample(), 0, vo.getInitWidth() * size.magnification);
 
 			vo.setGene(vo.getInitGene());
@@ -121,12 +120,11 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 			if(getInputValue() === 100)	{
 				changeInputValue(-1, 0);
 			}
-
 			changeInputValue(-1, (getInputValue() - 100));
 			
 			_utils.callAxis(d3.selectAll(".comutationplot_gene_yaxis"), y, "right");
 			_utils.translateXY(d3.selectAll(".comutationplot_pq_bargroup"), 0, y, 0, "gene", false, false);	
-			_utils.translateXY(d3.selectAll(".comutationplot_gene_bargroup"), 0, y, 0, "gene", false, false);
+			_utils.translateXY(d3.selectAll(".comutationplot_gene_bargroup"), 0, y, 0, "name", false, false);
 
 			$("#comutationplot_sample, #comutationplot_border, #comutationplot_groups").scrollLeft(0);
 		}

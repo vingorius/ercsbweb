@@ -61,6 +61,9 @@
 	color: #D1D1D1;
 	top: 50%;
 }
+.directionicon {
+	margin-top: -8px;
+}
 .sidebar-nav {
 	/*position: absolute;*/
 	top: 20px;

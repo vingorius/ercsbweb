@@ -4,6 +4,8 @@ var VO = "population/comutationplot/vo_comutationplot";
 define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], function(_utils, _size, _VO)	{
 	return 	function(_data) {
 		var size = _data.size;
+		var tooltip = Object.create(_utils.tooltip);
+		tooltip.div = $(".tooltip_chart");
 
 		var eventClick = function()	{
 			var target = $(this)[0];
@@ -130,19 +132,19 @@ define(COMUTS_NAVI + "event_comutationnavigation", ["utils", "size", VO], functi
 		}
 
 		var initOver = function(_d)	{
-			_utils.tooltip(this, "<b>Initialization</b>", "rgba(178, 0, 0, 0.6)");
+			tooltip.show(this, "<b>Initialization</b>", "rgba(178, 0, 0, 0.6)");
 		}
 
 		var upOver = function(_d)	{
-			_utils.tooltip(this, "<b>Scale up </br> maximun(infinity)</b>", "rgba(178, 0, 0, 0.6)");
+			tooltip.show(this, "<b>Scale up </br> maximun(infinity)</b>", "rgba(178, 0, 0, 0.6)");
 		}
 
 		var downOver = function(_d)	{
-			_utils.tooltip(this, "<b>Scale down </br> minimum(100%)</b>", "rgba(178, 0, 0, 0.6)");
+			tooltip.show(this, "<b>Scale down </br> minimum(100%)</b>", "rgba(178, 0, 0, 0.6)");
 		}
 
 		var mOut = function(_d)	{
-			_utils.tooltip();
+			tooltip.hide();
 		}
 
 		return {

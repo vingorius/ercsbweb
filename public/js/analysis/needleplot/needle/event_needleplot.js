@@ -1,9 +1,14 @@
 var NEEDLE = "analysis/needleplot/needle/";
 
 define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)    {
+	var tooltip = Object.create(_utils.tooltip);
+	tooltip.div = $(".tooltip_chart");
+
 	var eventMouseover = function(_d)   {
+		d3.event.stopPropagation();
+		d3.event.preventDefault();
+
 		var contents = "";
-		var e = d3.event;
 		var target = d3.select(this);
 		var group = target[0][0].parentNode.parentNode;
 		var source = group.parentNode;
@@ -11,10 +16,10 @@ define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)  
 
 		switch(_d.target)	{
 			case "marker" : 
-				contents = "<b>" + _d.type + "</b></br> value : " + _d.count + "</br> position : " + _d.position; 
+				contents = "<b>" + _d.type + "</b></br>" + _d.aachange + "  : " + _d.count + "</br> position : " + _d.position; 
 				break;
 			case "graph" : 
-				contents = "<b>" + _d.text + "</b></br> section : " + _d.start + " - " + _d.end; 
+				contents = "<b>" + _d.identifier + "</b></br> desc : " + _d.description + "</br> section : " + _d.start + " - " + _d.end; 
 				break;
 			case "patient" : 
 				contents = "<b>" + _d.id + "</b></br> type : " + _d.type + "</br> aachange : " + _d.aachange + "</br> position : " + _d.position; 
@@ -22,7 +27,7 @@ define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)  
 		}
 
 		_utils.frontElement(group, source);
-		_utils.tooltip(this, contents, "rgba(15, 15, 15, 0.6)");
+		tooltip.show(this, contents, "rgba(15, 15, 15, 0.6)");
 		
 		target
 		.transition().duration(200)
@@ -37,7 +42,7 @@ define(NEEDLE + "event_needleplot", ["utils", "size"], function(_utils, _size)  
 		var group = target[0][0].parentNode.parentNode;
 
 		_utils.behindElement(group, _d.child_index, group.parentNode);
-		_utils.tooltip();
+		tooltip.hide();
 
 		target
 		.transition().duration(200)

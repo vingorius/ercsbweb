@@ -1,0 +1,143 @@
+block append stylesheets
+	style.
+		.subtitle {
+			color: #23527C;
+		}
+		.sub_message {
+			float: right;
+		}
+
+div#luadModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='luadModalLabel')
+	div.modal-dialog(role='document')
+		div.modal-content
+			div.modal-header
+				button.close(type='button', data-dismiss='modal', aria-label='Close')
+					span(aria-hidden='true') ×
+				h4#luadModalLabel.modal-title Filter Background Public Data - LUAD
+			div.modal-body
+				div#accordion.panel-group(role='tablist', aria-multiselectable='true')
+					div.panel.panel-default
+						div#heading_a.panel-heading(role='tab')
+							h4.panel-title
+								a(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_a', aria-expanded='true', aria-controls='collapseOne') Expression
+								small#sub_message_a.sub_message		
+						div#collapse_a.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='heading_a')
+							div.panel-body
+								div
+									input#a_all(type='checkbox',name='a_all', value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='a_item',value='Squamoid')
+									span.sub_menu_span Squamoid
+								div
+									input(type='checkbox',name='a_item',value='Magnoid')
+									span.sub_menu_span Magnoid
+								div
+									input(type='checkbox',name='a_item',value='Bronchioid')
+									span.sub_menu_span Bronchioid
+
+					div.panel.panel-default
+						div#heading_b.panel-heading(role='tab')
+							h4.panel-title
+								a.collapsed(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_b', aria-expanded='false', aria-controls='collapse_b') Tobacco Smoking History
+								small#sub_message_b.sub_message		
+						div#collapse_b.panel-collapse.collapse(role='tabpanel', aria-labelledby='heading_b')
+							div.panel-body
+								div
+									input#B_all(type='checkbox',name='b_all',value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='b_item',value='Lifelong Non-smoker')
+									span.sub_menu_span Lifelong Non-smoker
+								div
+									input(type='checkbox',name='b_item',value='Current reformed smoker for < or = 15 years')
+									span.sub_menu_span Current reformed smoker for < or = 15 years
+								div
+									input(type='checkbox',name='b_item',value='Current reformed smoker for > 15 years')
+									span.sub_menu_span Current reformed smoker for > 15 years
+								div
+									input(type='checkbox',name='b_item',value='Current smoker')
+									span.sub_menu_span Current smoker
+								div
+									input(type='checkbox',name='b_item',value='Current Current Reformed Smoker, Duration Not Specified')
+									span.sub_menu_span Current Current Reformed Smoker, Duration Not Specified
+
+					div.panel.panel-default
+						div#heading_c.panel-heading(role='tab')
+							h4.panel-title
+								a.collapsed(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_c', aria-expanded='false', aria-controls='collapse_c') Pathology
+								small#sub_message_c.sub_message		
+						div#collapse_c.panel-collapse.collapse(role='tabpanel', aria-labelledby='heading_c')
+							div.panel-body
+								div
+									input#c_all(type='checkbox',name='c_all',value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='c_item',value='Solid predominant Adc')
+									span.sub_menu_span Solid predominant Adc
+								div
+									input(type='checkbox',name='c_item',value='Papillary predominant Adc')
+									span.sub_menu_span Papillary predominant Adc
+								div
+									input(type='checkbox',name='c_item',value='Other see comment')
+									span.sub_menu_span Other see comment
+								div
+									input(type='checkbox',name='c_item',value='NSCLC, favor Adeno')
+									span.sub_menu_span NSCLC, favor Adeno
+								div
+									input(type='checkbox',name='c_item',value='Micropapillary predom Adc')
+									span.sub_menu_span Micropapillary predom Adc
+								div
+									input(type='checkbox',name='c_item',value='Lepidic predominant Adc')
+									span.sub_menu_span Lepidic predominant Adc
+								div
+									input(type='checkbox',name='c_item',value='Colloid adenoca')
+									span.sub_menu_span Colloid adenoca
+								div
+									input(type='checkbox',name='c_item',value='Adenocarcinoma, NOS')
+									span.sub_menu_span Adenocarcinoma, NOS
+								div
+									input(type='checkbox',name='c_item',value='Acinar predominant Adc')
+									span.sub_menu_span Acinar predominant Adc
+					div.panel.panel-default
+						div#heading_d.panel-heading(role='tab')
+							h4.panel-title
+								a.collapsed(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_d', aria-expanded='false', aria-controls='collapse_d') Pathology Stage
+								small#sub_message_d.sub_message		
+						div#collapse_d.panel-collapse.collapse(role='tabpanel', aria-labelledby='heading_d')
+							div.panel-body
+								div
+									input#d_all(type='checkbox',name='d_all',value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='d_item',value='Stage I')
+									span.sub_menu_span Stage I
+								div
+									input(type='checkbox',name='d_item',value='Stage IA')
+									span.sub_menu_span Stage IA
+								div
+									input(type='checkbox',name='d_item',value='Stage IB')
+									span.sub_menu_span Stage IB
+								div
+									input(type='checkbox',name='d_item',value='Stage IIA')
+									span.sub_menu_span Stage IIA
+								div
+									input(type='checkbox',name='d_item',value='Stage IIB')
+									span.sub_menu_span Stage IIB
+								div
+									input(type='checkbox',name='d_item',value='Stage IIIA')
+									span.sub_menu_span Stage IIIA
+								div
+									input(type='checkbox',name='d_item',value='Stage IIIB')
+									span.sub_menu_span Stage IIIB
+								div
+									input(type='checkbox',name='d_item',value='Stage IV')
+									span.sub_menu_span Stage IV
+
+			div.modal-footer
+				button.btn.btn-default(type='button', data-dismiss='modal') Close
+				button#saveChanges.btn.btn-primary(type='button', data-dismiss='modal') Save changes

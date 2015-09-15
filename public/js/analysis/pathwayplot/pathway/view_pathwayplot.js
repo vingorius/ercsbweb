@@ -51,7 +51,6 @@ define(PATHWAY + "view_pathwayplot", ["utils", "size", PATHWAY + "event_pathwayp
 		if(_is_marker >= 0)	{
 			mark_name = "pathwayplot_gene_rect_target";
 			var marker = false;
-
 			// _event.twinkl(_rect, "#FFF400");
 			setInterval(function()	{
 				marker = marker ? false : true;
@@ -82,7 +81,21 @@ define(PATHWAY + "view_pathwayplot", ["utils", "size", PATHWAY + "event_pathwayp
 		return base_color;
 	}
 
+	var pathwayTitle = function(_name, _sequence_num)	{
+		// var title_group = d3.select("svg").insert("g", "g")
+		// .attr("class", "pathwayplot_title_group")
+		// .attr("transform", "translate(0, 0)");
+
+		// var title = title_group.append("text")
+		// .attr("class", "pathwayplot_title")
+		// .text(function()	{
+		// 	return _name + " ( " + _sequence_num + " )";
+		// })
+		console.log(_name, _sequence_num);
+	}
+
 	var view = function(_data)	{
+		pathwayTitle(_data.data.cancer_type, _data.data.seq);
 		getInfoForRect(_data.g, _data.data.pathway_list, _data.data.gene_list);
 	}
 

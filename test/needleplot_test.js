@@ -33,12 +33,12 @@ describe('Needle Plot Test Suite', function() {
             .end(function(err, res) {
                 if (err) return done(err);
                 var transfer_object = res.body;
-                //console.log(transfer_object.data.graph);
+                // console.log(transfer_object.data.graph);
                 assert.equal('OK', transfer_object.message);
                 assert.equal('EGFR', transfer_object.data.name);
                 assert.equal(91, transfer_object.data.public_list.length);
                 assert.equal(2, transfer_object.data.patient_list.length);
-                assert.equal(1, transfer_object.data.graph.length);
+                assert.equal(5, transfer_object.data.graph.length);
                 done();
             });
     });

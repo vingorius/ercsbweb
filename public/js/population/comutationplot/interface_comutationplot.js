@@ -148,10 +148,6 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 		vo.setGene(gene_names);
 		var mutations = getOnlyMutations(_data.data.mutation_list);
 		vo.setFormatedData(getOnlyGeneSampleData(_data.data.mutation_list));
-		_data.data.group_list.sort(function(_a, _b)	{
-			var rtn = _a.name.length < _b.name.length ? -1 : 1;
-			return rtn;
-		});
 		var exclusive_defalut_grouping = _sort.grouping(_data.data.group_list, vo.getFormatedData().sample);
 		var looped_group = loopingGroup(exclusive_defalut_grouping);
 		var sample_names = getOnlyGeneSampleName("sample", looped_group);
@@ -174,5 +170,12 @@ define(COMUTS_INTER, [ "utils", VO, GROUP + "setting_group", COMUTATION + "setti
 			type : "generic mutation",
 			chart : "comutation",
 		});
+
+		$("#testbutton")
+		.on("click", function()	{
+			console.log(_data, _data.data, _data.data.name)
+			_utils.downloadImage("comutation", "png");
+			_utils.downloadImage("comutation", "pdf");
+		})
 	};
 });

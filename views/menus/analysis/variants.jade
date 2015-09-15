@@ -1,115 +1,120 @@
 extends ../../layout/analysislayout
 block append stylesheets
-    link(rel='stylesheet', href='/bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css')
-    link(rel='stylesheet', href='/bower_components/bootstrap-table/dist/bootstrap-table.min.css')
-    link(rel='stylesheet', href='/stylesheets/chart/chart.css')
-    link(rel='stylesheet', href='/stylesheets/analysis/needleplot.css')
-    style.
-        .slider.slider-horizontal{
-            width: 150px;
-        }
-        #ex1Slider .slider-selection {
-            background: #BABABA;
-        }
-        #ex1Slider .slider-handle  {
-            background: #337AB7;
-        }
-        .box_container {
-            margin-top: 15px;
-        }
-        .box_main_title {
-            color: #286090;
-            font-size: 18px;
-        }
-        .box_title {
-            color: #286090;
-            font-size: 16px;
-        }
-        .highlight{
-            background-color: red
-        }        
+	link(rel='stylesheet', href='/bower_components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css')
+	link(rel='stylesheet', href='/bower_components/bootstrap-table/dist/bootstrap-table.min.css')
+	link(rel='stylesheet', href='/stylesheets/chart/chart.css')
+	link(rel='stylesheet', href='/stylesheets/analysis/needleplot.css')
+	style.
+		.slider.slider-horizontal{
+			width: 150px;
+		}
+		#ex1Slider .slider-selection {
+			background: #BABABA;
+		}
+		#ex1Slider .slider-handle  {
+			background: #337AB7;
+		}
+		.box_container {
+			margin-top: 15px;
+		}
+		.box_main_title {
+			color: #286090;
+			font-size: 18px;
+		}
+		.box_title {
+			color: #286090;
+			font-size: 16px;
+		}
+		.highlight{
+			background-color: red
+		}        
 block rightcontent
-    div(style={'margin-top':'30px'}) 
-        div.col-lg-2(style={'line-height': '28px'}) 
-            div.box_container
-                div
-                    input#sample_id(type='hidden',value='#{sample.id}')
-                    input#cancer_type(type='hidden',value='#{sample.type}')
-                //- i.fa.fa-caret-right
-                h4 Frequency
-                    //- i.fa.fa-question.text-right(style={'padding-left': '28px','font-size': '12px'})
-                div
-                    input#ex1(data-slider-id='ex1Slider', type='text', data-slider-min='0', data-slider-max='10', data-slider-step='1', data-slider-value='0')
-            div.box_container
-                //- i.fa.fa-caret-right
-                h4 Classification            
-                div
-                    input#classification_all(type='checkbox',value='All',checked)
-                    span.sub_menu_span All
-                hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
-                div
-                    input(type='checkbox',name='classification',value='Nonsense_Mutation')
-                    span.sub_menu_span Nonsense
-                div
-                    input(type='checkbox',name='classification',value='Splice_Site')
-                    span.sub_menu_span Splice Site
-                div
-                    input(type='checkbox',name='classification',value='Translation_Start_Site')
-                    span.sub_menu_span Translation Start Site
-                div
-                    input(type='checkbox',name='classification',value='Missense_Mutation')
-                    span.sub_menu_span Missense
-                div
-                    input(type='checkbox',name='classification',value='Nonstop_Mutation')
-                    span.sub_menu_span Nonstop
-                div
-                    input(type='checkbox',name='classification',value='Frame_Shift_Ins,Frame_Shift_Del')
-                    span.sub_menu_span INDEL(Frame Shift)
-                div
-                    input(type='checkbox',name='classification',value='In_Frame_Ins,In_Frame_Del')
-                    span.sub_menu_span INDEL(In Frame)
-                div
-                    input(type='checkbox',name='classification',value='RNA,lincRNA')
-                    span.sub_menu_span RNA,lincRNA
-                div
-                    input(type='checkbox',name='classification',value='Silent')
-                    span.sub_menu_span Silent
-            div.box_container
-                //- i.fa.fa-caret-right
-                h4 In Cancer Genes            
-                div
-                    input(type='checkbox',name='cosmic',checked)
-                    span.sub_menu_span COSMIC
-                //- div
-                //-     input(type='radio',name='c')
-                //-     span.sub_menu_span HGMD
-            div.box_container
-                button#filterButton.btn.btn-primary(type='button',style={'margin-left': '28px'}) 
-                    span.glyphicon.glyphicon-refresh
-                    span  Filter
-        div.col-lg-10
-            div
-                table#table
-                //- table#table('data-url'='/models/patient/getSampleVariantList?sample_id=#{sample.id}&cancer_type=#{sample.type}')
+	div(style={'margin-top':'30px'}) 
+		div.col-lg-2(style={'line-height': '28px'}) 
+			div.box_container
+				div
+					input#sample_id(type='hidden',value='#{sample.id}')
+					input#cancer_type(type='hidden',value='#{sample.type}')
+				//- i.fa.fa-caret-right
+				h4 Frequency
+					small  in Total
+					//- i.fa.fa-question.text-right(style={'padding-left': '28px','font-size': '12px'})
+				div
+					input#ex1(data-slider-id='ex1Slider', type='text', data-slider-min='0', data-slider-max='10', data-slider-step='1', data-slider-value='0')
+					span#ex1text(style={'margin-left': '10px'}) 0
+			div.box_container
+				//- i.fa.fa-caret-right
+				h4 Classification            
+				div
+					input#classification_all(type='checkbox',value='All',checked)
+					span.sub_menu_span All
+				hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+				div
+					input(type='checkbox',name='classification',value='Nonsense_Mutation')
+					span.sub_menu_span Nonsense
+				div
+					input(type='checkbox',name='classification',value='Splice_Site')
+					span.sub_menu_span Splice Site
+				div
+					input(type='checkbox',name='classification',value='Translation_Start_Site')
+					span.sub_menu_span Translation Start Site
+				div
+					input(type='checkbox',name='classification',value='Missense_Mutation')
+					span.sub_menu_span Missense
+				div
+					input(type='checkbox',name='classification',value='Nonstop_Mutation')
+					span.sub_menu_span Nonstop
+				div
+					input(type='checkbox',name='classification',value='Frame_Shift_Ins,Frame_Shift_Del')
+					span.sub_menu_span INDEL(Frame Shift)
+				div
+					input(type='checkbox',name='classification',value='In_Frame_Ins,In_Frame_Del')
+					span.sub_menu_span INDEL(In Frame)
+				div
+					input(type='checkbox',name='classification',value='RNA,lincRNA')
+					span.sub_menu_span RNA,lincRNA
+				div
+					input(type='checkbox',name='classification',value='Silent')
+					span.sub_menu_span Silent
+			div.box_container
+				//- i.fa.fa-caret-right
+				h4 In Cancer Genes            
+				div
+					input(type='checkbox',name='cosmic',checked)
+					span.sub_menu_span COSMIC
+				//- div
+				//-     input(type='radio',name='c')
+				//-     span.sub_menu_span HGMD
+			div.box_container
+				button#filterButton.btn.btn-primary(type='button',style={'margin-left': '20px'}) 
+					span.glyphicon.glyphicon-refresh
+					span  Filter Sample
+		div.col-lg-10
+			div
+				table#table
+				//- table#table('data-url'='/models/patient/getSampleVariantList?sample_id=#{sample.id}&cancer_type=#{sample.type}')
 
-            div
-                div
-                    h4#needleplot-title
-                div.loading(style={ "display" : "none" }) 
-                    span#loading_text
-                    div.double-bounce1
-                    div.double-bounce2
-                div.container.chart_container(style={'width' : '1200px', 'margin-left' : 'auto', 'margin-right' : 'auto', 'padding-top' : '50px'})
-                    div.row
-                        div#needleplot_view(style={'padding': '0px', 'margin': '0px', 'width': '1000px', 'height': '400px', 'overflow' : 'hidden', "float" : 'left'})
-                        div#needleplot_legend(style={'padding': '0px', 'margin': '0px', 'width': '200px', 'height': '200px', 'overflow' : 'hidden', 'float' : "left"})
-                    div.row
-                        div#needleplot_navigation(style={'padding': '0px', 'width': '1000px', 'height': '70px', 'background-color' : '#FCFCFC'})
-    div.tooltip_chart(style={ "display" : "none" })
+			div
+				div
+					h4#needleplot-title
+				div.loading(style={ "display" : "none" }) 
+					span#loading_text
+					div.double-bounce1
+					div.double-bounce2
+				div.container.chart_container(style={'visibility' : 'hidden', 'width' : '1200px', 'margin-left' : 'auto', 'margin-right' : 'auto'})
+					div.row
+						div#needleplot_view(style={'padding': '0px', 'margin': '0px', 'width': '1000px', 'height': '400px', 'overflow' : 'hidden', "float" : 'left'})
+						div#needleplot_legend(style={'padding': '0px', 'margin': '0px', 'width': '200px', 'height': '200px', 'overflow' : 'hidden', 'float' : "left"})
+					div.row
+						div#needleplot_navigation(style={'padding': '0px', 'width': '1000px', 'height': '70px', 'background-color' : '#FCFCFC'})
+						//- div
+						//- 	button#testbutton(type='button', value='test') draw_test
+	div.tooltip_chart(style={ "display" : "none" })
 
 block append scripts
-    script(src='/bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
-    script(src='/bower_components/bootstrap-table/dist/bootstrap-table.min.js')
-    script(src='/js/analysis/variant.js')
-    script(src='/js/chart/init.js')
-    script(src='/bower_components/requirejs/require.js')
+	script(src='/bower_components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js')
+	script(src='/bower_components/bootstrap-table/dist/bootstrap-table.min.js')
+	script(src='/js/analysis/bg_public.js')
+	script(src='/js/analysis/variant.js')
+	script(src='/js/chart/init.js')
+	//- script(src='/bower_components/requirejs/require.js')

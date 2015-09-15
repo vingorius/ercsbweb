@@ -41,11 +41,9 @@ define( "router", [ "utils", ANALYSIS_NEEDLE, MUTATIONALLANDSCAPE_COMUTATION, AN
 		.done(function(_res)	{
 			_callback(_res);
 			getFunction(_chartName)(_res);
-		
-			if(document.querySelector(".chart_container") !== null)	{
-				_utils.loading(null, ".chart_container").end(); 
-			}
-		});
+
+		});		
+		_utils.loading(null, ".chart_container").end();
 	}
 
 	return function(_chartName, _dataUrl)	{

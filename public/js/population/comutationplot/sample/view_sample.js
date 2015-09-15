@@ -49,10 +49,16 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.orient("left")
 		.tickValues([0, _data.max / 2, _data.max]);
 
-		svg.append("g")
+		var yaxis = svg.append("g")
 		.attr("class", "comutationplot_sample_yaxis")
 		.attr("transform", "translate(" + (size.width - (size.margin.left / 2)) + ", 0)")
 		.call(yAxis);
+
+		yaxis.selectAll("text")
+		.style("fill", "#626262").style("font-size", "8px");
+
+		yaxis.selectAll("path, line")
+		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1px").style("shape-rendering", "crispEdges");
 
 		svg.append("g")
 		.data([{ 
@@ -64,6 +70,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.attr("transform", "translate(" + size.margin.left + ", " + (size.height - size.margin.left / 2) + ")")
 		.append("text")
 		.text("#mutation count")
+		.style("fill", "#626262").style("font-size", "11px").style("font-weight", "bold").style("font-style", "italic")
 		.on("mouseover", _event.e_over)
 		.on("mouseout", function()	{
 			_event.m_out(this, "bar");

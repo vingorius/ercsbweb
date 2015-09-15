@@ -7,25 +7,32 @@ block append stylesheets
 			margin-left: 10px;
 		}
 		.selected_sample {
-			margin-left: 10px;
+			margin-left: 0px;
 			margin-right: 10px;
 			margin-top: 20px;
-			padding: 8px;
+			//- padding: 8px;
 			//- border-radius: 5px;
 			color: #777;
 		}
 		.sample{
 			font-size: 16px;
 		}
-
+		.tooltip-inner  {
+		    white-space:pre;
+		    max-width:none;
+		}
 if(sample)        
 	block leftmenu
-		p.selected_sample
-			span(style={'font-style':'italic'}) Sample : 
-			a.sample(href='/menus/') #{sample.id} (#{sample.type})
 		//- p.selected_sample
-		//-     i.glyphicon.glyphicon-user(style={'color':'#2878BF'})
-		//-     |  Pat99
+		div.row.selected_sample
+			div.col-md-6
+				span(style={'font-style':'italic'})
+				a.sample(href='/menus/') #{sample.id}, #{sample.type}
+			div.col-md-6
+				a(href='#', data-toggle='modal', data-target='##{sample.type}Modal')
+					i.fa.fa-database.fa-fw(data-toggle='tooltip',data-placement='right',title='Filter Public Data')
+					p#bg_public_data_menu_str(style={'float':'right'}) 
+					p#checkeditems(style={'float':'right','display':'none'}) #{sample.checkeditems}
 		hr
 		p.sub_title
 			strong
@@ -100,7 +107,6 @@ if(sample)
 					i.fa.fa-bed.fa-fw
 					span.sub_menu_span  Clinical Selected            
 					span.caret
-					//- i.glyphicon.glyphicon-chevron-down
 				ul#clinical.nav.nav-stacked.collapse(style='', aria-expanded='true')
 					li
 						a(href='/menus/population/vital')
@@ -118,7 +124,6 @@ if(sample)
 						a(href='/menus/population/treatment')
 							i.fa.fa-plus-square.fa-fw
 							span.sub_menu_span  Treatment        
-
 else        
 	block leftmenu
 		a.sample(href='/menus/') Select Sample

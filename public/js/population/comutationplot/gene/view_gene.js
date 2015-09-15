@@ -14,20 +14,31 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.scale(_data.y)
 		.orient("right");
 
-		svg.append("g")
+		var xaxis = svg.append("g")
 		.attr("class", "comutationplot_gene_xaxis")
 		.attr("transform", "translate(0, " + (size.height - size.margin.bottom) + ")")
 		.call(xAxis);
 
-		svg.append("g")
+		var yaxis = svg.append("g")
 		.attr("class", "comutationplot_gene_yaxis")
 		.attr("transform", "translate(" + (size.width - size.margin.right) + ", 0)")
 		.call(yAxis)
-		.selectAll("text")
+
+		xaxis.selectAll("text")
+		.style("font-size", "8px").style("fill", "#626262");
+
+		yaxis.selectAll("text")
+		.style("font-size", "8px").style("fill", "#626262")
 		.on("mouseover", _event.axisOver)
 		.on("mouseout", function()	{
 			_event.mouseout(this, "axis");
 		});
+
+		yaxis.selectAll("path, line")
+		.style("fill", "none").style("stroke", "none");
+
+		xaxis.selectAll("path, line")
+		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1px").style("shape-rendering", "crispEdges");
 
 		var bar_group = svg.selectAll(".comutationplot_gene_bargroup")
 		.data(_data.data)
@@ -51,18 +62,14 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 			_event.mouseout(this, "bar");
 		})
 		.attr("x", function(_d) { 
-			_d.x = _data.x; 
-			return _d.x(_d.start + _d.count); 
+			return _data.x(_d.start + _d.count); 
 		})
-		.attr("y", function(_d) { 
-			_d.y = _data.y; 
-			return 0; 
-		})
+		.attr("y", 0)
 		.attr("width", function(_d) { 
-			return ((size.width - size.margin.right) - _d.x(_d.count)); 
+			return ((size.width - size.margin.right) - _data.x(_d.count)); 
 		})
 		.attr("height", function(_d) { 
-			return _d.y.rangeBand() / 1.2; 
+			return _data.y.rangeBand() / 1.1; 
 		});
 	}
 
@@ -80,6 +87,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")")
 		.append("text")
 		.text("#sample count")
+		.style("fill", "#626262").style("font-size", "11px").style("font-weight", "bold").style("font-style", "italic")
 		.on("mouseover", _event.explainOver)
 		.on("mouseout", function()	{
 			_event.mouseout(this, "explain");

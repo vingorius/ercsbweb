@@ -2,14 +2,10 @@ $(function() {
 	$('#ex1').slider({
 		tooltip: 'show',
 		tooltip_position: 'bottom',
-		step: 0.5,
 		formatter: function(value) {
 			//- return 'Current value: ' + value;
 			return value;
 		}
-	});
-	$("#ex1").on("slide", function(slideEvt) {
-		$("#ex1text").text(slideEvt.value);
 	});
 	$('#classification_all').click(function() {
 		// console.log(this.checked);
@@ -42,29 +38,31 @@ $(function() {
 	};
 
 	var table = $('#table');
+
 	table.bootstrapTable({
-		url: '/models/patient/getSampleVariantList',
+		// url: '/models/patient/getSampleVariantList',
 		classes: 'table',
-		method: 'get',
-		cache: false, // False to disable caching of AJAX requests.
+		// method: 'get',
+		cache: true, // False to disable caching of AJAX requests.
 		// showColumns: true,
 		// showRefresh: true,
 		// sortName: 'gene',
 		// sortName: 'patientsOfPosition',
 		// sortable: true,
 		// sortOrder: 'desc',
+		//ajax: ajaxRequest,
+		//sidePagination: 'server', // 이부분이 없으면 ajax 콜이 이루어지지 않는다.
 		pagination: true,
 		pageSize: 5,
-		queryParams: function(params) {
-			params.sample_id = $('#sample_id').val();
-			params.cancer_type = $('#cancer_type').val();
-			params.frequency = $('#ex1').val();
-			params.bg_count = bg_public.getFilteredCount();
-			params.classification = getClassificationParameter();
-			params.cosmic = $('input[type=checkbox][name=cosmic]').prop('checked') ? 'Y' : 'N';
-			// console.log('params:', params);
-			return params;
-		},
+		// queryParams: function(params) {
+		// 	params.sample_id = $('#sample_id').val();
+		// 	params.cancer_type = $('#cancer_type').val();
+		// 	params.frequency = $('#ex1').val();
+		// 	params.classification = getClassificationParameter();
+		// 	params.cosmic = $('input[type=checkbox][name=cosmic]').prop('checked') ? 'Y' : 'N';
+		// 	console.log('params:', params);
+		// 	return params;
+		// },
 		rowStyle: function(row, index) { // make first row active
 			if (index === 0) return {
 				classes: 'info'
@@ -150,26 +148,50 @@ $(function() {
 			align: 'center',
 		}]
 	});
-	table.on('load-success.bs.table', function(_event, _data, _args) {
-		if (_data === undefined || _data.length === 0) {
-			// Remove previous chart...
-			$("div[id^=needleplot]").css("display", "none");
-			return;
-		}
 
-		$('[data-toggle="tooltip"]').tooltip();
-		$("div[id^=needleplot]").css("display", "block");
-		var data = _data[0];
 
-		// params.classification = getClassificationParameter();
-		console.log('filtered',bg_public.getFiltered());
+	// custom your ajax request here
+	function ajaxRequest() {
+		$.ajax({
+				method: "GET",
+				url: "/models/patient/getSampleVariantList",
+				data: {
+						sample_id : $('#sample_id').val(),
+						cancer_type : $('#cancer_type').val(),
+						frequency : $('#ex1').val(),
+						classification : getClassificationParameter(),
+						cosmic : 'N'//$('input[type=checkbox][name=cosmic]').prop('checked') ? 'Y' : 'N',
+				}
+			})
+			.done(function(data) {
+				 $('#table').bootstrapTable('load', data);
+			})
+			.fail(function(data) {
+				alert('fail', data);
+			});
+	}
 
-		Init.requireJs(
-			"analysis_needle",
-			"/rest/needleplot?cancer_type=" + data.cancer_type + "&sample_id=" + data.sample_id + "&gene=" + data.gene + "&transcript=" + data.transcript + "&classification=" + getClassificationParameter()
-		);
-		//http://192.168.191.159/rest/needleplot?cancer_type=luad&sample_id=Pat99&gene=EGFR&transcript=ENST00000275493
-	});
+	ajaxRequest();
+	// table.on('load-success.bs.table', function(_event, _data, _args) {
+	// 	if (_data === undefined || _data.length === 0) {
+	// 		// Remove previous chart...
+	// 		$("div[id^=needleplot]").css("display", "none");
+	// 		return;
+	// 	}
+	//
+	// 	$('[data-toggle="tooltip"]').tooltip();
+	// 	$("div[id^=needleplot]").css("display", "block");
+	// 	var data = _data[0];
+	//
+	// 	// params.classification = getClassificationParameter();
+	//
+	//
+	// 	Init.requireJs(
+	// 		"analysis_needle",
+	// 		"/rest/needleplot?cancer_type=" + data.cancer_type + "&sample_id=" + data.sample_id + "&gene=" + data.gene + "&transcript=" + data.transcript + "&classification=" + getClassificationParameter()
+	// 	);
+	// 	//http://192.168.191.159/rest/needleplot?cancer_type=luad&sample_id=Pat99&gene=EGFR&transcript=ENST00000275493
+	// });
 
 	//
 	table.on('click-row.bs.table', function(_event, _data, _args) {

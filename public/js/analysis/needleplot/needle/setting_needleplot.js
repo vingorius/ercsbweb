@@ -7,6 +7,40 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 		var size = _size.initSize("needleplot_view", 20, 40, 20, 0);
 		size.graph_width = 20;
 
+		// var filtered = function()	{
+		// 	var global_filtered_data = JSON.parse(localStorage.FILTERED);
+			
+		// 	_data.data.public_list = _data.data.public_list.filter(function(_d)	{
+		// 		return _utils.getObject(_d.id, global_filtered_data, "patient_id");
+		// 	});
+
+		// 	console.log("Filtered sample data : ", _data.data.public_list);
+		// }
+
+		var checkProtein = function()	{
+			var warning = $("#needleplot_view");
+			var visible_set = $("#needleplot_navigation, #needleplot_legend");
+
+			if(warning.text().length > 0)	{
+				warning.text("");
+			}
+			
+			if(Object.keys(_data.data.graph).length === 0)	{
+				console.log("No data");
+				visible_set.css("visibility", "hidden");
+
+				warning
+				.text("No protein domain information.")
+				.css("font-size", "25px")
+				.css("padding-top", "100px")
+				.css("text-align", "center");
+				return;
+			}
+			else {
+				visible_set.css("visibility", "visible");
+			}
+		}
+
 		var getSamePositionList = function(_public_list)    {
 			var result = [];
 
@@ -36,23 +70,61 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 		var reformData = function()    {
 			var same_pos_list = getSamePositionList(_data.data.public_list || _data.data.sample_list);
 			var result = [];
+			var result2 = [];
+			var aachange_array = [];
 
 			for(var i = 0, len = same_pos_list.length ; i < len ; i++)	{
 				var item = same_pos_list[i];
 				var obj = _utils.getObjectArray(item, _data.data.public_list || _data.data.sample_list, "position");
 				var sub_result = [];
+				
+				aachange_array.push(typeSet(obj));
 
 				for(var j = 0, leng = obj.length ; j < leng ; j++)	{
 					var jtem = obj[j];
 
 					sub_result = reformJson(jtem, sub_result);
 				}
+				result2.push({ 
+					position : item, 
+					public_list : typeSet(obj)
+				});
 				result.push({ 
 					position : item, 
 					public_list : sub_result
 				});
 			}
-			return makeStack(result);
+
+			// console.log(result, aachange_array);
+			// console.log(makeStack(result2))
+			// console.log(result, result2);
+			return makeStack(result2);
+
+			// return makeStack(result);
+		}
+
+		var typeSet = function(_obj)	{
+			var result = [];
+
+			for(var i = 0, len = _obj.length ; i < len ; i++)	{
+				var item = _obj[i];
+				var is_aachange = _utils.getObject(item.aachange, result, "aachange");
+				var is_type = _utils.getObject(item.type, result, "type");
+
+				if(is_aachange && is_type)	{
+					is_aachange.count += 1;
+				}
+				else {
+					result.push({
+						id : item.id,
+						type : item.type,
+						position : item.position,
+						aachange : item.aachange,
+						count : 1
+					});
+				}
+			}
+			return result;
 		}
 
 		var reformJson = function(_e, _result)   {
@@ -76,6 +148,34 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 			return result;
 		}
 
+		var aachangeObj = function(_typeset)	{
+			var result = [];
+
+			for(var i = 0, len = _typeset.length ; i < len ; i++)	{
+				var item = _typeset[i];
+
+				for(var j = 0, leng = item.aachange.length ; j < leng ; j++)	{
+					var aachange = item.aachange[j];
+					var id = item.id[j];
+					var is_aachange = _utils.getObject(aachange, result, "aachange");
+
+					if(!is_aachange)	{
+						result.push({
+							id : id,
+							type : item.type,
+							position : item.position,
+							aachange : aachange,
+							count : 1
+						});
+					}
+					else {
+						is_aachange.count += 1;
+					}
+				}
+			}
+			return result;
+		}
+
 		var makeStack = function(_array)  {
 			for(var i = 0, len = _array.length ; i < len ; i++)	{
 				var item = _array[i];
@@ -87,7 +187,7 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 						jtem.y = 0;
 					}
 					else {
-						jtem.y = item.public_list[j - 1].count - item.public_list[j - 1].y;
+						jtem.y = item.public_list[j - 1].count + item.public_list[j - 1].y;
 					}
 				}
 			}
@@ -125,6 +225,8 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 
 			return (12 * fontsize_per).toFixed(0) + "px";
 		}
+		checkProtein();
+		// filtered();
 
 		var ymax = getMaximumY();
 		var stacked = reformData();
@@ -149,5 +251,11 @@ define(NEEDLE + "setting_needleplot", ["utils", "size", NEEDLE + "view_needleplo
 			fontsize : setFontSize
 		});
 		_setting_navigation(_data, stacked, ymax);
+
+		$("#testbutton")
+		.on("click", function()	{
+			_utils.downloadImage("variants", "png");
+			_utils.downloadImage("variants", "pdf");
+		})
 	}
 });

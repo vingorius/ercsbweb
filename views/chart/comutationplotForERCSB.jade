@@ -3,6 +3,8 @@ extends ../layout/basiclayout
 block content
 	div.container.chart_container(style={"margin" : "20px", "width" : "1590px"})
 		div
+			button#testbutton(type='button', value='test') draw_test
+		div
 			div#comutationplot_sample_yaxis_title(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
 			div#comutationplot_sample(style={'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1200px', 'height': '100px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
 			div#comutationplot_empty_rm(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', "height" : "100px"})
@@ -37,10 +39,12 @@ block content
 block append scripts
 	script(src='/bower_components/canvg-gabelerner/StackBlur.js')
 	script(src='/bower_components/canvg-gabelerner/rgbcolor.js')
+	script(src='http://gabelerner.github.io/canvg/canvg.js')
 	script(src='/bower_components/imagesloaded/imagesloaded.pkgd.js')
 	script(src='/js/chart/init.js')
 	script(src='/bower_components/requirejs/require.js')
 	script(src='/js/chart/start.js', onload='init_comutationplot("ERCSB")')
+block require
 block append stylesheets
 	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')
 	link(rel='stylesheet', href='/stylesheets/chart/chart.css')

@@ -126,6 +126,7 @@ define(LEGEND + "view_legend", ["utils", "size", LEGEND + "event_legend"], funct
 
 		var svg = d3.select("#" + _data.id)
 		.append("svg")
+		.attr("id", _data.id + "_svg")
 		.attr("class", _data.id)
 		.attr("width", size.width)
 		.attr("height", size.height)
@@ -152,6 +153,9 @@ define(LEGEND + "view_legend", ["utils", "size", LEGEND + "event_legend"], funct
 
 		var text = legendGroup.append("text")
 		.attr("class", "legend_text")
+		.style("font-size", "12px")
+		.on("mouseover", _event.mouseover)
+		.on("mouseout", _event.mouseout)
 		.attr("x", function(_d) { 
 			return _data.arranged(_d.name, "text", _data.size_set, size).x; 
 		})
@@ -160,9 +164,7 @@ define(LEGEND + "view_legend", ["utils", "size", LEGEND + "event_legend"], funct
 		})
 		.text(function(_d) { 
 			return _d.name; 
-		})
-		.on("mouseover", _event.mouseover)
-		.on("mouseout", _event.mouseout);
+		});
 	}
 	return {
 		view : view

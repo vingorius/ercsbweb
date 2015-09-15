@@ -12,7 +12,7 @@ define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_c
 		_VO.VO.setInitMarginLeft(size.margin.left);
 		_VO.VO.setInitMarginRight(size.margin.right);
 
-		_VO.VO.setWidth(size.width);
+		_VO.VO.setWidth(size.width - 2);
 		_VO.VO.setHeight(size.height);
 		_VO.VO.setMarginTop(size.margin.top);
 		_VO.VO.setMarginBottom(size.margin.bottom);

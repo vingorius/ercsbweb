@@ -3,6 +3,9 @@ var SORT = "population/comutationplot/sort_comutationplot";
 var VO = "population/comutationplot/vo_comutationplot";
 
 define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _size, _VO, _sort)	{
+	var tooltip = Object.create(_utils.tooltip);
+	tooltip.div = $(".tooltip_chart");
+
 	var getSampleName = function(_group)	{
 		var result = [];
 
@@ -43,7 +46,7 @@ define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _siz
 	}
 
 	var nameMouseover = function(_this, _name, _data)	{			
-		_utils.tooltip(_this, 
+		tooltip.show(_this, 
 			"<b>Clinical " + _name + "</b></br>sample : "  + _data.sample 
 			+ "</br>value : " + (!_data.value ? "NA" : _data.value), "rgba(15, 15, 15, 0.6)");
 
@@ -54,7 +57,7 @@ define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _siz
 	}
 
 	var explainMouseover = function(_d)	{
-		_utils.tooltip(
+		tooltip.show(
 			this, "<b>" + _d.name + "</b></br>click to sort </br>alt + click add to key",
 			"rgba(178, 0, 0, 0.6)");
 	}
@@ -68,7 +71,7 @@ define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _siz
 			})
 			.style("stroke-width", 0);
 		}
-		_utils.tooltip();
+		tooltip.hide();
 	}
 
 	return 	{

@@ -203,11 +203,9 @@ define("utils", [], function()  {
 		var value = _value || "";
 
 		return {
-			// CNV
-			"Amplification" : "#FFBDE0",
+			"Amplification" : "#FFBDE0",					// CNV
 			"Homozygous_Deletion" : "#BDE0FF",
-			// Somatic mutation
-			"Nonsense_mutation" : "#EA3B29",
+			"Nonsense_mutation" : "#EA3B29",			// Somatic mutation
 			"Splice_Site" : "#800080",
 			"Translation_Start_Site" : "#aaa8aa",
 			"Missense_mutation" : "#3E87C2",
@@ -216,40 +214,55 @@ define("utils", [], function()  {
 			"In_frame_indel" : "#F2EE7E",
 			"RNA" : "#ffdf97",
 			"Silent" : "#5CB755",
-			// P & Q value
-			"pq" : "#C2C4C9",
-			// Pca plot
-			"Primary Solid Tumor" : "#F64747",
+			"pq" : "#C2C4C9",								// P & Q value
+			"Primary Solid Tumor" : "#F64747",			// Pca plot
 			"Solid Tissue Normal" : "#446CB3",
-			// Deg plot
-			"si_log_p" : "#ea3b29",
+			"si_log_p" : "#ea3b29",						// Deg plot
 			"si_up_log_p" : "#5cb755",
 			"si_down_log_p" : "#3e87c2"
 		}[value];
 	}
 
-	var tooltip = function(_element, _contents, _rgba)   {
-		var div = $('.tooltip_chart');
+	var tooltip = {
+		show : function(_element, _contents, _rgba)	{
+			var client = _element.getBoundingClientRect();
+			
+			this.div
+			.css("left", client.left + client.width)
+			.css("top", client.top + client.height)
+			.css("position", "absolute")
+			.css("background-color", _rgba)
+			.html(_contents)
+			.show();
+		},
+		hide : function(_is_interactive)	{
+			var that = this.div;
 
-		if(arguments.length < 1) {
-			div.empty();
-			div.hide();
-			return;
-		}
-		else   {
-			if(!_element.tagName)	{
-				div.css("left", _element.x);
-				div.css("top", _element.y);
+			if(!_is_interactive)	{
+				if(!that)	{
+					return;
+				}
+				else {
+					that.hide();
+				}
 			}
 			else {
-				var client = _element.getBoundingClientRect();
-				div.css("left", client.left + client.width);
-				div.css("top", client.top + client.height);
+				console.log("pathway", that)
+				that = $(".tooltip_chart");
+
+				var timeout = setTimeout(function()	{
+					that.hide();
+				}, 1500);
+
+				that
+				.on("mouseover", function()	{
+					clearTimeout(timeout);
+					that.show();
+				})
+				.on("mouseout", function()	{
+					that.hide();
+				});
 			}
-			div.html(_contents);		
-			div.css("position", "absolute");
-			div.css("background-color", _rgba);
-			div.show();
 		}
 	}
 
@@ -266,6 +279,141 @@ define("utils", [], function()  {
 		a.download = _name;
 		a.href = _url;
 		a.dispatchEvent(html_event);		
+	}
+
+	var downloadImage = function(_name, _type)	{
+		var data = getImageURL();
+
+		switch(true)	{
+			case (/png/i).test(_type) : 
+				download(_name + ".png", data.data);
+				break;
+			case (/pdf/i).test(_type) : 
+				var pdf = new jsPDF("l", "px", [ data.height, data.width ]);
+				pdf.addImage(data.data, 0, 0, data.width, data.height);
+				pdf.save(_name + ".pdf");
+				break;
+			default : 
+				break; 
+		}
+	}
+
+	var getImageURL = function()	{
+		var svg = $("svg");
+		var width = widthForDownCanvas(svg);
+		var height = heightForDownCanvas(svg);
+		var canvas = document.createElement("canvas");
+		canvas.width = width.width;
+		canvas.height = height.height;
+		var init_left, pre_horizontal, left;
+
+		for(var i = 0, len = svg.length ; i < len ; i++)	{
+			var context = canvas.getContext("2d");
+			var item = svg[i];
+			var loc = item.getBoundingClientRect();
+			var source = (new XMLSerializer).serializeToString(item);
+
+			if(!init_left) {
+				pre_horizontal = loc;
+				init_left = loc.left;
+				left = loc.left;
+			}
+			else {
+				if(loc.left === init_left)	{
+					left = init_left;	
+				}
+				else {
+					left = pre_horizontal.width + pre_horizontal.left;
+				}
+				pre_horizontal = loc;	
+			}
+
+			if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
+				source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+			}
+			if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
+				source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
+			}
+			source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
+
+			var url = "data:image/svg+xml;base64,"+ encodeURIComponent(btoa(source));
+			var img = new Image();
+			img.src = url;
+
+			context.drawImage(img, left - width.margin, loc.top - height.margin);
+		}
+		return {
+			data : canvas.toDataURL('image/png'),
+			width : canvas.width,
+			height : canvas.height
+		};
+	}
+
+	var widthForDownCanvas = function(_svg)	{
+		var now = 0;
+		var old = 0;
+		var pre = 0;
+
+		if(_svg.length < 2)	{
+			var loc = _svg[0].getBoundingClientRect();
+			return { width : loc.right, margin : loc.left };
+		}
+
+		for(var i = 0, len = _svg.length ; i < len ; i++)	{
+			var item = _svg[i];
+			var loc = item.getBoundingClientRect();
+
+			if(old === 0)	{
+				old = loc.left;
+			}
+			else {
+				if(loc.left !== old)	{
+					now += loc.width;
+				}	
+				else {
+					now += loc.width;
+					now > pre ? pre = now : pre = pre;
+					now = 0;
+				}
+			}
+		}
+		return { width : pre, margin : old };
+	}
+
+	var heightForDownCanvas = function(_svg)	{
+		var height_set = [];
+		var array_index = 0;
+		var old = 0;
+		var margin = 0;
+
+		if(_svg.length < 2)	{
+			var loc = _svg[0].getBoundingClientRect();
+			return { height : loc.bottom, margin : loc.top };
+		}
+
+		for(var i = 0, len = _svg.length ; i < len ; i++)	{
+			var item = _svg[i];
+			var loc = item.getBoundingClientRect();
+
+			if(old === 0)	{
+				margin = loc.top;
+				old = loc.left;
+				height_set[i - array_index] = loc.height;
+			}
+			else {
+				if(loc.left !== old)	{
+					if(!height_set[i - array_index])	{
+						height_set[i - array_index] = 0;
+					}
+					height_set[i - array_index] += loc.height
+				}	
+				else {
+					array_index = i;
+					height_set[i - array_index] += loc.height
+				}
+			}
+		}
+		return { height : d3.max(height_set), margin : margin };
 	}
 
 	var getSumList = function(_array, _key)	{
@@ -290,12 +438,19 @@ define("utils", [], function()  {
 	var loading = function(_name, _target)	{
 		var loading_div = $(".loading");
 		var chart_div = $(_target);
-		var bcr = document.querySelector(".chart_container").getBoundingClientRect();
+		var bcr = document.querySelector(_target).getBoundingClientRect();
 		var default_width = 900;
+
+		var chart_promise = new Promise(function(_resolve, _reject)	{
+			chart_div.css('visibility', 'visible').hide().fadeIn();
+		});
+
+		var loading_promise = new Promise(function(_resolve, _reject)	{
+			loading_div.fadeOut("fast");
+		});
 
 		return {
 			start : function()	{
-				chart_div.fadeOut();
 				loading_div.fadeIn();
 
 				$("#loading_text")
@@ -305,11 +460,12 @@ define("utils", [], function()  {
 
 				loading_div
 				.css("top", (bcr.top + (bcr.height > default_width ? default_width : bcr.height)) / 2)
-				.css("left", (bcr.left > 500 ? bcr.width : bcr.right) / 2);				
+				.css("left", (bcr.left > 500 ? bcr.width : bcr.right + bcr.left) / 2);				
 			},
 			end : function()	{
-				chart_div.fadeIn();
-				loading_div.fadeOut();
+				chart_promise
+				.catch("Drawing chart error !")
+				.then(loading_promise);
 			}
 		}
 	}
@@ -348,40 +504,16 @@ define("utils", [], function()  {
 		};
 	}
 
-	var groupOrder = function(_value)	{
-		return {
-			"male" : 0,
-			"female" : 1,
-			"lung mucinous adenocarcinoma" : 4,
-			"lung bronchioloalveolar carcinoma mucinous" : 7,
-			"lung solid pattern predominant adenocarcinoma" : 9,
-			"lung papillary adenocarcinoma" : 2,
-			"lung micropapillary adenocarcinoma" : 5,
-			"lung adenocarcinoma- not otherwise specified (nos)" : 10,
-			"lung bronchioloalveolar carcinoma nonmucinous" : 8,
-			"mucinous (colloid) carcinoma" : 1,
-			"lung acinar adenocarcinoma" : 0,
-			"lung adenocarcinoma mixed subtype" : 6,
-			"lung clear cell adenocarcinoma" : 3,
-			"ERCSB" : 0,
-			"TCGA" : 1,
-			"non-smoker" : 0,
-			"smoker" : 1,
-			"reformed" : 2
-		}[_value]
-	}
-
 	var translateXY = function(_element, _x_scale, _y_scale, _x_key, _y_key, _self_x, _self_y)	{
 		_element
-		.transition().duration(400)
+		.transition().duration(400).delay(function(_d, _i)	{
+			return _i / 10;
+		})
 		.attr("transform", function(_d, _i)	{
-			// 파이어폭스에서 translate(0, 0) 의 값을 가졌을 때, 정상적인 값이 return 되지 않고 빈값이 반환되어 그림이 사라진다.
-			// 대처방안으로 0이 아닌 0 이상의 값을 초기값으로 주었을 때, 정상적으로 작동한다.
-			// 0일때, 왜 안되는지는 아직 잘 모르겠다.
-			var x = _x_scale === 0 || _x_key === 0 ? _self_x ? _d.x(_d[_x_key]) : 0 : _x_scale(_d[_x_key]);
+			var x = _x_scale === 0 || _x_key === 0 ? _self_x ? _d.x(_d[_x_key]) : 0.1 : _x_scale(_d[_x_key]);
 			var y = _y_scale === 0 || _y_key === 0 ? _self_y ? _d.y(_d[_y_key]) : 0 : _y_scale(_d[_y_key]);
 
-			return  "translate(" + x +  ", " + y  +  ")";
+			return "translate(" + x + ", " + y + ")";
 		});
 	}
 
@@ -426,40 +558,40 @@ define("utils", [], function()  {
 		});
 	}
 
-	var oppositeColor = function(_rgb) {
-		if((/#/i).test(_rgb))	{
-			_rgb = _rgb.substring(1, _rgb.length);
-		}
+	// var oppositeColor = function(_rgb) {
+	// 	if((/#/i).test(_rgb))	{
+	// 		_rgb = _rgb.substring(1, _rgb.length);
+	// 	}
 
-		var r1, g2, b2, r2, g2, b2;
-		var rgb_hex = strCut(_rgb, 2);
+	// 	var r1, g2, b2, r2, g2, b2;
+	// 	var rgb_hex = strCut(_rgb, 2);
 
-		r1 = parseInt("0x" + rgb_hex[0][0].concat(rgb_hex[0][1]));
-		g1 = parseInt("0x" + rgb_hex[1][0].concat(rgb_hex[1][1]));
-		b1 = parseInt("0x" + rgb_hex[2][0].concat(rgb_hex[2][1]));
+	// 	r1 = parseInt("0x" + rgb_hex[0][0].concat(rgb_hex[0][1]));
+	// 	g1 = parseInt("0x" + rgb_hex[1][0].concat(rgb_hex[1][1]));
+	// 	b1 = parseInt("0x" + rgb_hex[2][0].concat(rgb_hex[2][1]));
 
-		r2 = (255 - r1).toString(16);
-		g2 = (255 - g1).toString(16);
-		b2 = (255 - b1).toString(16);
+	// 	r2 = (255 - r1).toString(16);
+	// 	g2 = (255 - g1).toString(16);
+	// 	b2 = (255 - b1).toString(16);
 
-		return "#" + r2 + g2 + b2;
-	}
+	// 	return "#" + r2 + g2 + b2;
+	// }
 
-	var strCut = function(_string, _measure)  {
-		var result = [];
-		var empty = [];
+	// var strCut = function(_string, _measure)  {
+	// 	var result = [];
+	// 	var empty = [];
 
-		for(var i = 1, len = _string.length ; i <= len + 1 ; i++)    {
-			if(_string[i - 1])		{
-				empty.push(_string[i - 1]);
-			}
-			if(i % _measure === 0)  {
-				result.push(empty);
-				empty = [];
-			}
-		}
-		return result;
-	}
+	// 	for(var i = 1, len = _string.length ; i <= len + 1 ; i++)    {
+	// 		if(_string[i - 1])		{
+	// 			empty.push(_string[i - 1]);
+	// 		}
+	// 		if(i % _measure === 0)  {
+	// 			result.push(empty);
+	// 			empty = [];
+	// 		}
+	// 	}
+	// 	return result;
+	// }
 
 	return {
 		getNum : getNum,
@@ -484,17 +616,17 @@ define("utils", [], function()  {
 		tooltip : tooltip,
 		log : log,
 		download : download,
+		downloadImage : downloadImage,
 		getSumList : getSumList,
 		loading : loading,
 		preserveInterrupt : preserveInterrupt,
 		getTextSize : getTextSize,
-		groupOrder : groupOrder,
 		translateXY : translateXY,
 		attributeXY : attributeXY,
 		attributeSize : attributeSize,
 		callAxis : callAxis,
 		defineProp : defineProp,
-		oppositeColor : oppositeColor,
-		strCut : strCut
+		// oppositeColor : oppositeColor,
+		// strCut : strCut
 	};
 });

@@ -53,7 +53,7 @@ define(SAMPLE + "setting_sample", ["utils", "size", SORT, SAMPLE + "view_sample"
 			is_patient : false,
 			data : count_sample,
 			size : size,
-			x : _utils.ordinalScale(_samples, 0, _VO.VO.getInitWidth() * size.magnification),
+			x : _utils.ordinalScale(_samples, 0, size.width * size.magnification),
 			y : y
 		});
 		_view.titleView({

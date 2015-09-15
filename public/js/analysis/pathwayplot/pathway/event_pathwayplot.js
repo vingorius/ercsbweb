@@ -1,6 +1,9 @@
 var PATHWAY = "analysis/pathwayplot/pathway/"
 
 define(PATHWAY + "event_pathwayplot", ["utils", "size"], function(_utils, _size)   {
+	var tooltip = Object.create(_utils.tooltip);
+	tooltip.div = $(".tooltip_chart");
+
 	var twinklRect = function(_rect, _color, _width)	{
 		_rect
 		.transition().duration(500)
@@ -10,39 +13,44 @@ define(PATHWAY + "event_pathwayplot", ["utils", "size"], function(_utils, _size)
 	}
 
 	var mouseClick = function(_d)	{
-		var script = document.createElement("script")
-		script.src = "/js/analysis/pathwayplot/pathway/test.js";
-		var head = document.querySelector("head");
-		var is_js = document.querySelector("script[src*=test]");
+		// var script = document.createElement("script")
+		// script.src = "/js/analysis/pathwayplot/pathway/test.js";
+		// var head = document.querySelector("head");
+		// var is_js = document.querySelector("script[src*=test]");
 		 
 		// 클릭 할 때마다 불러오는건 무리가 있다. 
 		// View 가 호출이 완료 되기전에 한번 스크립트 태그를 불러오고, 그 후에 해당 파일안에 있는 
 		// 함수를 이벤트 호출 때마다 사용하는편이 낫다.
 		
-		if(is_js === null)	{
-			head.appendChild(script);
-			head.removeChild(script);
-		}
-		// console.log(temp.test.test());
+		// if(is_js === null)	{
+		// 	head.appendChild(script);
+		// }
+		console.log(temp.test.test());
 	}
 
 	var mouseOver = function(_d)	{
-		var e = d3.event;
+		d3.event.stopPropagation();
+		d3.event.preventDefault();
+
 		var parent = d3.select(this)[0][0].parentNode;
 		var grand_parent = parent.parentNode;
 		var rect = d3.select(parent).select("rect");
 		var text = d3.select(parent).select("text");
 
-		_utils.tooltip(
-			rect[0][0],
-			"<b>" + _d.name  
-			+ "</b></br>frequency : "  + (_d.frequency === null ? "NA" : _d.frequency)
-			+ "</br><span style='color:" + (_d.active === null ? "#E8E8E8" : _d.active === "Y" ? "red" : "blue") + "'><b>" 
-			+ (_d.active === null ? "NA" : _d.active === "Y" ? "Activated" : "Inactivated") + "</b></span>", 
-			"rgba(15, 15, 15, 0.6)"
-		);
-
 		insertRectData(_d, parent, grand_parent, rect, text);
+
+		rect
+		.attr("x", _d.x)
+		.attr("y", _d.y)
+		.attr("width", _d.width)
+		.attr("height", _d.height);
+		
+		tooltip.show(
+			rect[0][0], "<b>" + _d.name  
+			+ "</b></br>frequency : " + (_d.frequency === null ? "NA" : _d.frequency)
+			+ "</br><span style='color : " + (_d.active === null ? "#E8E8E8" : _d.active === "Y" ? "red" : "blue") + "'><b>" 
+			+ (_d.active === null ? "NA" : _d.active === "Y" ? "Activated" : "Inactivated") + "</b></span>",//</br><a href='http://www.naver.com'>test</a>", 
+			"rgba(15, 15, 15, 0.6)");
 
 		_utils.frontElement(parent, grand_parent);
 
@@ -56,7 +64,7 @@ define(PATHWAY + "event_pathwayplot", ["utils", "size"], function(_utils, _size)
 			
 		if(_d.width !== "")	{
 			_utils.behindElement(parent, _d.child_index, parent.parentNode);
-			_utils.tooltip();
+			tooltip.hide();
 
 			animateRect(parent_g.select("rect"), _d, false);
 			animateText(parent_g.select("text"), _d, false);

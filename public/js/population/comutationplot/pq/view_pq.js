@@ -10,10 +10,16 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		.orient("bottom")
 		.tickValues([0, _data.max / 2, _data.max]);
 
-		svg.append("g")
+		var xaxis = svg.append("g")
 		.attr("class", "comutationplot_pq_xaxis")
 		.attr("transform", "translate(0, " + (size.height - size.margin.bottom) + ")")
 		.call(xAxis);
+
+		xaxis.selectAll("text")
+		.style("font-size", "8px").style("fill", "#626262");
+
+		xaxis.selectAll("path, line")
+		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1px").style("shape-rendering", "crispEdges");
 
 		var bar_group = svg.selectAll(".comutationplot_pq_bargroup")
 		.data(_data.data)
@@ -29,6 +35,7 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		})
 		.enter().append("rect")
 		.attr("class", "comutationplot_pq_bars")
+		.style("fill", "#BFBFBF")
 		.on("mouseover", _event.m_over)
 		.on("mouseout", function()	{
 			_event.m_out(this, "bar");
@@ -40,7 +47,7 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		.attr("width", function(_d) { 
 			return _data.x(_utils.log((_d.q || _d.p))) - size.margin.left; 
 		})
-		.attr("height", _data.y.rangeBand() / 1.2);
+		.attr("height", _data.y.rangeBand() / 1.1);
 	}
 
 	var titleView = function(_data)	{
@@ -59,6 +66,7 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 		.text(function(_d) {	
 			return "#" + (_d.data[0].list[0].q ? "q" : "p") + " value";
 		})
+		.style("fill", "#626262").style("font-size", "11px").style("font-weight", "bold").style("font-style", "italic")
 		.on("mouseover", _event.e_over)
 		.on("mouseout", _event.m_out)
 		.on("click", _event.sortByValue);

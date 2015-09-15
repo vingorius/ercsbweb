@@ -1,8 +1,9 @@
 $(function() {
 	// find user locale for date format
 	var locLang = (navigator.language) ? navigator.language : navigator.userLanguage;
-	var userLocale = locLang.substring(0,2) || 'en';
+	var userLocale = locLang.substring(0, 2) || 'en';
 	//moment.locale(userLocale);
+
 
 	var table = $('#table');
 	table.bootstrapTable({
@@ -28,14 +29,18 @@ $(function() {
 			title: 'Sample ID',
 			sortable: true,
 			align: 'center',
-			formatter: function(value, row) {
-				var params = $.param({
-					sample_id: row.sample_id,
-					cancer_type: row.cancer_type
-				});
-				// console.log(param);
-				return '<a href="/menus/analysis/summary?' + params + '">' + value + '</a>';
-			}
+			class: 'sample_id',
+			// formatter: function(value, row) {
+			// 	console.log(row);
+			// 	var params = $.param({
+			// 		sample_id: row.sample_id,
+			// 		cancer_type: row.cancer_type,
+			// 		total_cnt: row.total_cnt,
+			// 	});
+			// 	// console.log(param);
+			// 	//return '<a href="/menus/analysis/first?' + params + '">' + value + '</a>';
+			// 	return '<span name="sample_id">' + value + '</span>';
+			// }
 		}, {
 			field: 'cancer_type',
 			title: 'Type',
@@ -64,6 +69,34 @@ $(function() {
 			align: 'center',
 			width: '10%',
 		}]
+	});
+	table.on('click-cell.bs.table', function(obj, field, value, $element) {
+		//console.log(field, value, row, $element);
+		if (field === 'sample_id') {
+			console.log($element);
+			$.ajax({
+					method: "GET",
+					url: "/models/patient/bg_public",
+					data: {
+						cancer_type: $element.cancer_type
+					}
+				})
+				.done(function(data) {
+					var params = $.param({
+						sample_id: $element.sample_id,
+						cancer_type: $element.cancer_type,
+						total_cnt: $element.total_cnt,
+					});
+					//initBGPublicData(data);
+					bg_public.init(data);
+					console.log('getCountOfPublic', bg_public.getCount());
+					console.log('getCountOfFilteredPublic', bg_public.getFilteredCount());
+					location.href = '/menus/analysis/first?'+params;
+				})
+				.fail(function(data) {
+					alert('fail', data);
+				});
+		}
 	});
 
 });

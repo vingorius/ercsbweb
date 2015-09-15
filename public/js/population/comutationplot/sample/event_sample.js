@@ -3,13 +3,21 @@ var VO = "population/comutationplot/vo_comutationplot";
 var SORT = "population/comutationplot/sort_comutationplot";
 
 define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _size, _VO, _sort)	{
+	var tooltip = Object.create(_utils.tooltip);
+	tooltip.div = $(".tooltip_chart");
+
+	
 	var barMouseover = function(_d)	{
-		_utils.tooltip(this, "<b>" + _d.name + "</b></br>" + _utils.defMutName(_d.type) + " : " + _d.count, "rgba(15, 15, 15, 0.6)");
+		tooltip.show(this, "<b>" + _d.name + "</b></br>" + _utils.defMutName(_d.type) + " : " + _d.count, "rgba(15, 15, 15, 0.6)");
 
 		d3.select(this)
 		.transition().duration(50)
 		.style("stroke", "#333")
 		.style("stroke-width", 1);
+	}
+
+	var explainMouseover = function(_d)	{
+		tooltip.show(this, "sort by mutations", "rgba(178, 0, 0, 0.6)");
 	}
 
 	var commonMouseout = function(_this, _type)	{
@@ -21,11 +29,7 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 			})
 			.style("stroke-width", 0);
 		}
-		_utils.tooltip();		
-	}
-
-	var explainMouseover = function(_d)	{
-		_utils.tooltip(this, "sort by mutations", "rgba(178, 0, 0, 0.6)");
+		tooltip.hide();		
 	}
 
 	var ascending = function(_a, _b)	{

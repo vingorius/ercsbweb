@@ -2,6 +2,9 @@ var GENE = "population/comutationplot/gene/";
 var VO = "population/comutationplot/vo_comutationplot";
 
 define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	{
+	var tooltip = Object.create(_utils.tooltip);
+	tooltip.div = $(".tooltip_chart");
+
 	var axisMouseover = function(_d)	{
 		d3.select(this)
 		.transition().duration(100)
@@ -9,7 +12,7 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 	}
 
 	var barMouseover = function(_d)	{
-		_utils.tooltip(this, "<b>" + _d.name + "</b></br>" + _d.type  + " : "  + _d.count, "rgba(15, 15, 15, 0.6)");
+		tooltip.show(this, "<b>" + _d.name + "</b></br>" + _d.type  + " : "  + _d.count, "rgba(15, 15, 15, 0.6)");
 
 		d3.select(this)
 		.transition().duration(50)
@@ -18,7 +21,7 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 	}
 
 	var explainMouseover = function(_d)	{
-		_utils.tooltip(this, "sort by samples", "rgba(178, 0, 0, 0.6)");
+		tooltip.show(this, "sort by samples", "rgba(178, 0, 0, 0.6)");
 	}
 
 	var commonMouseout = function(_this, _type)	{
@@ -33,7 +36,7 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 			.style("stroke", "#fff")
 			.style("stroke-width", 0);
 		}
-		_utils.tooltip();
+		tooltip.hide();
 	}
 
 	var ascending = function(_a, _b)	{
@@ -58,11 +61,11 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 		var y = _utils.ordinalScale(_VO.VO.getGene(), 0, (_size.height - _size.margin.bottom));
 		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, (_VO.VO.getWidth() * magnification));
 
-		_utils.callAxis(d3.selectAll(".comutationplot_gene_yaxis"), y, "right");
+		_utils.translateXY(d3.selectAll(".comutationplot_gene_bargroup"), 0, y, 0, "name", false, false);
 		_utils.translateXY(d3.selectAll(".comutationplot_pq_bargroup"), 0, y, 0, "gene", false, false);
 		_utils.translateXY(d3.selectAll(".comutationplot_cellgroup"), x, y, "sample", "gene", false, false);
 		_utils.translateXY(d3.selectAll(".comutationplot_patient_cellgroup"), 0, y, "sample", "gene", true, false);
-		_utils.translateXY(d3.selectAll(".comutationplot_gene_bargroup"), 0, y, 0, "name", false, false);
+		_utils.callAxis(d3.selectAll(".comutationplot_gene_yaxis"), y, "right");
 	}
 
 	var sortByValue = function(_d)	{

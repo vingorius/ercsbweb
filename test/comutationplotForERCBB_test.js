@@ -21,8 +21,8 @@ describe('Co Mutation Plot for ERCSB Test Suite', function() {
                 if (err) return done(err);
                 var transfer_object = res.body;
                 assert.equal('OK', transfer_object.message);
-                assert.equal(3860, transfer_object.data.mutation_list.length);
-                assert.equal(59, transfer_object.data.gene_list.length);
+                assert.equal(1802, transfer_object.data.mutation_list.length);
+                assert.equal(67, transfer_object.data.gene_list.length);
                 assert.equal(2, transfer_object.data.group_list.length);
                 assert.equal(0, transfer_object.data.patient_list.length);
                 done();

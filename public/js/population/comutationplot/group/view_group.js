@@ -8,13 +8,13 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT],
 		var svg = _size.mkSvg("#" + _data.class_name + "_groups"
 			, (_data.patients ? size.width : size.width * size.magnification), size.height);
 
-		var bar_init_x = _utils.ordinalScale((_data.patients ? _data.patients : _VO.VO.getInitSample()), 0, (_data.patients ? size.width : _VO.VO.getInitWidth() * size.magnification));
-		var bar_init_y = 8;
+		var bar_init_x = _utils.ordinalScale((_data.patients ? _data.patients : _VO.VO.getInitSample()), 0, (_data.patients ? size.width : size.width * size.magnification));
+		var bar_init_y = 5;
 
 		for(var i = 0, len = _data.data.length ; i < len ; i++)	{
 			var group = _data.data[i];
 			var name = _data.name[i];
-			var y_pos = (i * 20) + size.margin.top;
+			var y_pos = (i * 10) + size.margin.top;
 
 			makeGroupBar(_data.class_name, name, group, svg, size, { x : 0, y : y_pos }, { x : bar_init_x, y : bar_init_y }, _data.colour);
 		}
@@ -65,7 +65,7 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT],
 			var group = _data.data[i];
 			var name = _data.name[i];
 			var x_pos = size.width - _utils.getTextSize(name, 8).width - 10;
-			var y_pos = (i * 20) + size.margin.top;
+			var y_pos = (i * 10) + size.margin.top;
 
 			makeGroupName(name, group, svg, { x : x_pos, y : y_pos }, bar_init_x);
 		}
@@ -84,6 +84,7 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT],
 		}])
 		.attr("class", "comutationplot_name_group_text")
 		.text(_name)
+		.style("fill", "#626262").style("font-size", "8px")
 		.on("mouseover", _e.eover)
 		.on("mouseout", _e.mout)
 		.on("click", function(_d)	{	

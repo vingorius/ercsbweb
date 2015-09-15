@@ -4,7 +4,7 @@
 }
 
 /* ===== Common style css attribute of chart ===== */
-text {
+/*text {
 	fill : #626262;
 }
 path {
@@ -18,7 +18,7 @@ line {
 	stroke: #BFBFBF;
 	stroke-width: 1;
 	shape-rendering: crispEdges;
-}
+}*/
 
 /* Loading screen css attribute */
 #loading_area	{
@@ -82,8 +82,4 @@ line {
 	border: 1px solid #FFF;
 	display: block;
 	z-index: 1000;
-}
-/* Legend style css attribute */
-.legend_text {
-	font-size : 12px;
 }

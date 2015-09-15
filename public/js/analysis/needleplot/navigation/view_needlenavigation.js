@@ -12,6 +12,7 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 			height : size.height 
 		}])
 		.attr("class", "needleplot_navigation_viewarea")
+		.style("fill", "#eaeaea")
 		.attr("transform", "translate(0, 0)");
 
 		var box = box_g.append("rect")
@@ -32,6 +33,7 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 
 		var right_border = box_g.append("rect")
 		.attr("class", "needleplot_navigation_rightarea")
+		.style("fill", "#dbdbdb").style("stroke", "#dbdbdb")
 		.attr("x", function(_d)	{ 
 			return size.rwidth; 
 		})
@@ -42,6 +44,7 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 
 		var left_border = box_g.append("rect")
 		.attr("class", "needleplot_navigation_leftarea")
+		.style("fill", "#dbdbdb").style("stroke", "#dbdbdb")
 		.attr("x", 0)
 		.attr("y", 0)
 		.attr("width", size.margin.left)

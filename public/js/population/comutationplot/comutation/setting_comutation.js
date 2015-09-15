@@ -8,7 +8,7 @@ define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_c
 		var size = _size.initSize("comutationplot_patient_heatmap", 0, 0, 0, 0);
 		var patients = getPatientList(_patient_list);
 		size.left_between = 1.5;
-		size.top_between = 1.2;
+		size.top_between = 1.1;
 
 		_view.view({
 			class_name : "comutationplot_patient",
@@ -44,9 +44,9 @@ define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_c
 			definePatient(_patient_list, _genes);
 		}
 
-		_VO.VO.setInitWidth(size.width);
+		_VO.VO.setInitWidth(size.width - 2);
 		_VO.VO.setInitHeight(size.height);
-		_VO.VO.setWidth(size.width);
+		_VO.VO.setWidth(size.width - 2);
 		_VO.VO.setHeight(size.height);
 
 		_utils.removeSvg("comutationplot_heatmap");

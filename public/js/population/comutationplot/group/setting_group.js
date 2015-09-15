@@ -14,7 +14,8 @@ define(GROUP + "setting_group", ["utils", "size", SORT, GROUP + "view_group"], f
 	}
 
 	var modifySize = function(_all_group)	{
-		return _all_group.length * 25;
+		// 서브타입이 최대 4개일 경우의 높이 계산.
+		return _all_group.length * 10 + 10;
 	}
 
 	var colourGroup = function(_type, _value)	{
@@ -45,6 +46,12 @@ define(GROUP + "setting_group", ["utils", "size", SORT, GROUP + "view_group"], f
 				"lung bronchioloalveolar carcinoma mucinous" : "#fe0001",
 				"lung solid pattern predominant adenocarcinoma" : "#f868f7",
 				"lung micropapillary adenocarcinoma" : "#0cf27d"
+			}[_value],
+			race : {
+				"asian" : "#f5a43f",
+				"white" : "#f1ec85",
+				"black or african ame" : "#5B5B5B",
+				"american indian or alaska native" : "#4af380",
 			}[_value]
 		}[_type];
 	}
@@ -91,7 +98,7 @@ define(GROUP + "setting_group", ["utils", "size", SORT, GROUP + "view_group"], f
 
 	var definePatient = function(_height, _patient_list, _group_names)		{
 		$("#comutationplot_patient_groups").width(5).height(_height);
-		var size = _size.initSize("comutationplot_patient_groups", 20, 20, 0, 0);
+		var size = _size.initSize("comutationplot_patient_groups", 10, 20, 0, 0);
 		size.left_between = 1.5;
 		size.top_between = 1.2;
 
@@ -118,20 +125,16 @@ define(GROUP + "setting_group", ["utils", "size", SORT, GROUP + "view_group"], f
 	}
 
 	return function(_group_list, _patient_list, _samples)	{
-		_group_list.sort(function(_a, _b)	{
-			var rtn = _a.name.length < _b.name.length ? -1 : 1;
-			return rtn;
-		});
 		var group_names = getGroupName(_group_list);
 		var all_group = _sort.grouping(_group_list, _samples);
 		var init_height = modifySize(all_group);
 		$("#comutationplot_groups").css("height", init_height);
 		$("#comutationplot_groups_name").css("height", init_height);
-		var size = _size.initSize("comutationplot_groups", 20, 20, 0, 0);
+		var size = _size.initSize("comutationplot_groups", 10, 20, 0, 0);
 		size.magnification = 2;
 		size.left_between = 1.5;
 		size.top_between = 1.2;
-		var name_size = _size.initSize("comutationplot_groups_name", 20, 20, 20, 20);
+		var name_size = _size.initSize("comutationplot_groups_name", 10, 20, 20, 20);
 
 		if(_patient_list.length > 0)	{
 			var patient = formatedPatient(_patient_list);

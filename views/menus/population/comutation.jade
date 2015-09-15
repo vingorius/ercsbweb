@@ -1,16 +1,29 @@
 extends ../../layout/analysislayout
 
 block rightcontent
-	div.container.chart_container(style={"width" : "1590px"})
+	div.container.chart_container(style={'visibility' : 'hidden', "width" : "1590px"})
+		div.btn-group
+			button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+				i.glyphicon.glyphicon-floppy-save
+			ul.dropdown-menu
+				li
+					a(hreft="#") 
+						i.glyphicon.glyphicon-picture(style={'margin' : '5px'})
+						span PNG
+				li
+					a(hreft="#")
+						i.glyphicon.glyphicon-picture(style={'margin' : '5px'})
+						span PDF
+
 		div
 			div#comutationplot_sample_yaxis_title(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
 			div#comutationplot_patient_sample(style={'float': 'left', 'padding': '0px', 'margin-right' : '5px', 'width': '0px', 'height': '0px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
-			div#comutationplot_sample(style={'border' : '1px solid #fff', 'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1200px', 'height': '100px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
+			div#comutationplot_sample(style={'border' : '0px 1px solid #fff', 'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1200px', 'height': '100px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
 			div#comutationplot_empty_rm(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', "height" : "100px"})
 		div
 			div#comutationplot_groups_name(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px'})
 			div#comutationplot_patient_groups(style={'float': 'left', 'padding': '0px', 'margin-right' : '5px', 'width': '0px', 'height': '0px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
-			div#comutationplot_groups(style={'border' : '1px solid #fff', 'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1200px', 'height': '0px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
+			div#comutationplot_groups(style={'border' : '0px 1px solid #fff', 'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1200px', 'height': '0px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
 			div#comutationplot_scale(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', "height" : "50px"})
 				div.input-group.input-group-xs.spinner#comutationplot_scale_div
 					input.form-control.input-sm#comutationplot_scale_input(type='text', value='100%', disabled=true)
@@ -39,7 +52,8 @@ block rightcontent
 	div.tooltip_chart(style={ "display" : "none" })
 block append scripts
 	script(src='/bower_components/imagesloaded/imagesloaded.pkgd.js')
-	script(src='/bower_components/requirejs/require.js')
+	//- script(src='/bower_components/requirejs/require.js')
+block append require
 	script(src='/js/chart/init.js')
 	script(src='/js/chart/start.js', onload='init_comutationplot("NONE", "#{sample.type}", "#{sample.id}")')
 block append stylesheets

@@ -278,10 +278,13 @@ router.get('/needleplot', function(req, res, next) {
 	var sample_id = req.query.sample_id;
 	var gene = req.query.gene;
 	var transcript = req.query.transcript;
+	var classification = req.query.classification;
+
+	console.log(req.query);
 
 	var transfer_object = to.default();
 
-	if (cancer_type === undefined || sample_id === undefined || gene === undefined || transcript === undefined) {
+	if (cancer_type === undefined || sample_id === undefined || gene === undefined || transcript === undefined || classification === undefined) {
 		return res.json(to.noparameter());
 	}
 
@@ -299,13 +302,17 @@ router.get('/needleplot', function(req, res, next) {
 		connection.query('CALL omics_data.getNeedleplotPublicList(?,?,?)', [cancer_type, gene, transcript], function(err, rows) {
 			if (err) throw err;
 			transfer_object.data.public_list = rows[0];
-			connection.query('CALL omics_data.getNeedleploPatientList(?,?,?,?)', [cancer_type, sample_id, gene, transcript], function(p_err, p_rows) {
+			connection.query('CALL omics_data.getNeedleploPatientList(?,?,?,?,?)', [cancer_type, sample_id, gene, transcript, classification], function(p_err, p_rows) {
 				if (p_err) throw p_err;
 				transfer_object.data.patient_list = p_rows[0];
 				connection.query('CALL omics_data.getNeedleplotGraph(?)', [gene], function(g_err, g_rows) {
 					if (g_err) throw g_err;
-					var graph = JSON.parse(g_rows[0][0].json_data);
-					transfer_object.data.graph = graph;
+					transfer_object.data.graph = g_rows[0];
+					// console.log(g_rows[0].length);
+					// if (g_rows[0].length > 0) {
+					// 	var graph = JSON.parse(g_rows[0][0].json_data);
+					// 	transfer_object.data.graph = graph;
+					// }
 					res.json(transfer_object);
 				});
 			});

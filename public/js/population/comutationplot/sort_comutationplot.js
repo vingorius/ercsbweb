@@ -72,13 +72,6 @@ define(SORT, ["utils", VO], function(_utils, _VO)	{
 		var types = getType(_target);
 		var result = [];
 
-		types.sort(function(_a, _b)	{
-			var a = _utils.groupOrder(_a);
-			var b = _utils.groupOrder(_b);
-
-			return a > b ? 1 : -1;
-		});
-
 		for(var i = 0, len = types.length ; i < len ; i++)	{
 			var type = types[i];
 			var one_group = [];

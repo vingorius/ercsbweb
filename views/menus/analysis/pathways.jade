@@ -1,12 +1,20 @@
 extends ../../layout/analysislayout
 
 block rightcontent
-    h1 Pathways
-    include luad1.svg
-    div.tooltip_chart(style={ "display" : "none" })
+	//- h1 Pathways
+	div.container.chart_container(style={'visibility' : 'hidden', 'width' : '1200px', 'margin-left' : 'auto', 'margin-right' : 'auto'})
+		include luad1.svg
+	div.loading(style={ "display" : "none" }) 
+		span#loading_text
+		div.double-bounce1
+		div.double-bounce2
+	//- div
+	//- 	button#testbutton(type='button', value='test') draw_test
+	div.tooltip_chart(style={ "display" : "none" })
 block append stylesheets
-    link(rel='stylesheet', href='/stylesheets/analysis/pathwayplot.css')
-block append scripts 
-    script(src='/bower_components/requirejs/require.js')
-    script(src='/js/chart/init.js')
-    script(src='/js/chart/start.js', onload='init_pathwayplot("NONE", "#{sample.type}", "#{sample.id}", "#{sample.seq}")')
+	link(rel='stylesheet', href='/stylesheets/chart/chart.css')
+	link(rel='stylesheet', href='/stylesheets/analysis/pathwayplot.css')
+block append require
+	//- script(src='/bower_components/requirejs/require.js')
+	script(src='/js/chart/init.js')
+	script(src='/js/chart/start.js', onload='init_pathwayplot("NONE", "#{sample.type}", "#{sample.id}", "#{sample.seq}")')

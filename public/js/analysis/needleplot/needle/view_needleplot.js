@@ -18,6 +18,7 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 			_d.target = "patient";
 			return _utils.colour(_utils.defMutName(_d.type));
 		})
+		.style("stroke", "#fff").style("stroke-width", "0px")
 		.on("mouseover", _event.mover)
 		.on("mouseout", _event.mout);
 	}
@@ -27,6 +28,7 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 		.attr("class", "needleplot_gene_fullpath_group")
 		.attr("transform", "translate(0, " + (_size.rheight + _size.graph_width + (_size.graph_width - (_size.graph_width / 1.5)) / 2) + ")")
 		.append("rect")
+		.style("fill", "#DADFE1")
 		.attr("x", _size.margin.left)
 		.attr("y", -(_size.margin.top))
 		.attr("width", _size.rwidth - _size.margin.left)
@@ -52,24 +54,36 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 		.innerTickSize(2)
 		.outerTickSize(2);
 
-		svg.append("g")
+		drawGenepath(svg, size);
+
+		var xaxis = svg.append("g")
 		.attr("class", "needleplot_xaxis")
 		.attr("transform", "translate(0, " + (size.rheight + size.graph_width)+ ")")
 		.call(xAxis);
 
-		svg.append("g")
+		var yaxis = svg.append("g")
 		.attr("class", "needleplot_yaxis")
 		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top+ ")")
 		.call(yAxis);
 
-		drawGenepath(svg, size);
+		xaxis.selectAll("text")
+		.style("font-size", "10px");
+
+		yaxis.selectAll("text")
+		.style("font-size", "10px");
+
+		xaxis.selectAll("path, line")
+		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1px").style("shape-rendering", "crispEdges");
+
+		yaxis.selectAll("path, line")
+		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1px").style("shape-rendering", "crispEdges");
 
 		var graph_group = svg.selectAll(".needleplot_graph_group")
-		.data(_data.data.data.graph[0].regions)
+		.data(_data.data.data.graph)
 		.enter().append("g")
 		.attr("class", "needleplot_graph_group")
 		.attr("transform", function(_d) {
-			if(_d.display) { 
+			if(_d.display === 1) { 
 				return "translate(" + _data.x(_d.start) + ", " + (size.rheight + size.graph_width) + ")"; 
 			}
 			else { 
@@ -77,7 +91,11 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 			}
 		});
 
-		var graphs = graph_group.append("rect")
+		var graph_g = graph_group.append("g")
+		.attr("class", "needleplot_graph_g")
+		.attr("transform", "translate(0, 0)");
+
+		var graph_rect = graph_g.append("rect")
 		.attr("class", "needleplot_graph_group_graphs preserve_events")
 		.style("fill", function(_d) { 
 			_d.target = "graph";
@@ -102,29 +120,17 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 			_utils.preserveInterrupt(this, 0);
 		});
 
-		var text_group = svg.selectAll(".needleplot_graph_intext_group")
-		.data(_data.data.data.graph[0].regions)
-		.enter().append("g")
-		.attr("class", "needleplot_graph_intext_group")
-		.attr("transform", function(_d)	{
-			if(_d.display) { 
-				return "translate(" + _data.x(_d.start) + ", " + (size.rheight + size.graph_width) + ")"; 
-			}
-			else { 
-				d3.select(this).remove(); 
-			}
-		});
-
-		var graphs_text = text_group.append("text")
+		var graphs_text = graph_g.append("text")
 		.attr("class", "needleplot_graph_intext")
 		.transition().duration(400).delay(function(_d, _i)	{ 
 			return _i * 10; 
 		})
 		.attr("x", 3)
 		.attr("y", -(size.graph_width / 3))
+		.style("fill", "#fff")
 		.style("font-size", _data.fontsize)
 		.text(function(_d) { 
-			return _d.text; 
+			return _d.identifier; 
 		});
 
 		var marker_group = svg.selectAll(".needleplot_marker_group")
@@ -154,7 +160,8 @@ define(NEEDLE + "view_needleplot", ["utils", "size", NEEDLE + "event_needleplot"
 		.transition().duration(500)
 		.attr("d", function(_d) {
 			return "M0,0L0," + (_data.y(_d.count) - (size.rheight - size.graph_width));
-		});
+		})
+		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1px").style("shape-rendering", "crispEdges");
 
 		var marker_figures_circle = marker_figures_group.append("circle")
 		.attr("class", "needleplot_marker_figure_incircle preserve_events")

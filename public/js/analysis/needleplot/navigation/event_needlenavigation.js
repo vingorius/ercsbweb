@@ -47,23 +47,14 @@ define(NEEDLE_NAVI + "event_needlenavigation", ["utils", "size"], function(_util
 				}
 			});
 
-			var graphs = d3.selectAll(".needleplot_graph_group rect")
+			var graph_rect = d3.selectAll(".needleplot_graph_group rect")
 			.attr("width", function(_d) { 
 				return loc_x(_d.end) - loc_x(_d.start); 
 			});
 
-			var text_group = d3.selectAll(".needleplot_graph_intext_group")
-			.attr("transform", function(_d)	{
-				var location = disappearItems(loc_x(_d.start));
-
-				if(_d.display) { 
-					return "translate(" + location + ", "
-					+ (size.graph_width + (height - (size.margin.top * 2) - (size.margin.bottom * 2))) 
-					+ ")"; 
-				}
-				else { 
-					d3.select(this).remove(); 
-				}
+			var graph_text = d3.selectAll(".needleplot_graph_intext")
+			.attr("x", function(_d)	{
+				return loc_x(_d.start) !== 20 ? 3 : disappearItems(loc_x(_d.start));
 			});
 
 			var maker_group = d3.selectAll(".needleplot_marker_group")
@@ -117,6 +108,7 @@ define(NEEDLE_NAVI + "event_needlenavigation", ["utils", "size"], function(_util
 
 			_element.right.attr("x", function(_d) {
 				if((right_x + d3.event.x) - xl >= size.rwidth)	{
+					now_x = size.rwidth;
 					right_x = size.rwidth;
 				}
 				else { 

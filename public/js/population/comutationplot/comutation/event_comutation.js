@@ -1,6 +1,9 @@
 var COMUTATION = "population/comutationplot/comutation/";
 
 define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _size)	{
+	var tooltip = Object.create(_utils.tooltip);
+	tooltip.div = $(".tooltip_chart");
+
 	var getAllType = function(_all_child, _sign)	{
 		var cnv = "", somatic = "", exp = "";
 
@@ -29,8 +32,7 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 		var gene_name = class_name.substring(class_name.indexOf("-") + 1, class_name.length);
 		var all_type = getAllType($("." + sample_name + "-" + gene_name), _d.sign);
 
-		_utils.tooltip(
-			this, 
+		tooltip.show(this, 
 			"<b>Gene mutations</b></br> x : " + _d.sample + "</br>y : " + _d.gene
 			+ "</br>" + all_type, "rgba(15, 15, 15, 0.6)");
 
@@ -41,7 +43,7 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 	}
 
 	var event_mouseout = function(_d)	{
-		_utils.tooltip();
+		tooltip.hide();
 
 		d3.select(this)
 		.transition().duration(250)

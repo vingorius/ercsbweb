@@ -24,7 +24,9 @@ define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_com
 		svg.append("g")
 		.attr("class", "comutationplot_heatmap_yaxis")
 		.attr("transform", "translate(0, 0)")
-		.call(yAxis);
+		.call(yAxis)
+		.select("path")
+		.style("stroke", "none");
 
 		var cell_group = svg.selectAll("." + _data.class_name + "_cellgroup")
 		.data(_data.all_data)

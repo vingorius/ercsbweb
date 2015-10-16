@@ -1,20 +1,44 @@
 extends ../../layout/analysislayout
 
-block rightcontent
+block prepend rightcontent
 	//- h1 Pathways
-	div.container.chart_container(style={'visibility' : 'hidden', 'width' : '1200px', 'margin-left' : 'auto', 'margin-right' : 'auto'})
-		include luad1.svg
+	//- div.btn-group(style={'position' : 'absolute'})
+	//- 		button#down_png.btn.btn-default.btn-xs(type='button')
+	//- 			i.glyphicon.glyphicon-picture
+	div.container.chart_container
+		case sample.type
+			when 'luad'
+				include luad.svg
+			when 'lusc'
+				include lusc.svg
+			when 'brca'
+				include brca.svg
+			when 'gbm'
+				include gbm.svg
 	div.loading(style={ "display" : "none" }) 
 		span#loading_text
 		div.double-bounce1
 		div.double-bounce2
-	//- div
-	//- 	button#testbutton(type='button', value='test') draw_test
 	div.tooltip_chart(style={ "display" : "none" })
+	div.modal.fade.drug_modal#drug_modal_id(tabindex="-1", role="dialog", aria-labelledby="drug_modal_label")
+		div.modal-dialog(role='document')
+			div.modal-content
+				div.modal-header
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true')
+					h3.moda-title(style={'text-align' : 'left', "float" : 'left'}) Available drugs
+					h3.moda-title#drug_modal_label(style={'text-align' : 'right'})
+				div.modal-body
+					table#pathwayplot_table
+				div.modal-footer
+					button.btn.btn-default(type='button', data-dismiss='modal') Close
 block append stylesheets
+	link(rel='stylesheet', href='/bower_components/bootstrap-table/dist/bootstrap-table.min.css')
 	link(rel='stylesheet', href='/stylesheets/chart/chart.css')
 	link(rel='stylesheet', href='/stylesheets/analysis/pathwayplot.css')
+block append scripts
+	script(src='/bower_components/jquery-ui/jquery-ui.min.js')
 block append require
-	//- script(src='/bower_components/requirejs/require.js')
+	script(src='/bower_components/bootstrap-table/dist/bootstrap-table.min.js')
 	script(src='/js/chart/init.js')
-	script(src='/js/chart/start.js', onload='init_pathwayplot("NONE", "#{sample.type}", "#{sample.id}", "#{sample.seq}")')
+	script(src='/js/chart/start.js', onload='startPathway("#{sample.type}", "#{sample.id}", "#{sample.seq}", bg_public.getFilterOption().join(","))')

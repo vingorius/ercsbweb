@@ -1,30 +1,24 @@
 extends ../../layout/analysislayout
 
-block rightcontent
-	div.container.chart_container(style={'visibility' : 'hidden', "width" : "1590px"})
-		div.btn-group
-			button.btn.btn-default.dropdown-toggle(type='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
-				i.glyphicon.glyphicon-floppy-save
-			ul.dropdown-menu
-				li
-					a(hreft="#") 
-						i.glyphicon.glyphicon-picture(style={'margin' : '5px'})
-						span PNG
-				li
-					a(hreft="#")
-						i.glyphicon.glyphicon-picture(style={'margin' : '5px'})
-						span PDF
-
-		div
-			div#comutationplot_sample_yaxis_title(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
-			div#comutationplot_patient_sample(style={'float': 'left', 'padding': '0px', 'margin-right' : '5px', 'width': '0px', 'height': '0px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
-			div#comutationplot_sample(style={'border' : '0px 1px solid #fff', 'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1200px', 'height': '100px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
-			div#comutationplot_empty_rm(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', "height" : "100px"})
-		div
-			div#comutationplot_groups_name(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px'})
-			div#comutationplot_patient_groups(style={'float': 'left', 'padding': '0px', 'margin-right' : '5px', 'width': '0px', 'height': '0px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
-			div#comutationplot_groups(style={'border' : '0px 1px solid #fff', 'float': 'left', 'padding-bottom': '0px', 'margin': '0px', 'width': '1200px', 'height': '0px', 'overflow-y': 'hidden', 'overflow-x': 'hidden'})
-			div#comutationplot_scale(style={'float': 'left', 'padding': '0px', 'margin': '0px', 'width': '150px', "height" : "50px"})
+block prepend rightcontent
+	div.container.chart_container
+		//- div.btn-group
+		//- 	button#down_png.btn.btn-default.btn-xs(type='button')
+		//- 		i.glyphicon.glyphicon-picture
+		div.row
+			div#comutationplot_sample_lm
+				svg(width='150', height='100')
+			div#comutationplot_sample_yaxis_title
+			div#comutationplot_patient_sample
+			div#comutationplot_sample
+			div#comutationplot_empty_rm
+		div.row
+			div#comutationplot_group_empty
+				svg(width='150', height='90')
+			div#comutationplot_groups_name
+			div#comutationplot_patient_groups
+			div#comutationplot_groups
+			div#comutationplot_scale
 				div.input-group.input-group-xs.spinner#comutationplot_scale_div
 					input.form-control.input-sm#comutationplot_scale_input(type='text', value='100%', disabled=true)
 					div.input-group-btn-vertical#comutationplot_vertical_div
@@ -35,27 +29,29 @@ block rightcontent
 				div.input-btn
 					button.btn.btn-xs.btn-default#comutationplot_initial_button
 						i.glyphicon.glyphicon-refresh
-		div
-			div#comutationplot_gene(style={'padding': '0px', 'margin': '0px', 'float': 'left', 'width': '150px', 'height': '600px'})
-			div#comutationplot_patient_heatmap(style={'border' : '1px solid rgb(236, 236, 236)', 'padding' : '0px', 'margin-right' : '2.5px', 'width': '0px', 'height': '0px', 'float' : 'left', 'overflow-x' : 'hidden', 'overflow-y' : 'hidden'})
-			div#comutationplot_border(style={'padding': '0px', 'margin': '0px', 'float': 'left', 'width': '1200px', 'height': '600px', 'overflow-x' : 'scroll', 'overflow-y': 'hidden', 'border' : '1px solid rgb(236, 236, 236)'})
-				div#comutationplot_heatmap(style={'padding': '0px', 'margin': '0px', 'width': '1200px', 'height': '580px'})
-			div#comutationplot_pq(style={'padding': '0px', 'margin': '0px', 'float': 'left', 'width': '150px', 'height': '600px'})
-		div
-			div#comutationplot_gene_title(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
-			div#comutationplot_legend(style={'float' : 'left', 'padding': '0px', 'margin': '0px', 'width': '1200px', 'height': '100px'})
-			div#comutationplot_pq_title(style={'float' : 'left', 'padding' : '0px', 'margin' : '0px', 'width' : '150px', 'height' : '100px'})
+		div.row
+			div#comutationplot_legend
+			div#comutationplot_gene
+			div#comutationplot_patient_heatmap
+			div#comutationplot_border
+				div#comutationplot_heatmap
+			div#comutationplot_pq
+		div.row
+			div#comutationplot_legend_lm
+				svg(width='150', height='30')
+			div#comutationplot_gene_title
+			div#comutationplot_legend_patient
+			div#comutationplot_legend_empty
+			div#comutationplot_pq_title
 	div.loading(style={ "display" : "none" }) 
 		span#loading_text
 		div.double-bounce1
 		div.double-bounce2
 	div.tooltip_chart(style={ "display" : "none" })
 block append scripts
-	script(src='/bower_components/imagesloaded/imagesloaded.pkgd.js')
-	//- script(src='/bower_components/requirejs/require.js')
 block append require
 	script(src='/js/chart/init.js')
-	script(src='/js/chart/start.js', onload='init_comutationplot("NONE", "#{sample.type}", "#{sample.id}")')
+	script(src='/js/chart/start.js', onload='startComutation("NONE", "#{sample.type}", "#{sample.id}", bg_public.getFilterOption().join(","))')
 block append stylesheets
 	link(rel='stylesheet', href='/bower_components/spinkit/css/spinkit.css')
 	link(rel='stylesheet', href='/stylesheets/chart/chart.css')

@@ -1,6 +1,8 @@
 var DEG = "degplot/";
 
 define(DEG + "event_degplot", ["utils", "size"], function(_utils, _size)	{
+	var tooltip = Object.create(_utils.tooltip);
+	
 	var rowspan = function(_rows)	{
 		var cell = "";
 		var cells = [];
@@ -88,18 +90,18 @@ var dragEnd = function(_d)	{
 	changeBrightness(_d.id, _d.min, Math.round(_d.max), reloc.value);
 	changeBackgroundColor(_d.id, _d.min, reloc.value, _d.bgcolor, getGradientEnd(_d.id));
 
-	_utils.tooltip();
+	tooltip.hide();
 }
 
 var dragLever = function(_d)	{
 	var target = d3.select(this);
 	var reloc = relocateBar(target, _d);
 
-	_utils.tooltip();
+	tooltip.hide();
 
 	target
 	.attr("x", function()	{
-		_utils.tooltip(this, reloc.value, "rgba(15, 15, 15, 0.6)");
+		tooltip.show(this, reloc.value, "rgba(15, 15, 15, 0.6)");
 		return Math.max((_d.margin / 2), 
 			Math.min(_d.width - _d.margin, Number(target.attr("x")) + d3.event.dx));
 	});
@@ -158,13 +160,13 @@ var setSelectedBtn = function(_target)	{
 }
 
 var cellMouseover = function(_d)	{
-	_utils.tooltip(this, 
+	tooltip.show(this, 
 		"name : " + _d.id + "</br> value : " + Number(_d.data).toFixed(5),
 		"rgba(15, 15, 15, 0.6)");
 }
 
 var cellMouseout = function(_d)	{
-	_utils.tooltip();
+	tooltip.hide();	
 }
 
 var selectColor = function(_value, _color, _title)	{

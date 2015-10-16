@@ -16,10 +16,16 @@ define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_com
 		.scale(_data.y)
 		.orient("left");
 
-		svg.append("g")
+		var yaxis = svg.append("g")
 		.attr("class", "comutationplot_heatmap_yaxis")
 		.attr("transform", "translate(0, 0)")
 		.call(yAxis);
+
+		yaxis.selectAll("text")
+		.style("fill", "#626262");
+
+		yaxis.selectAll("path, line")
+		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1").style("shape-rendering", "crispEdges");
 
 		var cell_group = svg.selectAll(".comutationplot_cellgroup")
 		.data(_data.all_data)

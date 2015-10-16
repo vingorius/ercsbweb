@@ -1,6 +1,4 @@
-var GENE = "population/comutationplot/gene/";
-
-define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_utils, _size, _event)	{
+define("population/comutationplot/gene/view_gene", ["utils", "size", "population/comutationplot/gene/event_gene"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
 		var size = _data.size;
 		var svg = _size.mkSvg("#comutationplot_gene", size.width, size.height);
@@ -14,15 +12,8 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.scale(_data.y)
 		.orient("right");
 
-		var xaxis = svg.append("g")
-		.attr("class", "comutationplot_gene_xaxis")
-		.attr("transform", "translate(0, " + (size.height - size.margin.bottom) + ")")
-		.call(xAxis);
-
-		var yaxis = svg.append("g")
-		.attr("class", "comutationplot_gene_yaxis")
-		.attr("transform", "translate(" + (size.width - size.margin.right) + ", 0)")
-		.call(yAxis)
+		var xaxis = _size.mkAxis(svg, "comutationplot_gene_xaxis", 0, (size.height - size.margin.bottom), xAxis);
+		var yaxis = _size.mkAxis(svg, "comutationplot_gene_yaxis", (size.width - size.margin.right), 0, yAxis);
 
 		xaxis.selectAll("text")
 		.style("font-size", "8px").style("fill", "#626262");
@@ -84,6 +75,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 			status : false 
 		}])
 		.attr("class", "comutationplot_gene_sort_label")
+		.attr("cursor", "pointer")
 		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")")
 		.append("text")
 		.text("#sample count")

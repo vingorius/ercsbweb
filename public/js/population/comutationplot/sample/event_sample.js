@@ -4,16 +4,9 @@ var SORT = "population/comutationplot/sort_comutationplot";
 
 define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _size, _VO, _sort)	{
 	var tooltip = Object.create(_utils.tooltip);
-	tooltip.div = $(".tooltip_chart");
-
-	
 	var barMouseover = function(_d)	{
 		tooltip.show(this, "<b>" + _d.name + "</b></br>" + _utils.defMutName(_d.type) + " : " + _d.count, "rgba(15, 15, 15, 0.6)");
-
-		d3.select(this)
-		.transition().duration(50)
-		.style("stroke", "#333")
-		.style("stroke-width", 1);
+		_size.styleStroke(d3.select(this), "#333", 1, 50);
 	}
 
 	var explainMouseover = function(_d)	{
@@ -22,12 +15,7 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 
 	var commonMouseout = function(_this, _type)	{
 		if(_type === "bar")	{
-			d3.select(_this)
-			.transition().duration(250)
-			.style("stroke", function(_d) { 
-				return "#fff"; 
-			})
-			.style("stroke-width", 0);
+			_size.styleStroke(d3.select(_this), "#fff", 0, 250);
 		}
 		tooltip.hide();		
 	}
@@ -50,13 +38,11 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 	}
 
 	var redraw = function(_sorting_data, _size)	{
-		var magnification = 2;
-		var left_between = 1.5;
-		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, _VO.VO.getWidth() * magnification);
+		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, _VO.VO.getWidth());
 		var y = _utils.ordinalScale(_VO.VO.getGene(), 0, _VO.VO.getHeight());
 
-		_utils.attributeSize(d3.selectAll(".comutationplot_cells"), "width", x, left_between);
-		_utils.attributeSize(d3.selectAll(".comutationplot_sample_bars"), "width", x, left_between);
+		_utils.attributeSize(d3.selectAll(".comutationplot_cells"), "width", x);
+		_utils.attributeSize(d3.selectAll(".comutationplot_sample_bars"), "width", x);
 		_utils.attributeXY(d3.selectAll(".comutationplot_bar_group_rects"), "x", x, "sample", false, false);
 		_utils.translateXY(d3.selectAll(".comutationplot_cellgroup"), x, y, "sample", "gene", false, false);
 		_utils.translateXY(d3.selectAll(".comutationplot_sample_bargroup"), x, 0, "name", 0, false, false);
@@ -76,7 +62,6 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 		_VO.VO.setSample(sortingByName(sort_data));
 		redraw(sortingByName(sort_data), _d.size);
 	}
-
 	return {
 		m_over : barMouseover,
 		e_over : explainMouseover,

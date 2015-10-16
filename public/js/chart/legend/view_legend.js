@@ -1,159 +1,93 @@
-var LEGEND = "chart/legend/";
-
-define(LEGEND + "view_legend", ["utils", "size", LEGEND + "event_legend"], function(_utils, _size, _event)    {
-	var interfaceAlteration = function(_data, _g)	{
+define("chart/legend/view_legend", ["utils", "size", "chart/legend/event_legend"], function(_utils, _size, _event)    {
+	var interfaceComutation = function(_data, _g)	{
 		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
 			var type = _data.data.type_list[i];
-			var figure = makeFigureAlteration(_data, _g, type.alteration, type.name);			
+			var name = _utils.defMutName(type.name);
+
+			switch(type.alteration)	{
+				case "CNV" : 
+					figureRect(_g, "cnv", { data : _data, name : name, width : 4.5, height : 15, fill : _utils.colour(name) });
+				break;
+				case "mRNA Expression (log2FC)" :  
+					figureRect(_g, "exp", { data : _data, name : name, width : 4.5, height : 15, stroke : _utils.colour(name) });
+				break;
+				case "Somatic Mutaion" : 
+					figureRect(_g, "somatic", { data : _data, name : name, y : 5, width : 4.5, height : 5, fill : _utils.colour(name) });
+				break;
+			}
 		}
 	}
 
-	var makeFigureAlteration = function(_data, _g, _alteration, _name)	{
-		switch(_alteration)	{
-			case "CNV" : 
-				return figureOfCnv(_data, _g, _name);
-			break;
-			case "mRNA Expression (log2FC)" :  
-				return figureOfExp(_data, _g, _name);
-			break;
-			case "Somatic Mutaion" : 
-				return figureOfSomatic(_data, _g, _name);
-			break;
-		}
-	}
-
-	var figureOfCnv = function(_data, _g, _name)	{
-		var width = 4.5;
-		var height = 15;
-
-		return _g.append("rect")
-		.attr("class", "legend_figure_cnv")
-		.style("fill", _utils.colour(_utils.defMutName(_name)))
-		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
-		.attr("y", _data.arranged(_name, "figure", _data.size_set, _data.size).y)
-		.attr("width", width)
-		.attr("height", height);
-	}
-
-	var figureOfExp = function(_data, _g, _name)	{
-		var width = 4.5;
-		var height = 15;
-
-		return _g.append("rect")
-		.attr("class", "legend_figure_exp")
-		.style("fill", "#fff")
-		.style("stroke", _utils.colour(_utils.defMutName(_name)))
-		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
-		.attr("y", _data.arranged(_name, "figure", _data.size_set, _data.size).y)
-		.attr("width", width)
-		.attr("height", height);
-	}
-
-	var figureOfSomatic = function(_data, _g, _name)	{
-		var width = 4.5;
-		var height = 15;
-
-		return _g.append("rect")
-		.attr("class", "legend_figure_somatic")
-		.style("fill", _utils.colour(_utils.defMutName(_name)))
-		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
-		.attr("y", (_data.arranged(_name, "figure", _data.size_set, _data.size).y + height) - 10)
-		.attr("width", width)
-		.attr("height", height / 3);
-	}
-
-	var interfaceNeedleplot = function(_data, _g)	{
+	var interfaceNeedle = function(_data, _g)	{
 		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
 			var type = _data.data.type_list[i];
-			var figure = figureOfNeedleplot(_data, _g, type.name);
+			var name = _utils.defMutName(type.name);
+
+			figureCircle(_g, "needleplot", { data : _data, name : name, radius : 3, cy : 8, fill : _utils.colour(name) });
 		}
 	}
 
-	var figureOfNeedleplot = function(_data, _g, _name)	{
-		var radius = 15;
-
-		return _g.append("circle")
-		.attr("class", "legend_figure_needleplot")
-		.style("fill", _utils.colour(_utils.defMutName(_name)))
-		.attr("cx", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
-		.attr("cy", (_data.arranged(_name, "figure", _data.size_set, _data.size).y + radius) - 7)
-		.attr("r", radius / 5);
-	}
-	
-	var interfacePcaPlot = function(_data, _g)	{
+	var interfacePca = function(_data, _g)	{
 		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
 			var type = _data.data.type_list[i];
-			var figure = makeFigurePca(_data, _g, type.name);
+
+			switch(type.name)	{
+				case "Primary Solid Tumor" :
+					figureCircle(_g, "pcaplot", { data : _data, name : type.name, radius : 5, cx : 5, cy : 7.5, fill : _utils.colour(type.name) });
+				break; 
+				case "Solid Tissue Normal" : 
+					figureRect(_g, "pcaplot", { data : _data, name : type.name, y : 3, width : 10, height : 10, fill : _utils.colour(type.name) });
+				break;
+			}
 		}
 	}
 
-	var makeFigurePca = function(_data, _g, _name)	{
-		switch(_name)	{
-			case "Primary Solid Tumor" :
-				return figureOfPcaplot1(_data, _g, _name);
-			break; 
-			case "Solid Tissue Normal" : 
-				return figureOfPcaplot2(_data, _g, _name);
-			break;
-		}
+	var figureCircle = function(_element, _id, _data)	{
+		var arranged = _data.data.arranged(_data.name, "figure", _data.data.size_set, _data.data.size);
+
+		return _element.append("circle")
+		.attr("class", "legend_figure_" + _id)
+		.attr("cx", arranged.x + (_data.cx || 0))
+		.attr("cy", arranged.y + (_data.cy || 0))
+		.attr("r", _data.radius || 0)
+		.style("fill", _data.fill ? _data.fill : "none")
+		.style("stroke", _data.stroke ? _data.stroke : "none")
+		.style("stroke-width", _data.stroke ? _data.stroke : "none");
 	}
 
-	var figureOfPcaplot1 = function(_data, _g, _name)	{
-		var radius = 5;
+	var figureRect = function(_element, _id, _data)	{
+		var arranged = _data.data.arranged(_data.name, "figure", _data.data.size_set, _data.data.size);
 
-		return _g.append("circle")
-		.attr("class", "legend_figure_pcaplot")
-		.style("fill", _utils.colour(_name))
-		.attr("cx", _data.arranged(_name, "figure", _data.size_set, _data.size).x + radius)
-		.attr("cy", _data.arranged(_name, "figure", _data.size_set, _data.size).y + radius * 1.5)
-		.attr("r", radius);
-	}
-
-	var figureOfPcaplot2 = function(_data, _g, _name)	{
-		var rect_size = 10;
-
-		return _g.append("rect")
-		.attr("class", "legend_figure_pcaplot")
-		.style("fill", _utils.colour(_name))
-		.attr("x", _data.arranged(_name, "figure", _data.size_set, _data.size).x)
-		.attr("y", _data.arranged(_name, "figure", _data.size_set, _data.size).y + (rect_size / 5) * 1.5)
-		.attr("width", rect_size)
-		.attr("height", rect_size);
+		return _element.append("rect")
+		.attr("class", "legend_figure_" + _id)
+		.attr("x", arranged.x + (_data.x || 0))
+		.attr("y", arranged.y + (_data.y || 0))
+		.attr("width", _data.width || 0)
+		.attr("height", _data.height || 0)
+		.style("fill", _data.fill || "none")
+		.style("stroke", _data.stroke || "none")
+		.style("stroke-width", _data.stroke || "none");
 	}
 
 	var view = function(_data)  {
 		var size = _data.size;
-
-		var svg = d3.select("#" + _data.id)
-		.append("svg")
-		.attr("id", _data.id + "_svg")
-		.attr("class", _data.id)
-		.attr("width", size.width)
-		.attr("height", size.height)
-		.append("g")
-		.attr("transform", "translate(0, 0)");
+		var svg = _size.mkSvg("#" + _data.id, size.width, size.height);
 
 		var legendGroup = svg.selectAll(".legendGroup")
 		.data(_data.data.type_list)
 		.enter().append("g")
 		.attr("class", "legendGroup")
-		.attr("transform", function(_d) {
-			return "translate(" + size.margin.left + ", " + size.margin.top + ")";
-		});
+		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")");
 
-		if(_data.chart === "comutation")	{
-			interfaceAlteration(_data, legendGroup);
-		}
-		else if(_data.chart === "needleplot")		{
-			interfaceNeedleplot(_data, legendGroup);
-		}
-		else if(_data.chart === "pcaplot")	{
-			interfacePcaPlot(_data, legendGroup);
+		switch(_data.chart)	{
+			case "comutation" : interfaceComutation(_data, legendGroup); break;
+			case "needleplot" : interfaceNeedle(_data, legendGroup); break;
+			case "pcaplot" : interfacePca(_data, legendGroup); break;
 		}
 
 		var text = legendGroup.append("text")
 		.attr("class", "legend_text")
-		.style("font-size", "12px")
+		.style("font-size", "11px")
 		.on("mouseover", _event.mouseover)
 		.on("mouseout", _event.mouseout)
 		.attr("x", function(_d) { 

@@ -3,10 +3,12 @@ var VO = "comutationplot/vo_comutationplot";
 
 
 define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
+	var tooltip = Object.create(_utils.tooltip);
+
 	var mouseover = function(_d)	{
-		_utils.tooltip(
+		tooltip.show(
 			this, 
-			"gene : " + _d.name + "</br>q : " + Number(_utils.log(_d.q)).toFixed(4), 
+			"gene : " + _d.name + "</br>q : " + Number(_utils.calLog(_d.q)).toFixed(4), 
 			"rgba(15, 15, 15, 0.6)"
 		);
 
@@ -16,7 +18,7 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 	}
 
 	var mouseout = function(_d)	{
-		_utils.tooltip();
+		tooltip.hide();
 		
 		d3.select(this)
 		.transition().duration(100)

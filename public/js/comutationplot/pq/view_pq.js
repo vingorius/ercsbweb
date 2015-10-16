@@ -60,7 +60,7 @@ define(PQ + "view_pq", ["utils", "size", PQ + "event_pq"], function(_utils, _siz
 			return data.y(_d.name); 
 		})
 		.attr("width", function(_d) { 
-			return data.x(_utils.log(_d.q)) - size.margin.left; 
+			return data.x(_utils.calLog(_d.q)) - size.margin.left; 
 		})
 		.attr("height", data.y.rangeBand() / 1.2);
 	}

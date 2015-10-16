@@ -7,33 +7,61 @@ block append stylesheets
 			margin-left: 10px;
 		}
 		.selected_sample {
-			margin-left: 0px;
-			margin-right: 10px;
-			margin-top: 20px;
-			//- padding: 8px;
-			//- border-radius: 5px;
+			padding-top: 20px;
+			padding-left: 10px;
+			//- margin-right: 10px;
+			//- margin-top: 20px;
 			color: #777;
 		}
-		.sample{
-			font-size: 16px;
-		}
 		.tooltip-inner  {
-		    white-space:pre;
-		    max-width:none;
+			white-space:pre;
+			max-width:none;
 		}
+		.sub_message { 
+			float: right;
+		}
+		.borderless{
+			border: none !important;
+		}
+		.cohort-cnt{
+			float: right;
+			color: #E48810;
+		}
+
 if(sample)        
 	block leftmenu
-		//- p.selected_sample
-		div.row.selected_sample
-			div.col-md-6
-				span(style={'font-style':'italic'})
-				a.sample(href='/menus/') #{sample.id}, #{sample.type}
-			div.col-md-6
-				a(href='#', data-toggle='modal', data-target='##{sample.type}Modal')
-					i.fa.fa-database.fa-fw(data-toggle='tooltip',data-placement='right',title='Filter Public Data')
-					p#bg_public_data_menu_str(style={'float':'right'}) 
-					p#checkeditems(style={'float':'right','display':'none'}) #{sample.checkeditems}
-		hr
+		div.selected_sample
+			div
+				input#sample_id(type='hidden',value='#{sample.id}')
+				input#cancer_type(type='hidden',value='#{sample.type}')
+			//- div.col-xs-7(style={'padding-right': '0px', 'padding-left': '0px'}, data-toggle="tooltip", data-placement="bottom", title="Select Sample")
+			//- 	a(href='/menus/')
+			//- 		i.fa.fa-tag.fa-fw
+			//- 		span #{sample.id}(#{sample.type})
+			//- div.col-xs-5(style={'padding-right': '0px', 'padding-left': '0px','text-align': 'right'}, , data-toggle="tooltip", data-placement="bottom", title="Select Global Background Patients")
+			//- 	a(href='#', data-toggle='modal', data-target='##{sample.type}Modal')
+			//- 		i.fa.fa-database.fa-fw
+			//- 		span#bg_public_data_menu_str
+			//- 		span#checkeditems(style={'display':'none'}) #{sample.checkeditems}
+			table.table.borderless
+				tbody
+					tr
+						td.borderless
+							a(href='/menus/')
+								i.fa.fa-tag.fa-fw
+								span Patient Selection
+						td.borderless
+							strong #{sample.id}
+					tr
+						td.borderless
+							a(href='#', data-toggle='modal', data-target='##{sample.type}Modal')
+								i.fa.fa-database.fa-fw
+								span Cohort Selection
+						td.borderless
+							strong#bg_public_data_menu_str
+							span#checkeditems(style={'display':'none'}) #{sample.checkeditems}
+
+		hr(style={'margin-top': '0px'})
 		p.sub_title
 			strong
 				//- i.fa.fa-tags
@@ -66,11 +94,11 @@ if(sample)
 			li
 				a(href='/menus/analysis/drugs') 
 					i.fa.fa-medkit.fa-fw
-					span.sub_menu_span  Drugs            
-			li
-				a(href='/menus/analysis/clinicaltrials') 
-					i.fa.fa-bed.fa-fw
-					span.sub_menu_span  Clinical Trials       
+					span.sub_menu_span  Theraphies            
+			//- li
+			//- 	a(href='/menus/analysis/clinicaltrials') 
+			//- 		i.fa.fa-bed.fa-fw
+			//- 		span.sub_menu_span  Clinical Trials       
 
 		hr
 		p.sub_title(href='#')
@@ -127,6 +155,18 @@ if(sample)
 else        
 	block leftmenu
 		a.sample(href='/menus/') Select Sample
+
+block rightcontent
+	case sample.type
+		when 'luad'
+			include ../menus/analysis/global_setting/globalsetting_luad.jade
+		when 'lusc'
+			include ../menus/analysis/global_setting/globalsetting_lusc.jade
+		when 'gbm'
+			include ../menus/analysis/global_setting/globalsetting_gbm.jade
+		when 'brca'
+			include ../menus/analysis/global_setting/globalsetting_brca.jade
+
 
 block append scripts
 	script(src='/js/analysislayout.js')

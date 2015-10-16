@@ -1,6 +1,8 @@
 var XY = "xyplot/";
 
 define(XY + "event_xyplot", ["utils", "size"], function(_utils, _size)	{
+	var tooltip = Object.create(_utils.tooltip);
+
 	var get_mouseover = function(_d)	{
 		var radius = 3;
 
@@ -8,7 +10,7 @@ define(XY + "event_xyplot", ["utils", "size"], function(_utils, _size)	{
 		.transition().duration(100)
 		.attr("r", radius * 2.5);
 
-		_utils.tooltip(this
+		tooltip.show(this
 			, "title : " + _d.title + "</br> x : "
 			+ Number(_d.x).toFixed(5) + "</br> y : " + Number(_d.y).toFixed(5)
 			, "rgba(15, 15, 15, 0.6)");
@@ -21,7 +23,7 @@ define(XY + "event_xyplot", ["utils", "size"], function(_utils, _size)	{
 		.transition().duration(100)
 		.attr("r", radius);
 
-		_utils.tooltip();
+		tooltip.hide();	
 	}
 
 	return {

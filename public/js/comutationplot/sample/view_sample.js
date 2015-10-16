@@ -19,10 +19,13 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.orient("left")
 		.tickValues([0, data.max / 2, data.max]);
 
-		svg.append("g")
+		var yaxis = svg.append("g")
 		.attr("class", "comutationplot_sample_yaxis")
 		.attr("transform", "translate(" + size.margin.left + ", 0)")
 		.call(yAxis);
+
+		yaxis.selectAll("text")
+		.style("fill", "#626262");
 
 		svg.append("g")
 		.data([{ data : data.data, size : size, status : false }])

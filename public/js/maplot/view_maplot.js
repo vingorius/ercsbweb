@@ -36,15 +36,21 @@ define(MA + "view_maplot", ["utils", "size", MA + "event_maplot"], function(_uti
 		.orient("left")
 		.ticks(5);
 
-		svg.append("g")
+		var xaxis = svg.append("g")
 		.attr("class", "maplot_xaxis")
 		.attr("transform", "translate(0, " + size.rheight + ")")
 		.call(xAxis);
 
-		svg.append("g")
+		var yaxis = svg.append("g")
 		.attr("class", "maplot_yaxis")
 		.attr("transform", "translate(" + (size.margin.left + size.margin.right) + ", 0)")
 		.call(yAxis);
+
+		xaxis.selectAll("path, line")
+        	.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1").style("shape-rendering", "crispEdges");
+
+        	yaxis.selectAll("path, line")
+        	.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1").style("shape-rendering", "crispEdges");
 
 		var circles = svg.selectAll("circle")
 		.data(_data.data.data.plot_list)

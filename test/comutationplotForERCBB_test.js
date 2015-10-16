@@ -3,7 +3,7 @@ var request = require('supertest');
 var assert = require('assert');
 var host = 'http://localhost';
 
-describe('Co Mutation Plot for ERCSB Test Suite', function() {
+describe('Co Mutation Plot for ERCSB Test Suite:', function() {
     it('path가 존재하여야 한다.', function(done) {
         request(host)
             .get('/rest/comutationplotForERCSB')
@@ -23,7 +23,7 @@ describe('Co Mutation Plot for ERCSB Test Suite', function() {
                 assert.equal('OK', transfer_object.message);
                 assert.equal(1802, transfer_object.data.mutation_list.length);
                 assert.equal(67, transfer_object.data.gene_list.length);
-                assert.equal(2, transfer_object.data.group_list.length);
+                assert.equal(4, transfer_object.data.group_list.length);
                 assert.equal(0, transfer_object.data.patient_list.length);
                 done();
             });

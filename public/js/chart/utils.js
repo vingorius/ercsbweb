@@ -1,4 +1,4 @@
-define("utils", [], function()  {
+define("utils", ["size"], function(_size)  {
 	var getNum = function(_str)	{
 		var result = "";
 
@@ -16,14 +16,14 @@ define("utils", [], function()  {
 		}));
 	}
 
-	var frontElement = function(_target, _source)	{
-		if(_target.nextSibling)	{
-			_source.appendChild(_target);
+	var frontElement = function(_child, _parent)	{
+		if(_child.nextSibling)	{
+			_parent.appendChild(_child);
 		}
 	}
 
-	var behindElement = function(_target, _index, _source)	{
-		_source.insertBefore(_target, _source.childNodes[_index - 1]);
+	var behindElement = function(_child, _idx, _parent)	{
+		_parent.insertBefore(_child, _parent.childNodes[_idx - 1]);
 	}
 
 	var ordinalScale = function(_domain, _start, _end) {
@@ -32,10 +32,10 @@ define("utils", [], function()  {
 		.rangeBands([_start, _end]);
 	}
 
-	var linearScale = function(_d_start, _d_end, _r_start, _end) {
+	var linearScale = function(_d_start, _d_end, _r_start, _r_end) {
 		return d3.scale.linear()
 		.domain([_d_start, _d_end])
-		.range([_r_start, _end]);
+		.range([_r_start, _r_end]);
 	}
 
 	var getObject = function(_name, _array, _key)  {
@@ -47,16 +47,6 @@ define("utils", [], function()  {
 			}
 		}
 		return undefined;
-	}
-
-	var getObjectIndex = function(_name, _array, _key)	{
-		for(var i = 0, len = _array.length ; i < len ; i++)	{
-			var obj = _array[i][_key];
-
-			if(obj === _name)	{
-				return i;
-			}
-		}
 	}
 
 	var getObjectArray = function(_name, _array, _key) {
@@ -126,18 +116,20 @@ define("utils", [], function()  {
 
 	var alterationPrecedence = function(_alteration)	{
 		if((/(AMPLIFICATION)|(HOMOZYGOUS_DELETION)/i).test(_alteration))	{
-			return { alteration : "CNV", priority : cnvPrecedence(_alteration) };
+			return { alteration : "CNV", priority : precedence(_alteration) };
 		}
 		else if((/(EXPRESSION)/).test(_alteration))	{
-			return { alteration : "mRNA Expression (log2FC)", priority : expPrecedence(_alteration) };
+			return { alteration : "mRNA Expression (log2FC)", priority : precedence(_alteration) };
 		}
 		else {
-			return { alteration : "Somatic Mutaion", priority : mutationPrecedence(_alteration) };
+			return { alteration : "Somatic Mutaion", priority : precedence(_alteration) };
 		}
 	}
 
-	var mutationPrecedence = function(_mutation)	{
+	var precedence = function(_value)		{
 		return {
+			"Amplification" : 12,
+			"Homozygous_Deletion" : 11,
 			"Nonsense_mutation" : 9,
 			"Splice_Site" : 8,
 			"Translation_Start_Site" : 7,
@@ -147,20 +139,7 @@ define("utils", [], function()  {
 			"In_frame_indel" : 3,
 			"RNA" : 2,
 			"Silent" : 1,
-		}[_mutation];
-	}
-
-	var cnvPrecedence = function(_cnv)	{
-		return {
-			"Amplification" : 12,
-			"Homozygous_Deletion" : 11
-		}[_cnv];
-	}
-
-	var expPrecedence = function(_exp)	{
-		return {
-			
-		}[_exp];
+		}[_value];
 	}
 
 	var defMutName = function(_name)  {
@@ -182,10 +161,10 @@ define("utils", [], function()  {
 		else if((/(RNA)/i).test(_name))	{
 			return "RNA";
 		}
-		else if((/(FRAME_SHIFT_)/i).test(_name)) { 
+		else if((/(FRAME_SHIFT)/i).test(_name)) { 
 			return "Frame_shift_indel"; 
 		}
-		else if((/(IN_FRAME_)/i).test(_name)) { 
+		else if((/(IN_FRAME)/i).test(_name)) { 
 			return "In_frame_indel"; 
 		}
 		else if((/(NONSTOP)/i).test(_name)) { 
@@ -225,134 +204,133 @@ define("utils", [], function()  {
 
 	var tooltip = {
 		show : function(_element, _contents, _rgba)	{
-			var client = _element.getBoundingClientRect();
-			
-			this.div
-			.css("left", client.left + client.width)
-			.css("top", client.top + client.height)
+			var main = $("#maincontent");
+			var chart = $(".tooltip_chart")
 			.css("position", "absolute")
 			.css("background-color", _rgba)
-			.html(_contents)
-			.show();
-		},
-		hide : function(_is_interactive)	{
-			var that = this.div;
+			.html(_contents);
 
-			if(!_is_interactive)	{
-				if(!that)	{
-					return;
+			if(Object.keys(_element).length > 2)	{
+				var client = _element.getBoundingClientRect();
+				var top = client.top + client.height, left = client.left + client.width;
+				var margin_left = main.css("margin-left") ? getNum(main.css("margin-left")) : 0;
+
+				if(client.left - margin_left + client.width + chart.width() > main.width())	{
+					left = client.left - chart.width();
 				}
-				else {
-					that.hide();
-				}
+				chart
+				.css("left", left)
+				.css("top", top)
+				.show();
 			}
 			else {
-				console.log("pathway", that)
-				that = $(".tooltip_chart");
-
-				var timeout = setTimeout(function()	{
-					that.hide();
-				}, 1500);
-
-				that
-				.on("mouseover", function()	{
-					clearTimeout(timeout);
-					that.show();
-				})
-				.on("mouseout", function()	{
-					that.hide();
-				});
+				chart
+				.css("left", _element.x)
+				.css("top", _element.y)
+				.show();
 			}
+		},
+		hide : function(_is_interactive)	{
+			 $(".tooltip_chart").hide();
 		}
 	}
 
-	var log = function(_value)    {
+	var calLog = function(_value)    {
 		return Math.log(_value) / (Math.LN10 * -1);
+	}
+
+	var checkIE = function()	{
+		var agent = navigator.userAgent.toLowerCase();
+
+		return agent.indexOf("chrome") > -1 || agent.indexOf("safari") > -1 || agent.indexOf("firefox") > -1 ? false : true;
 	}
 
 	var download = function(_name, _url)	{
 		var a = document.createElement("a");
-		var html_event = document.createEvent("HTMLEvents");
+		var create_event;
 
-		html_event.initEvent("click");
+		create_event = document.createEvent("MouseEvents");
+		create_event.initEvent("click", true, true);
 
 		a.download = _name;
 		a.href = _url;
-		a.dispatchEvent(html_event);		
+		a.dispatchEvent(create_event);	
 	}
 
 	var downloadImage = function(_name, _type)	{
-		var data = getImageURL();
-
-		switch(true)	{
-			case (/png/i).test(_type) : 
-				download(_name + ".png", data.data);
-				break;
-			case (/pdf/i).test(_type) : 
-				var pdf = new jsPDF("l", "px", [ data.height, data.width ]);
-				pdf.addImage(data.data, 0, 0, data.width, data.height);
-				pdf.save(_name + ".pdf");
-				break;
-			default : 
-				break; 
-		}
+		var data = getImageURL(savePng);
 	}
 
-	var getImageURL = function()	{
+	var savePng = function(_obj)	{
+		download("test.png", _obj.data);
+	}
+
+	var getImageURL = function(_callback)	{
 		var svg = $("svg");
 		var width = widthForDownCanvas(svg);
 		var height = heightForDownCanvas(svg);
 		var canvas = document.createElement("canvas");
+		canvas.setAttribute("id", "download_canvas_image")
 		canvas.width = width.width;
 		canvas.height = height.height;
-		var init_left, pre_horizontal, left;
+		var init, pre, left = 0;
+		var right_pos = 0;
 
 		for(var i = 0, len = svg.length ; i < len ; i++)	{
-			var context = canvas.getContext("2d");
 			var item = svg[i];
 			var loc = item.getBoundingClientRect();
-			var source = (new XMLSerializer).serializeToString(item);
+			var source = new XMLSerializer().serializeToString(item);
 
-			if(!init_left) {
-				pre_horizontal = loc;
-				init_left = loc.left;
-				left = loc.left;
+			if(!init || loc.left === init)	{
+				init = loc.left;
+				left = init;
 			}
 			else {
-				if(loc.left === init_left)	{
-					left = init_left;	
-				}
-				else {
-					left = pre_horizontal.width + pre_horizontal.left;
-				}
-				pre_horizontal = loc;	
+				left = (pre ? pre.width : 0) + (pre ? pre.left + (loc.left > pre.right ? (loc.left - pre.right) : 0) : loc.left);
+			}
+			pre = loc;	
+
+			if((/pq$/).test(item.id))	{
+				right_pos = left;
+			}
+			else if((/pq_title$/).test(item.id))	{
+				left = right_pos;
 			}
 
-			if(!source.match(/^<svg[^>]+xmlns="http\:\/\/www\.w3\.org\/2000\/svg"/)){
-				source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+			if(source.match(/xmlns\:NS\d+=\"\" NS(\d+|)\:/g))	{
+				source = source.replace(/xmlns\:NS\d+=\"\" NS(\d+|)\:/g, "");
 			}
-			if(!source.match(/^<svg[^>]+"http\:\/\/www\.w3\.org\/1999\/xlink"/)){
-				source = source.replace(/^<svg/, '<svg xmlns:xlink="http://www.w3.org/1999/xlink"');
-			}
-			source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
 
 			var url = "data:image/svg+xml;base64,"+ encodeURIComponent(btoa(source));
+			/*
+				FireFox : 적은 수의 svg 를 처리하는데는 문제가 없지만, 많은 수의 svg 를 처리하는데는 아직 오류가 있다.
+				IE : canvas.toDataURL() 에서 SecurityError 발생. IE11 does not appear to support CORS for images in the canvas element use only SVG
+			 */
 			var img = new Image();
-			img.src = url;
+			img.posx = (left - width.margin);
+			img.posy = (loc.top - height.margin);
+			img.idx = i;
+			img.crossOrigin = "";
 
-			context.drawImage(img, left - width.margin, loc.top - height.margin);
+			img.onload = function(_img)	{
+				var ctx = canvas.getContext("2d");
+
+				if(_img.target.idx === svg.length || _img.target.idx === svg.length - 1)	{
+					if(!checkIE())	{
+						ctx.drawImage(_img.target, _img.target.posx, _img.target.posy);
+						_callback({
+							canvas : canvas,
+							data : canvas.toDataURL('image/png'),
+						});
+					}
+				}
+			}
+			img.src = url;
 		}
-		return {
-			data : canvas.toDataURL('image/png'),
-			width : canvas.width,
-			height : canvas.height
-		};
 	}
 
 	var widthForDownCanvas = function(_svg)	{
-		var now = 0;
-		var old = 0;
-		var pre = 0;
+		var now = 0, old = 0, pre = 0;
 
 		if(_svg.length < 2)	{
 			var loc = _svg[0].getBoundingClientRect();
@@ -382,9 +360,7 @@ define("utils", [], function()  {
 
 	var heightForDownCanvas = function(_svg)	{
 		var height_set = [];
-		var array_index = 0;
-		var old = 0;
-		var margin = 0;
+		var array_index = 0, old = 0, margin = 0;
 
 		if(_svg.length < 2)	{
 			var loc = _svg[0].getBoundingClientRect();
@@ -417,22 +393,17 @@ define("utils", [], function()  {
 	}
 
 	var getSumList = function(_array, _key)	{
-		try {
-			var result = 0;
+		var result = 0;
 
-			for(var i = 0, len = _array.length ; i < len ; i++)	{
-				if((/[pq]/).test(_key))	{
-					result += log(_array[i][_key]);	
-				}
-				else {
-					result += _array[i][_key];
-				}
+		for(var i = 0, len = _array.length ; i < len ; i++)	{
+			if((/[pq]/).test(_key))	{
+				result += calLog(_array[i][_key]);	
 			}
-			return result;
+			else {
+				result += _array[i][_key];
+			}
 		}
-		finally {
-			result = null;
-		}
+		return result;
 	}
 
 	var loading = function(_name, _target)	{
@@ -441,14 +412,14 @@ define("utils", [], function()  {
 		var bcr = document.querySelector(_target).getBoundingClientRect();
 		var default_width = 900;
 
-		var chart_promise = new Promise(function(_resolve, _reject)	{
-			chart_div.css('visibility', 'visible').hide().fadeIn();
-		});
-
-		var loading_promise = new Promise(function(_resolve, _reject)	{
-			loading_div.fadeOut("fast");
-		});
-
+		if(window.Promise)	{
+			var chart_promise = new Promise(function(_resolve, _reject)	{
+				chart_div.css('visibility', 'visible').hide().fadeIn();
+			});
+			var loading_promise = new Promise(function(_resolve, _reject)	{
+				loading_div.fadeOut("slow");
+			});
+		}
 		return {
 			start : function()	{
 				loading_div.fadeIn();
@@ -463,9 +434,15 @@ define("utils", [], function()  {
 				.css("left", (bcr.left > 500 ? bcr.width : bcr.right + bcr.left) / 2);				
 			},
 			end : function()	{
-				chart_promise
-				.catch("Drawing chart error !")
-				.then(loading_promise);
+				if(window.Promise)	{
+					chart_promise
+					.catch("Drawing chart error !")
+					.then(loading_promise);
+				}
+				else {
+					chart_div.css('visibility', 'visible').hide().fadeIn();
+					loading_div.fadeOut();
+				}
 			}
 		}
 	}
@@ -499,6 +476,7 @@ define("utils", [], function()  {
 		var height = parseInt(ctx.font);
 
 		return { 
+			name : _txt,
 			width : width, 
 			height : height 
 		};
@@ -506,11 +484,9 @@ define("utils", [], function()  {
 
 	var translateXY = function(_element, _x_scale, _y_scale, _x_key, _y_key, _self_x, _self_y)	{
 		_element
-		.transition().duration(400).delay(function(_d, _i)	{
-			return _i / 10;
-		})
+		.transition().duration(250)
 		.attr("transform", function(_d, _i)	{
-			var x = _x_scale === 0 || _x_key === 0 ? _self_x ? _d.x(_d[_x_key]) : 0.1 : _x_scale(_d[_x_key]);
+			var x = _x_scale === 0 || _x_key === 0 ? _self_x ? _d.x(_d[_x_key]) : 0.00001 : _x_scale(_d[_x_key]);
 			var y = _y_scale === 0 || _y_key === 0 ? _self_y ? _d.y(_d[_y_key]) : 0 : _y_scale(_d[_y_key]);
 
 			return "translate(" + x + ", " + y + ")";
@@ -519,14 +495,15 @@ define("utils", [], function()  {
 
 	var attributeXY = function(_element, _type, _scale, _key, _self)		{
 		_element
-		.attr("class", _element.attr("class") + " preserve_events");
-
-		_element
-		.transition().duration(400)
+		.attr("class", function()	{
+			if(d3.select(this).attr("class"))	{
+				return _element.attr("class") + " preserve_events";
+			}
+			return;
+		})
+		.transition().duration(250)
 		.attr(_type, function(_d)	{
-			var pos = _self ? _d[_type](_d[_key]) : _scale(_d[_key]);
-
-			return pos;
+			return _self ? _d[_type](_d[_key]) : _scale(_d[_key]);
 		})
 		.each("end", function()	{
 			preserveInterrupt(_element, 1);
@@ -535,17 +512,16 @@ define("utils", [], function()  {
 
 	var attributeSize = function(_element, _type, _scale, _divide)	{
 		_element
-		.transition().duration(400)
+		.transition().duration(250)
 		.attr(_type, function(_d)	{
-			var size = _scale.rangeBand() / _divide;
-
-			return size;
+			return _scale.rangeBand();
+			// return (_scale.rangeBand() / (_divide ? _divide : 1));
 		});
 	}
 
 	var callAxis = function(_element, _scale, _way)	{
 		_element
-		.transition().duration(400)
+		.transition().duration(250)
 		.call(d3.svg.axis().scale(_scale).orient(_way));
 	}
 
@@ -558,40 +534,66 @@ define("utils", [], function()  {
 		});
 	}
 
-	// var oppositeColor = function(_rgb) {
-	// 	if((/#/i).test(_rgb))	{
-	// 		_rgb = _rgb.substring(1, _rgb.length);
-	// 	}
-
-	// 	var r1, g2, b2, r2, g2, b2;
-	// 	var rgb_hex = strCut(_rgb, 2);
-
-	// 	r1 = parseInt("0x" + rgb_hex[0][0].concat(rgb_hex[0][1]));
-	// 	g1 = parseInt("0x" + rgb_hex[1][0].concat(rgb_hex[1][1]));
-	// 	b1 = parseInt("0x" + rgb_hex[2][0].concat(rgb_hex[2][1]));
-
-	// 	r2 = (255 - r1).toString(16);
-	// 	g2 = (255 - g1).toString(16);
-	// 	b2 = (255 - b1).toString(16);
-
-	// 	return "#" + r2 + g2 + b2;
-	// }
-
-	// var strCut = function(_string, _measure)  {
-	// 	var result = [];
-	// 	var empty = [];
-
-	// 	for(var i = 1, len = _string.length ; i <= len + 1 ; i++)    {
-	// 		if(_string[i - 1])		{
-	// 			empty.push(_string[i - 1]);
-	// 		}
-	// 		if(i % _measure === 0)  {
-	// 			result.push(empty);
-	// 			empty = [];
-	// 		}
-	// 	}
-	// 	return result;
-	// }
+	var orderGroup = function(_value)	{
+		return {
+			"Squamoid" : 0,
+			"Magnoid" : 1,
+			"Bronchioid" : 2,
+			"Current reformed smoker for > 15 years" : 0,
+			"Lifelong Non-smoker" : 1,
+			"Current reformed smoker for < or = 15 years" : 2,
+			"Current smoker" : 3,
+			"Current Reformed Smoker, Duration Not Specified" : 4,
+			"Acinar predominant Adc" : 0,
+			"Adenocarcinoma, NOS" : 1,
+			"Colloid adenoca" : 2,
+			"Invasive mucinous" : 3,
+			"Lepidic predominant Adc" : 4,
+			"Micropapillary predom Adc" : 5,
+			"Other see comment" : 6,
+			"Papillary predominant Adc" : 7,
+			"Solid predominant Adc" : 8,
+			"NSCLC, favor Adeno" : 9,
+			"0" : 100,
+			"Stage IA" : 0,
+			"Stage IB" : 1,
+			"Stage IIA" : 2,
+			"Stage IIB" : 3,
+			"Stage IIIA" : 4,
+			"Stage IV" : 5,
+			"Stage I" : 6,
+			"Stage IIIB" : 7,
+			"FEMALE" : 0,
+			"MALE" : 1,
+			"NO" : 0,
+			"YES" : 1,
+			"LIVING" : 0,
+			"DECEASED" : 1,
+			"Lung Adenocarcinoma- Not Otherwise Specified (NOS)" : 0,
+			"Lung Acinar Adenocarcinoma" : 1,
+			"Lung Bronchioloalveolar Carcinoma Nonmucinous" : 2,
+			"Lung Solid Pattern Predominant Adenocarcinoma" : 3,
+			"Mucinous (Colloid) Carcinoma" : 4,
+			"Lung Adenocarcinoma Mixed Subtype" : 5,
+			"Lung Papillary Adenocarcinoma" : 6,
+			"Lung Bronchioloalveolar Carcinoma Mucinous" : 7,
+			"Lung Micropapillary Adenocarcinoma" : 8,
+			"Lung Clear Cell Adenocarcinoma" : 9,
+			"Lung Mucinous Adenocarcinoma" : 10,
+			"ERCSB" : 0,
+			"TCGA" : 1,
+			"male" : 1,
+			"female" : 0,
+			"non-smoker" : 0,
+			"smoker" : 1,
+			"reformed" : 2,
+			"asian" : 0,
+			"white" : 1,
+			"black or african ame" : 2,
+			"american indian or alaska native" : 3,
+			"NA" : 10000
+		}[_value]
+	}
 
 	return {
 		getNum : getNum,
@@ -601,20 +603,16 @@ define("utils", [], function()  {
 		ordinalScale : ordinalScale,
 		linearScale : linearScale,
 		getObject : getObject,
-		getObjectIndex : getObjectIndex,
 		getObjectArray : getObjectArray,
 		isArrayInObj : isArrayInObj,
 		getArrayInObj : getArrayInObj,
 		searchObjArray : searchObjArray,
 		removeSvg : removeSvg,
 		alterationPrecedence : alterationPrecedence,
-		cnvPrecedence : cnvPrecedence,
-		expPrecedence : expPrecedence,
-		mutationPrecedence : mutationPrecedence,
 		defMutName : defMutName,
 		colour : colour,
 		tooltip : tooltip,
-		log : log,
+		calLog : calLog,
 		download : download,
 		downloadImage : downloadImage,
 		getSumList : getSumList,
@@ -626,7 +624,7 @@ define("utils", [], function()  {
 		attributeSize : attributeSize,
 		callAxis : callAxis,
 		defineProp : defineProp,
-		// oppositeColor : oppositeColor,
-		// strCut : strCut
+		orderGroup : orderGroup,
+		checkIE : checkIE
 	};
 });

@@ -23,12 +23,12 @@ describe('Needle Plot Test Suite', function() {
     });
     it('Content Type이 application/json 여야한다.', function(done) {
         request(host)
-            .get('/rest/needleplot?cancer_type=luad&sample_id=Pat99&gene=EGFR&transcript=ENST00000275493')
+            .get('/rest/needleplot?cancer_type=luad&sample_id=Pat1099&gene=EGFR&transcript=ENST00000275493&classification=All&filter=')
             .expect('content-type',/json/,done);
     });
     it('JSON Data Format Check', function(done) {
         request(host)
-            .get('/rest/needleplot?cancer_type=luad&sample_id=Pat99&gene=EGFR&transcript=ENST00000275493')
+            .get('/rest/needleplot?cancer_type=luad&sample_id=Pat1099&gene=EGFR&transcript=ENST00000275493&classification=All&filter=')
             //.field('gene','EGFR')
             .end(function(err, res) {
                 if (err) return done(err);

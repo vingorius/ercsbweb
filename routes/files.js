@@ -84,4 +84,8 @@ router.get('/readExcel', function(req, res) {
 	});
 });
 
+router.get('/canvasdownload', function(req, res)	{
+	res.json({"res_canvas" : req.query.canvas})
+})
+
 module.exports = router;

@@ -1,6 +1,4 @@
-var VO = "population/comutationplot/vo_comutationplot";
-
-define(VO, ["utils"], function(_utils)	{
+define("population/comutationplot/vo_comutationplot", ["utils"], function(_utils)	{
 	var VO = (function()	{
 		var init_sample = [];
 		var init_gene = [];
@@ -12,7 +10,8 @@ define(VO, ["utils"], function(_utils)	{
 		var init_layout_width = 0;
 		var init_layout_height = 0	
 		var layout_width = 0;
-		var layout_height = 0	
+		var layout_height = 0;
+		var top_between = 0;
 
 		return {
 			setInitSample : function(_init_sample) 	{
@@ -48,6 +47,12 @@ define(VO, ["utils"], function(_utils)	{
 			setHeight : function(_layout_height)	{
 				layout_height = _layout_height;
 			},	
+			setLeftBetween : function(_left_between)	{
+				left_between = _left_between;
+			},
+			setTopBetween : function(_top_between)	{
+				top_between = _top_between;
+			},
 			getInitSample : function()	   {	
 				return init_sample;
 			},
@@ -57,11 +62,11 @@ define(VO, ["utils"], function(_utils)	{
 			getSample : function()	   {
 				return sample_list;
 			},
-			getFormatedData : function()	{
-				return formated_data;
-			},
 			getGene : function()	{
 				return gene_list;
+			},
+			getFormatedData : function()	{
+				return formated_data;
 			},
 			getMutation : function()	{
 				return mutation_list;
@@ -75,15 +80,18 @@ define(VO, ["utils"], function(_utils)	{
 			getInitHeight : function()	{
 				return init_layout_height;
 			},	
-			getGene : function()	{
-				return gene_list;
-			},
 			getWidth : function()	{
 				return layout_width;
 			},
 			getHeight : function()	{
 				return layout_height;
 			},	
+			getLeftBetween : function()	{
+				return left_between;
+			},
+			getTopBetween : function()	{
+				return top_between;
+			},
 		}
 	}());
 	return 	{

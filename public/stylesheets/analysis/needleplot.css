@@ -1,31 +1,39 @@
 /* Needle Plot style css attribute */
-#needleplot_view  {
-	overflow: scroll;
+
+.chart_container {
+	visibility: hidden;
+	width: 1200px;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 20px;
 }
-/*.needleplot_xaxis text,
-.needleplot_yaxis text 		{
-	font-size: 10px;
-}*/
-/*.needleplot_navigation_rightarea, 
-.needleplot_navigation_leftarea 	{
-	fill : #dbdbdb;
-	stroke : #dbdbdb;
-}*/
-/*.needleplot_graph_intext {
-	fill : #fff;
-	font-size: 11px;
-}*/
-/*.needleplot_navigation_viewarea  {
-	fill : #eaeaea;
-}*/
-/*.needleplot_gene_fullpath_group    {
-	fill : #DADFE1;
-}*/
+
+#needleplot_view  {
+	padding: 0px;
+	margin: 0px;
+	width: 1000px;
+	height: 400px;
+	overflow: hidden;
+	float: left;
+	/*overflow: scroll;*/
+}
+
+#needleplot_legend	{
+	padding: 0px;
+	margin: 0px;
+	width: 200px;
+	height: 200px;
+	overflow: hidden;
+	float: left;
+}
+
+#needleplot_navigation	{
+	padding: 0px;
+	width: 1000px;
+	height: 70px;
+	background-color: #FCFCFC;
+}
 /* Preserve event css attirubute during processing transition */
 .preserve_events	{
 	pointer-events : none;
 }
-/*.needleplot_patient_mutation	{
-	stroke : #fff;
-	stroke-width : 0;
-}*/

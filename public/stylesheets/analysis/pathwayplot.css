@@ -1,3 +1,11 @@
+.chart_container {
+	visibility: hidden;
+	width: 1200px;
+	margin-top: 50px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
 /* Custom tooltip style css attribute */
 .tooltip_chart {
 	font-size: 15px;
@@ -21,3 +29,77 @@
 	stroke-width: 2.5px;
 	-webkit-animation: marching_ants 10s linear infinite;
 }
+
+#pathway_modal_drug_icon	{
+	float : left;
+	/*margin-top : 7px;
+	margin-right: 0px;
+	margin-left: 0px;*/
+}
+
+.modal-dialog	{
+	width: 800px;
+}
+
+.fixed-table-header {
+	background-color: #e7e7e7;
+}
+
+.fixed-table-body {
+	overflow-x: auto;
+	overflow-y: auto;
+	height: auto;
+	max-height: 600px;
+	min-height: 100px;
+}
+
+.drug_gene_name {
+	color : #0000b2;
+	font-weight: bold;
+}
+
+.label-default	{
+	background-color: #b2b2b2;
+}
+
+#pathwayplot_table 	{
+	table-layout: fixed;
+}
+
+.drug_modal_agent {
+	font-size: 13px;
+}
+
+.drug_modal_agent span 	{
+	font-size: 13px;
+ 	white-space: nowrap;
+    	overflow: hidden;
+    	text-overflow: ellipsis;
+}
+
+.drug_modal_drug_class	{
+	font-size: 13px;
+	width: 132px;
+}
+
+.drug_modal_cancer	{
+	font-size: 13px;
+	white-space: nowrap;
+    	overflow: hidden;
+    	text-overflow: ellipsis;
+}
+
+.drug_modal_reference	{
+	font-size: 13px;
+	white-space: nowrap;
+    	overflow: hidden;
+    	text-overflow: ellipsis;
+}
+
+.underline{
+	border-bottom: 1px dotted #337AB7;
+}
+/*
+.preserve_events	{
+	pointer-events : none;
+}*/

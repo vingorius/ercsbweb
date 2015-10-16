@@ -2,6 +2,7 @@ var MA = "maplot/";
 
 define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 	return function(_data)	{
+		var tooltip = Object.create(_utils.tooltip);
 		var data = _data || {};
 		var all_circles = data.all_circles;
 		var selected_circles = [];
@@ -79,7 +80,7 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 		}
 
 		var mouseover = function(_d)	{
-			_utils.tooltip(this
+			tooltip.show(this
 				, "title : " + _d.title + "</br> x : " 
 				+ Number(_d.x).toFixed(5) + "</br> y : " 
 				+ Number(_d.y).toFixed(5) + "</br> p : "
@@ -88,7 +89,7 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 		}
 
 		var mouseout = function(_d)	{
-			_utils.tooltip();
+			tooltip.hide();
 		}
 
 		var redraw = function()  {
@@ -186,7 +187,8 @@ define(MA + "event_maplot", ["utils", "size"], function(_utils, _size)  {
 
 		var drawPath = function(terminator) {
 			var line = d3.svg.line();
-			var gs = d3.selectAll("#maplot_select_line");
+			var gs = d3.selectAll("#maplot_select_line")
+			.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1").style("shape-rendering", "crispEdges");;
 
 			gs.append("path")
 			.attr({ 

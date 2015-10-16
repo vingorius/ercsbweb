@@ -1,14 +1,257 @@
 /* Comutation Plot style css attribute */
-#comutationplot_border	{
-	fill : #000;
-	border : 1px solid rgb(236, 236, 236);
-	border-left : 0px;
-	border-top : 0px;
-	border-bottom : 0px;
+.chart_container 	{
+	visibility: hidden;
+	width : 1610px;
 }
-.comutationplot_border_path	{
-	stroke : rgb(236, 236, 236);
+
+.btn-group 	{
+	position: absolute;
 }
+
+#comutationplot_sample_lm	{
+	float: left;
+	padding: 0px;
+	margin: 0px;
+	width: 150px;
+	height: 100px;
+}
+
+#comutationplot_sample_yaxis_title 	{
+	float: left;
+	padding: 0px;
+	margin: 0px;
+	width: 150px;
+	height : 100px;
+}
+
+#comutationplot_patient_sample 	{
+	float: left;
+	padding: 0px;
+	margin-right: 5px;
+	overflow: hidden;
+}
+
+#comutationplot_sample 	{
+	float: left;
+	padding-bottom: 0px;
+	margin: 0px;
+	width: 1100px;
+	height: 100px;
+	overflow : hidden;
+	border: 0px 1px solid #fff;
+}
+
+#comutationplot_empty_rm 	{
+	float: left;
+	padding: 0px;
+	margin: 0px;
+	width: 100px;
+	height: 100px;
+}
+
+#comutationplot_group_empty	{
+	float: left;
+	padding: 0px;
+	margin: 0px;
+	width: 150px;
+	height: 90px;
+}
+
+#comutationplot_groups_name 	{
+	float: left;
+	padding: 0px;
+	margin: 0px;
+	width: 150px;
+}
+
+#comutationplot_patient_groups 	{
+	float: left;
+	padding: 0px;
+	margin-right: 5px;
+	overflow: hidden;
+}
+
+#comutationplot_groups	{
+	float: left;
+	padding-bottom: 0px;
+	margin: 0px;
+	width: 1100px;
+	overflow: hidden;
+	border: 0px 1px solid #fff;
+}
+
+#comutationplot_scale 	{
+	float: left;
+	padding: 0px;
+	margin: 0px;
+	width: 100px;
+	height: 50px;
+}
+
+#comutationplot_legend 	{
+	float: left;
+	padding: 0px;
+	margin: 0px;
+	width: 150px;
+	height: 600px;
+}
+
+#comutationplot_gene		{
+	padding: 0px;
+	margin: 0px;
+	float: left;
+	width: 150px;
+	height: 600px;
+}
+
+#comutationplot_patient_heatmap 	{
+	padding: 0px;
+	margin-right: 2.5px;
+	float: left;
+	overflow: hidden;
+	border: 1px solid #d4d4d4;
+}
+
+#comutationplot_border 	{
+	padding: 0px;
+	margin: 0px;
+	float: left;
+	width: 1100px;
+	height: 600px;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	border: 1px solid #d4d4d4;
+}
+
+#comutationplot_heatmap 	{
+	padding: 0px;
+	margin: 0px;
+	width: 1100px;
+	height: 580px;
+}
+
+#comutationplot_pq 		{
+	padding: 0px;
+	margin: 0px;
+	float: left;
+	width: 100px;
+	height: 600px;
+}
+
+#comutationplot_legend_lm 	{
+	float: left;
+	padding: 0px;
+	margin : 0px;
+	width: 150px;
+	height: 30px;
+}
+
+#comutationplot_gene_title{
+	float: left;
+	padding: 0px;
+	margin: 0px;
+	width: 150px;
+	height: 30px;
+}
+
+#comutationplot_legend_patient 	{
+	float: left;
+	width: 12px;
+	height : 30px;
+	margin: 0px;
+	padding: 0px;
+}
+
+#comutationplot_legend_empty	{
+	float: left;
+	padding: 0px;
+	margin: 0px;
+	width: 1100px;
+	height: 30px;
+}
+
+#comutationplot_pq_title 	{
+	float: left;
+	padding: 0px;
+	margin: 0px;
+	width: 100px;
+	height: 30px;
+}
+
+/*.NA 	{
+	fill : #d5dddd;
+}
+
+.Squamoid {
+	fill : #05146b;
+}
+
+.Magnoid {
+	fill : #2fcbff;
+}
+
+.Bronchioid 	{
+	fill : #ff809f;
+}
+
+.Currentreformedsmokerformore15years 	{
+	fill : #FEC39C;
+}
+
+.LifelongNon-smoker 	{
+	fill : #93FE2F;
+}
+
+.Currentreformedsmokerforlessorsame15years	{
+	fill : #F1FE86;
+}
+
+.Currentsmoker {
+	fill : #980713;
+}
+
+.CurrentReformedSmokerDurationNotSpecified 	{
+	fill : #FD0D21;
+}
+
+.AcinarpredominantAdc {
+	fill : #664A1F;
+}
+
+.AdenocarcinomaNOS 	{
+	fill : #815540;
+}
+
+.Colloidadenoca 	{
+	fill : #73324F;
+}
+
+.Invasivemucinous	{
+	fill : BD9011;
+}
+
+.LepidicpredominantAdc 	{
+	fill : #2F5930;
+}
+
+.MicropapillarypredomAdc 	{
+	fill : #445D44;
+}
+
+.Otherseecomment 	{
+	fill : #0B8782;
+}
+
+.PapillarypredominantAdc 	{
+	fill : #EB4F8A;
+}
+
+.SolidpredominantAdc 	{
+	fill : #EE9DAD;
+}
+
+.NSCLCfavor
+*/
 /* Comutation Plot navigation custom spinner css style code that used to bootstrap */
 .spinner {
 	width: 70px;

@@ -1,17 +1,9 @@
-var PQ = "population/comutationplot/pq/";
-var VO = "population/comutationplot/vo_comutationplot";
-
-
-define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
+define("population/comutationplot/pq/event_pq", ["utils", "size", "population/comutationplot/vo_comutationplot"], function(_utils, _size, _VO)	{
 	var tooltip = Object.create(_utils.tooltip);
-	tooltip.div = $(".tooltip_chart");
-
 	var barMouseover = function(_d)	{
 		var text = (_d.q ? "q" : "p").toUpperCase();
 
-		tooltip.show(
-			this, "<b>" + _d.gene + "</b></br>" + text + " : " 
-			+ Number(_utils.log((_d.q || _d.p))).toFixed(4) , "rgba(15, 15, 15, 0.6)");
+		tooltip.show(this, "<b>" + _d.gene + "</b></br>" + text + " : " + Number(_utils.calLog((_d.q || _d.p))).toFixed(4) , "rgba(15, 15, 15, 0.6)");
 
 		d3.select(this)
 		.transition().duration(50)
@@ -59,9 +51,8 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 	}
 
 	var redraw = function(_sorting_data, _size)	{
-		var magnification = 2;
 		var y = _utils.ordinalScale(_VO.VO.getGene(), 0, (_size.height - _size.margin.bottom));
-		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, _VO.VO.getWidth() * magnification);
+		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, _VO.VO.getWidth());
 
 		_utils.translateXY(d3.selectAll(".comutationplot_gene_bargroup"), 0, y, 0, "name", false, false);
 		_utils.translateXY(d3.selectAll(".comutationplot_pq_bargroup"), 0, y, 0, "gene", false, false);
@@ -84,7 +75,6 @@ define(PQ + "event_pq", ["utils", "size", VO], function(_utils, _size, _VO)	{
 		_VO.VO.setGene(sortingByName(sort_data));
 		redraw(sortingByName(sort_data), _d.size);
 	}
-
 	return {
 		m_over : barMouseover,
 		m_out : commonMouseout,

@@ -2,8 +2,10 @@ var SAMPLE = "comutationplot/sample/";
 var VO = "comutationplot/vo_comutationplot";
 
 define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _VO)	{
+	var tooltip = Object.create(_utils.tooltip);
+
 	var mouseover = function(_d)	{
-		_utils.tooltip(
+		tooltip.show(
 			this, 
 			"sample : " + _d.sample + "</br>" + _d.type + " : " + _d.count,
 			"rgba(15, 15, 15, 0.6)"
@@ -11,7 +13,7 @@ define(SAMPLE + "event_sample", ["utils", "size", VO], function(_utils, _size, _
 	}
 
 	var mouseout = function(_d)	{
-		_utils.tooltip();
+		tooltip.hide();
 	}
 
 	var ascending = function(_a, _b)	{

@@ -60,7 +60,7 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 		.orient("left")
 		.ticks(5);
 
-		svg.append("g")
+		var xaxis = svg.append("g")
 		.attr("class", "pcaplot_xaxis")
 		.attr("transform", "translate(0, " + size.rheight + ")")
 		.call(xAxis);
@@ -71,10 +71,16 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 		.append("text")
 		.text("PC1");
 
-		svg.append("g")
+		var yaxis = svg.append("g")
 		.attr("class", "pcaplot_yaxis")
 		.attr("transform", "translate(" + size.margin.left + ", 0)")
 		.call(yAxis);
+
+		xaxis.selectAll("path, line")
+        	.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1").style("shape-rendering", "crispEdges");
+
+        	yaxis.selectAll("path, line")
+        	.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1").style("shape-rendering", "crispEdges");
 
 		svg.append("g")
 		.attr("class", "pcaplot_2d_pc2label")

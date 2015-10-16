@@ -3,22 +3,8 @@
 	width : 1600px;
 }
 
+
 /* ===== Common style css attribute of chart ===== */
-/*text {
-	fill : #626262;
-}
-path {
-	fill: none;
-	stroke: #BFBFBF;
-	stroke-width: 1;
-	shape-rendering: crispEdges;
-}
-line {
-	fill: none;
-	stroke: #BFBFBF;
-	stroke-width: 1;
-	shape-rendering: crispEdges;
-}*/
 
 /* Loading screen css attribute */
 #loading_area	{
@@ -72,14 +58,15 @@ line {
 			-webkit-transform: scale(1.0);
 		}
 	}
-/* Custom tooltip style css attribute */
-.tooltip_chart {
-	font-size: 15px;
-	line-height: 25px;
-	padding: 10px;
-	color : #FFF;
-	border-radius: 5px;
-	border: 1px solid #FFF;
-	display: block;
-	z-index: 1000;
-}
+	
+	/* Custom tooltip style css attribute */
+	.tooltip_chart {
+		font-size: 15px;
+		line-height: 25px;
+		padding: 10px;
+		color : #FFF;
+		border-radius: 5px;
+		border: 1px solid #FFF;
+		display: block;
+		z-index: 1000;
+	}

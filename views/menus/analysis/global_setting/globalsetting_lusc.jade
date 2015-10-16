@@ -1,0 +1,12 @@
+div#luscModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='luscModalLabel')
+    div.modal-dialog(role='document')
+        div.modal-content
+            div.modal-header
+                button.close(type='button', data-dismiss='modal', aria-label='Close')
+                    span(aria-hidden='true') ×
+                h4#luscModalLabel.modal-title Filter Background Public Data - LUSC
+            div.modal-body
+                div#accordion.panel-group(role='tablist', aria-multiselectable='true')
+            div.modal-footer
+                button.btn.btn-default(type='button', data-dismiss='modal') Close
+                button#saveChanges.btn.btn-primary(type='button', data-dismiss='modal') Save changes

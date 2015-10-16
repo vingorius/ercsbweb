@@ -5,7 +5,7 @@ block content
 		span#loading_text
 		div.double-bounce1
 		div.double-bounce2
-	div.container.chart_base_container
+	div.container.chart_container(style={'width' : '1600px'})
 		//- include chart_header.jade
 		div.row
 			div#needleplot_yaxis(style={'padding': '0px', 'margin': '0px', 'width': '50px', 'height': '530px', 'float': 'left'})
@@ -16,7 +16,6 @@ block content
 			div#needleplot_legend(style={'padding': '0px', 'margin-left': '50px', 'width': '1350px', 'height': '70px'})
 	div.tooltip_chart(style={ "display" : "none" })
 block append scripts
-	script(src='/bower_components/html2canvas/build/html2canvas.js')
 	script(src='/bower_components/requirejs/require.js')
 	script(src='/js/chart/init.js')
 	script(src='/js/chart/start.js', onload='startChart("needle")')

@@ -2,6 +2,8 @@ var _3D = "pcaplot/pca3d/";
 
 define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 	return function(_renderer, _camera, _scene, _object3d, _raycaster, _ray_mouse, _event_targets, _sizes)	{
+		var tooltip = Object.create(_utils.tooltip);
+		
 		var check_click = false;
 		var ex = 0;
 		var ey = 0;
@@ -60,7 +62,7 @@ define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 					if(_event_targets[i].uuid === intersects[0].object.uuid)	{
 						var data = intersects[0].object.__data__;
 
-						_utils.tooltip({ x : tooltip_x, y : tooltip_y }, 
+						tooltip.show({ x : tooltip_x, y : tooltip_y }, 
 						"sample : " + data.sample
 						+ "</br> type : " + data.type
 						+ "</br> pc1 : " + Number(data.pc1).toFixed(5)
@@ -71,7 +73,7 @@ define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 				}
 			}
 			else { 
-				_utils.tooltip(); 
+				tooltip.hide(); 
 			}
 			_renderer.render(_scene, _camera);
 		}

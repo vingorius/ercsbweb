@@ -1,10 +1,12 @@
 var COMUTATION = "comutationplot/comutation/";
 
 define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _size)	{
+	var tooltip = Object.create(_utils.tooltip);
+
 	var mouseover = function(_d)	{
 		this.parentNode.parentNode.appendChild(this.parentNode);
 
-		_utils.tooltip(
+		tooltip.show(
 			this, 
 			"x : " + _d.sample + "</br>y : " + _d.gene + "</br>type : " + _d.type
 			, "rgba(15, 15, 15, 0.6)");
@@ -16,7 +18,7 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 	}
 
 	var mouseout = function(_d)	{
-		_utils.tooltip();
+		tooltip.hide();
 
 		d3.select(this)
 		.transition().duration(10)

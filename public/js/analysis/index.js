@@ -1,8 +1,8 @@
 $(function() {
 	// find user locale for date format
-	var locLang = (navigator.language) ? navigator.language : navigator.userLanguage;
-	var userLocale = locLang.substring(0, 2) || 'en';
-	//moment.locale(userLocale);
+	// var locLang = (navigator.language) ? navigator.language : navigator.userLanguage;
+	// var userLocale = locLang.substring(0, 2) || 'en';
+	// moment.locale(userLocale);
 
 
 	var table = $('#table');
@@ -30,40 +30,31 @@ $(function() {
 			sortable: true,
 			align: 'center',
 			class: 'sample_id',
-			// formatter: function(value, row) {
-			// 	console.log(row);
-			// 	var params = $.param({
-			// 		sample_id: row.sample_id,
-			// 		cancer_type: row.cancer_type,
-			// 		total_cnt: row.total_cnt,
-			// 	});
-			// 	// console.log(param);
-			// 	//return '<a href="/menus/analysis/first?' + params + '">' + value + '</a>';
-			// 	return '<span name="sample_id">' + value + '</span>';
-			// }
 		}, {
 			field: 'cancer_type',
 			title: 'Type',
+			sortable: true,
 			align: 'center',
 			formatter: function(value, row) {
 				return value.toUpperCase();
 			}
 		}, {
-			field: 'pic',
-			title: 'PiC',
+			field: 'requester',
+			title: 'Requester',
 			sortable: true,
 			align: 'center',
 		}, {
-			title: 'Date',
+			field: 'receive_date',
+			title: 'Received Date',
+			sortable: true,
 			align: 'center',
 			width: '15%',
 			formatter: function(value, row, index) {
-				var date = new Date();
-				date.setDate(date.getDate() - index);
+				var date = new Date(value);
 				return moment(date).fromNow();
 			}
 		}, {
-			field: 'cnt',
+			field: 'variants_cnt',
 			title: '# of Variants',
 			sortable: true,
 			align: 'center',
@@ -81,20 +72,19 @@ $(function() {
 						cancer_type: $element.cancer_type
 					}
 				})
-				.done(function(data) {
+				.done(function(cnt) {
+					console.log('data',cnt);
 					var params = $.param({
 						sample_id: $element.sample_id,
 						cancer_type: $element.cancer_type,
 						total_cnt: $element.total_cnt,
 					});
 					//initBGPublicData(data);
-					bg_public.init(data);
-					console.log('getCountOfPublic', bg_public.getCount());
-					console.log('getCountOfFilteredPublic', bg_public.getFilteredCount());
+					bg_public.init(cnt);
 					location.href = '/menus/analysis/first?'+params;
 				})
 				.fail(function(data) {
-					alert('fail', data);
+					console.log('fail', data);
 				});
 		}
 	});

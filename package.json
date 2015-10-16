@@ -33,5 +33,9 @@
     "tsv": "^0.2.0",
     "validator": "^3.40.1",
     "xls-to-json": "^0.3.2"
+  },
+  "devDependencies": {
+    "multiline": "^1.0.2",
+    "util": "^0.10.3"
   }
 }

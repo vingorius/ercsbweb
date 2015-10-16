@@ -18,15 +18,27 @@ define(XY + "view_xyplot", ["utils", "size", XY + "event_xyplot"], function(_uti
         var yAxis = d3.svg.axis()
         .scale(_data.y).orient("left").ticks(5);
 
-        svg.append("g")
+        var xaxis = svg.append("g")
         .attr("class", "xyplot_xaxis")
         .attr("transform", "translate(0, " + size.rheight + ")")
         .call(xAxis);
 
-        svg.append("g")
+        var yaxis = svg.append("g")
         .attr("class", "xyplot_yaxis")
         .attr("transform", "translate(" + (size.margin.left + size.margin.right) + ", 0)")
         .call(yAxis);
+
+        xaxis.selectAll("text")
+        .style("fill", "#626262");
+
+        yaxis.selectAll("text")
+        .style("fill", "#626262");
+
+        xaxis.selectAll("path, line")
+        .style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1").style("shape-rendering", "crispEdges");
+
+        yaxis.selectAll("path, line")
+        .style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1").style("shape-rendering", "crispEdges");
 
         svg.append("g")
         .append("line")

@@ -34,9 +34,19 @@ var files = require('./routes/files');
 var users = require('./routes/models/users');
 // Patient Sample
 var patient = require('./routes/models/patient');
-
+// Drug Restful
+var drug = require('./routes/models/drug');
 
 var app = express();
+
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header('Access-Control-Allow-Methods', 'HEAD, GET, POST, OPTIONS');
+  res.header("Access-Control-Allow-Headers", "Content-Type");
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
+
 // Session Management
 app.use(session({
     secret: 'keyboard cat',
@@ -96,6 +106,8 @@ app.use('/files', files);
 app.use('/models/users',security.isAuthenticated, users);
 // Patient Sample
 app.use('/models/patient', patient);
+// Drug Restful
+app.use('/models/drug', drug);
 
 // catch 404 and forward to error handler
 //여기까지 왔다는 말은 처리할 핸들러가 없다는 뜻.

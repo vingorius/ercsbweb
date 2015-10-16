@@ -1,0 +1,235 @@
+div#luadModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='luadModalLabel')
+	div.modal-dialog(role='document')
+		div.modal-content
+			div.modal-header
+				button.close(type='button', data-dismiss='modal', aria-label='Close')
+					span(aria-hidden='true') ×
+				h4#luadModalLabel.modal-title Filter Background Public Data - LUAD
+			div.modal-body
+				div#accordion.panel-group(role='tablist', aria-multiselectable='true')
+					div.panel.panel-default
+						div#heading_a.panel-heading(role='tab')
+							h4.panel-title
+								a(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_a', aria-expanded='true', aria-controls='collapseOne') Expression
+								small#sub_message_a.sub_message		
+						div#collapse_a.panel-collapse.collapse.in(role='tabpanel', aria-labelledby='heading_a')
+							div.panel-body
+								div
+									input#a_all(type='checkbox',name='a_all', value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='a_item',value='1')
+									span.sub_menu_span Squamoid
+								div
+									input(type='checkbox',name='a_item',value='3')
+									span.sub_menu_span Magnoid
+								div
+									input(type='checkbox',name='a_item',value='4')
+									span.sub_menu_span Bronchioid
+
+					div.panel.panel-default
+						div#heading_b.panel-heading(role='tab')
+							h4.panel-title
+								a.collapsed(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_b', aria-expanded='false', aria-controls='collapse_b') Tobacco Smoking History
+								small#sub_message_b.sub_message		
+						div#collapse_b.panel-collapse.collapse(role='tabpanel', aria-labelledby='heading_b')
+							div.panel-body
+								div
+									input#B_all(type='checkbox',name='b_all',value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='b_item',value='6')
+									span.sub_menu_span Lifelong Non-smoker
+								div
+									input(type='checkbox',name='b_item',value='7')
+									span.sub_menu_span Current reformed smoker for < or = 15 years
+								div
+									input(type='checkbox',name='b_item',value='5')
+									span.sub_menu_span Current reformed smoker for > 15 years
+								div
+									input(type='checkbox',name='b_item',value='8')
+									span.sub_menu_span Current smoker
+								div
+									input(type='checkbox',name='b_item',value='9')
+									span.sub_menu_span Current Current Reformed Smoker, Duration Not Specified
+
+					div.panel.panel-default
+						div#heading_c.panel-heading(role='tab')
+							h4.panel-title
+								a.collapsed(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_c', aria-expanded='false', aria-controls='collapse_c') Pathology
+								small#sub_message_c.sub_message		
+						div#collapse_c.panel-collapse.collapse(role='tabpanel', aria-labelledby='heading_c')
+							div.panel-body
+								div
+									input#c_all(type='checkbox',name='c_all',value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='c_item',value='21')
+									span.sub_menu_span Solid predominant Adc
+								div
+									input(type='checkbox',name='c_item',value='20')
+									span.sub_menu_span Papillary predominant Adc
+								div
+									input(type='checkbox',name='c_item',value='19')
+									span.sub_menu_span Other see comment
+								div
+									input(type='checkbox',name='c_item',value='22')
+									span.sub_menu_span NSCLC, favor Adeno
+								div
+									input(type='checkbox',name='c_item',value='18')
+									span.sub_menu_span Micropapillary predom Adc
+								div
+									input(type='checkbox',name='c_item',value='17')
+									span.sub_menu_span Lepidic predominant Adc
+								div
+									input(type='checkbox',name='c_item',value='15')
+									span.sub_menu_span Colloid adenoca
+								div
+									input(type='checkbox',name='c_item',value='16')
+									span.sub_menu_span Invasive mucinous
+								div
+									input(type='checkbox',name='c_item',value='14')
+									span.sub_menu_span Adenocarcinoma, NOS
+								div
+									input(type='checkbox',name='c_item',value='13')
+									span.sub_menu_span Acinar predominant Adc
+					div.panel.panel-default
+						div#heading_d.panel-heading(role='tab')
+							h4.panel-title
+								a.collapsed(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_d', aria-expanded='false', aria-controls='collapse_d') Pathology Stage
+								small#sub_message_d.sub_message		
+						div#collapse_d.panel-collapse.collapse(role='tabpanel', aria-labelledby='heading_d')
+							div.panel-body
+								div
+									input#d_all(type='checkbox',name='d_all',value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='d_item',value='29')
+									span.sub_menu_span Stage I
+								div
+									input(type='checkbox',name='d_item',value='23')
+									span.sub_menu_span Stage IA
+								div
+									input(type='checkbox',name='d_item',value='24')
+									span.sub_menu_span Stage IB
+								div
+									input(type='checkbox',name='d_item',value='25')
+									span.sub_menu_span Stage IIA
+								div
+									input(type='checkbox',name='d_item',value='26')
+									span.sub_menu_span Stage IIB
+								div
+									input(type='checkbox',name='d_item',value='27')
+									span.sub_menu_span Stage IIIA
+								div
+									input(type='checkbox',name='d_item',value='30')
+									span.sub_menu_span Stage IIIB
+								div
+									input(type='checkbox',name='d_item',value='28')
+									span.sub_menu_span Stage IV
+					div.panel.panel-default
+						div#heading_e.panel-heading(role='tab')
+							h4.panel-title
+								a.collapsed(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_e', aria-expanded='false', aria-controls='collapse_e') Radiation Therapy
+								small#sub_message_e.sub_message		
+						div#collapse_e.panel-collapse.collapse(role='tabpanel', aria-labelledby='heading_e')
+							div.panel-body
+								div
+									input#e_all(type='checkbox',name='e_all',value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='e_item',value='34')
+									span.sub_menu_span Yes
+								div
+									input(type='checkbox',name='e_item',value='33')
+									span.sub_menu_span No
+					div.panel.panel-default
+						div#heading_f.panel-heading(role='tab')
+							h4.panel-title
+								a.collapsed(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_f', aria-expanded='false', aria-controls='collapse_f') Histological Type
+								small#sub_message_f.sub_message		
+						div#collapse_f.panel-collapse.collapse(role='tabpanel', aria-labelledby='heading_f')
+							div.panel-body
+								div
+									input#f_all(type='checkbox',name='f_all',value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='f_item',value='35')
+									span.sub_menu_span Lung Adenocarcinoma- Not Otherwise Specified (NOS)
+								div
+									input(type='checkbox',name='f_item',value='36')
+									span.sub_menu_span Lung Acinar Adenocarcinoma
+								div
+									input(type='checkbox',name='f_item',value='37')
+									span.sub_menu_span Lung Bronchioloalveolar Carcinoma Nonmucinous
+								div
+									input(type='checkbox',name='f_item',value='38')
+									span.sub_menu_span Lung Solid Pattern Predominant Adenocarcinoma
+								div
+									input(type='checkbox',name='f_item',value='39')
+									span.sub_menu_span Mucinous (Colloid) Carcinoma
+								div
+									input(type='checkbox',name='f_item',value='40')
+									span.sub_menu_span Lung Adenocarcinoma Mixed Subtype
+								div
+									input(type='checkbox',name='f_item',value='41')
+									span.sub_menu_span Lung Papillary Adenocarcinoma
+								div
+									input(type='checkbox',name='f_item',value='42')
+									span.sub_menu_span Lung Bronchioloalveolar Carcinoma Mucinous
+								div
+									input(type='checkbox',name='f_item',value='43')
+									span.sub_menu_span Lung Micropapillary Adenocarcinoma
+								div
+									input(type='checkbox',name='f_item',value='44')
+									span.sub_menu_span Lung Clear Cell Adenocarcinoma
+								div
+									input(type='checkbox',name='f_item',value='45')
+									span.sub_menu_span Lung Mucinous Adenocarcinoma
+
+					div.panel.panel-default
+						div#heading_g.panel-heading(role='tab')
+							h4.panel-title
+								a.collapsed(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_g', aria-expanded='false', aria-controls='collapse_g') Gender
+								small#sub_message_g.sub_message		
+						div#collapse_g.panel-collapse.collapse(role='tabpanel', aria-labelledby='heading_g')
+							div.panel-body
+								div
+									input#g_all(type='checkbox',name='g_all',value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='g_item',value='46')
+									span.sub_menu_span FEMALE
+								div
+									input(type='checkbox',name='g_item',value='47')
+									span.sub_menu_span MALE
+
+					div.panel.panel-default
+						div#heading_h.panel-heading(role='tab')
+							h4.panel-title
+								a.collapsed(role='button', data-toggle='collapse', data-parent='#accordion', href='#collapse_h', aria-expanded='false', aria-controls='collapse_h') Vital Status
+								small#sub_message_h.sub_message
+						div#collapse_h.panel-collapse.collapse(role='tabpanel', aria-labelledby='heading_h')
+							div.panel-body
+								div
+									input#h_all(type='checkbox',name='h_all',value='All',checked)
+									span.sub_menu_span All
+								hr(style={'border-top-style': 'dashed','width': '150px', 'margin': '5px'})     
+								div
+									input(type='checkbox',name='h_item',value='48')
+									span.sub_menu_span Living
+								div
+									input(type='checkbox',name='h_item',value='49')
+									span.sub_menu_span Deceased
+
+
+			div.modal-footer
+				button.btn.btn-default(type='button', data-dismiss='modal') Close
+				button#saveChanges.btn.btn-primary(type='button', data-dismiss='modal') Save changes

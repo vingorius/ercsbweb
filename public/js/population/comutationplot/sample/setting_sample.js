@@ -7,8 +7,6 @@ define(SAMPLE + "setting_sample", ["utils", "size", SORT, SAMPLE + "view_sample"
 		$("#comutationplot_patient_sample").width(5).height(100);
 		var size = _size.initSize("comutationplot_patient_sample", 20, 20, 0, 0);
 		var patients = getPatientList(_patient_list);
-		size.left_between = 1.5;
-		size.top_between = 1.2;
 
 		_view.view({
 			class_name : "comutationplot_patient",
@@ -35,10 +33,6 @@ define(SAMPLE + "setting_sample", ["utils", "size", SORT, SAMPLE + "view_sample"
 	return function(_mutation_list, _patient_list, _samples)	{
 		var count_sample = _sort.countOrder(_mutation_list, "sample");
 		var size = _size.initSize("comutationplot_sample", 20, 20, 0, 0);
-		size.magnification = 2;
-		size.left_between = 1.5;
-		size.top_between = 1.2;
-		var title_size = _size.initSize("comutationplot_sample_yaxis_title", 20, 20, 20, 20);
 		var max = Math.ceil(_utils.getObjectMax(count_sample, "counts") / 10) * 10;
 		var y = _utils.linearScale(0, max, (size.height - (size.margin.bottom / 2)), (size.margin.top * 1.5));
 
@@ -53,13 +47,13 @@ define(SAMPLE + "setting_sample", ["utils", "size", SORT, SAMPLE + "view_sample"
 			is_patient : false,
 			data : count_sample,
 			size : size,
-			x : _utils.ordinalScale(_samples, 0, size.width * size.magnification),
+			x : _utils.ordinalScale(_samples, 0, _VO.VO.getWidth()),
 			y : y
 		});
 		_view.titleView({
 			data : count_sample,
 			size : size,
-			title_size : title_size,
+			title_size : _size.initSize("comutationplot_sample_yaxis_title", 20, 20, 20, 20),
 			max : max,
 			y : y
 		})

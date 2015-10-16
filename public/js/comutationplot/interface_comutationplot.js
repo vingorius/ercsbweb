@@ -241,13 +241,8 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 
 	return function(_data)	{
 		var presortdata = initialSort(_data.data);
-
 		var sample_list = presortdata.sample_list;
 		var symbol_list = presortdata.symbol_list;
-
-		// var sample_list = _data.data.sample_list;
-		// var symbol_list = _data.data.symbol_list;
-
 		var genes = get_list_by_key("name", symbol_list);
 		var samples = get_list_by_key("name", sample_list);
 		var mutations = get_mutation_list(sample_list);
@@ -263,8 +258,6 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		var groups = group_by_sample(all_data, _data.data.group_list);
 		var after_sort_groups = sort_by_groupname(groups);
 
-		_utils.removeSvg("comutationplot_legend");
-		
 		_setting_comutation(after_sort_groups, samples, genes, _data);
 		_setting_gene(after_sort_groups, genes, importance_name);
 		_setting_pq(_data.data.symbol_list, genes);
@@ -276,6 +269,5 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 			type : "generic mutation",
 			chart : "comutation",
 		});
-		// _setting_legend(mutations, "comutationplot_legend", null, importance);
 	};
 });

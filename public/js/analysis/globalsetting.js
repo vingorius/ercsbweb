@@ -24,7 +24,7 @@ $(function() {
 
 	$('#saveChanges').click(function() {
 		saveBGPublicSetting();
-		location.reload(true); 
+		//location.reload(true);
 	});
 
 	var resetAll = function() {
@@ -62,31 +62,30 @@ $(function() {
 	var saveBGPublicSetting = function() {
 		var checkeditems = [];
 		$('input[type=checkbox][name*="_item"]:checked').each(function(_idx, _data) {
-			// console.log(_data.name, _data.value);
-			var domain = null;
-			checkeditems.forEach(function(data) {
-				if (data.domain === _data.name.charAt(0)) domain = data;
-			});
-
-			if (domain !== null) {
-				domain.checked.push(_data.value);
-			} else {
-
-				checkeditems.push({
-					domain: _data.name.charAt(0),
-					checked: [_data.value],
-				});
-			}
+			// console.log(_idx,_data.value);
+			checkeditems.push(_data.value);
 		});
+		console.log(checkeditems.join(','));
 		// Filter Option을 저장
 		bg_public.setFilterOption(checkeditems);
-		// 필터링
-		var filtered = bg_public.filter(checkeditems);
-		// 필터링 결과 저장
-		bg_public.setFiltered(filtered);
 
-		// 좌상단 화면 갱신
-		setBGPublicDataMenuStr();
+
+		$.ajax({
+				method: "GET",
+				url: "/models/patient/bg_filtered_public",
+				data: {
+					cancer_type: $('#cancer_type').val(),
+					filter_option: checkeditems.join(','),
+				}
+			})
+			.done(function(cnt) {
+				console.log('done',cnt);
+				bg_public.setFilteredCount(cnt);
+				location.reload(true); // 좌상단 화면 갱신까지 해줌.
+			})
+			.fail(function(cnt) {
+				console.log('fail', cnt);
+			});
 	};
 
 	// var getBGPublicSetting = function() {
@@ -97,7 +96,7 @@ $(function() {
 	// };
 
 	var setBGPublicDataMenuStr = function() {
-		$('#bg_public_data_menu_str').text(bg_public.getMenuCountText());
+		$('#bg_public_data_menu_str').text(' ' + bg_public.getMenuCountText());
 	};
 
 	var init = function() {
@@ -106,17 +105,14 @@ $(function() {
 
 		var options = bg_public.getFilterOption();
 		console.log('options', options);
-		options.forEach(function(option) {
-			option.checked.forEach(function(checked){
-				console.log('init:', checked);
-				var obj = $('input[type=checkbox][value="' + checked + '"]');
+		options.forEach(function(value) {
+				var obj = $('input[type=checkbox][value="' + value + '"]');
 				var name = obj.prop('name');
 				getCBAllObject(name).prop('checked', false);
 				obj.prop('checked', true);
 				// //
 				var str = getCheckedString(getCBItemObject(name));
 				getSubMessageObject(name).text(str);
-			});
 		});
 	};
 

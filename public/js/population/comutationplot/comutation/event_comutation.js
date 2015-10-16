@@ -1,9 +1,5 @@
-var COMUTATION = "population/comutationplot/comutation/";
-
-define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _size)	{
+define("population/comutationplot/comutation/event_comutation", ["utils", "size"], function(_utils, _size)	{
 	var tooltip = Object.create(_utils.tooltip);
-	tooltip.div = $(".tooltip_chart");
-
 	var getAllType = function(_all_child, _sign)	{
 		var cnv = "", somatic = "", exp = "";
 
@@ -22,7 +18,19 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 				somatic += alter_type + "</br>";
 			}
 		}
-		return _sign === 0 ? cnv : _sign === 1 ? exp : _sign === 2 ? somatic : "";
+		return _sign === 0 ? sortAlteration(cnv) : _sign === 1 ? sortAlteration(exp) : _sign === 2 ? sortAlteration(somatic) : "";
+	}
+
+	var sortAlteration = function(_data)	{
+		var result;
+
+		if(_data.length < 1)	{
+			return;
+		}
+		result = _data.split("</br>");
+		result = result.sort(1).join("</br>");
+
+		return result.substring(5, result.length);
 	}
 
 	var event_mouseover = function(_d)	{
@@ -32,27 +40,14 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 		var gene_name = class_name.substring(class_name.indexOf("-") + 1, class_name.length);
 		var all_type = getAllType($("." + sample_name + "-" + gene_name), _d.sign);
 
-		tooltip.show(this, 
-			"<b>Gene mutations</b></br> x : " + _d.sample + "</br>y : " + _d.gene
-			+ "</br>" + all_type, "rgba(15, 15, 15, 0.6)");
+		tooltip.show(this, "<b>Gene mutations</b></br> x : " + _d.sample + "</br>y : " + _d.gene + "</br>" + all_type, "rgba(15, 15, 15, 0.6)");
 
-		target
-		.transition().duration(50)
-		.style("stroke", "#333")
-		.style("stroke-width", 1);
+		_size.styleStroke(target, "#333", 1, 50);
 	}
 
 	var event_mouseout = function(_d)	{
 		tooltip.hide();
-
-		d3.select(this)
-		.transition().duration(250)
-		.style("stroke", function(_d)	{
-			return "#fff";
-		})
-		.style("stroke-width", function(_d)	{
-			return 0;
-		});
+		_size.styleStroke(d3.select(this), "#fff", 0, 250);
 	}
 
 	var move_scroll = function()	{

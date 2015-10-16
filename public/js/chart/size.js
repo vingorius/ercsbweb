@@ -30,33 +30,36 @@ define("size", [], function()   {
 	}
 
 	var initSize = function()  {
-		if(arguments.length < 1 || arguments.length !== 5)    {
+		if(arguments.length < 1 || arguments.length < 5)    {
 			return undefined;
 		}
 
 		var target = $("#" + arguments[0]);
 		var width = target.width();
 		var height = target.height();
+		var result = {};
 
-		return {
-			width : width,
-			height : height,
-			rwidth : width - arguments[3] - arguments[4],
-			rheight : height - arguments[1] - arguments[2],
-			margin : {
-				top : arguments[1],
-				bottom : arguments[2],
-				left : arguments[3],
-				right : arguments[4]
-			}            
+		result.width = width;
+		result.height = height;
+		result.rwidth = width - arguments[3] - arguments[4];
+		result.rheight = height - arguments[1] - arguments[2];
+		result.margin = { 
+			top : arguments[1],
+			bottom : arguments[2],
+			left : arguments[3],
+			right : arguments[4]
+		};
+
+		for(var key in arguments[5])	{
+			result[key] = arguments[5][key];
 		}
+		return result;
 	}
 
 	var mkSvg = function(_target, _width, _height)	{
 		var identifier = _target.substring(1, _target.length);
 
 		return d3.select(_target).append("svg")
-		.attr("id", identifier)
 		.attr("class", identifier)
 		.attr("width", _width)
 		.attr("height", _height)
@@ -64,9 +67,25 @@ define("size", [], function()   {
 		.attr("transform", "translate(0, 0)");
 	}
 
+	var mkAxis = function(_svg, _class, _posx, _posy, _func)	{
+		return _svg.append("g")
+		.attr("class", _class)
+		.attr("transform", "translate( " + _posx + ", " + _posy + ")")
+		.call(_func);
+	}
+
+	var styleStroke = function(_obj, _color, _width, _ani)	{
+		_obj = _ani ? _obj.transition().duration(_ani) : _obj;
+		_obj
+		.style("stroke", _color || "none")
+		.style("stroke-width", _width || 0);
+	}
+
 	return {
 		initSize : initSize,
 		mkdiv : mkDiv ,
 		mkSvg : mkSvg,
+		mkAxis : mkAxis,
+		styleStroke : styleStroke,
 	};
 });

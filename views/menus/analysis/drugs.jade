@@ -1,4 +1,61 @@
 extends ../../layout/analysislayout
 
-block rightcontent
-    h1 Drugs
+block append stylesheets
+	link(rel='stylesheet', href='/bower_components/bootstrap-table/dist/bootstrap-table.min.css')
+	style.
+		.borderless tbody tr td, .borderless tbody tr th, .borderless thead tr th {
+			border: none;
+		}
+		.pagination{
+			margin: 0px;
+		}
+		.fixed-table-pagination .page-list {
+			display: none;
+		}		
+		.badge-link{
+			background-color: #337AB7;
+			cursor: pointer;
+		}
+		.pathway-title{
+			width: 200px;
+		}
+		.pathway {
+
+		}
+		.gene{
+			margin-left: 10px;
+			display: inline-block;
+		}
+		.genename{
+			cursor: pointer;
+		}
+		.alteredgenename {
+			color : #db342c;
+		}
+		.underline{
+			border-bottom: 1px dotted #337AB7;
+		}
+		.loading-indicator {
+			margin-left:5px;
+		}
+
+block prepend rightcontent
+	div
+		h3 Drugs for mutated genes
+			img#geneLoadIndicator.loading-indicator(src='/images/loading.gif',style='display:none')
+
+	div
+		ul#patient_tab.nav.nav-tabs(role="tablist")
+		div#patient_tabcontent.tab-content
+
+	div
+		h3 Drugs for aberrant pathways
+			img#pathwayLoadIndicator.loading-indicator(src='/images/loading.gif',style='display:none')
+		table#pathwayTable.table.borderless
+			tbody
+
+		table#cancer_table
+
+block append scripts
+	script(src='/bower_components/bootstrap-table/dist/bootstrap-table.min.js')
+	script(src='/js/analysis/drug.js')

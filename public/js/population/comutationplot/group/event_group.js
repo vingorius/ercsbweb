@@ -18,12 +18,11 @@ define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _siz
 	var clickSort = function(_this, _sort_order, _d)	{
 		var ex = _sort.loopingGroup(_sort_order);
 		var samples = getSampleName(ex);
-		magnification = 2;
 
 		_VO.VO.setSample(samples);
 		_VO.VO.setSortOrder(_sort_order);
 
-		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, _VO.VO.getWidth() * magnification);
+		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, _VO.VO.getWidth() - 2);
 		var y = _utils.ordinalScale(_VO.VO.getGene(), 0, _VO.VO.getHeight())
 		var sample = d3.selectAll(".comutationplot_sample_bargroup");
 		var comutation = d3.selectAll(".comutationplot_cellgroup");
@@ -46,30 +45,17 @@ define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _siz
 	}
 
 	var nameMouseover = function(_this, _name, _data)	{			
-		tooltip.show(_this, 
-			"<b>Clinical " + _name + "</b></br>sample : "  + _data.sample 
-			+ "</br>value : " + (!_data.value ? "NA" : _data.value), "rgba(15, 15, 15, 0.6)");
-
-		d3.select(_this)
-		.transition().duration(50)
-		.style("stroke", "#000")
-		.style("stroke-width", 1);
+		tooltip.show(_this, "<b>Clinical " + _name + "</b></br>sample : "  + _data.sample + "</br>value : " + (!_data.value ? "NA" : _data.value), "rgba(15, 15, 15, 0.6)");
+		_size.styleStroke(d3.select(_this), "#333", 1, 50);
 	}
 
 	var explainMouseover = function(_d)	{
-		tooltip.show(
-			this, "<b>" + _d.name + "</b></br>click to sort </br>alt + click add to key",
-			"rgba(178, 0, 0, 0.6)");
+		tooltip.show(this, "<b>" + _d.name + "</b></br>click to sort </br>alt + click add to key", "rgba(178, 0, 0, 0.6)");
 	}
 
 	var commonMouseout = function(_this, _type)		{
 		if(_type === "rect")	{
-			d3.select(_this)
-			.transition().duration(250)
-			.style("stroke", function(_d)	{
-				return "#fff";
-			})
-			.style("stroke-width", 0);
+			_size.styleStroke(d3.select(_this), "#fff", 0, 250);
 		}
 		tooltip.hide();
 	}

@@ -1,20 +1,15 @@
-var GROUP = "population/comutationplot/group/";
-var VO = "population/comutationplot/vo_comutationplot";
-var SORT = "population/comutationplot/sort_comutationplot";
-
-define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT], function(_utils, _size, _VO, _e, _sort)	{
+define("population/comutationplot/group/view_group", ["utils", "size", "population/comutationplot/vo_comutationplot", "population/comutationplot/group/event_group", "population/comutationplot/sort_comutationplot"], function(_utils, _size, _VO, _e, _sort)	{
 	var view = function(_data)	{
 		var size = _data.size;
 		var svg = _size.mkSvg("#" + _data.class_name + "_groups"
-			, (_data.patients ? size.width : size.width * size.magnification), size.height);
-
-		var bar_init_x = _utils.ordinalScale((_data.patients ? _data.patients : _VO.VO.getInitSample()), 0, (_data.patients ? size.width : size.width * size.magnification));
+			, (_data.patients ? size.width : _VO.VO.getWidth()), size.height);
+		var bar_init_x = _utils.ordinalScale((_data.patients ? _data.patients : _VO.VO.getInitSample()), 0, (_data.patients ? size.width : _VO.VO.getWidth()));
 		var bar_init_y = 5;
 
 		for(var i = 0, len = _data.data.length ; i < len ; i++)	{
 			var group = _data.data[i];
 			var name = _data.name[i];
-			var y_pos = (i * 10) + size.margin.top;
+			var y_pos = (i * 15) + size.margin.top;
 
 			makeGroupBar(_data.class_name, name, group, svg, size, { x : 0, y : y_pos }, { x : bar_init_x, y : bar_init_y }, _data.colour);
 		}
@@ -28,7 +23,9 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT],
 		var bar_rect = bar_g.selectAll("rect")
 		.data(_group.length ? _group : [ _group ])
 		.enter().append("rect")
-		.attr("class", _class + "_bar_group_rects")
+		.attr("class", function(_d) {
+			return _class + "_bar_group_rects";
+		})
 		.style("fill", function(_d)	{
 			_d.name = _name;
 
@@ -47,12 +44,7 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT],
 			return _range.x(_d.sample);
 		})
 		.attr("y", -_range.y)
-		.attr("width", function(_d)	{
-			if(!_group.length)	{
-				return _range.x.rangeBand();
-			}
-			return _range.x.rangeBand() / _size.left_between;
-		})
+		.attr("width", _range.x.rangeBand())
 		.attr("height", _range.y);
 	}
 
@@ -65,7 +57,7 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT],
 			var group = _data.data[i];
 			var name = _data.name[i];
 			var x_pos = size.width - _utils.getTextSize(name, 8).width - 10;
-			var y_pos = (i * 10) + size.margin.top;
+			var y_pos = (i * 15) + size.margin.top;
 
 			makeGroupName(name, group, svg, { x : x_pos, y : y_pos }, bar_init_x);
 		}
@@ -83,25 +75,25 @@ define(GROUP + "view_group", ["utils", "size", VO, GROUP + "event_group", SORT],
 			order : true
 		}])
 		.attr("class", "comutationplot_name_group_text")
+		.attr("cursor", "pointer")
 		.text(_name)
 		.style("fill", "#626262").style("font-size", "8px")
 		.on("mouseover", _e.eover)
 		.on("mouseout", _e.mout)
 		.on("click", function(_d)	{	
 			var sort_order;
+			var size = _sort.itemCount(_group);
 
 			if(d3.event.altKey && _VO.VO.getSortOrder().length > 0)	{
-				sort_order = _sort.loopingMultiSort(_VO.VO.getSortOrder(), _group, _d.order);
-				_e.clickSort(this, sort_order, _d);
+				sort_order = _sort.separated(_group, size, _VO.VO.getSortOrder());
 			}
 			else{
 				_VO.VO.setSortOrder([]);
-				sort_order = _sort.group(_group, _group, _VO.VO.getFormatedData().sample);
-				_e.clickSort(this, sort_order, _d);
+				sort_order = _sort.separated(_group, size);
 			}
+			_e.clickSort(this, sort_order, _d);
 		});
 	}
-
 	return	{
 		view : view,
 		nameView : nameView

@@ -1,104 +1,308 @@
 extends ../../layout/analysislayout
 
 block append stylesheets
-    style.
-        .bigbar{
-            padding: 12px;
-            font-size: 18px;
-            border-radius: 5px;
-        }
-            
-block rightcontent
-    div       
-        div.col-lg-5
-            div.page-header
-                h3 Patient Results
-            p.bg-danger.bigbar 12 genomic alteration
-            p.bg-primary.bigbar 6 therapies associated with potential clinical benefit
-            p.bg-primary.bigbar 2 therapies associated with lack of response
-            p.bg-success.bigbar 8 clinical trials
-        div.col-lg-7
-            div.page-header
-                //- h3 Tumor type: LUNG ADENOCARCINOMA(LUAD)
-                h3 LUAD 
-                    small LUNG ADENOCARCINOMA
-            div
-              // Nav tabs
-              ul.nav.nav-tabs(role='tablist')
-                li.active(role='presentation')
-                  a(href='#home', aria-controls='home', role='tab', data-toggle='tab') Mutation Landscape
-                li(role='presentation')
-                  a(href='#profile', aria-controls='profile', role='tab', data-toggle='tab') Expression Profile
-                li(role='presentation')
-                  a(href='#messages', aria-controls='messages', role='tab', data-toggle='tab') CNVs
-                li(role='presentation')
-                  a(href='#settings', aria-controls='settings', role='tab', data-toggle='tab') Fusion matrix
-                li(role='pathways')
-                  a(href='#settings', aria-controls='settings', role='tab', data-toggle='tab') Pathways
-              // Tab panes
-              div.tab-content
-                div#home.tab-pane.active(role='tabpanel') 
-                    img(src='/images/sample_needleplot.png',width='700px',style={'padding-top':'10px'})
-                div#profile.tab-pane(role='tabpanel') ...
-                div#messages.tab-pane(role='tabpanel') ...
-                div#settings.tab-pane(role='tabpanel') ...
-                div#pathways.tab-pane(role='tabpanel') ...
-    div
-        div.col-lg-12
-            div.page-header
-                h3 THERAPEUTIC IMPLICATIONS
-            table.table.table-striped.table-hover
-                thead
-                    th Genomic Alterations
-                    th Approved Drugs in LUAD
-                    th Approved Drugs in Others
-                    th Clinical Trials
-                    th Frequency in LUAD
-                tbody
-                    tr
-                        td EFGR c.2573T>G(L858R)
-                        td 
-                            a Erlotnib
-                        td 
-                            a Lapatinib
-                        td 
-                            a NCT01306045
-                            br
-                            a NCT01526026
-                        td 10~35%
-                    tr
-                        td PIK3CA C420R
-                        td 
-                        td 
-                        td 
-                        td
-                    tr
-                        td TP53 Q317*
-                        td 
-                        td 
-                        td 
-                        td
-                    tr
-                        td DNMT3A splice site 2322*1G>T
-                        td 
-                        td 
-                        td 
-                        td
-                    tr
-                        td MYD88 L265P
-                        td 
-                        td 
-                        td 
-                        td
-                    tr
-                        td PPP2R1A R183W
-                        td 
-                        td 
-                        td 
-                        td
-                    tr
-                        td PRDM1 truncation exon1
-                        td 
-                        td 
-                        td 
-                        td
+	link(rel='stylesheet', href='/bower_components/bootstrap-table/dist/bootstrap-table.min.css')
+	style.
+		.bigbar{
+			padding: 10px;
+			padding-left: 30px;
+			//- font-size: 18px;
+			border-radius: 5px;
+			text-align: left;
+			background-color: #F9F9F9;
+		}
+		.bignumber {
+			font-size: 20px;
+		}
+		.title1 {
+			font-size: 24px;
+		}
+		.midnumber {
+			font-size: 16px;
+		}
+		.subdata{
+			padding-left: 50px;
+			text-align: left;
+			margin-top: 10px;
+			margin-bottom: 5px;
+		}
+		.smalltd{
+			width: 1%;
+		}
+		.boarderless {
+			border: 0px !important;
+		}
+		.italic {
+			font-style: italic;
+		}
+		.underline{
+			text-decoration: underline;
+		}
+		.nounderline{
+			text-decoration: none;
+		}
+		.badge{
+			background-color: #337AB7;
+				cursor: pointer;
+		}
+		.logo{
+			height: 14px;
+		}
+		.modal-gene{
+			color: red;
+			font-weight: bold;
+		}
+block prepend rightcontent
+	- function capitalize(obj){
+	-   return obj.toUpperCase();
+	- }
+	- function frequency(part,total){
+	-   return ((part/total) * 100).toFixed(2);
+	- }
+	- function getClass(obj){
+	-   return obj.replace(/_Mutation/g, '');
+	- }
+	- function getTherapyString(no){
+	-	return (no > 1) ? 'therapies' : 'therapy';
+	- }
+	- function getPluralString(no, str){
+	-	return (no > 1) ? str +'s' : str;
+	- }
+	- function getDrugLink(value) {
+	-    var array = value.split('|');
+	-    var link = '';
+	-    // console.log('value', value, 'array', array);
+	-    if (array.length === 3) {
+	-        var url;
+	-        if (array[1] === 'N') {
+	-            url = 'http://www.cancer.gov/about-cancer/treatment/drugs/';
+	-        } else {
+	-            url = 'http://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=';
+	-        }
+	-        link = '<a target=drug class=\'text-nowrap\' href=\'' + url + array[2] + '\'>' + array[0] + '</a>';
+	-    } else {
+	-        link = array[0];
+	-    }
+	-    // console.log(array, link);
+	-    return link;
+	- }
+
+	mixin getDrugLinkMixin(value)
+		- var array = value.split('|');
+		- var link = '';
+		- var url;
+		if (array.length === 3)
+			if (array[1] === 'N')
+				- url = 'http://www.cancer.gov/about-cancer/treatment/drugs/'  + array[2];
+				a.text-nowrap(href='#{url}',target='drug') #{array[0]}
+			else
+				- url = 'http://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=' + array[2];
+				a.text-nowrap(href='#{url}',target='drug') #{array[0]}
+		else
+			span #{array[0]}
+
+	//- mixin getGene(gene,fda_cancer,fda_other_cancer)
+	//- 	if(fda_cancer !== null)
+	//- 		td.text-center.agent-red #{gene}
+	//- 	else if(fda_other_cancer !== null)
+	//- 		td.text-center.agent-blue #{gene}
+	//- 	else
+	//- 		td.text-center.agent-black #{gene}
+
+	mixin drugPopover(str,title)
+		if(!str)
+			td.text-center
+		else
+			- var html = '';
+			- var targets = str.split(',');
+			-   targets.forEach(function(target) {
+			-      html +=  getDrugLink(target) + '<br>';
+			-   });
+			td.text-center
+				+getDrugLinkMixin(targets[0])
+				| 
+				if(targets.length > 1)
+					a(tabindex="1", data-trigger="focus",data-container="body", data-placement="right", data-toggle="popover", data-html="true", title="#{title}",data-content="#{html}")
+						span.badge #{targets.length}
+
+	mixin altPopover(str,title)
+		if(!str)
+			td.text-center
+		else
+			- var html = '';
+			- var targets = str.split(',');
+			-   targets.forEach(function(target) {
+			- 		html = html + target + '<br>';
+			-   });
+			td.text-center #{targets[0]}
+				| 
+				if(targets.length > 1)
+					a(tabindex="1", data-trigger="focus",data-container="body", data-placement="right", data-toggle="popover", data-html="true", title="#{title}",data-content="#{html}")
+						span.badge #{targets.length}
+
+	mixin getDriverType(driver,gene)
+		if(driver > 0)
+			td.text-center.smalltd
+				a(href="#",data-toggle="modal",data-target="#driveModal",data-gene="#{gene}")
+					span.label.label-danger Driver
+		else
+			td.text-center.smalltd
+	mixin getCOSMICType(driver)
+		if(driver > 0)
+			td.text-center.smalltd
+				span.label.label-primary COSMIC
+		else
+			td.text-center.smalltd
+			//- span &nbsp;
+			//- span.label.label-danger COSMIC
+	div#driveModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='driveModalLabel')
+		div.modal-dialog.modal-lg(role='document')
+			div.modal-content
+				div.modal-header
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+					h4#driveModalLabel.modal-title
+				div.modal-body
+					div
+						h4 Overview
+						div.overview
+					div
+						h4 Alterations
+						div.alter
+					div
+						h4 Therapeutic Implications
+						div.therapeutic
+				div.modal-footer
+					button.btn.btn-default(type='button', data-dismiss='modal') Close
+
+	div
+		div.page-header(style={'margin-top': '20px'})
+			h3 #{sample.id}, #{capitalize(sample.type)} 
+				small #{info.cancer_name}
+
+		div.col-lg-5
+			div
+				h3 Analysis Results
+				hr(style={'margin-top': '0px', 'margin-bottom': '0px'})
+			h2.bigbar.text-danger(style={'margin-top': '0px'}) #{genomic_alt} 
+				small.text-danger.italic Altered #{getPluralString(genomic_alt,'gene')}
+				h3.subdata.text-danger #{mutational_cd} 
+					small.text-danger.italic in Cancer Drug Targets
+						//- span.label.label-danger Driver
+				h3.subdata.text-danger #{cosmic_cgc} 
+					small.text-danger.italic in COSMIC Cancer Gene Census 
+						//- span.label.label-primary COSMIC
+			h2.bigbar.text-primary #{fda_cancer} 
+				small.text-primary.italic #{getTherapyString(fda_cancer)} approved in #{capitalize(sample.type)}
+			h2.bigbar.text-primary #{fda_other_cancer} 
+				small.text-primary.italic #{getTherapyString(fda_other_cancer)} approved in other cancers
+			h2.bigbar.text-success #{clinical_trials} 
+				small.text-success.italic clinical #{getPluralString(clinical_trials,'trial')}
+
+
+			//- p.bg-danger.bigbar 
+			//- 	span.bignumber #{genomic_alt} 
+			//- 	| Altered #{getPluralString(genomic_alt,'gene')}
+			//- 	p.subdata 
+			//- 		span.midnumber #{mutational_cd} 
+			//- 		| in 
+			//- 		a(href="#") Mutational Cancer Drivers
+			//- 	p.subdata 
+			//- 		span.midnumber #{cosmic_cgc} 
+			//- 		| in 
+			//- 		a(href="#") COSMIC Cancer Gene Census
+			//- p.bg-primary.bigbar 
+			//- 	span.bignumber #{fda_cancer} 
+			//- 	| #{getTherapyString(fda_cancer)} approved in #{capitalize(sample.type)}
+			//- p.bg-primary.bigbar 
+			//- 	span.bignumber #{fda_other_cancer} 
+			//- 	| #{getTherapyString(fda_other_cancer)} approved in other cancers
+			//- p.bg-success.bigbar 
+			//- 	span.bignumber #{clinical_trials} 
+			//- 	| clinical #{getPluralString(clinical_trials,'trial')}
+		div.col-lg-7
+			div
+				ul.nav.nav-tabs(role="tablist")
+					li.active(role="presentation")
+						a.title1(href='#clinicaltab', data-toggle='tab',role="tab", aria-controls="clinicaltab") Clinical Features
+					li
+						a.title1(href='#treatmentstab', data-toggle='tab',role="tab", aria-controls="treatmentstab") Treatments
+				div.tab-content
+					div#clinicaltab.tab-pane.fade.in.active(role="tabpanel")
+						table.table.table-striped.table-hover
+							tbody
+								tr
+									th.boarderless Age
+									td.boarderless #{info.age}
+								tr
+									th Gender
+									td #{info.gender}
+								tr
+									th Smoking History
+									td #{info.smoking_history}
+								tr
+									th Expression Subtype
+									td #{info.expression_subtype}
+								tr
+									th Histological Type
+									td #{info.histological_type}
+								tr
+									th Pathology
+									td #{info.pathology}
+								tr
+									th Pathologic Stage
+									td #{info.pathologic_stage}
+								tr
+									th EGFR Mutation
+									td #{info.EGFR_mut}
+								tr
+									th KRAS Mutation
+									td #{info.KRAS_mut}
+					div#treatmentstab.tab-pane.fade(role="tabpanel")
+						table.table.table-striped.table-hover
+							tbody
+								tr
+									th.boarderless Targeted Molecular Therapy
+									td.boarderless #{info.targeted_molecular_therapy}
+								tr
+									th Radiation Therapy
+									td #{info.radiation_therapy}
+								tr
+									th Primary Therapy Outcome Success
+									td #{info.primary_therapy_outcome_success}
+
+		div
+			div.col-lg-12
+				div.page-header
+					h3 Therapeutic Implications
+				table.table.table-striped.table-hover
+					thead
+						tr
+							th.text-center Gene
+							th.text-center Genomic Alterations
+							th.text-center Approved Drugs in #{capitalize(sample.type)}
+							th.text-center Approved Drugs in Others
+							th.text-center Frequency in #{capitalize(sample.type)}
+							th.text-center(colspan='2') Cancer Gene?
+					tbody
+						each item in implications
+							tr
+								//- +getGene(item.gene,item.fda_cancer,item.fda_other_cancer)
+								td.text-center 
+									a(href='http://www.ncbi.nlm.nih.gov/gene?term=(#{item.gene}[Sym]) AND 9606[Taxonomy ID]',target='ncbi') #{item.gene} 
+									//- a(href='#')
+									//- 	img.logo(src='/images/pfam.gif')
+									a.anchorjs-link(style='font-family: anchorjs-icons; font-style: normal; font-variant: normal; font-weight: normal; position: absolute; margin-left: -1em; padding-right: 0.5em;', href='#live-demo-1', aria-label='Anchor link for: live demo 1', data-anchorjs-icon='')
+
+									//- a(href='#') 
+									//- 	i.fa.fa-external-link
+									//- td.text-center #{item.alt} 
+									+altPopover(getClass(item.alt),'Alterations')
+									+drugPopover(item.fda_cancer,'FDA Approved')
+									+drugPopover(item.fda_other_cancer,'FDA Approved')
+									td.text-center #{frequency(item.patientsOfPosition,item.totalPatients)}% (#{item.patientsOfPosition}/#{item.totalPatients})
+									//- td.text-center #{item.mdAnderson},#{item.countOfCOSMIC}
+									+getDriverType(item.mdAnderson,item.gene)
+									+getCOSMICType(item.countOfCOSMIC)
+block append scripts
+	script(src='/js/analysis/summary.js')

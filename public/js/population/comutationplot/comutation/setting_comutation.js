@@ -1,14 +1,9 @@
-var COMUTATION = "population/comutationplot/comutation/";
-var VO = "population/comutationplot/vo_comutationplot";
-
-define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_comutation", VO], function(_utils, _size, _view, _VO)	{
+define("population/comutationplot/comutation/setting_comutation", ["utils", "size", "population/comutationplot/comutation/view_comutation", "population/comutationplot/vo_comutationplot"], function(_utils, _size, _view, _VO)	{
 	var definePatient = function(_patient_list, _genes)	{
 		var patient_heatmap = $("#comutationplot_patient_heatmap");
 		patient_heatmap.width(5).height(580);
 		var size = _size.initSize("comutationplot_patient_heatmap", 0, 0, 0, 0);
 		var patients = getPatientList(_patient_list);
-		size.left_between = 1.5;
-		size.top_between = 1.1;
 
 		_view.view({
 			class_name : "comutationplot_patient",
@@ -36,28 +31,18 @@ define(COMUTATION + "setting_comutation", ["utils", "size", COMUTATION + "view_c
 
 	return function(_all_data, _patient_list, _samples, _genes)	{
 		var size = _size.initSize("comutationplot_heatmap", 0, 0, 0, 0);
-		size.magnification = 2;
-		size.left_between = 1.5;
-		size.top_between = 1.2;
 
 		if(_patient_list.length > 0)	{
 			definePatient(_patient_list, _genes);
 		}
 
-		_VO.VO.setInitWidth(size.width - 2);
-		_VO.VO.setInitHeight(size.height);
-		_VO.VO.setWidth(size.width - 2);
-		_VO.VO.setHeight(size.height);
-
-		_utils.removeSvg("comutationplot_heatmap");
-		
 		_view.view({
 			class_name : "comutationplot",
 			is_patient : false,
 			all_data : _all_data,
 			genes : _genes,
 			size : size,
-			x : _utils.ordinalScale(_samples, 0, size.width * size.magnification),
+			x : _utils.ordinalScale(_samples, 0, _VO.VO.getWidth()),
 			y : _utils.ordinalScale(_genes, 0, size.height)
 		});
 	}

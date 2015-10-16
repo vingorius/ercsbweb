@@ -1,6 +1,4 @@
-var NEEDLE_NAVI = "analysis/needleplot/navigation/";
-
-define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "event_needlenavigation"], function(_utils, _size, _event)	{
+define("analysis/needleplot/navigation/view_needlenavigation", ["utils", "size", "analysis/needleplot/navigation/event_needlenavigation"], function(_utils, _size, _event)	{
 	var box = function(_svg, _size, _data)	{
 		var size = _size || {};
 
@@ -12,8 +10,8 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 			height : size.height 
 		}])
 		.attr("class", "needleplot_navigation_viewarea")
-		.style("fill", "#eaeaea")
-		.attr("transform", "translate(0, 0)");
+		.attr("transform", "translate(0, 0)")
+		.style("fill", "#eaeaea");
 
 		var box = box_g.append("rect")
 		.attr("class", "needleplot_navigation_selectedarea")
@@ -31,26 +29,8 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 		})
 		.attr("cursor", "move");
 
-		var right_border = box_g.append("rect")
-		.attr("class", "needleplot_navigation_rightarea")
-		.style("fill", "#dbdbdb").style("stroke", "#dbdbdb")
-		.attr("x", function(_d)	{ 
-			return size.rwidth; 
-		})
-		.attr("y", 0)
-		.attr("width", size.margin.left)
-		.attr("height", size.height)
-		.attr("cursor", "ew-resize");
-
-		var left_border = box_g.append("rect")
-		.attr("class", "needleplot_navigation_leftarea")
-		.style("fill", "#dbdbdb").style("stroke", "#dbdbdb")
-		.attr("x", 0)
-		.attr("y", 0)
-		.attr("width", size.margin.left)
-		.attr("height", size.height)
-		.attr("cursor", "ew-resize");
-
+		var right_border = borderRect(box_g, "rightarea", size.rwidth, 0, size.margin.left, size.height);
+		var left_border = borderRect(box_g, "leftarea", 0, 0, size.margin.left, size.height);
 		var e = _event({
 			box : box,
 			right : right_border,
@@ -67,24 +47,20 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 		.call(e.resizing_l);
 	}
 
+	var borderRect = function(_element, _class, _x, _y, _width, _height)		{
+		return _element.append("rect")
+		.attr("class", "needleplot_navigation_" + _class)
+		.attr("x", _x)
+		.attr("y", _y)
+		.attr("width", _width)
+		.attr("height", _height)
+		.attr("cursor", "ew-resize")
+		.style("fill", "#dbdbdb").style("stroke", "#dbdbdb");
+	}
+
 	var view = function(_data)	{
 		var size = _data.size;
-
-		var svg = d3.select("#needleplot_navigation")
-		.append("svg")
-		.attr("class", "needleplot_navigation")
-		.attr("width", size.width)
-		.attr("height", size.height)
-		.append("g")
-		.attr("transform", "translate(0, 0)");
-
-		var xAxis = d3.svg.axis()
-		.scale(_data.x)
-		.orient("bottom");
-
-		var yAxis = d3.svg.axis()
-		.scale(_data.y)
-		.orient("left");   
+		var svg = _size.mkSvg("#needleplot_navigation", size.width, size.height);		
 
 		var bar_group = svg.selectAll(".needleplot_navigation_minibargroup")
 		.data(_data.stacked)
@@ -108,7 +84,6 @@ define(NEEDLE_NAVI + "view_needlenavigation", ["utils", "size", NEEDLE_NAVI + "e
 		.attr("height", function(_d) { 
 			return (size.height + size.margin.top) - _data.y(_d.count); 
 		});
-
 		box(svg, size, _data);
 	}
 	

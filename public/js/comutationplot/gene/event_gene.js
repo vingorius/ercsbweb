@@ -2,6 +2,8 @@ var GENE = "comutationplot/gene/";
 var VO = "comutationplot/vo_comutationplot";
 
 define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	{
+	var tooltip = Object.create(_utils.tooltip);
+
 	var axisMouseover = function(_d)	{
 		d3.select(this)
 		.transition().duration(100)
@@ -15,7 +17,7 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 	}
 
 	var barMouseover = function(_d)	{
-		_utils.tooltip(
+		tooltip.show(
 			this, 
 			"gene : " + _d.gene + "</br>count : " + _d.count, 
 			"rgba(15, 15, 15, 0.6)");
@@ -26,7 +28,7 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 	}
 
 	var barMouseout = function(_d)	{
-		_utils.tooltip();
+		tooltip.hide();
 		
 		d3.select(this)
 		.transition().duration(100)
@@ -52,6 +54,7 @@ define(GENE + "event_gene", ["utils", "size", VO], function(_utils, _size, _VO)	
 
 	var redraw = function(_sorting_data, _size)	{
 		var vo = _VO.VO;
+		console.log(vo.getWidth())
 		var y = _utils.ordinalScale(vo.getGene(), _size.margin.top, (_size.height - _size.margin.top));
 		var x = _utils.ordinalScale(vo.getSample(),vo.getMarginLeft(), (vo.getWidth() - vo.getMarginLeft()));
 

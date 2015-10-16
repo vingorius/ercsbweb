@@ -9,11 +9,6 @@ block content
 		div#xyplot_view(style={'padding': '0px', 'margin': '0px', 'width': '1450px', 'height': '660px'})
 	div.tooltip_chart(style={ "display" : "none" })
 block append scripts
-	script(src='/bower_components/canvg-gabelerner/StackBlur.js')
-	script(src='/bower_components/canvg-gabelerner/rgbcolor.js')
-	script(src='/bower_components/canvg-gabelerner/canvg.js')
-	script(src='/bower_components/imagesloaded/imagesloaded.pkgd.js')
-	script(src='/bower_components/html2canvas/build/html2canvas.js')
 	script(src='/bower_components/requirejs/require.js')
 	script(src='/js/chart/init.js')
 	script(src='/js/chart/start.js', onload='startChart("xy")')

@@ -1,10 +1,7 @@
-var SAMPLE = "population/comutationplot/sample/";
-
-define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], function(_utils, _size, _event)	{
+define("population/comutationplot/sample/view_sample", ["utils", "size", "population/comutationplot/sample/event_sample", "population/comutationplot/vo_comutationplot"], function(_utils, _size, _event, _VO)	{
 	var view = function(_data)	{
 		var size = _data.size;
-		var svg = _size.mkSvg("#" + _data.class_name + "_sample"
-			, (_data.is_patient ? size.width : size.width * size.magnification), size.height);
+		var svg = _size.mkSvg("#" + _data.class_name + "_sample", (_data.is_patient ? size.width : _VO.VO.getWidth()), size.height);
 
 		var bar_group = svg.selectAll("." + _data.class_name + "_sample_bargroup")
 		.data(_data.data)
@@ -27,7 +24,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.attr("y", function(_d) { 
 			return _data.y(_d.start + _d.count); 
 		})
-		.attr("width", _data.is_patient ? _data.x.rangeBand() : _data.x.rangeBand() / size.left_between)
+		.attr("width", _data.x.rangeBand())
 		.attr("height", function(_d) { 
 			return (size.height - (size.margin.bottom / 2)) - _data.y(_d.count); 
 		})
@@ -49,10 +46,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		.orient("left")
 		.tickValues([0, _data.max / 2, _data.max]);
 
-		var yaxis = svg.append("g")
-		.attr("class", "comutationplot_sample_yaxis")
-		.attr("transform", "translate(" + (size.width - (size.margin.left / 2)) + ", 0)")
-		.call(yAxis);
+		var yaxis = _size.mkAxis(svg, "comutationplot_sample_yaxis", (size.width - size.margin.left / 2), 0, yAxis);
 
 		yaxis.selectAll("text")
 		.style("fill", "#626262").style("font-size", "8px");
@@ -67,6 +61,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 			status : false 
 		}])
 		.attr("class", "comutationplot_sample_sort_label")
+		.attr("cursor", "pointer")
 		.attr("transform", "translate(" + size.margin.left + ", " + (size.height - size.margin.left / 2) + ")")
 		.append("text")
 		.text("#mutation count")
@@ -77,7 +72,6 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 		})
 		.on("click", _event.sortByValue);
 	}
-
 	return {
 		view : view,
 		titleView : titleView

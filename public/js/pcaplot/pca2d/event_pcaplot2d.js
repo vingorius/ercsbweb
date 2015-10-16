@@ -1,8 +1,10 @@
 var _2D = "pcaplot/pca2d/";
 
 define(_2D + "event_pcaplot2d", ["utils", "size"], function(_utils, _size)	{
+	var tooltip = Object.create(_utils.tooltip);
+	
 	var mouseover = function(_d)	{
-		_utils.tooltip(this
+		tooltip.show(this
 			, "sample : " + _d.SAMPLE
 			+ "</br> type : " + _d.TYPE
 			+ "</br> pc1 : " + Number(_d.PC1).toFixed(5)
@@ -13,7 +15,7 @@ define(_2D + "event_pcaplot2d", ["utils", "size"], function(_utils, _size)	{
 	}
 
 	var mouseout = function(_d)	{
-		_utils.tooltip();
+		tooltip.hide();	
 	}
 
 	return {

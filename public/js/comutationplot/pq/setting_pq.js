@@ -20,8 +20,8 @@ define(PQ + "setting_pq", ["utils", "size", PQ + "view_pq"], function(_utils, _s
 		return d3.max(data.map(function(_d)	{
 			var result = 0;
 			for(var i = 0, len = _d.list.length ; i < len ; i++)	{
-				(_utils.log(_d.list[i].q) > result) ?
-					result = _utils.log(_d.list[i].q) : result = result;
+				(_utils.calLog(_d.list[i].q) > result) ?
+					result = _utils.calLog(_d.list[i].q) : result = result;
 			}
 			return result;
 		}));

@@ -21,16 +21,24 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.scale(_data.y)
 		.orient("right");
 
-		svg.append("g")
+		var xaxis = svg.append("g")
 		.attr("class", "comutationplot_gene_xaxis")
 		.attr("transform", "translate(0, " + (size.height - size.margin.top) + ")")
 		.call(xAxis);
 
-		svg.append("g")
+		var yaxis = svg.append("g")
 		.attr("class", "comutationplot_gene_yaxis")
 		.attr("transform", "translate(" + (size.width - size.margin.right) + ", 0)")
-		.call(yAxis)
-		.selectAll("text")
+		.call(yAxis);
+
+		xaxis.selectAll("text")
+		.style("fill", "#626262");
+
+		yaxis.selectAll("path, line")
+		.style("fill", "none").style("stroke", "none");
+
+		yaxis.selectAll("text")
+		.style("fill", "#626262")
 		.on("mouseover", _event.axis_m_over)
 		.on("mouseout", _event.axis_m_out);
 

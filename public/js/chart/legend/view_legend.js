@@ -1,72 +1,82 @@
 define("chart/legend/view_legend", ["utils", "size", "chart/legend/event_legend"], function(_utils, _size, _event)    {
-	var interfaceComutation = function(_data, _g)	{
+	var setFigureData = function()	{
+		this.set = {
+			data : arguments[0],
+			name : arguments[1],
+		}
+	}
+	setFigureData.prototype.rect = function()	{
+		this.set.x = arguments[0];
+		this.set.y = arguments[1];
+		this.set.width = arguments[2];
+		this.set.height = arguments[3];
+		return this;
+	}
+	setFigureData.prototype.circle = function()	{
+		this.set.cx = arguments[0];
+		this.set.cy = arguments[1];
+		this.set.radius = arguments[2];
+		return this;
+	}
+	setFigureData.prototype.style = function()	{
+		this.set[arguments[0]] = arguments[1];
+		return this;
+	}
+
+	var setFigure = function(_data, _g)	{
+		var chart = _data.chart;
+
 		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
 			var type = _data.data.type_list[i];
 			var name = _utils.defMutName(type.name);
+			var data_set = new setFigureData(_data, name);
+			var arranged = _data.arranged(name, "figure", _data.size_set, _data.size);
+			var info = null;
 
-			switch(type.alteration)	{
-				case "CNV" : 
-					figureRect(_g, "cnv", { data : _data, name : name, width : 4.5, height : 15, fill : _utils.colour(name) });
-				break;
-				case "mRNA Expression (log2FC)" :  
-					figureRect(_g, "exp", { data : _data, name : name, width : 4.5, height : 15, stroke : _utils.colour(name) });
-				break;
-				case "Somatic Mutaion" : 
-					figureRect(_g, "somatic", { data : _data, name : name, y : 5, width : 4.5, height : 5, fill : _utils.colour(name) });
-				break;
+			switch(chart)	{
+				case "comutation" : 
+				if(type.alteration === "CNV")	{
+					info = { id : "cnv", data : data_set.rect(0, 0, 4.5, 15).style("fill", _utils.colour(name)).set, type : "rect" };
+				}
+				else if(type.alteration === "mRNA Expression (log2FC)")	{
+					info = { id : "exp", data : data_set.rect(0, 0, 4.5, 15).style("stroke", _utils.colour(name)).set, type : "rect" };
+				}
+				else {
+					info = { id : "somatic", data : data_set.rect(0, 5, 4.5, 5).style("fill", _utils.colour(name)).set, type : "rect" }
+				}; break;
+				case "pcaplot" : 
+				if(type.name === "Primary Solid Tumor")	{
+					info = { id : "pcaplot", data : data_set.rect(0, 3, 10, 10).style("fill", _utils.colour(type.name)).set, type : "circle"};
+				}
+				else if(type.name === "Solid Tissue Normal")	{
+					info = { id : "pcaplot", data : data_set.circle(5, 7.5, 5).style("fill", _utils.colour(type.name)).set, type : "rect"};
+				}; break;
+				case "needleplot" : 
+				info = { id : "needleplot", data : data_set.circle(0, 8, 3).style("fill", _utils.colour(name)).set, type : "circle"}; break;
 			}
+			info.type === "circle" ? figureCircle(_g, info.id, info.data, arranged) : figureRect(_g, info.id, info.data, arranged);
 		}
 	}
 
-	var interfaceNeedle = function(_data, _g)	{
-		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
-			var type = _data.data.type_list[i];
-			var name = _utils.defMutName(type.name);
-
-			figureCircle(_g, "needleplot", { data : _data, name : name, radius : 3, cy : 8, fill : _utils.colour(name) });
-		}
-	}
-
-	var interfacePca = function(_data, _g)	{
-		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
-			var type = _data.data.type_list[i];
-
-			switch(type.name)	{
-				case "Primary Solid Tumor" :
-					figureCircle(_g, "pcaplot", { data : _data, name : type.name, radius : 5, cx : 5, cy : 7.5, fill : _utils.colour(type.name) });
-				break; 
-				case "Solid Tissue Normal" : 
-					figureRect(_g, "pcaplot", { data : _data, name : type.name, y : 3, width : 10, height : 10, fill : _utils.colour(type.name) });
-				break;
-			}
-		}
-	}
-
-	var figureCircle = function(_element, _id, _data)	{
-		var arranged = _data.data.arranged(_data.name, "figure", _data.data.size_set, _data.data.size);
-
+	var figureCircle = function(_element, _id, _data, _arranged)	{
 		return _element.append("circle")
 		.attr("class", "legend_figure_" + _id)
-		.attr("cx", arranged.x + (_data.cx || 0))
-		.attr("cy", arranged.y + (_data.cy || 0))
-		.attr("r", _data.radius || 0)
+		.attr("cx", _arranged.x + _data.cx)
+		.attr("cy", _arranged.y + _data.cy)
+		.attr("r", _data.radius)
 		.style("fill", _data.fill ? _data.fill : "none")
-		.style("stroke", _data.stroke ? _data.stroke : "none")
-		.style("stroke-width", _data.stroke ? _data.stroke : "none");
+		.style("stroke", _data.stroke ? _data.stroke : "none");
 	}
 
-	var figureRect = function(_element, _id, _data)	{
-		var arranged = _data.data.arranged(_data.name, "figure", _data.data.size_set, _data.data.size);
-
+	var figureRect = function(_element, _id, _data, _arranged)	{
 		return _element.append("rect")
 		.attr("class", "legend_figure_" + _id)
-		.attr("x", arranged.x + (_data.x || 0))
-		.attr("y", arranged.y + (_data.y || 0))
-		.attr("width", _data.width || 0)
-		.attr("height", _data.height || 0)
+		.attr("x", _arranged.x + _data.x)
+		.attr("y", _arranged.y + _data.y)
+		.attr("width", _data.width)
+		.attr("height", _data.height)
 		.style("fill", _data.fill || "none")
-		.style("stroke", _data.stroke || "none")
-		.style("stroke-width", _data.stroke || "none");
+		.style("stroke", _data.stroke || "none");
 	}
 
 	var view = function(_data)  {
@@ -78,12 +88,6 @@ define("chart/legend/view_legend", ["utils", "size", "chart/legend/event_legend"
 		.enter().append("g")
 		.attr("class", "legendGroup")
 		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")");
-
-		switch(_data.chart)	{
-			case "comutation" : interfaceComutation(_data, legendGroup); break;
-			case "needleplot" : interfaceNeedle(_data, legendGroup); break;
-			case "pcaplot" : interfacePca(_data, legendGroup); break;
-		}
 
 		var text = legendGroup.append("text")
 		.attr("class", "legend_text")
@@ -99,6 +103,7 @@ define("chart/legend/view_legend", ["utils", "size", "chart/legend/event_legend"
 		.text(function(_d) { 
 			return _d.name; 
 		});
+		setFigure(_data, legendGroup);
 	}
 	return {
 		view : view

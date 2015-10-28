@@ -20,7 +20,7 @@
     "express-authorization": "^1.0.0",
     "express-session": "^1.11.3",
     "fs": "0.0.2",
-    "jade": "~1.9.2",
+    "jade": "^1.9.2",
     "mongoose": "^4.0.6",
     "morgan": "~1.5.3",
     "multer": "^0.1.8",
@@ -35,6 +35,7 @@
     "xls-to-json": "^0.3.2"
   },
   "devDependencies": {
+    "async": "^1.5.0",
     "multiline": "^1.0.2",
     "util": "^0.10.3"
   }

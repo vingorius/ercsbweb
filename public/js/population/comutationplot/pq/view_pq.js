@@ -22,9 +22,8 @@ define("population/comutationplot/pq/view_pq", ["utils", "size", "population/com
 		.attr("class", "comutationplot_pq_bargroup") 
 		.attr("transform", function(_d)	{
 			return "translate(0, " + _data.y(_d.gene) + ")"
-		});
-
-		var stacked_bar = bar_group.selectAll("rect")  
+		})
+		.selectAll("rect")  
 		.data(function(_d)  { 
 			return _d.list; 
 		})

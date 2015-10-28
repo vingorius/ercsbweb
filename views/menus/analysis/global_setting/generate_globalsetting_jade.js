@@ -14,6 +14,7 @@ var fs = require('fs');
 var mysql = require('mysql');
 var util = require('util');
 var multiline = require('multiline');
+var async = require('async');
 
 var cancer_type = process.argv[2];
 if(cancer_type === undefined){
@@ -22,11 +23,13 @@ if(cancer_type === undefined){
 }
 
 var filename = 'globalsetting_' + cancer_type +'.jade';
+// var filename = 'globalsetting_' + 'test' +'.jade';
 var out = fs.createWriteStream(filename, {
     flags: 'w'
 });
 
-var connection = mysql.createConnection({
+// var connection = mysql.createConnection({
+var pool = mysql.createPool({
     host: '192.168.191.160',
     database: 'omics_data',
     user: 'root',
@@ -81,6 +84,7 @@ var panelItem = multiline(function() {
                                 div
                                     input(type='checkbox',name='%s_item',value='%s')
                                     span.sub_menu_span %s
+                                    div.cohort-cnt %s
 
 */
 });
@@ -102,18 +106,81 @@ function upper(match) {
     return match.toUpperCase();
 }
 
-connection.connect();
-// connection.query('select * from omics_data.ucsc_sample_subtype a where a.value not in (\'NA\',\'0\') order by 1', function(err, rows, fields) {
-connection.query(sql,[cancer_type], function(err, rows, fields) {
-    if (err) throw err;
-    out.write(util.format(modalHeader,cancer_type,cancer_type,cancer_type,cancer_type.toUpperCase()));
+function getSQL(cancer_type,subtype){
+    var sql = multiline(function() {
+        /*
+            select count(a.SAMPLE_ID) cnt
+              from ucsc_sample_features_%s a
+             where a.%s = ?
+         */
+    });
+    return util.format(sql,cancer_type,subtype);
+}
+
+/*
+pool.getConnection(function(err, connection) {
+    connection.query(sql,[cancer_type], function(err, rows, fields) {
+        if (err) throw err;
+        out.write(util.format(modalHeader,cancer_type,cancer_type,cancer_type,cancer_type.toUpperCase()));
+        // console.log('The solution is: ', rows);
+        var prevSubTypeId = '';
+        var inclass = '.in';
+        var ariaExpanded = 'true';
+
+        rows.forEach(function(row) {
+            // console.log(row);
+            var subtypeid = row.subtype_id.toLowerCase();
+            var subtypeTitle = row.subtype.replace(/^(\w)/,upper).replace(/(_\w)/g,upperToHyphenLower);
+            // console.log(subtypeTitle);
+            if (prevSubTypeId !== row.subtype_id) {
+                out.write(util.format(panelDefault,subtypeid,subtypeid,ariaExpanded,subtypeid,subtypeTitle,subtypeid,subtypeid,inclass,subtypeid,subtypeid,subtypeid));
+                // console.log(row.subtype_id);
+                inclass = '';
+                ariaExpanded = 'false';
+            }
+            var cntSql = getSQL(cancer_type,row.subtype);
+            connection.query(cntSql,[row.value], function(err, rows, fields) {
+                console.log(cntSql,rows);
+                out.write(util.format(panelItem,subtypeid,row.id,row.value,rows[0].cnt));
+            });
+            prevSubTypeId = row.subtype_id;
+        });
+        connection.release();
+        out.write(util.format(modalFooter));
+        out.end();
+    });
+*/
+pool.getConnection(function(err, connection) {
+    var datas;
+    connection.query(sql,[cancer_type], function(err, rows, fields) {
+        if (err) throw err;
+        // console.log('The solution is: ', rows);
+        datas = rows;
+        async.each(datas,function(data,done){
+            var cntSql = getSQL(cancer_type,data.subtype);
+            connection.query(cntSql,[data.value], function(err, rows, fields) {
+                if(err) done(err);
+                data.cnt = rows[0].cnt;
+                done();
+            });
+        },function(err){
+            if(err) console.error(err);
+            else    writeData(datas);
+        });
+
+        connection.release();
+        pool.end();
+    });
+});
+
+function writeData(rows){
     // console.log('The solution is: ', rows);
+    out.write(util.format(modalHeader,cancer_type,cancer_type,cancer_type,cancer_type.toUpperCase()));
     var prevSubTypeId = '';
     var inclass = '.in';
     var ariaExpanded = 'true';
 
     rows.forEach(function(row) {
-        // console.log(row);
         var subtypeid = row.subtype_id.toLowerCase();
         var subtypeTitle = row.subtype.replace(/^(\w)/,upper).replace(/(_\w)/g,upperToHyphenLower);
         // console.log(subtypeTitle);
@@ -123,11 +190,9 @@ connection.query(sql,[cancer_type], function(err, rows, fields) {
             inclass = '';
             ariaExpanded = 'false';
         }
-        out.write(util.format(panelItem,subtypeid,row.id,row.value));
+        out.write(util.format(panelItem,subtypeid,row.id,row.value,row.cnt));
         prevSubTypeId = row.subtype_id;
     });
     out.write(util.format(modalFooter));
     out.end();
-});
-
-connection.end();
+}

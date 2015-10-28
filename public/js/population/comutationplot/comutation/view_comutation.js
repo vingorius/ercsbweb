@@ -17,8 +17,7 @@ define("population/comutationplot/comutation/view_comutation", ["utils", "size",
 
 	var view = function(_data)	{
 		var size = _data.size;
-		var vo = _VO.VO;
-		var width = _data.is_patient ? size.width : vo.getWidth();
+		var width = _data.is_patient ? size.width :  _VO.VO.getWidth();
 		var svg = _size.mkSvg("#" + _data.class_name + "_heatmap", width, size.height);
 
 		makeBorder(svg, width, size.height);
@@ -33,13 +32,12 @@ define("population/comutationplot/comutation/view_comutation", ["utils", "size",
 		.attr("class", _data.class_name + "_cellgroup")
 		.attr("transform", function(_d, _i)	{
 			var target = $(this)[0];
-			var parent = target.parentNode;
 
 			_d.x = _data.x;
 			_d.y = _data.y;
 
-			if(getAlteration(_d.type).alteration === "Somatic Mutaion")	{
-				parent.appendChild(target);
+			if(getAlteration(_d.type).alteration === "Somatic Mutation")	{
+				target.parentNode.appendChild(target);
 			}
 			return "translate(" + _data.x(_d.sample) + ", " + _data.y(_d.gene) +")";
 		});
@@ -58,9 +56,7 @@ define("population/comutationplot/comutation/view_comutation", ["utils", "size",
 			if(getAlteration(_d.type).alteration === "CNV")	{
 				return 0;
 			} 
-			else {
-				return (_data.y.rangeBand() / 2) - ((_data.y.rangeBand() / 2.5) / 2); 
-			}
+			return (_data.y.rangeBand() / 2) - ((_data.y.rangeBand() / 2.5) / 2); 
 		})
 		.attr("width", _data.x.rangeBand())
 		.attr("height", function(_d) {
@@ -68,10 +64,8 @@ define("population/comutationplot/comutation/view_comutation", ["utils", "size",
 				_d.sign = 0;
 				return _data.y.rangeBand() / _VO.VO.getTopBetween();
 			} 
-			else {
-				_d.sign = 2;
-				return (_data.y.rangeBand() / 3) / _VO.VO.getTopBetween(); 
-			}
+			_d.sign = 2;
+			return (_data.y.rangeBand() / 3) / _VO.VO.getTopBetween(); 
 		});
 		_event.move_scroll();
 	}

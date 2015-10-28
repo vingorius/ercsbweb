@@ -48,10 +48,18 @@ block append stylesheets
 		.logo{
 			height: 14px;
 		}
+		.modal-scroll{
+			max-height: 800px;
+		    overflow-y: auto;
+		}
 		.modal-gene{
 			color: red;
 			font-weight: bold;
 		}
+		.fixed-table-pagination .pagination-detail, .fixed-table-pagination div.pagination {
+		    margin-bottom: 0px;
+		}
+
 block prepend rightcontent
 	- function capitalize(obj){
 	-   return obj.toUpperCase();
@@ -62,99 +70,14 @@ block prepend rightcontent
 	- function getClass(obj){
 	-   return obj.replace(/_Mutation/g, '');
 	- }
-	- function getTherapyString(no){
-	-	return (no > 1) ? 'therapies' : 'therapy';
+	- function endsWith(str, suffix) {
+	-   return str.indexOf(suffix, str.length - suffix.length) !== -1;
 	- }
 	- function getPluralString(no, str){
-	-	return (no > 1) ? str +'s' : str;
-	- }
-	- function getDrugLink(value) {
-	-    var array = value.split('|');
-	-    var link = '';
-	-    // console.log('value', value, 'array', array);
-	-    if (array.length === 3) {
-	-        var url;
-	-        if (array[1] === 'N') {
-	-            url = 'http://www.cancer.gov/about-cancer/treatment/drugs/';
-	-        } else {
-	-            url = 'http://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=';
-	-        }
-	-        link = '<a target=drug class=\'text-nowrap\' href=\'' + url + array[2] + '\'>' + array[0] + '</a>';
-	-    } else {
-	-        link = array[0];
-	-    }
-	-    // console.log(array, link);
-	-    return link;
+	- 	if(no < 2) return str;
+	-	return endsWith(str,'y') ? str.substring(0,str.length - 1) + 'ies' : str + 's';
 	- }
 
-	mixin getDrugLinkMixin(value)
-		- var array = value.split('|');
-		- var link = '';
-		- var url;
-		if (array.length === 3)
-			if (array[1] === 'N')
-				- url = 'http://www.cancer.gov/about-cancer/treatment/drugs/'  + array[2];
-				a.text-nowrap(href='#{url}',target='drug') #{array[0]}
-			else
-				- url = 'http://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=' + array[2];
-				a.text-nowrap(href='#{url}',target='drug') #{array[0]}
-		else
-			span #{array[0]}
-
-	//- mixin getGene(gene,fda_cancer,fda_other_cancer)
-	//- 	if(fda_cancer !== null)
-	//- 		td.text-center.agent-red #{gene}
-	//- 	else if(fda_other_cancer !== null)
-	//- 		td.text-center.agent-blue #{gene}
-	//- 	else
-	//- 		td.text-center.agent-black #{gene}
-
-	mixin drugPopover(str,title)
-		if(!str)
-			td.text-center
-		else
-			- var html = '';
-			- var targets = str.split(',');
-			-   targets.forEach(function(target) {
-			-      html +=  getDrugLink(target) + '<br>';
-			-   });
-			td.text-center
-				+getDrugLinkMixin(targets[0])
-				| 
-				if(targets.length > 1)
-					a(tabindex="1", data-trigger="focus",data-container="body", data-placement="right", data-toggle="popover", data-html="true", title="#{title}",data-content="#{html}")
-						span.badge #{targets.length}
-
-	mixin altPopover(str,title)
-		if(!str)
-			td.text-center
-		else
-			- var html = '';
-			- var targets = str.split(',');
-			-   targets.forEach(function(target) {
-			- 		html = html + target + '<br>';
-			-   });
-			td.text-center #{targets[0]}
-				| 
-				if(targets.length > 1)
-					a(tabindex="1", data-trigger="focus",data-container="body", data-placement="right", data-toggle="popover", data-html="true", title="#{title}",data-content="#{html}")
-						span.badge #{targets.length}
-
-	mixin getDriverType(driver,gene)
-		if(driver > 0)
-			td.text-center.smalltd
-				a(href="#",data-toggle="modal",data-target="#driveModal",data-gene="#{gene}")
-					span.label.label-danger Driver
-		else
-			td.text-center.smalltd
-	mixin getCOSMICType(driver)
-		if(driver > 0)
-			td.text-center.smalltd
-				span.label.label-primary COSMIC
-		else
-			td.text-center.smalltd
-			//- span &nbsp;
-			//- span.label.label-danger COSMIC
 	div#driveModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='driveModalLabel')
 		div.modal-dialog.modal-lg(role='document')
 			div.modal-content
@@ -162,7 +85,7 @@ block prepend rightcontent
 					button.close(type='button', data-dismiss='modal', aria-label='Close')
 						span(aria-hidden='true') ×
 					h4#driveModalLabel.modal-title
-				div.modal-body
+				div.modal-body.modal-scroll
 					div
 						h4 Overview
 						div.overview
@@ -188,38 +111,15 @@ block prepend rightcontent
 				small.text-danger.italic Altered #{getPluralString(genomic_alt,'gene')}
 				h3.subdata.text-danger #{mutational_cd} 
 					small.text-danger.italic in Cancer Drug Targets
-						//- span.label.label-danger Driver
 				h3.subdata.text-danger #{cosmic_cgc} 
 					small.text-danger.italic in COSMIC Cancer Gene Census 
-						//- span.label.label-primary COSMIC
 			h2.bigbar.text-primary #{fda_cancer} 
-				small.text-primary.italic #{getTherapyString(fda_cancer)} approved in #{capitalize(sample.type)}
+				small.text-primary.italic #{getPluralString(fda_cancer,'therapy')} approved in #{capitalize(sample.type)}
 			h2.bigbar.text-primary #{fda_other_cancer} 
-				small.text-primary.italic #{getTherapyString(fda_other_cancer)} approved in other cancers
+				small.text-primary.italic #{getPluralString(fda_other_cancer,'therapy')} approved in other cancers
 			h2.bigbar.text-success #{clinical_trials} 
 				small.text-success.italic clinical #{getPluralString(clinical_trials,'trial')}
 
-
-			//- p.bg-danger.bigbar 
-			//- 	span.bignumber #{genomic_alt} 
-			//- 	| Altered #{getPluralString(genomic_alt,'gene')}
-			//- 	p.subdata 
-			//- 		span.midnumber #{mutational_cd} 
-			//- 		| in 
-			//- 		a(href="#") Mutational Cancer Drivers
-			//- 	p.subdata 
-			//- 		span.midnumber #{cosmic_cgc} 
-			//- 		| in 
-			//- 		a(href="#") COSMIC Cancer Gene Census
-			//- p.bg-primary.bigbar 
-			//- 	span.bignumber #{fda_cancer} 
-			//- 	| #{getTherapyString(fda_cancer)} approved in #{capitalize(sample.type)}
-			//- p.bg-primary.bigbar 
-			//- 	span.bignumber #{fda_other_cancer} 
-			//- 	| #{getTherapyString(fda_other_cancer)} approved in other cancers
-			//- p.bg-success.bigbar 
-			//- 	span.bignumber #{clinical_trials} 
-			//- 	| clinical #{getPluralString(clinical_trials,'trial')}
 		div.col-lg-7
 			div
 				ul.nav.nav-tabs(role="tablist")
@@ -270,39 +170,19 @@ block prepend rightcontent
 								tr
 									th Primary Therapy Outcome Success
 									td #{info.primary_therapy_outcome_success}
-
 		div
 			div.col-lg-12
 				div.page-header
 					h3 Therapeutic Implications
-				table.table.table-striped.table-hover
-					thead
-						tr
-							th.text-center Gene
-							th.text-center Genomic Alterations
-							th.text-center Approved Drugs in #{capitalize(sample.type)}
-							th.text-center Approved Drugs in Others
-							th.text-center Frequency in #{capitalize(sample.type)}
-							th.text-center(colspan='2') Cancer Gene?
-					tbody
-						each item in implications
-							tr
-								//- +getGene(item.gene,item.fda_cancer,item.fda_other_cancer)
-								td.text-center 
-									a(href='http://www.ncbi.nlm.nih.gov/gene?term=(#{item.gene}[Sym]) AND 9606[Taxonomy ID]',target='ncbi') #{item.gene} 
-									//- a(href='#')
-									//- 	img.logo(src='/images/pfam.gif')
-									a.anchorjs-link(style='font-family: anchorjs-icons; font-style: normal; font-variant: normal; font-weight: normal; position: absolute; margin-left: -1em; padding-right: 0.5em;', href='#live-demo-1', aria-label='Anchor link for: live demo 1', data-anchorjs-icon='')
+				table#implication_table.table.table-striped.table-hover
 
-									//- a(href='#') 
-									//- 	i.fa.fa-external-link
-									//- td.text-center #{item.alt} 
-									+altPopover(getClass(item.alt),'Alterations')
-									+drugPopover(item.fda_cancer,'FDA Approved')
-									+drugPopover(item.fda_other_cancer,'FDA Approved')
-									td.text-center #{frequency(item.patientsOfPosition,item.totalPatients)}% (#{item.patientsOfPosition}/#{item.totalPatients})
-									//- td.text-center #{item.mdAnderson},#{item.countOfCOSMIC}
-									+getDriverType(item.mdAnderson,item.gene)
-									+getCOSMICType(item.countOfCOSMIC)
 block append scripts
+	script(src='/bower_components/bootstrap-table/dist/bootstrap-table.min.js')
 	script(src='/js/analysis/summary.js')
+	script.
+		$(function() {
+			var cancer_type = $('#cancer_type').val();
+			var sample_id = $('#sample_id').val();
+			var implications = !{JSON.stringify(implications)};
+			renderingTable(cancer_type,sample_id,implications);
+		});		

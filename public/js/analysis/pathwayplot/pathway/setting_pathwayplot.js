@@ -1,5 +1,5 @@
 define("analysis/pathwayplot/pathway/setting_pathwayplot", ["utils", "size", "analysis/pathwayplot/pathway/view_pathwayplot"], function(_utils, _size, _view)   {
-	var getGeneGroup = function(_all_txt, _pathway_list)	{
+	var getGenes = function(_all_txt, _pathway_list)	{
 		var result = [];
 
 		for(var i = 0, len = _all_txt.length ; i < len ; i++)	{
@@ -13,39 +13,35 @@ define("analysis/pathwayplot/pathway/setting_pathwayplot", ["utils", "size", "an
 		return result;
 	}
 
-	var findDrugGroup = function(_cancer_type)		{
-		var all_drugs = d3.selectAll("g[id*='drug_']");
-		all_drugs.datum(_cancer_type);
-		all_drugs.attr("cursor", "pointer");
-
-		return all_drugs;
+	var getDrugs = function(_cancer_type)		{
+		return d3.selectAll("g[id*='drug_']")
+		.datum(_cancer_type)
+		.attr("cursor", "pointer");
 	}
 
-	var setColumn = function(_class, _field, _title, _func)		{
-		var column_set = {
+	var setColumns = function(_class, _field, _title, _func)		{
+		this.add_columns = [ "halign", "valign", "align" ];
+		this.args = arguments;
+		this.column_set = {
 			class : _class,
 			field : _field,
 			title : _title,
 			formatter : _func,
 		};
-		return addColumnLoop(column_set, arguments);
-	}
-
-	var addColumnLoop = function(_obj, _arguments)	{
-		var add_columns = [ "halign", "valign", "align" ];
-
-		for(var i = 4, len = _arguments.length ; i < len ; i++)	{
-			_obj[add_columns[i - 4]] = _arguments[i];
+		return function()	{
+			for(var i = 4, len = this.args.length ; i < len ; i++)	{
+				this.column_set[this.add_columns[i - 4]] = this.args[i];
+			}
+			return this.column_set;
 		}
-		return _obj;
 	}
 
 	var setDrugTable = function()	{
 		var table = $("#pathwayplot_table");
-		var agent = setColumn("drug_modal_agent", "agent", "Drug", agentFormatter, "center", "middle");
-		var drug_class = setColumn("drug_modal_drug_class", "drug_class", "Levels of approval", approvedFormatter, "center", "middle", "center");
-		var cancer = setColumn("drug_modal_cancer", "cancer", "Treated Cancer", cancerFormatter, "center", "middle");
-		var reference = setColumn("drug_modal_reference", "source", "Reference", referenceFormatter, "center", "middle");
+		var agent = setColumns("drug_modal_agent", "agent", "Drug", agentFormatter, "center", "middle")();
+		var drug_class = setColumns("drug_modal_drug_class", "drug_class", "Levels of approval", approvedFormatter, "center", "middle", "center")();
+		var cancer = setColumns("drug_modal_cancer", "cancer", "Treated Cancer", cancerFormatter, "center", "middle")();
+		var reference = setColumns("drug_modal_reference", "source", "Reference", referenceFormatter, "center", "middle")();
 
 		table.bootstrapTable({
 			url : "",
@@ -56,9 +52,7 @@ define("analysis/pathwayplot/pathway/setting_pathwayplot", ["utils", "size", "an
 		.on("load-success.bs.table", function()	{
 			$(".drug_modal")
 			.css("top", 0).css("left", 0)
-			.draggable({
-				handle : ".modal-header"
-			})
+			.draggable({ handle : ".modal-header" })
 			.on("show.bs.modal", function()	{
 				$(".fixed-table-container").css("padding-bottom", "0px");
 			})
@@ -72,48 +66,41 @@ define("analysis/pathwayplot/pathway/setting_pathwayplot", ["utils", "size", "an
 		});
 	}
 
-	var getDrugClass = function(_drug_type)	{
+	var drugInfo = function(_row) 	{
+		this.row = _row;
+	}
+	drugInfo.prototype.attr = function()	{
 		return {
 			"type1" : { class : "agent-red", color : "red" },
 			"type2" : { class : "agent-blue", color : "blue" },
-			"type3" : { class : "agent-black", color : "black" }
-		}[_drug_type];
+			"type3" : { class : "agent-black", color : "black" },
+		}[this.row.drug_type];
 	}
-
-	var checkDrugUrl = function(_row)	{
-		var nci = _row.nci_id;
-		var daily = _row.dailymed_id;
-
-		if(nci)	{
-			return 'http://www.cancer.gov/about-cancer/treatment/drugs/' + nci;
+	drugInfo.prototype.url = function()	{
+		if(this.row.nci_id)	{
+			return 'http://www.cancer.gov/about-cancer/treatment/drugs/' + this.row.nci_id;
 		}
-		else if(!nci)	{
-			return 'http://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=' + daily;
+		else if(!this.row.nci_id && this.row.dailymed_id)	{
+			return 'http://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=' + this.row.dailymed_id;
 		}
-		else	{
-			return null;
-		}
+		return null;
 	}
 	
 	var agentFormatter = function(_value, _row)	{
-		var drug = getDrugClass(_row.drug_type);
-		var drug_icon = document.getElementById("legend_icon_" + drug.color).cloneNode(true);
+		var drug = new drugInfo(_row);
+		var drug_icon = document.getElementById("legend_icon_" + drug.attr().color).cloneNode(true);
 		var svg = document.createElement("svg");
 		var icon_size = 15;
-		var url = checkDrugUrl(_row);
 
-		svg.setAttribute("id", "pathway_modal_drug_icon")
 		svg.setAttribute("width", icon_size);
 		svg.setAttribute("height", icon_size);
 		drug_icon.setAttribute("transform", "matrix(0.023, 0, 0, 0.032, 0, 0)");
 		svg.appendChild(drug_icon);
 
-		if(url != null)	{
-			return svg.outerHTML + "<a href=" + url + " target=\'drug\'><span class='underline " + drug.class + "'>" + _value + "</span></a>";
+		if(drug.url() != null)	{
+			return svg.outerHTML + "<a href=" + drug.url() + " target=\'drug\'><span class='underline " + drug.attr().class + "'>" + _value + "</span></a>";
 		}
-		else {
-			return svg.outerHTML + "<span class='" + drug.class + "'>" + _value + "</span>";
-		}
+		return svg.outerHTML + "<span class='" + drug.attr().class + "'>" + _value + "</span>";
 	}
 
 	var approvedFormatter = function(_value, _row)	{
@@ -128,55 +115,50 @@ define("analysis/pathwayplot/pathway/setting_pathwayplot", ["utils", "size", "an
 	var referenceFormatter = function(_value, _row)	{
 		return "<span title='" + _value + "'>" + _value + "</span>";
 	}
-	// 추후 수정 필요. svg 를 가운데 놓는 코드.
-	var resizePathway = function()	{
+
+	var locate = function(_func)	{
 		var svg = d3.select("#svg4601");
-		var view_width = +svg.attr("width"), view_height = +svg.attr("height");
-		var win_width = window.screen.width, win_height = window.screen.height;
-		var init = initSize(document.querySelector("#svg4601").getBoundingClientRect(), view_width, view_height, win_width, win_height);
+		var base = $("#maincontent");
 		var container = $(".chart_container");
-		
+		var width_svg = +svg.attr("width"), height_svg = +svg.attr("height");
+
 		container
-		.css("margin-top", init.y === 0 ? 50 : init.y)
-		.css("margin-left", init.x);
+		.css("margin-left", _utils.getNum(container.css("marginLeft")) - _utils.getNum(base.css("paddingLeft")));
 
-		window.onresize = function(_e)	{
-			var that = $(this);
-			var dyn_width = that.width() + 2;
-			var dyn_height = that.height() ;
-			var per_width = Math.round((dyn_width / win_width * 100)) / 100;
-			var per_height = Math.round((dyn_height / win_height * 100)) / 100;
+		return _func(svg, width_svg, height_svg, base, 
+			window.screen.width - _utils.getNum(base.css("marginLeft")), 
+			$(document).height() - _utils.getNum(base.css("marginTop")), container);
+	}
 
-			per_width = per_width < 0.77 ? 0.77 : per_width;
-			per_height = per_height < 0.79 ? 0.79 : per_height;
-
-			container
-			.css("margin-top", init.y === 0 ? 50 : init.y)
-			.css("margin-left", init.x);
-			
-			svg.select("g")
-			.attr("transform", "matrix(" + per_width + ", 0, 0, " + per_height + ", 0, " + ((win_height - view_height) * per_height) + ")");
+	var getLocation = function(_width_svg, _height_svg, _width_real, _height_real)	{
+		return {
+			posx : (_width_real / 2) - (_width_svg / 2),
+			posy : (_height_real / 2) - (_height_svg / 2),
 		};
 	}
 
-	var initSize = function(_svg, _s_width, _s_height, _w_width, _w_height)	{
-		var client_width = _svg.left, client_height = _svg.top;
-		var init_width = (_w_width / 2) - (_s_width / 2);
-		var init_height = (_w_height / 2) - (_s_height / 2);
-
-		return {
-			x : init_width / 2,
-			y : client_height / 2,
-		}
-	}
 	return function(_data)	{
-		resizePathway();
+		locate(function(_svg, _width, _height, _base, _width_base, _height_base, _container)	{
+			window.onresize = function(_e)	{
+				var width_dy = _base.width(), height_dy = _base.height() + _utils.getNum(_base.css("marginTop"));	
+				var loc = getLocation(_width, _height, _width_base, _height_base);
+				var perx = Math.round((width_dy / _width_base * 100)) / 100;
+				var pery = Math.round((height_dy / _height_base * 100)) / 100;
+
+				_container
+				.css("margin-top", loc.posy)
+				.css("margin-left", loc.posx - _utils.getNum(_base.css("paddingLeft")));
+
+				_svg.select("g")
+				.attr("transform", "matrix(" + perx + ", 0, 0, " + pery + ", 0, " + ((_height_base - _height) * 2) + ")");
+			}
+		});
 		setDrugTable();
 		
 		_view.view({
 			data : _data.data,
-			gene : getGeneGroup(d3.selectAll("text")[0], _data.data.pathway_list),
-			drug : findDrugGroup(_data.data.cancer_type)
+			gene : getGenes(d3.selectAll("text")[0], _data.data.pathway_list),
+			drug : getDrugs(_data.data.cancer_type)
 		});
 	}
 });

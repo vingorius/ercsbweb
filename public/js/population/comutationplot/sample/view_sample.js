@@ -12,9 +12,8 @@ define("population/comutationplot/sample/view_sample", ["utils", "size", "popula
 			_d.y = _data.y;
 
 			return "translate(" + _data.x(_d.name) + ", 0)";
-		});
-
-		var stacked_bar = bar_group.selectAll("rect")  
+		})
+		.selectAll("rect")  
 		.data(function(_d)  {
 			return _d.types; 
 		})

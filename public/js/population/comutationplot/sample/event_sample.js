@@ -3,21 +3,20 @@ var VO = "population/comutationplot/vo_comutationplot";
 var SORT = "population/comutationplot/sort_comutationplot";
 
 define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _size, _VO, _sort)	{
-	var tooltip = Object.create(_utils.tooltip);
 	var barMouseover = function(_d)	{
-		tooltip.show(this, "<b>" + _d.name + "</b></br>" + _utils.defMutName(_d.type) + " : " + _d.count, "rgba(15, 15, 15, 0.6)");
+		_utils.tooltip.show(this, "<b>" + _d.name + "</b></br>" + _utils.defMutName(_d.type) + " : " + _d.count, "rgba(15, 15, 15, 0.6)");
 		_size.styleStroke(d3.select(this), "#333", 1, 50);
 	}
 
 	var explainMouseover = function(_d)	{
-		tooltip.show(this, "sort by mutations", "rgba(178, 0, 0, 0.6)");
+		_utils.tooltip.show(this, "sort by mutations", "rgba(178, 0, 0, 0.6)");
 	}
 
 	var commonMouseout = function(_this, _type)	{
 		if(_type === "bar")	{
 			_size.styleStroke(d3.select(_this), "#fff", 0, 250);
 		}
-		tooltip.hide();		
+		_utils.tooltip.hide();		
 	}
 
 	var ascending = function(_a, _b)	{

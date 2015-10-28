@@ -1,4 +1,7 @@
+
 $(function() {
+    'use strict';
+
     function addTab(gene) {
         var tableId = gene + 'table';
         // create the tab
@@ -85,7 +88,7 @@ $(function() {
             }, {
                 field: 'drug_class',
                 title: 'Levels of approval',
-                width: '200px',
+                width: '150px',
                 align: 'left',
                 sortable: true,
             }, {
@@ -97,7 +100,7 @@ $(function() {
             }, {
                 field: 'cancer_subtype',
                 title: 'Cancer Subtype',
-                width: '250px',
+                width: '300px',
                 align: 'left',
                 sortable: true,
             }, {
@@ -146,6 +149,10 @@ $(function() {
                 }
             })
             .done(function(data) {
+                //if no data found, show message.
+                if (!data || data.length === 0)
+                    $('#pathwayAlert').show();
+
                 var prevPathway = '';
                 var pathway;
                 data.forEach(function(data) {
@@ -197,7 +204,7 @@ $(function() {
                 });
 
                 // init
-                if (true) {
+                if (pathwayList.length > 0) {
                     $('.genename:first').addClass('underline');
                     $('#cancer_table').bootstrapTable('destroy');
                     createTable($('#cancer_table'), pathwayList[0].geneList[0].data);
@@ -263,6 +270,10 @@ $(function() {
             }
         })
         .done(function(data) {
+            //if no data found, show message.
+            if (!data || data.length === 0)
+                $('#geneAlert').show();
+
             var prevGene = '';
             var gene;
             data.forEach(function(data) {
@@ -285,8 +296,8 @@ $(function() {
 
             getDrugListByCancer();
         })
-        .fail(function(cnt) {
-            console.log('fail', data);
+        .fail(function(data) {
+            alert('fail: ' + data);
         })
         .always(function() {
             $('#geneLoadIndicator').hide();

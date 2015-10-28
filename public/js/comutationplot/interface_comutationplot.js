@@ -19,6 +19,20 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		}
 		return result;
 	}
+
+	var searchObjArray = function(_value, _key, _jsonarray)    {
+		var result;
+
+		for(var i = 0, len = _jsonarray.length ; i < len ; i++)	{
+			var value = _jsonarray[i];
+
+			if(value[_key] === _value)	{
+				result = value;
+			}
+		}
+		return result;
+	}
+
 	var get_all_data = (function()	{
 		var memoize = {
 			sample_group : {},
@@ -37,7 +51,7 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 
 			if(index > samples.length - 1)  {  return;  }
 
-			sampleColumn = _utils.searchObjArray(samples[index], "name", sample_list);
+			sampleColumn = searchObjArray(samples[index], "name", sample_list);
 
 			sampleColumn.gene_list.forEach(function(_d, _i)  {
 				aberrations = get_all_aberration_list(_d);
@@ -118,14 +132,40 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		return _groups[0].group_list;
 	}
 
+	var isArrayInObj  = function(_json)  {
+		var result = false;
+
+		for(var i = 0, len = Object.keys(_json).length ; i < len ; i++)		{
+			var construct = _json[Object.keys(_json)[i]].constructor;
+
+			if(construct === Array)	{
+				result = true;
+			}
+		}
+		return result;
+	}
+
+	var getArrayInObj = function(_json)   {
+		var result = [];
+
+		for(var i = 0, len = Object.keys(_json).length ; i < len ; i++)		{
+			var obj = _json[Object.keys(_json)[i]];
+
+			if(obj.constructor == Array)	{
+				result.push(obj);
+			}
+		}
+		return result;
+	}
+
 	var get_mutation_list = function(_list, _result)  {
 		var list = _list || [];
 		var typeName = "";
 		var result = _result || { type_list : [], value_list : [] };
 
 		list.map(function(_d, _i)   {
-			if(_utils.isArrayInObj(_d))  {
-				get_mutation_list(_utils.getArrayInObj(_d)[0], result);
+			if(isArrayInObj(_d))  {
+				get_mutation_list(getArrayInObj(_d)[0], result);
 			}
 			else {
 				typeName = _utils.defMutName(_d.type);

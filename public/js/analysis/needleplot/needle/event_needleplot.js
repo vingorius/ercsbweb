@@ -1,6 +1,4 @@
 define("analysis/needleplot/needle/event_needleplot", ["utils", "size"], function(_utils, _size)    {
-	var tooltip = Object.create(_utils.tooltip);
-
 	var eventMouseover = function(_d)   {
 		var contents = "";
 		var target = d3.select(this);
@@ -21,7 +19,7 @@ define("analysis/needleplot/needle/event_needleplot", ["utils", "size"], functio
 		}
 
 		_utils.frontElement(group, source);
-		tooltip.show(this, contents, "rgba(15, 15, 15, 0.6)");
+		_utils.tooltip.show(this, contents, "rgba(15, 15, 15, 0.6)");
 		
 		target
 		.transition().duration(200)
@@ -36,7 +34,8 @@ define("analysis/needleplot/needle/event_needleplot", ["utils", "size"], functio
 		var group = target[0][0].parentNode.parentNode;
 
 		_utils.behindElement(group, _d.child_index, group.parentNode);
-		tooltip.hide();
+		_utils.tooltip.hide();
+		
 		_size.styleStroke(target, "none", 0, 200);
 	}
 

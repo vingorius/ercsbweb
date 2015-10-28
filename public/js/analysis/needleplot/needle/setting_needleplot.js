@@ -6,13 +6,9 @@ define("analysis/needleplot/needle/setting_needleplot", ["utils", "size", "analy
 			var main_view = $("#needleplot_view");
 			var visible_set = $("#needleplot_navigation, #needleplot_legend");
 
-			if(main_view.text().length > 0)	{
-				main_view.text("");
-			}
-			
 			if(Object.keys(_data.data.graph).length === 0)	{
-				visible_set.css("visibility", "hidden");
-
+				visible_set
+				.css("visibility", "hidden");
 				main_view
 				.text("No protein domain information.")
 				.css("font-size", "25px")
@@ -20,57 +16,45 @@ define("analysis/needleplot/needle/setting_needleplot", ["utils", "size", "analy
 				.css("text-align", "center");
 				return;
 			}
-			else {
-				visible_set
-				.css("visibility", "visible");
-				main_view
-				.css("padding-top", "0px")
-				.css("height", "400px");
+			visible_set
+			.css("visibility", "visible");
+			main_view
+			.text("")
+			.css("padding-top", "0px")
+			.css("height", "400px");
 
-				size = _size.initSize("needleplot_view", 20, 40, 20, 0, { "graph_width" : 20 });
-			}
+			size = _size.initSize("needleplot_view", 20, 40, 20, 0, { "graph_width" : 20 });
 		}
 
-		var getSamePositionList = function(_public_list)    {
+		var setRadius = function(_count) {
+			return Math.sqrt(_count) * 3;
+		} 
+
+		var setFontSize = function()	{
+			return (10).toFixed(0) + "px";
+		}
+
+		var reformData = function(_list)    {
+			var same_pos_list = _utils.getNotExistDataInObjArray(_list, "position");
 			var result = [];
-
-			for(var i = 0, len = _public_list.length ; i < len ; i++)		{
-				var item = _public_list[i];
-
-				if($.inArray(item.position, result) < 0) {
-					result.push(item.position);
-				}
-			}
-			return result;
-		}
-
-		var getMaximumY = function() {
-			var public_list = getSamePositionList(_data.data.public_list || _data.data.sample_list);
-			var result = 0;
-
-			for(var i = 0, len = public_list.length ; i < len ; i++)	{
-				var item = public_list[i];
-
-				(result > _utils.getObjectArray(item, _data.data.public_list || _data.data.sample_list, "position").length) 
-				? result = result : result = _utils.getObjectArray(item, _data.data.public_list || _data.data.sample_list, "position").length;
-			}
-			return result + 1;
-		}
-
-		var reformData = function()    {
-			var same_pos_list = getSamePositionList(_data.data.public_list || _data.data.sample_list);
-			var result = [];
+			var sum_result = 0;
 
 			for(var i = 0, len = same_pos_list.length ; i < len ; i++)	{
 				var item = same_pos_list[i];
-				var obj = _utils.getObjectArray(item, _data.data.public_list || _data.data.sample_list, "position");
+				var obj = _utils.getObject(item, _data.data.public_list || _data.data.sample_list, "position", true);
+
+				(sum_result > obj.length) ? sum_result = sum_result : sum_result = obj.length;
 
 				result.push({ 
 					position : item, 
 					public_list : setType(obj)
 				});
 			}
-			return makeStack(result);
+
+			return {
+				max : sum_result + 1,
+				stack : _utils.stacked(result, "public_list"),
+			};
 		}
 
 		var setType = function(_obj)	{
@@ -95,61 +79,6 @@ define("analysis/needleplot/needle/setting_needleplot", ["utils", "size", "analy
 				}
 			}
 			return result;
-		}
-
-		var makeStack = function(_array)  {
-			for(var i = 0, len = _array.length ; i < len ; i++)	{
-				var item = _array[i];
-
-				for(var j = 0, leng = item.public_list.length ; j < leng ; j++)	{
-					var jtem = item.public_list[j];
-
-					if(j === 0)	{
-						jtem.y = 0;
-					}
-					else {
-						jtem.y = item.public_list[j - 1].count + item.public_list[j - 1].y;
-					}
-				}
-			}
-			return _array;
-		}
-
-		var getMutationName = function() {
-			var result = [];
-			var list = _data.data.public_list || _data.data.sample_list;
-			var patient = _data.data.patient_list;
-
-			for(var i = 0, len = list.length ; i < len ; i++)	{
-				var item = list[i];
-
-				if($.inArray(_utils.defMutName(item.type), result) < 0)  {
-					result.push(_utils.defMutName(item.type));
-				}
-			}
-
-			for(var j = 0, leng = patient.length ; j < leng ; j++)	{
-				var jtem = patient[j].type;
-
-				for(var k = 0, lengt = jtem.length ; k < lengt ; k++)	{
-					var ktem = _utils.defMutName(jtem[k]);
-
-					if($.inArray(ktem, result) < 0)	{
-						result.push(ktem);
-					}
-				}
-			}
-			return { 
-				type_list : result 
-			};
-		} 
-
-		var setRadius = function(_count) {
-			return Math.sqrt(_count) * 3;
-		} 
-
-		var setFontSize = function()	{
-			return (10).toFixed(0) + "px";
 		}
 
 		var combinePatient = function(_data)	{
@@ -183,29 +112,29 @@ define("analysis/needleplot/needle/setting_needleplot", ["utils", "size", "analy
 		}
 		checkProtein();
 
+		var public_list = _data.data.public_list || _data.data.sample_list;
+		var mutation_list = _utils.getNotExistDataInObjArray($.merge(public_list, _data.data.patient_list), "type", _utils.defMutName);
 		var data = combinePatient(_data);
-		var ymax = getMaximumY();
-		var stacked = reformData();
+		var reform = reformData(public_list);
 
-		_utils.removeSvg(".needleplot_legend");
-		_utils.removeSvg(".needleplot_view");
+		_utils.removeSvg(".needleplot_legend", ".needleplot_view");
 
 		_setting_legend({
-			data : getMutationName(),
+			data : { type_list : mutation_list },
 			view_id : "needleplot_legend",
 			type : "generic mutation",
 			chart : "needleplot"
 		});
 		_view.view({
 			data : _data,
-			stacked : stacked,
+			stacked : reform.stack,
 			size : size,
 			x : _utils.linearScale(0, _data.data.graph[0].length, size.margin.left, size.rwidth).clamp(true),
-			y : _utils.linearScale(ymax, 0, size.margin.top, (size.rheight - size.graph_width)).clamp(true),
-			ymax : ymax,
+			y : _utils.linearScale(reform.max, 0, size.margin.top, (size.rheight - size.graph_width)).clamp(true),
+			ymax : reform.max,
 			radius : setRadius,
 			fontsize : setFontSize
 		});
-		_setting_navigation(_data, stacked, ymax);
+		_setting_navigation(_data, reform.stack, reform.max);
 	}
 });

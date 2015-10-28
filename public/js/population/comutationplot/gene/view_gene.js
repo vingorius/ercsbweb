@@ -37,9 +37,8 @@ define("population/comutationplot/gene/view_gene", ["utils", "size", "population
 		.attr("class", "comutationplot_gene_bargroup") 
 		.attr("transform", function(_d)	{
 			return "translate(0, " + _data.y(_d.name) + ")";
-		});
-
-		var stacked_bar = bar_group.selectAll("rect")  
+		})
+		.selectAll("rect")  
 		.data(function(_d)  {
 			return _d.types; 
 		})
@@ -59,9 +58,7 @@ define("population/comutationplot/gene/view_gene", ["utils", "size", "population
 		.attr("width", function(_d) { 
 			return ((size.width - size.margin.right) - _data.x(_d.count)); 
 		})
-		.attr("height", function(_d) { 
-			return _data.y.rangeBand() / 1.1; 
-		});
+		.attr("height", (_data.y.rangeBand() / 1.1));
 	}
 
 	var titleView = function(_data)	{

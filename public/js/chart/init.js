@@ -1,10 +1,9 @@
 var Init = (function()	{
 	return {
 		requireJs : function(_chartName, _dataUrl)	{
-			var define_array = [];
+			var define_array = [ "utils" ];
 
 			(function insertChartFunction()	{
-				define_array.push("utils")
 				define_array.push({
 					analysis_needle : "analysis/needleplot/needle/setting_needleplot",								
 					analysis_pathway : "analysis/pathwayplot/pathway/setting_pathwayplot",
@@ -38,25 +37,16 @@ var Init = (function()	{
 			});
 
 			define("router", define_array, function()	{
-				var utils = arguments[0];
-				var func = arguments[1];
-				return function(_chartName, _dataUrl)	{
-					function checkResStatus(_res)	{
-						if(_res.message !== "OK" && _res.length < 1)	{
-							console.log("failed message is ", _res.message);
-							window.history.back();
-						}
-					}
+				var utils = arguments[0], func = arguments[1];
 
+				return function(_chartName, _dataUrl)	{
 					function ajaxData()	{
 						$.ajax({
 							type : "GET",
 							url : _dataUrl,
-							cache : true,
 						})
-						.done(function(_res)	{
-							checkResStatus(_res);
-							func(_res);
+						.done(function(_data)	{
+							func(_data);
 						});	
 					}
 
@@ -64,11 +54,6 @@ var Init = (function()	{
 						$("#down_png")
 						.on("click", function()	{
 							utils.downloadImage("chart_png", "png");
-						})
-						.tooltip({
-							container : "body",
-							title : "export chart image",
-							placement : "right"
 						});
 					}
 

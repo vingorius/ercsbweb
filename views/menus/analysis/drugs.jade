@@ -43,7 +43,8 @@ block prepend rightcontent
 	div
 		h3 Drugs for mutated genes
 			img#geneLoadIndicator.loading-indicator(src='/images/loading.gif',style='display:none')
-
+		h4#geneAlert.text-danger(style='display:none') No Drugs...
+	
 	div
 		ul#patient_tab.nav.nav-tabs(role="tablist")
 		div#patient_tabcontent.tab-content
@@ -51,6 +52,8 @@ block prepend rightcontent
 	div
 		h3 Drugs for aberrant pathways
 			img#pathwayLoadIndicator.loading-indicator(src='/images/loading.gif',style='display:none')
+		h4#pathwayAlert.text-danger(style='display:none') No Drugs...
+
 		table#pathwayTable.table.borderless
 			tbody
 

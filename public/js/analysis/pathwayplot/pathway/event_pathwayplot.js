@@ -1,5 +1,4 @@
 define("analysis/pathwayplot/pathway/event_pathwayplot", ["utils", "size"], function(_utils, _size)   {
-	var tooltip = Object.create(_utils.tooltip);
 	var twinklRect = function(_rect, _color, _width)	{
 		_size.styleStroke(_rect, _color, _width, 500);
 	}
@@ -12,7 +11,7 @@ define("analysis/pathwayplot/pathway/event_pathwayplot", ["utils", "size"], func
 
 		insertRectData(_d, parent, grand_parent, rect, text);
 
-		tooltip.show(rect[0][0], 
+		_utils.tooltip.show(rect[0][0], 
 			"<b>" + _d.name + "</b></br>frequency : " 
 			+ (_d.frequency === null ? "NA" : _d.frequency) + "</br><span style='color : " 
 			+ (_d.active === null ? "#E8E8E8" : _d.active === "Y" ? "red" : "blue") + "'><b>" 
@@ -27,8 +26,7 @@ define("analysis/pathwayplot/pathway/event_pathwayplot", ["utils", "size"], func
 		.attr("width", rect.attr("width"))
 		.attr("height", rect.attr("height"));
 
-		animateRect(rect, _d, true);
-		animateText(text, _d, true);
+		animate(rect, text, _d, true);
 	}
 
 	var mouseOut = function(_d)	{
@@ -37,22 +35,19 @@ define("analysis/pathwayplot/pathway/event_pathwayplot", ["utils", "size"], func
 			
 		if(_d.width !== "")	{
 			_utils.behindElement(parent, _d.child_index, parent.parentNode);
-			
-			tooltip.hide();
+			_utils.tooltip.hide();
 
-			animateRect(parent_g.select("rect"), _d, false);
-			animateText(parent_g.select("text"), _d, false);
+			animate(parent_g.select("rect"), parent_g.select("text"), _d, false);
 		}
 	}
 
 	var insertRectData = function(_d, _parent, _grand_parent, _rect, _text)	{
-		_d.x = (_d.x === "" ? _rect.attr("x") : _d.x);
-		_d.y = (_d.y === "" ? _rect.attr("y") : _d.y);
-		_d.width = (_d.width === "" ? _rect.attr("width") : _d.width);
-		_d.height = (_d.height === "" ? _rect.attr("height") : _d.height);
-		_d.font_size = (_d.font_size === "" ? _text.style("font-size") : _d.font_size);
-		_d.child_index = (_d.child_index === 0 
-			? initElementIndex(_d, _grand_parent.childNodes, _parent) : _d.child_index);
+		_d.x = _d.x === "" ? _rect.attr("x") : _d.x;
+		_d.y = _d.y === "" ? _rect.attr("y") : _d.y;
+		_d.width = _d.width === "" ? _rect.attr("width") : _d.width;
+		_d.height = _d.height === "" ? _rect.attr("height") : _d.height;
+		_d.font_size = _d.font_size === "" ? _text.style("font-size") : _d.font_size;
+		_d.child_index = _d.child_index === 0 ? initElementIndex(_d, _grand_parent.childNodes, _parent) : _d.child_index;
 	}
 
 	var initElementIndex = function(_d, _all_child, _source)	{
@@ -67,16 +62,14 @@ define("analysis/pathwayplot/pathway/event_pathwayplot", ["utils", "size"], func
 		}
 	}
 
-	var animateRect = function(_rect, _d, _is)	{
+	var animate = function(_rect, _text, _d, _is)	{
 		_rect
 		.attr("x", (_is ? +_d.x - (_d.width / 10) : _d.x) + "px")
 		.attr("y", (_is ? +_d.y - (_d.height / 10) : _d.y) + "px")
 		.attr("width", (_is ? +_d.width + (_d.width / 5) : _d.width) + "px")
 		.attr("height", (_is ? +_d.height + (_d.height / 5) : _d.height) + "px")
 		.style("stroke-width", _is ? "2px" : "1px");
-	}
 
-	var animateText = function(_text, _d, _is)	{
 		_text
 		.style("font-size", _is ? _utils.getNum(_d.font_size) * 1.25 + "px" : _d.font_size);
 	}
@@ -85,6 +78,7 @@ define("analysis/pathwayplot/pathway/event_pathwayplot", ["utils", "size"], func
 		var source = d3.select(this);
 
 		_utils.frontElement(source, source[0][0].parentNode);
+		
 		_size.styleStroke(source.selectAll("path"), "#FBFD24", 20);
 	}
 
@@ -97,11 +91,7 @@ define("analysis/pathwayplot/pathway/event_pathwayplot", ["utils", "size"], func
 		
 		$("#drug_modal_label").html("<big class='drug_gene_name'>" + gene[1].toUpperCase() +"</big>");
 		$("#pathwayplot_table").bootstrapTable("refresh", {
-			query : {
-				pathway_gene : gene[1],
-				cancer_type : _cancer_type || ""
-			},
-			url : "/models/drug/getPathwayDrugList", 
+			url : "/models/drug/getPathwayDrugList?pathway_gene=" + gene[1] + "&cancer_type=" + _cancer_type, 
 		});
 	}
 	return 	{

@@ -1,8 +1,6 @@
 define("chart/legend/setting_legend", ["utils", "size", "chart/legend/view_legend"], function(_utils, _size, _view)   {
 	var arranged = function(_data, _type, _size_set, _size)	{
-		var maximum_text =  d3.max(_size_set, function(_d)	{ 
-			return _d.width; 
-		});
+		var maximum_text = _utils.getObjectMax(_size_set, "width");
 		var space = 30;
 		var accumulated = space;
 		var result = {};
@@ -47,7 +45,7 @@ define("chart/legend/setting_legend", ["utils", "size", "chart/legend/view_legen
 	}
 
 	var alignByAlteration = function(_a, _b)	{
-		return _a.priority > _b.priority ? -1 : 1;
+		return _a.priority.order > _b.priority.order ? -1 : 1;
 	}
 
 	return function(_opt)	{
@@ -55,11 +53,9 @@ define("chart/legend/setting_legend", ["utils", "size", "chart/legend/view_legen
 
 		switch(_opt.type)	{
 			case "generic mutation" : 
-				_opt.data.type_list = alignByPrecedence(_opt.data.type_list);
-				break;
+				_opt.data.type_list = alignByPrecedence(_opt.data.type_list); break;
 			case "pca mutation" : 
-				_opt.data.type_list = _opt.data.type_list;
-				break;
+				_opt.data.type_list = _opt.data.type_list; break;
 		}
 
 		_view.view({

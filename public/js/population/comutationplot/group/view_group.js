@@ -1,38 +1,32 @@
 define("population/comutationplot/group/view_group", ["utils", "size", "population/comutationplot/vo_comutationplot", "population/comutationplot/group/event_group", "population/comutationplot/sort_comutationplot"], function(_utils, _size, _VO, _e, _sort)	{
 	var view = function(_data)	{
 		var size = _data.size;
-		var svg = _size.mkSvg("#" + _data.class_name + "_groups"
-			, (_data.patients ? size.width : _VO.VO.getWidth()), size.height);
+		var svg = _size.mkSvg("#" + _data.class_name + "_groups", (_data.patients ? size.width : _VO.VO.getWidth()), size.height);
 		var bar_init_x = _utils.ordinalScale((_data.patients ? _data.patients : _VO.VO.getInitSample()), 0, (_data.patients ? size.width : _VO.VO.getWidth()));
 		var bar_init_y = 5;
 
 		for(var i = 0, len = _data.data.length ; i < len ; i++)	{
-			var group = _data.data[i];
-			var name = _data.name[i];
 			var y_pos = (i * 15) + size.margin.top;
 
-			makeGroupBar(_data.class_name, name, group, svg, size, { x : 0, y : y_pos }, { x : bar_init_x, y : bar_init_y }, _data.colour);
+			makeGroupBar(_data.class_name, _data.name[i], _data.data[i], svg, size, { x : 0, y : y_pos }, { x : bar_init_x, y : bar_init_y }, _data.colour);
 		}
 	}
 
 	var makeGroupBar = function(_class, _name, _group, _svg, _size, _pos, _range, _colour)	{
 		var bar_g = _svg.append("g")
 		.attr("class", _class + "_bar_group_g")
-		.attr("transform", "translate(" + _pos.x + ", " + _pos.y + ")");
-
-		var bar_rect = bar_g.selectAll("rect")
+		.attr("transform", "translate(" + _pos.x + ", " + _pos.y + ")")
+		.selectAll("rect")
 		.data(_group.length ? _group : [ _group ])
 		.enter().append("rect")
-		.attr("class", function(_d) {
-			return _class + "_bar_group_rects";
-		})
+		.attr("class", _class + "_bar_group_rects")
 		.style("fill", function(_d)	{
 			_d.name = _name;
 
 			if(!_d.value)	{
 				return "#d5dddd";
 			}
-			return _colour(_name, _d.value);
+			return _colour(_d.value).color;
 		})
 		.on("mouseover", function(_d)	{
 			_e.nover(this, _name, _d);
@@ -66,9 +60,8 @@ define("population/comutationplot/group/view_group", ["utils", "size", "populati
 	var makeGroupName = function(_name, _group, _svg, _pos, _x)	{
 		var name_g = _svg.append("g")
 		.attr("class", "comutationplot_name_group_g")
-		.attr("transform", "translate(" + _pos.x + ", " + _pos.y + ")");
-
-		var name_text = name_g.append("text")
+		.attr("transform", "translate(" + _pos.x + ", " + _pos.y + ")")
+		.append("text")
 		.data([{
 			name : _name,
 			x : _x,

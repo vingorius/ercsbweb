@@ -18,12 +18,25 @@ define("population/comutationplot/pq/setting_pq", ["utils", "size", "population/
 			var result = 0;
 			
 			for(var i = 0, len = _d.list.length ; i < len ; i++)	{
-				(_utils.calLog((_d.list[i].q || _d.list[i].p)) > result) ?
-					result = _utils.calLog((_d.list[i].q || _d.list[i].p)) : result = result;
+				var data = _d.list[i].q || _d.list[i].p;
+				
+				(_utils.calLog(data) > result) ? result = _utils.calLog(data) : result = result;
 			}
 			return result;
 		}));
 	}
+
+	var dataSet = function()	{
+		return {
+			data : arguments[0],
+			size : arguments[1],
+			max : arguments[2],
+			x : arguments[3],
+			y : arguments[4],
+			title_size : arguments[5] ? arguments[5] : undefined,
+		};
+	}
+
 	return function(_symbol_list, _genes)	{
 		var pq_data = getOnlyPQ(_symbol_list);
 		var max = Math.ceil(getLogMax(pq_data));
@@ -32,20 +45,8 @@ define("population/comutationplot/pq/setting_pq", ["utils", "size", "population/
 		var y = _utils.ordinalScale(_genes, 0, (size.height - size.margin.bottom));
 
 		_utils.removeSvg("comutationplot_pq");
-		_view.view({
-			data : pq_data,
-			size : size,
-			max : max,
-			x : x,
-			y : y
-		});
-		_view.titleView({
-			data : pq_data,
-			size : size,
-			title_size : _size.initSize("comutationplot_pq_title", 20, 20, 20, 20),
-			max : max,
-			x : x,
-			y : y
-		});
+
+		_view.view(dataSet(pq_data, size, max, x, y));
+		_view.titleView(dataSet(pq_data, size, max, x, y, _size.initSize("comutationplot_pq_title", 20, 20, 20, 20)));
 	}
 });

@@ -1,4 +1,6 @@
 $(function() {
+    'use strict';
+
     $('#classification_all').click(function() {
         // console.log(this.checked);
         if (this.checked) {
@@ -191,6 +193,7 @@ $(function() {
 
 
     table.on('load-success.bs.table', function(_event, _data, _args) {
+
         if (_data === undefined || _data.length === 0) {
             // Remove previous chart...
             $("div[id^=needleplot]").css("display", "none");

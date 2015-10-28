@@ -35,14 +35,14 @@ router.get('/comutationplot', function(req, res, next) {
 
     getConnection(function(connection) {
         connection.query('CALL omics_data.getComutationplotMutationList(?,?)', [cancer_type, filter], function(mut_err, mut_rows) {
-            if (mut_err) throw mut_err;
+            if (mut_err) return next(mut_err);
             transfer_object.data.mutation_list = mut_rows[0];
 
             connection.query('CALL omics_data.getComutationplotMutationGeneList(?)', [cancer_type], function(sig_err, sig_rows) {
-                if (sig_err) throw sig_err;
+                if (sig_err) return next(sig_err);
                 transfer_object.data.gene_list = sig_rows[0];
                 connection.query('CALL omics_data.getComutationplotMutationGroupList(?,?)', [cancer_type, filter], function(group_err, group_rows) {
-                    if (group_err) throw group_err;
+                    if (group_err) return next(group_err);
 
                     var groupList = [];
                     var keys = Object.keys(group_rows[0][0]);
@@ -64,7 +64,7 @@ router.get('/comutationplot', function(req, res, next) {
                     transfer_object.data.group_list = groupList;
 
                     connection.query('CALL omics_data.getComutationplotMutationPatientList(?,?)', [cancer_type, sample_id], function(patient_err, patient_rows) {
-                        if (patient_err) throw patient_err;
+                        if (patient_err) return next(patient_err);
                         transfer_object.data.patient_list = patient_rows[0];
 
                         res.json(transfer_object);
@@ -89,14 +89,14 @@ router.get('/comutationplotForERCSB', function(req, res, next) {
 
     getConnection(function(connection) {
         connection.query('CALL omics_data.getERCSBComutationplotMutationList()', function(mut_err, mut_rows) {
-            if (mut_err) throw mut_err;
+            if (mut_err) return next(mut_err);
             transfer_object.data.mutation_list = mut_rows[0];
 
             connection.query('CALL omics_data.getERCSBComutationplotMutationGeneList()', function(sig_err, sig_rows) {
-                if (sig_err) throw sig_err;
+                if (sig_err) return next(sig_err);
                 transfer_object.data.gene_list = sig_rows[0];
                 connection.query('CALL omics_data.getERCSBComutationplotMutationGroupList()', function(group_err, group_rows) {
-                    if (group_err) throw group_err;
+                    if (group_err) return next(group_err);
 
                     var groupList = [];
                     var keys = Object.keys(group_rows[0][0]);
@@ -118,7 +118,7 @@ router.get('/comutationplotForERCSB', function(req, res, next) {
                     transfer_object.data.group_list = groupList;
 
                     // connection.query('CALL omics_data.getERCSBComutationplotMutationPatientList(?,?)', [p_cancer_type, p_sample_id], function(patient_err, patient_rows) {
-                    // 	if (patient_err) throw patient_err;
+                    // 	if (patient_err) return next(patient_err);
                     // 	transfer_object.data.patient_list = patient_rows[0];
                     //
                     // 	res.json(transfer_object);
@@ -141,8 +141,8 @@ router.get('/comutationplot2', function(req, res, next) {
         group_list: []
     };
     getConnection(function(connection) {
-        connection.query('CALL getComutationplotMutation()', function(mut_err, mut_rows) {
-            if (mut_err) throw mut_err;
+        connection.query('CALL cbioportal.getComutationplotMutation()', function(mut_err, mut_rows) {
+            if (mut_err) return next(mut_err);
             //transfer_object.data.sample_list = mut_rows[0];
             var sample_list = [];
             mut_rows[0].forEach(function(data) {
@@ -164,11 +164,11 @@ router.get('/comutationplot2', function(req, res, next) {
             transfer_object.data.sample_list = sample_list;
             //console.log(transfer_object.data.sample_list[5]);
 
-            connection.query('CALL getComutationplotMutsig()', function(sig_err, sig_rows) {
-                if (sig_err) throw sig_err;
+            connection.query('CALL cbioportal.getComutationplotMutsig()', function(sig_err, sig_rows) {
+                if (sig_err) return next(sig_err);
                 transfer_object.data.symbol_list = sig_rows[0];
-                connection.query('CALL getComutationplotGroup()', function(grp_err, grp_rows) {
-                    if (grp_err) throw grp_err;
+                connection.query('CALL cbioportal.getComutationplotGroup()', function(grp_err, grp_rows) {
+                    if (grp_err) return next(grp_err);
 
                     transfer_object.data.group_list =
                         grp_rows[0].map(function(data) {
@@ -194,11 +194,11 @@ router.get('/tumorportal_cmp', function(req, res, next) {
         group_list: []
     };
     getConnection(function(connection) {
-        connection.query('select SaveSortedPatientListIfNot(?)', [p_type], function(err, rows) {
-            if (err) throw err;
+        connection.query('select cbioportal.SaveSortedPatientListIfNot(?)', [p_type], function(err, rows) {
+            if (err) return next(err);
 
-            connection.query('CALL getComutationplotTumorMutation(?)', [p_type], function(mut_err, mut_rows) {
-                if (mut_err) throw mut_err;
+            connection.query('CALL cbioportal.getComutationplotTumorMutation(?)', [p_type], function(mut_err, mut_rows) {
+                if (mut_err) return next(mut_err);
                 //transfer_object.data.sample_list = mut_rows[0];
                 var sample_list = [];
                 mut_rows[0].forEach(function(data) {
@@ -219,8 +219,8 @@ router.get('/tumorportal_cmp', function(req, res, next) {
                 });
                 transfer_object.data.sample_list = sample_list;
 
-                connection.query('CALL getComutationplotTumorMutsig(?)', [p_type], function(sig_err, sig_rows) {
-                    if (sig_err) throw sig_err;
+                connection.query('CALL cbioportal.getComutationplotTumorMutsig(?)', [p_type], function(sig_err, sig_rows) {
+                    if (sig_err) return next(sig_err);
                     transfer_object.data.symbol_list = sig_rows[0];
                     transfer_object.data.group_list = ['group'];
                     res.json(transfer_object);
@@ -241,8 +241,8 @@ router.get('/maplot', function(req, res, next) {
         plot_list: []
     };
     getConnection(function(connection) {
-        connection.query('CALL getMAPlot()', function(err, rows) {
-            if (err) throw err;
+        connection.query('CALL cbioportal.getMAPlot()', function(err, rows) {
+            if (err) return next(err);
             transfer_object.data.plot_list = rows[0];
             res.json(transfer_object);
         });
@@ -279,13 +279,13 @@ router.get('/needleplot', function(req, res, next) {
 
     getConnection(function(connection) {
         connection.query('CALL omics_data.getNeedleplotPublicList(?,?,?,?,?)', [cancer_type, gene, transcript, classification, filter], function(err, rows) {
-            if (err) throw err;
+            if (err) return next(err);
             transfer_object.data.public_list = rows[0];
             connection.query('CALL omics_data.getNeedleploPatientList(?,?,?,?,?)', [cancer_type, sample_id, gene, transcript, classification], function(p_err, p_rows) {
-                if (p_err) throw p_err;
+                if (p_err) return next(p_err);
                 transfer_object.data.patient_list = p_rows[0];
                 connection.query('CALL omics_data.getNeedleplotGraph(?)', [gene], function(g_err, g_rows) {
-                    if (g_err) throw g_err;
+                    if (g_err) return next(g_err);
                     transfer_object.data.graph = g_rows[0];
                     // console.log(g_rows[0].length);
                     // if (g_rows[0].length > 0) {
@@ -323,11 +323,11 @@ router.get('/pathwayplot', function(req, res, next) {
 
     getConnection(function(connection) {
         connection.query('CALL omics_data.getPathwayplot(?,?)', [cancer_type, filter], function(err, rows) {
-            if (err) throw err;
+            if (err) return next(err);
             transfer_object.data.pathway_list = rows[0];
             // res.json(transfer_object);
             connection.query('CALL omics_data.getPathwayplotGeneList(?,?)', [cancer_type, sample_id], function(err, rows) {
-                if (err) throw err;
+                if (err) return next(err);
                 transfer_object.data.gene_list = rows[0].map(function(_d) {
                     return _d.gene_id;
                 });
@@ -354,16 +354,16 @@ router.get('/needleplot_old', function(req, res, next) {
         return res.json(to.noparameter());
     }
     getConnection(function(connection) {
-        connection.query('CALL `needleplot.aachange`(?)', [gene], function(err, rows) {
-            if (err) throw err;
+        connection.query('CALL cbioportal.`needleplot.aachange`(?)', [gene], function(err, rows) {
+            if (err) return next(err);
 
             if (rows[0].length === 0) {
                 return res.json(to.nodatafound());
             }
             transfer_object.data.sample_list = rows[0];
             //    res.json(transfer_object);
-            connection.query('CALL `needleplot.graph`(?)', [gene], function(g_err, g_rows) {
-                if (g_err) throw g_err;
+            connection.query('CALL cbioportal.`needleplot.graph`(?)', [gene], function(g_err, g_rows) {
+                if (g_err) return next(g_err);
                 if (g_rows[0].length === 0) {
                     return res.json(to.nodatafound());
                 }
@@ -395,8 +395,8 @@ router.get('/xyplot', function(req, res, next) {
         plot_list: []
     };
     getConnection(function(connection) {
-        connection.query('CALL getXYPlot()', function(err, rows) {
-            if (err) throw err;
+        connection.query('CALL cbioportal.getXYPlot()', function(err, rows) {
+            if (err) return next(err);
             transfer_object.data.plot_list = rows[0];
 
             var obj = getMaxMin(transfer_object.data.plot_list);
@@ -449,8 +449,8 @@ router.get('/degplot', function(req, res, next) {
     var transfer_object = to.default();
 
     getConnection(function(connection) {
-        connection.query('CALL getDEGpathway()', function(err, rows) {
-            if (err) throw err;
+        connection.query('CALL cbioportal.getDEGpathway()', function(err, rows) {
+            if (err) return next(err);
             transfer_object.data = {};
             transfer_object.data.pathway_list = rows[0];
             res.json(transfer_object);

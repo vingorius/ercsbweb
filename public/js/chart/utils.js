@@ -1,13 +1,64 @@
 define("utils", ["size"], function(_size)  {
-	var getNum = function(_str)	{
-		var result = "";
+	var stacked = function(_list, _key, _sort)	{
+		for(var i = 0, len = _list.length ; i < len ; i++)	{
+			var item = _list[i];
 
-		for(var i = 0, len = _str.length ; i < len ; i++)	{
-			if((/(\d)|(\D)/).test(_str[i]))	{
-				result += _str[i];
+			if(_sort)	{
+				item[_key] = _sort(item[_key]);
+			}
+
+			for(var j = 0, leng = item[_key].length ; j < leng ; j++)	{
+				var jtem = item[_key][j];
+
+				if(j === 0)	{
+					jtem.start = 0;
+				}
+				else {
+					var pre = item[_key][j - 1];
+					
+					jtem.start = pre.count + pre.start;
+				}
 			}
 		}
-		return parseFloat(result);
+		return _list;
+	}
+
+	var fillArray = function(_size, _value)	{
+		var result = [];
+
+		for(var i = 0, len = _size ; i < len ; i++)	{
+			result[i] = _value;
+		}
+		return result;
+	}
+
+	var getNum = function(_str)	{
+		return parseFloat(_str.replace((/([a-z]|\W)/ig), ""));
+	}
+
+	var getOnlyDataObjArray = function(_list, _key)	{
+		var result = [];
+
+		for(var i = 0, len = _list.length ; i < len ; i++)	{
+			result[i] = _list[i][_key];
+		}
+		return result;
+	}
+
+	var getNotExistDataInObjArray = function(_list, _obj_key)		{
+		var result = [];
+		var arr_idx = 0;
+
+		for(var i = 0, len = _list.length ; i < len ; i++)	{
+			var item = arguments[2] && typeof arguments[2] === "function" ? 
+				arguments[2](_list[i][_obj_key]) : _list[i][_obj_key];
+
+			if($.inArray(item, result) < 0)		{
+				result[arr_idx] = item;
+				arr_idx++;
+			}
+		}
+		return result;
 	}
 
 	var getObjectMax = function(_list, _key)	{
@@ -38,64 +89,14 @@ define("utils", ["size"], function(_size)  {
 		.range([_r_start, _r_end]);
 	}
 
-	var getObject = function(_name, _array, _key)  {
+	var getObject = function(_name, _array, _key, _isarr)  {
+		var result = _isarr ? [] : null;
+
 		for(var i = 0, len = _array.length ; i < len ; i++) 	{
 			var obj = _array[i];
 
 			if(obj[_key] === _name)	{
-				return obj;
-			}
-		}
-		return undefined;
-	}
-
-	var getObjectArray = function(_name, _array, _key) {
-		var result = [];
-
-		for(var i = 0, len = _array.length ; i < len ; i++)	{
-			var obj = _array[i];
-
-			if(obj[_key] === _name)	{
-				result.push(obj);
-			}
-		}
-		return result;
-	}
-
-	var isArrayInObj  = function(_json)  {
-		var result = false;
-
-		for(var i = 0, len = Object.keys(_json).length ; i < len ; i++)		{
-			var construct = _json[Object.keys(_json)[i]].constructor;
-
-			if(construct === Array)	{
-				result = true;
-			}
-		}
-		return result;
-	}
-
-	var getArrayInObj = function(_json)   {
-		var result = [];
-
-		for(var i = 0, len = Object.keys(_json).length ; i < len ; i++)		{
-			var obj = _json[Object.keys(_json)[i]];
-
-			if(obj.constructor == Array)	{
-				result.push(obj);
-			}
-		}
-		return result;
-	}
-
-	var searchObjArray = function(_value, _key, _jsonarray)    {
-		var result;
-
-		for(var i = 0, len = _jsonarray.length ; i < len ; i++)	{
-			var value = _jsonarray[i];
-
-			if(value[_key] === _value)	{
-				result = value;
+				_isarr ? result.push(obj) : result = obj;
 			}
 		}
 		return result;
@@ -122,113 +123,92 @@ define("utils", ["size"], function(_size)  {
 			return { alteration : "mRNA Expression (log2FC)", priority : precedence(_alteration) };
 		}
 		else {
-			return { alteration : "Somatic Mutaion", priority : precedence(_alteration) };
+			return { alteration : "Somatic Mutation", priority : precedence(_alteration) };
 		}
 	}
 
-	var precedence = function(_value)		{
-		return {
-			"Amplification" : 12,
-			"Homozygous_Deletion" : 11,
-			"Nonsense_mutation" : 9,
-			"Splice_Site" : 8,
-			"Translation_Start_Site" : 7,
-			"Missense_mutation" : 6,
-			"Nonstop_mutation" : 5,
-			"Frame_shift_indel" : 4,
-			"In_frame_indel" : 3,
-			"RNA" : 2,
-			"Silent" : 1,
-		}[_value];
+	var precedence = function(_value)	{
+		switch(_value)	{
+			case "Amplification" : return { idx : 3, order : 12 }; break;
+			case "Homozygous_Deletion" : return { idx : 3, order : 11}; break;
+			case "Nonsense_mutation" : return { idx : 1, order : 9 }; break;
+			case "Splice_Site" : return { idx : 1, order : 8 }; break;
+			case "Translation_Start_Site" : return { idx : 1, order : 7 }; break;
+			case "Missense_mutation" : return { idx : 1, order : 6 }; break;
+			case "Nonstop_mutation" : return { idx : 1, order : 5 }; break;
+			case "Frame_shift_indel" : return { idx : 1, order : 4 }; break;
+			case "In_frame_indel" : return { idx : 1, order : 3 }; break;
+			case "RNA" : return { idx : 1, order : 2 }; break;
+			case "Silent" : return { idx : 1, order : 1 }; break;
+		}
 	}
 
 	var defMutName = function(_name)  {
-		if((/MISSENSE/i).test(_name)) { 
-			return "Missense_mutation"; 
-		}
-		else if((/NONSENSE/i).test(_name)) { 
-			return "Nonsense_mutation"; 
-		}
-		else if((/(SPLICE_SITE)|(SPLICE_SITE_SNP)/i).test(_name)) { 
-			return "Splice_Site"; 
-		}
-		else if((/(SILENT)/i).test(_name)) { 
-			return "Silent"; 
-		}
-		else if((/(TRANSLATION)/i).test(_name))	{
-			return "Translation_Start_Site";
-		}
-		else if((/(RNA)/i).test(_name))	{
-			return "RNA";
-		}
-		else if((/(FRAME_SHIFT)/i).test(_name)) { 
-			return "Frame_shift_indel"; 
-		}
-		else if((/(IN_FRAME)/i).test(_name)) { 
-			return "In_frame_indel"; 
-		}
-		else if((/(NONSTOP)/i).test(_name)) { 
-			return "Nonstop_mutation"; 
-		}
-		else if((/AMPLIFICATION/i).test(_name)) { 
-			return "Amplification"; 
-		}
-		else if((/HOMOZYGOUS_DELETION/i).test(_name)) { 
-			return "Homozygous_Deletion"; 
+		switch(true)	{
+			case (/MISSENSE/i).test(_name) : return "Missense_mutation"; break;
+			case (/NONSENSE/i).test(_name) : return "Nonsense_mutation"; break;
+			case (/(SPLICE_SITE)|(SPLICE_SITE_SNP)/i).test(_name) : return "Splice_Site"; break;
+			case (/SILENT/i).test(_name) : return "Silent"; break;
+			case (/TRANSLATION/i).test(_name) : return "Translation_Start_Site"; break;
+			case (/RNA/i).test(_name) : return "RNA"; break;
+			case (/FRAME_SHIFT/i).test(_name) : return "Frame_shift_indel"; break;
+			case (/IN_FRAME/i).test(_name) : return "In_frame_indel"; break;
+			case (/NONSTOP/i).test(_name) : return "Nonstop_mutation"; break;
+			case (/AMPLIFICATION/i).test(_name) : return "Amplification"; break;
+			case (/HOMOZYGOUS_DELETION/i).test(_name) : return "Homozygous_Deletion"; break;
 		}
 	}
 
 	var colour = function(_value)   {
-		var value = _value || "";
-
-		return {
-			"Amplification" : "#FFBDE0",					// CNV
-			"Homozygous_Deletion" : "#BDE0FF",
-			"Nonsense_mutation" : "#EA3B29",			// Somatic mutation
-			"Splice_Site" : "#800080",
-			"Translation_Start_Site" : "#aaa8aa",
-			"Missense_mutation" : "#3E87C2",
-			"Nonstop_mutation" : "#070078",
-			"Frame_shift_indel" : "#F68D3B",
-			"In_frame_indel" : "#F2EE7E",
-			"RNA" : "#ffdf97",
-			"Silent" : "#5CB755",
-			"pq" : "#C2C4C9",								// P & Q value
-			"Primary Solid Tumor" : "#F64747",			// Pca plot
-			"Solid Tissue Normal" : "#446CB3",
-			"si_log_p" : "#ea3b29",						// Deg plot
-			"si_up_log_p" : "#5cb755",
-			"si_down_log_p" : "#3e87c2"
-		}[value];
+		switch(_value)	{
+			case "Amplification" : return "#FFBDE0"; break;
+			case "Homozygous_Deletion" : return "#BDE0FF"; break;
+			case "Nonsense_mutation" : return "#EA3B29"; break;
+			case "Splice_Site" : return "#800080"; break;
+			case "Translation_Start_Site" : return "#aaa8aa"; break;
+			case "Missense_mutation" : return "#3E87C2"; break;
+			case "Nonstop_mutation" : return "#070078"; break;
+			case "Frame_shift_indel" : return "#F68D3B"; break;
+			case "In_frame_indel" : return "#F2EE7E"; break;
+			case "RNA" : return "#ffdf97"; break; 
+			case "Silent" : return "#5CB755"; break;
+			case "pq" : return "#C2C4C9"; break;
+			case "Primary Solid Tumor" : return "#F64747"; break;
+			case "Solid Tissue Normal" : return "#446CB3"; break;
+			case "si_log_p" : return "#ea3b29"; break;
+			case "si_up_log_p" : return "#5cb755"; break;
+			case "si_down_log_p" : return "#3e87c2"; break;
+		}
 	}
 
 	var tooltip = {
 		show : function(_element, _contents, _rgba)	{
 			var main = $("#maincontent");
-			var chart = $(".tooltip_chart")
-			.css("position", "absolute")
-			.css("background-color", _rgba)
-			.html(_contents);
+			var chart = $(".tooltip_chart");
+			var posx, posy;
 
 			if(Object.keys(_element).length > 2)	{
 				var client = _element.getBoundingClientRect();
 				var top = client.top + client.height, left = client.left + client.width;
 				var margin_left = main.css("margin-left") ? getNum(main.css("margin-left")) : 0;
 
-				if(client.left - margin_left + client.width + chart.width() > main.width())	{
+				if((client.left - margin_left + client.width + chart.width()) > main.width())	{
 					left = client.left - chart.width();
 				}
-				chart
-				.css("left", left)
-				.css("top", top)
-				.show();
+				posx = left;
+				posy = top;
 			}
 			else {
-				chart
-				.css("left", _element.x)
-				.css("top", _element.y)
-				.show();
+				posx = _element.x;
+				posy = _element.y;
 			}
+			chart
+			.css("position", "absolute")
+			.css("background-color", _rgba)
+			.css("left", posx)
+			.css("top", posy)
+			.html(_contents)
+			.show();
 		},
 		hide : function(_is_interactive)	{
 			 $(".tooltip_chart").hide();
@@ -310,21 +290,50 @@ define("utils", ["size"], function(_size)  {
 			img.posx = (left - width.margin);
 			img.posy = (loc.top - height.margin);
 			img.idx = i;
-			img.crossOrigin = "";
 
 			img.onload = function(_img)	{
 				var ctx = canvas.getContext("2d");
 
 				if(_img.target.idx === svg.length || _img.target.idx === svg.length - 1)	{
-					if(!checkIE())	{
-						ctx.drawImage(_img.target, _img.target.posx, _img.target.posy);
+
+					window.postMessage({
+						url : canvas.toDataURL('image/png'),
+						posx : _img.target.posx,
+						posy : _img.target.posy, 
+					}, window.location.href);
+
+					function receiveMessage(_e)	{
+						getFunc(ctx, canvas, _e.data);
+						// if(!checkIE())	{
+							// ctx.drawImage(_img.target, _e.data.posx, _e.data.posy);
+							// _callback({
+							// 	canvas : canvas,
+							// 	data : _e.data.url,
+							// });
+						// }
+					}
+
+					var getFunc = function(_ctx, _canvas, _e)	{
+						console.log($(img))
+						// ctx.drawImage(img, img.posx, img.posy);
 						_callback({
 							canvas : canvas,
-							data : canvas.toDataURL('image/png'),
-						});
+							data : _e.url,
+						})
 					}
+
+					window.addEventListener("message", receiveMessage, false);
+
+					// if(!checkIE())	{
+						ctx.drawImage(_img.target, _img.target.posx, _img.target.posy);
+						// _callback({
+						// 	canvas : canvas,
+						// 	data : canvas.toDataURL('image/png'),
+						// });
+					// }
 				}
 			}
+			img.crossOrigin = "Anonymous";
 			img.src = url;
 		}
 	}
@@ -396,12 +405,7 @@ define("utils", ["size"], function(_size)  {
 		var result = 0;
 
 		for(var i = 0, len = _array.length ; i < len ; i++)	{
-			if((/[pq]/).test(_key))	{
-				result += calLog(_array[i][_key]);	
-			}
-			else {
-				result += _array[i][_key];
-			}
+			result += (/[pq]/).test(_key) ? calLog(_array[i][_key]) : _array[i][_key];
 		}
 		return result;
 	}
@@ -472,19 +476,17 @@ define("utils", ["size"], function(_size)  {
 		var canvas = document.createElement('canvas');
 		var ctx = canvas.getContext("2d");
 		ctx.font = _font_size + "px Arial";
-		var width = ctx.measureText(_txt).width;
-		var height = parseInt(ctx.font);
 
 		return { 
 			name : _txt,
-			width : width, 
-			height : height 
+			width : ctx.measureText(_txt).width, 
+			height : parseInt(ctx.font), 
 		};
 	}
 
 	var translateXY = function(_element, _x_scale, _y_scale, _x_key, _y_key, _self_x, _self_y)	{
 		_element
-		.transition().duration(250)
+		.transition().duration(400)
 		.attr("transform", function(_d, _i)	{
 			var x = _x_scale === 0 || _x_key === 0 ? _self_x ? _d.x(_d[_x_key]) : 0.00001 : _x_scale(_d[_x_key]);
 			var y = _y_scale === 0 || _y_key === 0 ? _self_y ? _d.y(_d[_y_key]) : 0 : _y_scale(_d[_y_key]);
@@ -499,9 +501,8 @@ define("utils", ["size"], function(_size)  {
 			if(d3.select(this).attr("class"))	{
 				return _element.attr("class") + " preserve_events";
 			}
-			return;
 		})
-		.transition().duration(250)
+		.transition().duration(400)
 		.attr(_type, function(_d)	{
 			return _self ? _d[_type](_d[_key]) : _scale(_d[_key]);
 		})
@@ -510,18 +511,15 @@ define("utils", ["size"], function(_size)  {
 		});
 	}
 
-	var attributeSize = function(_element, _type, _scale, _divide)	{
+	var attributeSize = function(_element, _type, _scale)	{
 		_element
-		.transition().duration(250)
-		.attr(_type, function(_d)	{
-			return _scale.rangeBand();
-			// return (_scale.rangeBand() / (_divide ? _divide : 1));
-		});
+		.transition().duration(400)
+		.attr(_type, _scale.rangeBand());
 	}
 
 	var callAxis = function(_element, _scale, _way)	{
 		_element
-		.transition().duration(250)
+		.transition().duration(400)
 		.call(d3.svg.axis().scale(_scale).orient(_way));
 	}
 
@@ -534,79 +532,79 @@ define("utils", ["size"], function(_size)  {
 		});
 	}
 
-	var orderGroup = function(_value)	{
-		return {
-			"Squamoid" : 0,
-			"Magnoid" : 1,
-			"Bronchioid" : 2,
-			"Current reformed smoker for > 15 years" : 0,
-			"Lifelong Non-smoker" : 1,
-			"Current reformed smoker for < or = 15 years" : 2,
-			"Current smoker" : 3,
-			"Current Reformed Smoker, Duration Not Specified" : 4,
-			"Acinar predominant Adc" : 0,
-			"Adenocarcinoma, NOS" : 1,
-			"Colloid adenoca" : 2,
-			"Invasive mucinous" : 3,
-			"Lepidic predominant Adc" : 4,
-			"Micropapillary predom Adc" : 5,
-			"Other see comment" : 6,
-			"Papillary predominant Adc" : 7,
-			"Solid predominant Adc" : 8,
-			"NSCLC, favor Adeno" : 9,
-			"0" : 100,
-			"Stage IA" : 0,
-			"Stage IB" : 1,
-			"Stage IIA" : 2,
-			"Stage IIB" : 3,
-			"Stage IIIA" : 4,
-			"Stage IV" : 5,
-			"Stage I" : 6,
-			"Stage IIIB" : 7,
-			"FEMALE" : 0,
-			"MALE" : 1,
-			"NO" : 0,
-			"YES" : 1,
-			"LIVING" : 0,
-			"DECEASED" : 1,
-			"Lung Adenocarcinoma- Not Otherwise Specified (NOS)" : 0,
-			"Lung Acinar Adenocarcinoma" : 1,
-			"Lung Bronchioloalveolar Carcinoma Nonmucinous" : 2,
-			"Lung Solid Pattern Predominant Adenocarcinoma" : 3,
-			"Mucinous (Colloid) Carcinoma" : 4,
-			"Lung Adenocarcinoma Mixed Subtype" : 5,
-			"Lung Papillary Adenocarcinoma" : 6,
-			"Lung Bronchioloalveolar Carcinoma Mucinous" : 7,
-			"Lung Micropapillary Adenocarcinoma" : 8,
-			"Lung Clear Cell Adenocarcinoma" : 9,
-			"Lung Mucinous Adenocarcinoma" : 10,
-			"ERCSB" : 0,
-			"TCGA" : 1,
-			"male" : 1,
-			"female" : 0,
-			"non-smoker" : 0,
-			"smoker" : 1,
-			"reformed" : 2,
-			"asian" : 0,
-			"white" : 1,
-			"black or african ame" : 2,
-			"american indian or alaska native" : 3,
-			"NA" : 10000
-		}[_value]
+	var defGroup = function(_value)	{
+		switch(_value)	{
+			case "Squamoid" : return { value : 0, color : "#05146b" }; break;
+			case "Magnoid" : return { value : 1, color : "#2fcbff" }; break;
+			case "Bronchioid" : return { value : 2, color : "#ff809f" }; break;
+			case "Current reformed smoker for > 15 years" : return { value : 0, color : "#FEC39C" }; break;
+			case "Lifelong Non-smoker" : return { value : 1, color : "#93FE2F" }; break;
+			case "Current reformed smoker for < or = 15 years" : return { value : 2, color : "#F1FE86" }; break;
+			case "Current smoker" : return { value : 3, color : "#980713" }; break;
+			case "Current Reformed Smoker, Duration Not Specified" : return { value : 4, color : "#FD0D21" }; break;
+			case "Acinar predominant Adc" : return { value : 0, color : "#664A1F" }; break;
+			case "Adenocarcinoma, NOS" : return { value : 1, color : "#815540" }; break;
+			case "Colloid adenoca" : return { value : 2, color : "#73324F" }; break;
+			case "Invasive mucinous" : return { value : 3, color : "#BD9011" }; break;
+			case "Lepidic predominant Adc" : return { value : 4, color : "#2F5930" }; break;
+			case "Micropapillary predom Adc" : return { value : 5, color : "#445D44" }; break;
+			case "Other see comment" : return { value : 6, color : "#0B8782" }; break;
+			case "Papillary predominant Adc" : return { value : 7, color : "#EB4F8A" }; break;
+			case "Solid predominant Adc" : return { value : 8, color : "#EE9DAD" }; break;
+			case "NSCLC, favor Adeno" : return { value : 9, color : "#8F6B99" }; break;
+			case "0" : return { value : 100, color : "#fff" }; break;
+			case "Stage IA" : return { value : 0, color : "#660033" }; break;
+			case "Stage IB" : return { value : 1, color : "#CC9900" }; break;
+			case "Stage IIA" : return { value : 2, color : "#EE0088" }; break;
+			case "Stage IIB" : return { value : 3, color : "#99AA00" }; break;
+			case "Stage IIIA" : return { value : 4, color : "#006600" }; break;
+			case "Stage IV" : return { value : 5, color : "#CCFF66" }; break;
+			case "Stage I" : return { value : 6, color : "#660066" }; break;
+			case "Stage IIIB" : return { value : 7, color : "#008888" }; break;
+			case "FEMALE" : return { value : 0, color : "#ff00db" }; break;
+			case "MALE" : return { value : 1, color : "#0024ff" }; break;
+			case "NO" : return { value : 0, color : "#ef4a59" }; break;
+			case "YES" : return { value : 1, color : "#06b200" }; break;
+			case "LIVING" : return { value : 0, color : "#00FF2B" }; break;
+			case "DECEASED" : return { value : 1, color : "#FF001A" }; break;
+			case "Lung Adenocarcinoma- Not Otherwise Specified (NOS)" : return { value : 0, color : "#E2D7B1" }; break;
+			case "Lung Acinar Adenocarcinoma" : return { value : 1, color : "#A7E8EF" }; break;
+			case "Lung Bronchioloalveolar Carcinoma Nonmucinous" : return { value : 2, color : "#C49E66" }; break;
+			case "Lung Solid Pattern Predominant Adenocarcinoma" : return { value : 3, color : "#2D2D25" }; break;
+			case "Mucinous (Colloid) Carcinoma" : return { value : 4, color : "#EEEFC6" }; break;
+			case "Lung Adenocarcinoma Mixed Subtype" : return { value : 5, color : "#8DD3C9" }; break;
+			case "Lung Papillary Adenocarcinoma" : return { value : 6, color : "#56075B" }; break;
+			case "Lung Bronchioloalveolar Carcinoma Mucinous" : return { value : 7, color : "#ABB742" }; break;
+			case "Lung Micropapillary Adenocarcinoma" : return { value : 8, color : "#93938F" }; break;
+			case "Lung Clear Cell Adenocarcinoma" : return { value : 9, color : "#CC5045" }; break;
+			case "Lung Mucinous Adenocarcinoma" : return { value : 10, color : "#90C0ED" }; break;
+			case "ERCSB" : return { value : 0, color : "#59d0f4" }; break;
+			case "TCGA" : return { value : 1, color : "#849093" }; break;
+			case "male" : return { value : 1, color : "#0024ff" }; break;
+			case "female" : return { value : 0, color : "#ff00db" }; break;
+			case "non-smoker" : return { value : 0, color : "#5cb755" }; break;
+			case "smoker" : return { value : 1, color : "#ea3b29" }; break;
+			case "reformed" : return { value : 2, color : "#ff9000" }; break;
+			case "asian" : return { value : 0, color : "#f5a43f" }; break;
+			case "white" : return { value : 1, color : "#f1ec85" }; break;
+			case "black or african ame" : return { value : 2, color : "#5B5B5B" }; break;
+			case "american indian or alaska native" : return { value : 3, color : "#4af380" }; break;
+			case "NA" : return { value : 10000, color : "#d5dddd" }; break;
+		}
 	}
 
 	return {
+		stacked : stacked,
+		fillArray : fillArray,
 		getNum : getNum,
+		getOnlyDataObjArray : getOnlyDataObjArray,
+		getNotExistDataInObjArray : getNotExistDataInObjArray,
 		getObjectMax : getObjectMax,
 		frontElement : frontElement,
 		behindElement : behindElement,
 		ordinalScale : ordinalScale,
 		linearScale : linearScale,
 		getObject : getObject,
-		getObjectArray : getObjectArray,
-		isArrayInObj : isArrayInObj,
-		getArrayInObj : getArrayInObj,
-		searchObjArray : searchObjArray,
 		removeSvg : removeSvg,
 		alterationPrecedence : alterationPrecedence,
 		defMutName : defMutName,
@@ -624,7 +622,7 @@ define("utils", ["size"], function(_size)  {
 		attributeSize : attributeSize,
 		callAxis : callAxis,
 		defineProp : defineProp,
-		orderGroup : orderGroup,
+		defGroup : defGroup,
 		checkIE : checkIE
 	};
 });

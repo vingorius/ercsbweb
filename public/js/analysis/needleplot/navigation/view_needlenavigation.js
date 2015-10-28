@@ -1,13 +1,11 @@
 define("analysis/needleplot/navigation/view_needlenavigation", ["utils", "size", "analysis/needleplot/navigation/event_needlenavigation"], function(_utils, _size, _event)	{
 	var box = function(_svg, _size, _data)	{
-		var size = _size || {};
-
 		var box_g = _svg.insert("g", "g")
 		.data([{ 
 			x : 0, 
 			y : 0, 
-			width : size.rwidth, 
-			height : size.height 
+			width : _size.rwidth, 
+			height : _size.height 
 		}])
 		.attr("class", "needleplot_navigation_viewarea")
 		.attr("transform", "translate(0, 0)")
@@ -16,26 +14,26 @@ define("analysis/needleplot/navigation/view_needlenavigation", ["utils", "size",
 		var box = box_g.append("rect")
 		.attr("class", "needleplot_navigation_selectedarea")
 		.attr("x", function(_d) { 
-			return _d.x + size.margin.left; 
+			return _d.x + _size.margin.left; 
 		})
 		.attr("y", function(_d) { 
 			return _d.y; 
 		})
 		.attr("width", function(_d) { 
-			return _d.width - size.margin.left; 
+			return _d.width - _size.margin.left; 
 		})
 		.attr("height", function(_d) { 
 			return _d.height; 
 		})
 		.attr("cursor", "move");
 
-		var right_border = borderRect(box_g, "rightarea", size.rwidth, 0, size.margin.left, size.height);
-		var left_border = borderRect(box_g, "leftarea", 0, 0, size.margin.left, size.height);
+		var right_border = borderRect(box_g, "rightarea", _size.rwidth, 0, _size.margin.left, _size.height);
+		var left_border = borderRect(box_g, "leftarea", 0, 0, _size.margin.left, _size.height);
 		var e = _event({
 			box : box,
 			right : right_border,
 			left : left_border,
-			size : size, 
+			size : _size, 
 			data : _data
 		});
 
@@ -69,8 +67,7 @@ define("analysis/needleplot/navigation/view_needlenavigation", ["utils", "size",
 		.attr("transform", function(_d) { 
 			return "translate(" + _data.x(_d.position) + ", " + -size.margin.top + ")"; 
 		})
-
-		var stacked_bar = bar_group.selectAll("rect")  
+		.selectAll("rect")  
 		.data(function(_d)  { 
 			return _d.public_list; 
 		})
@@ -78,7 +75,7 @@ define("analysis/needleplot/navigation/view_needlenavigation", ["utils", "size",
 		.attr("class", "needleplot_navigation_minibar")
 		.attr("x", 0)
 		.attr("y", function(_d) { 
-			return _data.y(_d.y + _d.count); 
+			return _data.y(_d.start + _d.count); 
 		})
 		.attr("width", 1)
 		.attr("height", function(_d) { 

@@ -1,0 +1,171 @@
+extends ../../layout/analysislayout
+
+block append stylesheets
+	link(rel='stylesheet', href='/bower_components/bootstrap-table/dist/bootstrap-table.min.css')
+	style.
+		.bigbar{
+			padding: 10px;
+			padding-left: 30px;
+			//- font-size: 18px;
+			border-radius: 5px;
+			text-align: left;
+			background-color: #F9F9F9;
+		}
+		.rmargin {
+			margin-right: 10px;
+		}
+		.title1 {
+			font-size: 24px;
+		}
+		.midnumber {
+			font-size: 16px;
+		}
+		.subdata{
+			padding-left: 50px;
+			text-align: left;
+			margin-top: 10px;
+			margin-bottom: 5px;
+		}
+		.smalltd{
+			width: 1%;
+		}
+		.boarderless {
+			border: 0px !important;
+		}
+		.italic {
+			font-style: italic;
+		}
+		.underline{
+			text-decoration: underline;
+		}
+		.nounderline{
+			text-decoration: none;
+		}
+		.badge{
+			background-color: #337AB7;
+				cursor: pointer;
+		}
+		.logo{
+			height: 14px;
+		}
+		.modal-gene{
+			color: red;
+			font-weight: bold;
+		}
+		.fixed-table-pagination .pagination-detail, .fixed-table-pagination div.pagination {
+		    margin-bottom: 0px;
+		}
+block prepend rightcontent
+	div#driveModal.modal.fade(tabindex='-1', role='dialog', aria-labelledby='driveModalLabel')
+		div.modal-dialog.modal-lg(role='document')
+			div.modal-content
+				div.modal-header
+					button.close(type='button', data-dismiss='modal', aria-label='Close')
+						span(aria-hidden='true') ×
+					h4#driveModalLabel.modal-title
+				div.modal-body
+					div
+						h4 Overview
+						div.overview
+					div
+						h4 Alterations
+						div.alter
+					div
+						h4 Therapeutic Implications
+						div.therapeutic
+				div.modal-footer
+					button.btn.btn-default(type='button', data-dismiss='modal') Close
+
+	div
+		div.page-header(style={'margin-top': '20px'})
+			h3
+				span#sample_name
+				span.cancername(style='margin-right:3px')
+				small#info_cancer_name
+
+		div.col-lg-5
+			div
+				h3 Analysis Results
+				hr(style={'margin-top': '0px', 'margin-bottom': '0px'})
+			h2.bigbar.text-danger(style={'margin-top': '0px'}) 
+				span#genomic_alt.rmargin 
+				small.text-danger.italic Altered genes
+				h3.subdata.text-danger 
+					span#mutational_cd.rmargin 
+					small.text-danger.italic in Cancer Drug Targets
+						//- span.label.label-danger Driver
+				h3.subdata.text-danger 
+					span#cosmic_cgc.rmargin 
+					small.text-danger.italic in COSMIC Cancer Gene Census 
+						//- span.label.label-primary COSMIC
+			h2.bigbar.text-primary 
+				span#fda_cancer.rmargin 
+				small.text-primary.italic therapies approved in 
+				small.text-primary.italic.cancername
+			h2.bigbar.text-primary 
+				span#fda_other_cancer.rmargin 
+				small.text-primary.italic therapies approved in other cancers
+			h2.bigbar.text-success 
+				span#clinical_trials.rmargin 
+				small.text-success.italic clinical trials
+		
+		div.col-lg-7
+			div
+				ul.nav.nav-tabs(role="tablist")
+					li.active(role="presentation")
+						a.title1(href='#clinicaltab', data-toggle='tab',role="tab", aria-controls="clinicaltab") Clinical Features
+					li
+						a.title1(href='#treatmentstab', data-toggle='tab',role="tab", aria-controls="treatmentstab") Treatments
+				div.tab-content
+					div#clinicaltab.tab-pane.fade.in.active(role="tabpanel")
+						table.table.table-striped.table-hover
+							tbody
+								tr
+									th.boarderless Age
+									td#info_age.boarderless 
+								tr
+									th Gender
+									td#info_gender
+								tr
+									th Smoking History
+									td#info_smoking_history
+								tr
+									th Expression Subtype
+									td#info_expression_subtype
+								tr
+									th Histological Type
+									td#info_histological_type
+								tr
+									th Pathology
+									td#info_pathology
+								tr
+									th Pathologic Stage
+									td#info_pathologic_stage
+								tr
+									th EGFR Mutation
+									td#info_EGFR_mut
+								tr
+									th KRAS Mutation
+									td#info_KRAS_mut
+					div#treatmentstab.tab-pane.fade(role="tabpanel")
+						table.table.table-striped.table-hover
+							tbody
+								tr
+									th.boarderless Targeted Molecular Therapy
+									td#info_targeted_molecular_therapy.boarderless
+								tr
+									th Radiation Therapy
+									td#info_radiation_therapy
+								tr
+									th Primary Therapy Outcome Success
+									td#info_primary_therapy_outcome_success
+
+		div
+			div.col-lg-12
+				div.page-header
+					h3 Therapeutic Implications
+				table#implication_table.table.table-striped.table-hover
+
+block append scripts
+	script(src='/bower_components/bootstrap-table/dist/bootstrap-table.min.js')
+	script(src='/js/analysis/summary.js')

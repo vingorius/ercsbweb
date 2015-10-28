@@ -1,5 +1,4 @@
 define("population/comutationplot/gene/event_gene", ["utils", "size", "population/comutationplot/vo_comutationplot"], function(_utils, _size, _VO)	{
-	var tooltip = Object.create(_utils.tooltip);
 	var axisMouseover = function(_d)	{
 		d3.select(this)
 		.transition().duration(50)
@@ -7,12 +6,13 @@ define("population/comutationplot/gene/event_gene", ["utils", "size", "populatio
 	}
 
 	var barMouseover = function(_d)	{
-		tooltip.show(this, "<b>" + _d.name + "</b></br>" + _d.type  + " : "  + _d.count, "rgba(15, 15, 15, 0.6)");
+		_utils.tooltip.show(this, "<b>" + _d.name + "</b></br>" + _d.type  + " : "  + _d.count, "rgba(15, 15, 15, 0.6)");
+
 		_size.styleStroke(d3.select(this), "#333", 1, 50);
 	}
 
 	var explainMouseover = function(_d)	{
-		tooltip.show(this, "sort by samples", "rgba(178, 0, 0, 0.6)");
+		_utils.tooltip.show(this, "sort by samples", "rgba(178, 0, 0, 0.6)");
 	}
 
 	var commonMouseout = function(_this, _type)	{
@@ -24,7 +24,7 @@ define("population/comutationplot/gene/event_gene", ["utils", "size", "populatio
 		else if(_type === "bar")	{
 			_size.styleStroke(d3.select(_this), "#fff", 0, 250);
 		}
-		tooltip.hide();
+		_utils.tooltip.hide();
 	}
 
 	var ascending = function(_a, _b)	{
@@ -45,14 +45,14 @@ define("population/comutationplot/gene/event_gene", ["utils", "size", "populatio
 	}
 
 	var redraw = function(_sorting_data, _size)	{
-		var y = _utils.ordinalScale(_VO.VO.getGene(), 0, (_size.height - _size.margin.bottom));
 		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, _VO.VO.getWidth());
+		var y = _utils.ordinalScale(_VO.VO.getGene(), 0, (_size.height - _size.margin.bottom));
 
+		_utils.callAxis(d3.selectAll(".comutationplot_gene_yaxis"), y, "right");
 		_utils.translateXY(d3.selectAll(".comutationplot_gene_bargroup"), 0, y, 0, "name", false, false);
 		_utils.translateXY(d3.selectAll(".comutationplot_pq_bargroup"), 0, y, 0, "gene", false, false);
 		_utils.translateXY(d3.selectAll(".comutationplot_cellgroup"), x, y, "sample", "gene", false, false);
 		_utils.translateXY(d3.selectAll(".comutationplot_patient_cellgroup"), 0, y, "sample", "gene", true, false);
-		_utils.callAxis(d3.selectAll(".comutationplot_gene_yaxis"), y, "right");
 	}
 
 	var sortByValue = function(_d)	{
@@ -69,6 +69,7 @@ define("population/comutationplot/gene/event_gene", ["utils", "size", "populatio
 		_VO.VO.setGene(sortingByName(sort_data));
 		redraw(sortingByName(sort_data), _d.size);
 	}
+	
 	return {
 		axisOver : axisMouseover,
 		barOver : barMouseover,

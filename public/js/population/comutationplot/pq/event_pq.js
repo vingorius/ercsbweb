@@ -1,9 +1,8 @@
 define("population/comutationplot/pq/event_pq", ["utils", "size", "population/comutationplot/vo_comutationplot"], function(_utils, _size, _VO)	{
-	var tooltip = Object.create(_utils.tooltip);
 	var barMouseover = function(_d)	{
 		var text = (_d.q ? "q" : "p").toUpperCase();
 
-		tooltip.show(this, "<b>" + _d.gene + "</b></br>" + text + " : " + Number(_utils.calLog((_d.q || _d.p))).toFixed(4) , "rgba(15, 15, 15, 0.6)");
+		_utils.tooltip.show(this, "<b>" + _d.gene + "</b></br>" + text + " : " + Number(_utils.calLog((_d.q || _d.p))).toFixed(4) , "rgba(15, 15, 15, 0.6)");
 
 		d3.select(this)
 		.transition().duration(50)
@@ -15,7 +14,7 @@ define("population/comutationplot/pq/event_pq", ["utils", "size", "population/co
 	var explainMouseover = function(_d)	{
 		var type = (_d.data[0].list[0].q ? "q" : "p").toUpperCase();
 
-		tooltip.show(this, "sort by " + type + " value", "rgba(178, 0, 0, 0.6)");
+		_utils.tooltip.show(this, "sort by " + type + " value", "rgba(178, 0, 0, 0.6)");
 	}
 
 	var commonMouseout = function(_this, _type)	{
@@ -25,7 +24,7 @@ define("population/comutationplot/pq/event_pq", ["utils", "size", "population/co
 			.style("fill", "#BFBFBF")
 			.style("stroke-width", 0);
 		}
-		tooltip.hide();
+		_utils.tooltip.hide();
 		
 	}
 

@@ -57,10 +57,8 @@ define("size", [], function()   {
 	}
 
 	var mkSvg = function(_target, _width, _height)	{
-		var identifier = _target.substring(1, _target.length);
-
 		return d3.select(_target).append("svg")
-		.attr("class", identifier)
+		.attr("class", _target.substring(1, _target.length))
 		.attr("width", _width)
 		.attr("height", _height)
 		.append("g")

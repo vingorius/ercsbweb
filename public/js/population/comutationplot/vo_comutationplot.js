@@ -47,9 +47,6 @@ define("population/comutationplot/vo_comutationplot", ["utils"], function(_utils
 			setHeight : function(_layout_height)	{
 				layout_height = _layout_height;
 			},	
-			setLeftBetween : function(_left_between)	{
-				left_between = _left_between;
-			},
 			setTopBetween : function(_top_between)	{
 				top_between = _top_between;
 			},
@@ -86,9 +83,6 @@ define("population/comutationplot/vo_comutationplot", ["utils"], function(_utils
 			getHeight : function()	{
 				return layout_height;
 			},	
-			getLeftBetween : function()	{
-				return left_between;
-			},
 			getTopBetween : function()	{
 				return top_between;
 			},

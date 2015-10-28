@@ -48,7 +48,7 @@ router.get('/analysis/summary', function(req, res, next) {
         connection.query('CALL omics_data.getPatientInfo(?,?)', [cancer_type, sample_id], function(err, rows) {
             patient.info = rows[0][0];
             connection.query('CALL omics_data.getPersonalSummary(?,?)', [cancer_type, sample_id], function(err, rows) {
-                if (err) throw err;
+                if (err) return next(err);
 
                 var list = rows[0];
                 patient.genomic_alt = list.length;

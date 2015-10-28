@@ -20,7 +20,7 @@ router.post('/upload', [
 		var data = getRowToBeInsert(req.files.fileName, req.session.user);
 		getConnection(function(connection) {
 			connection.query('insert into ercsb_cdss.upload_files set ?', data, function(err, rows) {
-				if (err) throw err;
+				if (err) return next(err);
 			});
 			//바로 보여주도록 함.
 			var path = req.files.fileName.path;
@@ -83,9 +83,5 @@ router.get('/readExcel', function(req, res) {
 		});
 	});
 });
-
-router.get('/canvasdownload', function(req, res)	{
-	res.json({"res_canvas" : req.query.canvas})
-})
 
 module.exports = router;

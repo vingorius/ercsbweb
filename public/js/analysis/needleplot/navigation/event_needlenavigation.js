@@ -1,5 +1,4 @@
 define("analysis/needleplot/navigation/event_needlenavigation", ["utils", "size"], function(_utils, _size)	{
-	var tooltip = Object.create(_utils.tooltip);
 	return function(_element) 	{
 		var size = _element.size;
 		var right_x = size.rwidth;
@@ -9,20 +8,13 @@ define("analysis/needleplot/navigation/event_needlenavigation", ["utils", "size"
 
 			return {
 				start : x(_x), 
-				end : x(Number(_x) + Number(_width))
+				end : x(Number(_x) + Number(_width)),
 			}
 		}
 
 		var disappearItems = function(_position)	{
-			var location = _position;
-
-			if(_position === size.margin.left)	{
-				location = -size.width;
-			}
-			else if(_position === size.rwidth)	{
-				location = size.width * 2;	
-			}
-			return location;
+			return _position === size.margin.left ? -size.width : 
+			_position === size.rwidth ? size.width * 2 : _position;
 		}
 
 		var changeScale = function(_x, _width)    {
@@ -30,7 +22,7 @@ define("analysis/needleplot/navigation/event_needlenavigation", ["utils", "size"
 			var loc_data = getDataLocation(_x, _width);
 			var loc_x = _utils.linearScale(loc_data.start, loc_data.end, size.margin.left, size.rwidth).clamp(true);
 
-			d3.select(".needleplot_xaxis")
+			var xaxis = d3.select(".needleplot_xaxis")
 			.call(d3.svg.axis().scale(loc_x).tickPadding(10))
 			.selectAll("text")
 			.style("font-size", "10px");
@@ -39,10 +31,8 @@ define("analysis/needleplot/navigation/event_needlenavigation", ["utils", "size"
 			.attr("transform", function(_d)	{
 				if(_d.display) { 
 					return "translate(" + loc_x(_d.start) + ", " + (size.graph_width + (height - (size.margin.top * 2) - (size.margin.bottom * 2)))  + ")"; 
-				}
-				else { 
-					d3.select(this).remove(); 
-				}
+				}				
+				d3.select(this).remove(); 
 			});
 			var graph_rect = d3.selectAll(".needleplot_graph_group rect")
 			.attr("width", function(_d) { 
@@ -62,7 +52,7 @@ define("analysis/needleplot/navigation/event_needlenavigation", ["utils", "size"
 			.attr("transform", function(_d) {
 				var location = disappearItems(loc_x(_d.position));
 
-				return "translate( " + location+ ", " + (height - ((size.margin.top* 2) * 1.7))+ " )";
+				return "translate( " + location + ", " + (height - ((size.margin.top* 2) * 1.7))+ " )";
 			});
 		}
 

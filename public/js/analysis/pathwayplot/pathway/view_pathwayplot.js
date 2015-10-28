@@ -1,14 +1,14 @@
 define("analysis/pathwayplot/pathway/view_pathwayplot", ["utils", "size", "analysis/pathwayplot/pathway/event_pathwayplot"], function(_utils, _size, _event)   {
-	var makePathway = function(_g, _data, _target_list)	{
+	var makePathway = function(_g, _data)	{
 		for(var i = 0, len = _g.length ; i < len ; i++)	{
 			var g = _g[i];
 			var g_text = g.select("text").text();
-			var gene_in_data = _utils.getObject(g_text, _data, "gene_id");
+			var gene_in_data = _utils.getObject(g_text, _data.pathway_list, "gene_id");
 			var frequency = !gene_in_data ? null : gene_in_data.frequency;
 			var is_activated = !gene_in_data ? null : gene_in_data.active;
 			var data_set = setData(g_text, frequency, is_activated);
 
-			fillRect(g.select("rect"), data_set, $.inArray(g_text, _target_list));
+			fillRect(g.select("rect"), data_set, $.inArray(g_text, _data.gene_list));
 			fillText(g.select("text"), data_set);
 		}
 	}
@@ -60,26 +60,18 @@ define("analysis/pathwayplot/pathway/view_pathwayplot", ["utils", "size", "analy
 		var base_color = d3.hsl(_d.active === "Y" ? "red" : "blue");
 		var color_range = _utils.linearScale(0, 50, 1, 0.5);
 
-		if(_d.active === null && _d.frequency === null)	{
-			return "#d0d0d0";
-		}
-		if(_d.frequency >= 50)	{
-			return base_color;
-		}
 		base_color.l = color_range(_d.frequency);
-		return base_color;
-	}
 
-	var addHandlerDrug = function(_drug)	{
-		_drug
-		.on("click", _event.d_click)
-		.on("mouseover", _event.d_over)
-		.on("mouseout", _event.d_out);
+		return !_d.active && !_d.frequency ? "#d0d0d0" : base_color;
 	}
 
 	var view = function(_data)	{
-		makePathway(_data.gene, _data.data.pathway_list, _data.data.gene_list);
-		addHandlerDrug(_data.drug);		
+		makePathway(_data.gene, _data.data);
+
+		_data.drug
+		.on("click", _event.d_click)
+		.on("mouseover", _event.d_over)
+		.on("mouseout", _event.d_out);
 	}
 	return 	{
 		view : view

@@ -8,6 +8,11 @@
 	position: absolute;
 }
 
+#comutationplot_patient_heatmap	{
+	width : 7px;
+	height : 580px;
+}
+
 #comutationplot_sample_lm	{
 	float: left;
 	padding: 0px;

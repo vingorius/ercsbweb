@@ -6,12 +6,10 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 		.attr("class", "needleplot_patient_group")
 		.attr("transform", function(_d) {
 			return "translate( " + _x(_d.position)+ ", " + (_size.height - (_size.margin.top * 1.7)) + " )";
-		});
-
-		var needleplot_patient_mutation = patient_group.append("path")
+		})
+		.append("path")
 		.attr("class", "needleplot_patient_mutation")
 		.attr("d", d3.svg.symbol().type("triangle-up"))
-		.attr("transform", "translate(0, 0)")
 		.style("fill", function(_d)	{
 			_d.target = "patient";
 			return _utils.colour(_utils.defMutName(_d.type[0]));
@@ -67,12 +65,11 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 		.enter().append("g")
 		.attr("class", "needleplot_graph_group")
 		.attr("transform", function(_d) {
-			if(_d.display === 1) { 
-				return "translate(" + _data.x(_d.start) + ", " + (size.rheight + size.graph_width) + ")"; 
-			}
-			else { 
+			if(!_d.display)	{
 				d3.select(this).remove(); 
+				return;
 			}
+			return "translate(" + _data.x(_d.start) + ", " + (size.rheight + size.graph_width) + ")"; 
 		});
 
 		var graph_g = graph_group.append("g")
@@ -83,19 +80,18 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 		.attr("class", "needleplot_graph_group_graphs")
 		.style("fill", function(_d) { 
 			_d.target = "graph";
-
 			return _d.colour; 
 		})
 		.on("mouseover", _event.mover)
 		.on("mouseout", _event.mout)
 		.attr("x", 0)
 		.attr("y", -size.margin.top)
+		.attr("rx", 3)
+		.attr("ry", 3)
 		.attr("width", function(_d) {
 			return _data.x(_d.end) - _data.x(_d.start); 
 		})
-		.attr("height", size.graph_width)
-		.attr("rx", 3)
-		.attr("ry", 3);
+		.attr("height", size.graph_width);
 
 		var graphs_text = graph_g.append("text")
 		.attr("class", "needleplot_graph_intext")
@@ -122,7 +118,7 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 		.enter().append("g")
 		.attr("class", "needleplot_marker_figure_group")
 		.attr("transform", function(_d) {
-			return "translate(0, " + (_data.y(_d.y) - (size.rheight - size.graph_width)) + ")";
+			return "translate(0, " + (_data.y(_d.start) - (size.rheight - size.graph_width)) + ")";
 		});
 
 		var marker_figures_path = marker_figures_group.append("path")

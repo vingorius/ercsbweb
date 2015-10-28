@@ -7,6 +7,11 @@
 	position: absolute;
 }
 
+#comutationplot_patient_heatmap	{
+	width : 7px;
+	height : 580px;
+}
+
 #comutationplot_sample_yaxis_title 	{
 	float: left;
 	padding: 0px;

@@ -7,7 +7,7 @@ var getConnection = require('../modules/mysql_connection');
 router.get('/', security.isAdmin, function(req, res, next) {
     getConnection(function(connection) {
         connection.query('CALL ercsb_cdss.getUsers()', function(err, rows) {
-            if (err) throw err;
+            if (err) return next(err);
             res.json(rows[0]);
         });
     });
@@ -19,7 +19,7 @@ router.get('/', security.isAdmin, function(req, res, next) {
 router.get('/profile', function(req, res, next) {
     getConnection(function(connection) {
         connection.query("call ercsb_cdss.getUserByName(?)", [req.user.username], function(err, rows, fields) {
-            if (err) throw err;
+            if (err) return next(err);
             var profile = rows[0][0];
 
             res.render('system/profile', {

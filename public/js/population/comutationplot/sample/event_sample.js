@@ -1,10 +1,11 @@
+// 'use strict';
 var SAMPLE = "population/comutationplot/sample/";
 var VO = "population/comutationplot/vo_comutationplot";
 var SORT = "population/comutationplot/sort_comutationplot";
 
 define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _size, _VO, _sort)	{
 	var barMouseover = function(_d)	{
-		_utils.tooltip.show(this, "<b>" + _d.name + "</b></br>" + _utils.defMutName(_d.type) + " : " + _d.count, "rgba(15, 15, 15, 0.6)");
+		_utils.tooltip.show(this, "<b>" + _d.name + "</b></br>" + _utils.mutate(_d.type).name + " : " + _d.count, "rgba(15, 15, 15, 0.6)");
 		_size.styleStroke(d3.select(this), "#333", 1, 50);
 	}
 
@@ -27,15 +28,6 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 		return (_utils.getSumList(_a.types, "count") < _utils.getSumList(_b.types, "count")) ? 1 : -1;
 	}
 
-	var sortingByName = function(_sorting_data)	{
-		var result = [];
-
-		for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
-			result.push(_sorting_data[i].name);
-		}
-		return result;
-	}
-
 	var redraw = function(_sorting_data, _size)	{
 		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, _VO.VO.getWidth());
 		var y = _utils.ordinalScale(_VO.VO.getGene(), 0, _VO.VO.getHeight());
@@ -49,7 +41,7 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 
 	var sortByValue = function(_d)	{
 		var sort_data;
-
+		
 		if(_d.status)	{
 			sort_data =_d.data.sort(ascending);
 			_d.status = false;
@@ -58,9 +50,10 @@ define(SAMPLE + "event_sample", ["utils", "size", VO, SORT], function(_utils, _s
 			sort_data =_d.data.sort(descending);
 			_d.status = true;
 		}
-		_VO.VO.setSample(sortingByName(sort_data));
-		redraw(sortingByName(sort_data), _d.size);
+		_VO.VO.setSample(_utils.getOnlyDataObjArray(sort_data, "name"));
+		redraw(_utils.getOnlyDataObjArray(sort_data, "name"), _d.size);
 	}
+	
 	return {
 		m_over : barMouseover,
 		e_over : explainMouseover,

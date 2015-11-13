@@ -1,3 +1,4 @@
+'use strict';
 define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis/needleplot/needle/event_needleplot"], function(_utils, _size, _event)    {
 	var showPatient = function(_svg, _size, _x, _patient)	{
 		var patient_group = _svg.selectAll(".needleplot_patient_group")
@@ -12,7 +13,8 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 		.attr("d", d3.svg.symbol().type("triangle-up"))
 		.style("fill", function(_d)	{
 			_d.target = "patient";
-			return _utils.colour(_utils.defMutName(_d.type[0]));
+
+			return _utils.mutate(_d.type[0]).color;
 		})
 		.on("mouseover", _event.mover)
 		.on("mouseout", _event.mout);
@@ -23,31 +25,16 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 		.attr("class", "needleplot_gene_fullpath_group")
 		.attr("transform", "translate(0, " + (_size.rheight + _size.graph_width + (_size.graph_width - (_size.graph_width / 1.5)) / 2) + ")")
 		.append("rect")
-		.attr("x", _size.margin.left)
-		.attr("y", -(_size.margin.top))
-		.attr("width", _size.rwidth - _size.margin.left)
-		.attr("height", _size.graph_width / 1.5)
+		.attr({"x" : _size.margin.left, "y" : -(_size.margin.top)})
+		.attr({"width" : _size.rwidth - _size.margin.left, "height" : _size.graph_width / 1.5})
 		.style("fill", "#DADFE1");
 	}
 
 	var view = function(_data)  {
 		var size = _data.size;
 		var svg = _size.mkSvg("#needleplot_view", size.width, size.height);
-
-		var xAxis = d3.svg.axis()
-		.scale(_data.x)
-		.orient("bottom")
-		.tickPadding(10);
-
-		var yAxis = d3.svg.axis()
-		.scale(_data.y)
-		.orient("left")
-		.ticks(5)
-		.tickFormat(d3.format("d"))
-		.tickSubdivide(0)
-		.tickPadding(2)
-		.innerTickSize(2)
-		.outerTickSize(2);
+		var xAxis = _size.setAxis(_data.x, "bottom", { "tickPadding" : 10 });
+		var yAxis = _size.setAxis(_data.y, "left", { "tickFormat" : d3.format("d") });
 
 		drawGenepath(svg, size);
 
@@ -58,7 +45,7 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 		xyaxis.selectAll("text")
 		.style("font-size", "10px");
 		xyaxis.selectAll("path, line")
-		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1px").style("shape-rendering", "crispEdges");
+		.style({"fill" : "none", "stroke" : "#BFBFBF", "stroke-width" : "1px", "shape-rendering" : "crispEdges"});
 
 		var graph_group = svg.selectAll(".needleplot_graph_group")
 		.data(_data.data.data.graph)
@@ -73,8 +60,7 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 		});
 
 		var graph_g = graph_group.append("g")
-		.attr("class", "needleplot_graph_g")
-		.attr("transform", "translate(0, 0)");
+		.attr({"class" : "needleplot_graph_g", "transform" : "translate(0, 0)"});
 
 		var graph_rect = graph_g.append("rect")
 		.attr("class", "needleplot_graph_group_graphs")
@@ -82,12 +68,8 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 			_d.target = "graph";
 			return _d.colour; 
 		})
-		.on("mouseover", _event.mover)
-		.on("mouseout", _event.mout)
-		.attr("x", 0)
-		.attr("y", -size.margin.top)
-		.attr("rx", 3)
-		.attr("ry", 3)
+		.on({"mouseover" : _event.mover, "mouseout" : _event.mout})
+		.attr({"x" : 0, "y" : -size.margin.top, "rx" : 3, "ry" : 3})
 		.attr("width", function(_d) {
 			return _data.x(_d.end) - _data.x(_d.start); 
 		})
@@ -95,10 +77,8 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 
 		var graphs_text = graph_g.append("text")
 		.attr("class", "needleplot_graph_intext")
-		.attr("x", 3)
-		.attr("y", -(size.graph_width / 3))
-		.style("fill", "#fff")
-		.style("font-size", _data.fontsize)
+		.attr({"x" : 3, "y" : -(size.graph_width / 3)})
+		.style({"fill" : "#fff", "font-size" : "10px"})
 		.text(function(_d) { 
 			return _d.identifier; 
 		});
@@ -126,16 +106,17 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 		.attr("d", function(_d) {
 			return "M0,0L0," + (_data.y(_d.count) - (size.rheight - size.graph_width));
 		})
-		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1px").style("shape-rendering", "crispEdges");
+		.style({"fill" : "none", "stroke" : "#BFBFBF", "stroke-width" : "1px", "shape-rendering" : "crispEdges"});
 
 		var marker_figures_circle = marker_figures_group.append("circle")
 		.attr("class", "needleplot_marker_figure_incircle")
 		.style("fill", function(_d) { 
 			_d.target = "marker";
-			return _utils.colour(_utils.defMutName(_d.type)); 
+
+			return _utils.mutate(_d.type).color;
 		})
 		.style("stroke", function(_d) { 
-			return d3.rgb(_utils.colour(_utils.defMutName(_d.type))).darker(2); 
+			return d3.rgb(_utils.mutate(_d.type).color).darker(2);
 		})
 		.style("stroke-width", 0)
 		.attr("cx", 0)
@@ -145,8 +126,7 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 		.attr("r", function(_d) { 
 			return _data.radius(_d.count); 
 		})
-		.on("mouseover", _event.mover)
-		.on("mouseout", _event.mout);
+		.on({"mouseover" : _event.mover, "mouseout" : _event.mout})
 
 		_event.front();
 
@@ -155,8 +135,7 @@ define("analysis/needleplot/needle/view_needleplot", ["utils", "size", "analysis
 		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")")
 		.append("text")
 		.text(_data.data.data.title)
-		.style("font-size", "15px")
-		.style("font-weight", "bold");
+		.style({"font-size" : "15px", "font-weight" : "bold"});
 
 		if(_data.data.data.patient_list)	{
 			showPatient(svg, size, _data.x, _data.data.data.patient_list);

@@ -42,10 +42,10 @@ define(COMUTATION + "view_comutation", ["utils", "size", COMUTATION + "event_com
 		.attr("x", 0)
 		.attr("y", 0)
 		.style("stroke", function(_d) { 
-			return _utils.colour(_d.type[0]); 
+			return _d.type[0].color;
 		})
 		.style("fill", function(_d) { 
-			return _utils.colour(_d.type[0]); 
+			return _utils.mutate(_d.type[0]).color; 
 		})
 		.style("stroke-width", function(_d) { 
 			return 1; 

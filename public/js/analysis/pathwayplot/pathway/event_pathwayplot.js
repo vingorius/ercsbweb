@@ -1,3 +1,4 @@
+"use strict";
 define("analysis/pathwayplot/pathway/event_pathwayplot", ["utils", "size"], function(_utils, _size)   {
 	var twinklRect = function(_rect, _color, _width)	{
 		_size.styleStroke(_rect, _color, _width, 500);
@@ -21,10 +22,7 @@ define("analysis/pathwayplot/pathway/event_pathwayplot", ["utils", "size"], func
 		_utils.frontElement(parent, grand_parent);
 
 		rect
-		.attr("x", rect.attr("x"))
-		.attr("y", rect.attr("y"))
-		.attr("width", rect.attr("width"))
-		.attr("height", rect.attr("height"));
+		.attr({"x" : rect.attr("x"), "y" : rect.attr("y"), "width" : rect.attr("width"), "height" : rect.attr("height"),});
 
 		animate(rect, text, _d, true);
 	}
@@ -33,21 +31,19 @@ define("analysis/pathwayplot/pathway/event_pathwayplot", ["utils", "size"], func
 		var parent = d3.select(this)[0][0].parentNode;
 		var parent_g = d3.select(parent);
 			
-		if(_d.width !== "")	{
-			_utils.behindElement(parent, _d.child_index, parent.parentNode);
-			_utils.tooltip.hide();
+		_utils.behindElement(parent, _d.child_index, parent.parentNode);
+		_utils.tooltip.hide();
 
-			animate(parent_g.select("rect"), parent_g.select("text"), _d, false);
-		}
+		animate(parent_g.select("rect"), parent_g.select("text"), _d, false);
 	}
 
 	var insertRectData = function(_d, _parent, _grand_parent, _rect, _text)	{
-		_d.x = _d.x === "" ? _rect.attr("x") : _d.x;
-		_d.y = _d.y === "" ? _rect.attr("y") : _d.y;
-		_d.width = _d.width === "" ? _rect.attr("width") : _d.width;
-		_d.height = _d.height === "" ? _rect.attr("height") : _d.height;
-		_d.font_size = _d.font_size === "" ? _text.style("font-size") : _d.font_size;
-		_d.child_index = _d.child_index === 0 ? initElementIndex(_d, _grand_parent.childNodes, _parent) : _d.child_index;
+		_d.x = _d.x || _rect.attr("x");
+		_d.y = _d.y || _rect.attr("y");
+		_d.width = _d.width || _rect.attr("width");
+		_d.height = _d.height || _rect.attr("height");
+		_d.font_size = _d.font_size || _text.style("font-size");
+		_d.child_index = _d.child_index || initElementIndex(_d, _grand_parent.childNodes, _parent);
 	}
 
 	var initElementIndex = function(_d, _all_child, _source)	{
@@ -78,7 +74,6 @@ define("analysis/pathwayplot/pathway/event_pathwayplot", ["utils", "size"], func
 		var source = d3.select(this);
 
 		_utils.frontElement(source, source[0][0].parentNode);
-		
 		_size.styleStroke(source.selectAll("path"), "#FBFD24", 20);
 	}
 

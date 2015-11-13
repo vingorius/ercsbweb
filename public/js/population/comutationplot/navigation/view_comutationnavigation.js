@@ -1,9 +1,8 @@
+// 'use strict';
 define("population/comutationplot/navigation/view_comutationnavigation", ["utils", "size", "population/comutationplot/navigation/event_comutationnavigation"], function(_utils, _size, _event)	{
 	var makeHandler = function(_id, _click, _over, _out)	{
 		return d3.select("#" + _id)
-		.on("click", _click)
-		.on("mouseover", _over)
-		.on("mouseout", _out);
+		.on({"click" : _click, "mouseover" : _over, "mouseout" : _out});
 	}
 
 	var view = function(_data)	{

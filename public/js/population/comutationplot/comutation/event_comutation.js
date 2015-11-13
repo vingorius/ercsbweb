@@ -1,10 +1,11 @@
+// 'use strict';
 define("population/comutationplot/comutation/event_comutation", ["utils", "size"], function(_utils, _size)	{
 	var getAllType = function(_all_child, _sign)	{
 		var cnv = [], somatic = [], exp = [];
 
 		for(var i = 0, len = _all_child.length ; i < len ; i++)	{
 			var child = _all_child[i].__data__;
-			var alter_type = _utils.defMutName(child.type);
+			var alter_type = _utils.mutate(child.type).name;
 
 			switch(_utils.alterationPrecedence(alter_type).alteration)	{
 				case "CNV" : cnv.push(alter_type); break;
@@ -27,22 +28,21 @@ define("population/comutationplot/comutation/event_comutation", ["utils", "size"
 		var all_type = getAllType($("." + sample_name + "-" + gene_name), _d.sign);
 
 		_utils.tooltip.show(this, "<b>Gene mutations</b></br> x : " + _d.sample + "</br>y : " + _d.gene + "</br>" + all_type, "rgba(15, 15, 15, 0.6)");
-
 		_size.styleStroke(target, "#333", 1, 50);
 	}
 
 	var event_mouseout = function(_d)	{
 		_utils.tooltip.hide();
-		
 		_size.styleStroke(d3.select(this), "#fff", 0, 250);
 	}
 
 	var move_scroll = function()	{
-		var base = $("#comutationplot_border")
+		$("#comutationplot_border")
 		.scroll(function()	{
-			$("#comutationplot_sample, #comutationplot_groups").scrollLeft(base.scrollLeft());
+			$("#comutationplot_sample, #comutationplot_groups").scrollLeft($(this).scrollLeft());
 		});
 	}
+	
 	return {
 		m_over : event_mouseover,
 		m_out : event_mouseout,

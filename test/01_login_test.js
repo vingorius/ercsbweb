@@ -40,8 +40,9 @@ describe('Login Test Suite', function() {
 
     it('DB에서 테스트할 사용자가 있으면 삭제한다.', function(done) {
         getConnection(function(connection) {
-            connection.query('delete from ercsb_cdss.users where username = ?', [user.username], function(err, rows, fields) {
+            connection.query('delete from CGIS.CG_USERS_TB where username = ?', [user.username], function(err, rows, fields) {
                 if (err) assert(false, err.code); //throw err;
+                assert.equal(1,rows.affectedRows);
                 done();
             });
         });
@@ -73,7 +74,7 @@ describe('Login Test Suite', function() {
 
     it('DB에서 사용자를 Enable한다.', function(done) {
         getConnection(function(connection) {
-            connection.query('update ercsb_cdss.users set enable = 1 where username = ?', [user.username], function(err, rows, fields) {
+            connection.query('update CGIS.CG_USERS_TB set enable = 1 where username = ?', [user.username], function(err, rows, fields) {
                 if (err) assert(false, err.code); //throw err;
                 done();
             });

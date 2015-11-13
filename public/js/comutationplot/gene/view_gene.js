@@ -74,7 +74,7 @@ define(GENE + "view_gene", ["utils", "size", GENE + "event_gene"], function(_uti
 		.enter().append("rect")
 		.attr("class", "comutationplot_gene_bars")
 		.style("fill", function(_d) { 
-			return _utils.colour(_d.type); 
+			return _utils.mutate(_d.type).color;
 		})
 		.on("mouseover", _event.bar_m_over)
 		.on("mouseout",_event.bar_m_out)

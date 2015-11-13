@@ -1,3 +1,4 @@
+'use strict';
 define("analysis/needleplot/needle/event_needleplot", ["utils", "size"], function(_utils, _size)    {
 	var eventMouseover = function(_d)   {
 		var contents = "";
@@ -14,17 +15,16 @@ define("analysis/needleplot/needle/event_needleplot", ["utils", "size"], functio
 				contents = "<b>" + _d.identifier + "</b></br> desc : " + _d.description + "</br> section : " + _d.start + " - " + _d.end; 
 				break;
 			case "patient" : 
-				contents = "<b>" + _d.id + "</b></br> type : " + _d.type[0] + "</br> aachange : " + _d.aachange + "</br> position : " + _d.position;
+				contents = "<b>" + _d.id + "</b></br> type : " + _d.type + "</br> aachange : " + _d.aachange + "</br> position : " + _d.position;
 				break;
 		}
-
 		_utils.frontElement(group, source);
 		_utils.tooltip.show(this, contents, "rgba(15, 15, 15, 0.6)");
 		
 		target
 		.transition().duration(200)
 		.style("stroke", function(_d)	{
-			return d3.rgb(_d.colour || _utils.colour(_utils.defMutName(_d.type))).darker(2);
+			return d3.rgb(_d.colour || _utils.mutate(_d.type).color).darker(2);
 		})
 		.style("stroke-width", 2);
 	}
@@ -41,10 +41,7 @@ define("analysis/needleplot/needle/event_needleplot", ["utils", "size"], functio
 
 	var getNowElementIndexOfChild = function(_target, _source)	{
 		for(var i = 0, len = _source.length ; i < len ; i++)	{
-			var child = d3.select(_source[i]);
-			var target = d3.select(_target);
-
-			if(child.attr("transform") === target.attr("transform"))	{
+			if(d3.select(_source[i]).attr("transform") === d3.select(_target).attr("transform"))	{
 				return i;
 			}
 		}
@@ -59,17 +56,15 @@ define("analysis/needleplot/needle/event_needleplot", ["utils", "size"], functio
 				
 				return result;
 			});
-			frontFromParent(_d);
+
+			return _d.forEach(function(_e)	{
+				var group = _e.parentNode.parentNode;
+
+				_utils.frontElement(group, group.parentNode);
+			});
 		});
 	}
 
-	var frontFromParent = function(_childs)    {
-		_childs.forEach(function(_d)    {
-			var group = _d.parentNode.parentNode;
-
-			_utils.frontElement(group, group.parentNode);
-		});
-	}
 	return {
 		mover : eventMouseover,
 		mout : eventMouseout,

@@ -1,3 +1,4 @@
+"use strict";
 define("chart/legend/setting_legend", ["utils", "size", "chart/legend/view_legend"], function(_utils, _size, _view)   {
 	var arranged = function(_data, _type, _size_set, _size)	{
 		var maximum_text = _utils.getObjectMax(_size_set, "width");
@@ -25,7 +26,8 @@ define("chart/legend/setting_legend", ["utils", "size", "chart/legend/view_legen
 
 		for(var i = 0, len = _data.type_list.length ; i < len ; i++)	{
 			var item = _data.type_list[i].name;
-			size_set.push(_utils.getTextSize(item, "11"));
+
+			size_set[i] = _utils.getTextSize(item, "11");
 		}
 		return size_set;
 	}
@@ -52,10 +54,8 @@ define("chart/legend/setting_legend", ["utils", "size", "chart/legend/view_legen
 		var size = _size.initSize(_opt.view_id, 10, 0, 0, 0, { "rect_size" : 15 });
 
 		switch(_opt.type)	{
-			case "generic mutation" : 
-				_opt.data.type_list = alignByPrecedence(_opt.data.type_list); break;
-			case "pca mutation" : 
-				_opt.data.type_list = _opt.data.type_list; break;
+			case "generic mutation" : _opt.data.type_list = alignByPrecedence(_opt.data.type_list); break;
+			case "pca mutation" : _opt.data.type_list = _opt.data.type_list; break;
 		}
 
 		_view.view({

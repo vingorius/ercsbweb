@@ -1,3 +1,4 @@
+// 'use strict';
 define("population/comutationplot/gene/event_gene", ["utils", "size", "population/comutationplot/vo_comutationplot"], function(_utils, _size, _VO)	{
 	var axisMouseover = function(_d)	{
 		d3.select(this)
@@ -7,7 +8,6 @@ define("population/comutationplot/gene/event_gene", ["utils", "size", "populatio
 
 	var barMouseover = function(_d)	{
 		_utils.tooltip.show(this, "<b>" + _d.name + "</b></br>" + _d.type  + " : "  + _d.count, "rgba(15, 15, 15, 0.6)");
-
 		_size.styleStroke(d3.select(this), "#333", 1, 50);
 	}
 
@@ -15,7 +15,7 @@ define("population/comutationplot/gene/event_gene", ["utils", "size", "populatio
 		_utils.tooltip.show(this, "sort by samples", "rgba(178, 0, 0, 0.6)");
 	}
 
-	var commonMouseout = function(_this, _type)	{
+	var mouseOut = function(_this, _type)	{
 		if(_type === "axis")	{
 			d3.select(_this)
 			.transition().duration(250)
@@ -33,15 +33,6 @@ define("population/comutationplot/gene/event_gene", ["utils", "size", "populatio
 
 	var descending = function(_a, _b)	{
 		return (_utils.getSumList(_a.types, "count") < _utils.getSumList(_b.types, "count")) ? 1 : -1;
-	}
-
-	var sortingByName = function(_sorting_data)	{
-		var result = [];
-
-		for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
-			result.push(_sorting_data[i].name);
-		}
-		return result;
 	}
 
 	var redraw = function(_sorting_data, _size)	{
@@ -66,15 +57,15 @@ define("population/comutationplot/gene/event_gene", ["utils", "size", "populatio
 			sort_data =_d.data.sort(descending);
 			_d.status = true;
 		}
-		_VO.VO.setGene(sortingByName(sort_data));
-		redraw(sortingByName(sort_data), _d.size);
+		_VO.VO.setGene(_utils.getNotExistDataInObjArray(sort_data, "name"));
+		redraw(_utils.getNotExistDataInObjArray(sort_data, "name"), _d.size);
 	}
 	
 	return {
 		axisOver : axisMouseover,
 		barOver : barMouseover,
 		explainOver : explainMouseover,
-		mouseout : commonMouseout,
+		mouseout : mouseOut,
 		sortByValue : sortByValue
 	}
 });

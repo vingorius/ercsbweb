@@ -22,11 +22,8 @@ define(COMUTATION + "event_comutation", ["utils", "size"], function(_utils, _siz
 
 		d3.select(this)
 		.transition().duration(10)
-		.style("stroke", function(_d) { 
-			return _utils.colour(_d.type[0]); 
-		})
 		.style("stroke-width", function(_d) { 
-			return 1; 
+			return 0; 
 		});
 	}
 

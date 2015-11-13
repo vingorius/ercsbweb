@@ -91,8 +91,10 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		var result = { type : [], value : [] };
 
 		gene.forEach(function(_d, _i)   {
-			if($.inArray(_utils.defMutName(_d.type), result.type) < 0)    {
-				result.type.push(_utils.defMutName(_d.type));
+			var name = _utils.mutate(_d.type).name;
+			
+			if($.inArray(name, result.type) < 0)    {
+				result.type.push(name);
 			}
 			result.value.push(_d.value);
 		});
@@ -103,9 +105,10 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		var group_array = [];
 
 		for(var i = 0, len = _group_list.length ; i < len ; i++)	{
-			var name = _utils.defineProp({}, _group_list[i], "group_name");
-			_utils.defineProp(name, [], "group_list");
-
+			var name = {
+					group_name : _group_list[i],
+					group_list : [],
+			};
 			group_array.push(name);
 		}
 		return group_array;
@@ -168,7 +171,7 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 				get_mutation_list(getArrayInObj(_d)[0], result);
 			}
 			else {
-				typeName = _utils.defMutName(_d.type);
+				typeName = _utils.mutate(_d.type).name;
 				if($.inArray(typeName, result.type_list) < 0) { 
 					result.type_list.push(typeName); 
 				}
@@ -182,8 +185,10 @@ define(COMUTS_INTER, [ "utils", VO, COMUTATION + "setting_comutation", GENE + "s
 		var mutation_array = [];
 
 		for(var i = 0, len = _mutation_list.length ; i < len ; i++)	{
-			var mutations = _utils.defineProp({}, _mutation_list[i], "name");
-			_utils.defineProp(mutations, 0, "importance");
+			var mutations = {
+				"name" : _mutation_list[i],
+				"importance" : 0,
+			}
 			mutation_array.push(mutations);
 		}
 		return mutation_array;

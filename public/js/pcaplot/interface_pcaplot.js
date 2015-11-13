@@ -1,57 +1,13 @@
-var PCA = "pcaplot/interface_pcaplot";
-var _2D = "pcaplot/pca2d/setting_pcaplot2d";
-var _3D = "pcaplot/pca3d/setting_pcaplot3d";
-var LEGEND = "chart/legend/setting_legend";
-
-define(PCA, ["utils", "size", LEGEND, _2D, _3D], function(_utils, _size, _setting_legend, _setting_2d, _setting_3d)	{
-	var exchangeTsv = function(_data)  {
-		return lineFeedTsv(_data, tabSeparateTsv);
-	}
-
-	var lineFeedTsv = function(_data, _callback)   {
-		var linefeed_reg = /\n/g;
-
-		return {
-			title : "pca_plot",
-			sample_list : _callback(_data.split(linefeed_reg))
-		};
-	}
-
-	var tabSeparateTsv = function(_linefeed)  {
-		var tab_separate_reg = /\t/g;
-		var linefeed = _linefeed || [];
-		var keys = linefeed[0].split(tab_separate_reg);
-
-		var result = [];
-
-		for(var i = 1, len = linefeed.length - 1 ; i < len ; i++)   {
-			result.push(tabSeparateJson(keys, linefeed[i].split(tab_separate_reg)));
-		}
-		return result;
-	}
-
-	var tabSeparateJson = function(_keys, _values)    {
-		var keys = _keys || [];
-		var values = _values || [];
-
-		var result = {};
-
-		for(var i = 0, len = keys.length ; i < len ; i++)   {
-			result[keys[i].replace(/"/g, '')] = (values[i] || "").replace(/"/g, '');
-		}
-		return result;
-	}
-
+"use strict";
+define("pcaplot/interface_pcaplot", ["utils", "size", "chart/legend/setting_legend", "pcaplot/pca2d/setting_pcaplot2d", "pcaplot/pca3d/setting_pcaplot3d"], function(_utils, _size, _setting_legend, _setting_2d, _setting_3d)	{
 	var getTypeList = function(_data)	{
-		var result = [];
+		var result = [], type_object = {}, type_index = 0;
 
 		for(var i = 0, len = _data.length ; i < len ; i++)	{
-			var is_type = _utils.getObject(_data[i].TYPE, result, "name");
-
-			if(!is_type)	{
-				result.push({
-					name : _data[i].TYPE
-				});
+			if(!type_object[_data[i].TYPE])	{
+				result[type_index] = { name : _data[i].TYPE };
+				type_object[_data[i].TYPE] = "T";
+				type_index++;
 			}
 		}
 		return { 
@@ -60,53 +16,50 @@ define(PCA, ["utils", "size", LEGEND, _2D, _3D], function(_utils, _size, _settin
 	}
 
 	var minAndmax = function(_data, _axis)  {
-		var add_axis = 10;
-
-		var min = d3.min(_data.sample_list.map(function(_d)    { 
-			return Number(_d[_axis]); 
-		}));
-		var max = d3.max(_data.sample_list.map(function(_d)    { 
-			return Number(_d[_axis]); 
-		}));
+		var axis_type = function()	{
+			return _data.sample_list.map(function(_d)	{
+				return Number(_d[_axis]);
+			});
+		}
+		var min = d3.min(axis_type()) - 10;
+		var max = d3.max(axis_type()) + 10;
 
 		return {
-			min : min - add_axis,
-			max : max + add_axis
+			min : min,
+			max : max
 		};
 	 }
 
 	 var figureList = function(_type)	{
-		return {
-			"Primary Solid Tumor" : { 
-				figure : "circle" 
-			},
-			"Solid Tissue Normal" : { 
-				figure : "rect" 
-			}
-		}[_type];
+	 	switch(_type)	{
+	 		case "Primary Solid Tumor" : return { figure : "circle" }; break;
+	 		case "Solid Tissue Normal" : return { figure : "rect" }; break;
+	 	}
 	}
 
 	return function(_data)	{
-		var data = exchangeTsv(_data || []);
-		var type_list = getTypeList(data.sample_list);
-		var canvas = $("canvas");
+		d3.tsv(_data, function(_d)	{
+			var data = {
+				title : "pca_plot",
+				sample_list : _d,
+			};	
+			var canvas = $("canvas");
 
-		_utils.removeSvg("pcaplot_view_2d");
-		_utils.removeSvg("pcaplot_legend");
+			_utils.removeSvg("pcaplot_view_2d, pcaplot_legend")
 
-		if(!!canvas)	{ 
-			canvas.remove(); 
-		}
-		_setting_legend({
-			data : type_list,
-			view_id : "pcaplot_legend",
-			type : "pca mutation",
-			chart : "pcaplot",
+			if(!!canvas)	{ 
+				canvas.remove(); 
+			}
+			_setting_legend({
+				data : getTypeList(data.sample_list),
+				view_id : "pcaplot_legend",
+				type : "pca mutation",
+				chart : "pcaplot",
+			});
+
+			window.location.pathname.indexOf("3d") > 0 ? 
+			_setting_3d(data, minAndmax, figureList) : 
+			_setting_2d(data, minAndmax, figureList);
 		});
-
-		if(window.location.pathname.indexOf("3d") > 0)	{
-			_setting_3d(data, minAndmax, figureList);	
-		}
-		_setting_2d(data, minAndmax, figureList);
 	}
 });

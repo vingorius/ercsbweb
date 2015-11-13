@@ -1,22 +1,11 @@
+// 'use strict';
 var GROUP = "population/comutationplot/group/";
 var SORT = "population/comutationplot/sort_comutationplot";
 var VO = "population/comutationplot/vo_comutationplot";
 
 define(GROUP + "event_group", ["utils", "size", VO, SORT], function(_utils, _size, _VO, _sort)	{
-	var getSampleName = function(_group)	{
-		var result = [];
-
-		for(var i = 0, len = _group.length ; i < len ; i++)	{
-			result.push(_group[i].sample);
-		}
-		return result;
-	}
-
 	var clickSort = function(_this, _sort_order, _d)	{
-		var ex = _sort.loopingGroup(_sort_order);
-		var samples = getSampleName(ex);
-
-		_VO.VO.setSample(samples);
+		_VO.VO.setSample(_utils.getOnlyDataObjArray(_sort.loopingGroup(_sort_order), "sample"));
 		_VO.VO.setSortOrder(_sort_order);
 
 		var x = _utils.ordinalScale(_VO.VO.getSample(), 0, _VO.VO.getWidth() - 2);

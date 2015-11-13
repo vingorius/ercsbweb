@@ -1,6 +1,5 @@
-var _2D = "pcaplot/pca2d/";
-
-define(_2D + "event_pcaplot2d", ["utils", "size"], function(_utils, _size)	{
+"use strict";
+define("pcaplot/pca2d/event_pcaplot2d", ["utils", "size"], function(_utils, _size)	{
 	var tooltip = Object.create(_utils.tooltip);
 	
 	var mouseover = function(_d)	{

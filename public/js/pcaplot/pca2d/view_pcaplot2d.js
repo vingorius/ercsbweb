@@ -1,16 +1,10 @@
-var _2D = "pcaplot/pca2d/";
-
-define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], function(_utils, _size, _event)	{
+"use strict";
+define("pcaplot/pca2d/view_pcaplot2d", ["utils", "size", "pcaplot/pca2d/event_pcaplot2d"], function(_utils, _size, _event)	{
 	var interfaceFigure = function(_data, _x, _y, _svg, _type)	{
 		switch(_type)	{
-			case "circle" : 
-				return circles(_data, _x, _y, _svg); 
-			break;
-			case "rect" : 
-				return rectangle(_data, _x, _y, _svg); 
-			break;
-			case "triangle" : 
-				return triangle(_data, _x, _y, _svg); 
+			case "circle" : return circles(_data, _x, _y, _svg); break;
+			case "rect" : return rectangle(_data, _x, _y, _svg); break;
+			case "triangle" : return triangle(_data, _x, _y, _svg); 
 			break;
 		}
 	}
@@ -18,18 +12,15 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 	var circles = function(_data, _x, _y, _svg)	{
 		return _svg.append("circle")
 		.attr("class", "pcaplot_circles")
-		.attr("cx", _data.x(_x))
-		.attr("cy", _data.y(_y))
+		.attr({"cx" : _data.x(_x), "cy" : _data.y(_y)})
 		.attr("r", _data.radius);
 	}
 
 	var rectangle = function(_data, _x, _y, _svg)	{
 		return _svg.append("rect")
 		.attr("class", "pcaplot_rect")
-		.attr("x", _data.x(_x) - _data.radius)
-		.attr("y", _data.y(_y) - _data.radius)
-		.attr("width", _data.radius * 2)
-		.attr("height", _data.radius * 2);
+		.attr({"x" : _data.x(_x) - _data.radius, "y" : _data.y(_y) - _data.radius})
+		.attr({"width" : _data.radius * 2, "height" : _data.radius * 2});
 	}
 
 	var triangle = function(_data, _x, _y, _svg)	{
@@ -41,29 +32,10 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 
 	var view = function(_data)	{
 		var size = _data.size;
+		var svg = _size.mkSvg("#pcaplot_view_2d", size.width, size.height, true);
 
-		var svg = d3.select("#pcaplot_view_2d")
-		.append("svg")
-		.attr("class", "pcaplot_view_2d")
-		.attr("width", size.width)
-		.attr("height", size.height)
-		.append("g")
-		.attr("transform", "translate(0, 0)");
-
-		var xAxis = d3.svg.axis()
-		.scale(_data.x)
-		.orient("bottom")
-		.ticks(5);
-
-		var yAxis = d3.svg.axis()
-		.scale(_data.y)
-		.orient("left")
-		.ticks(5);
-
-		var xaxis = svg.append("g")
-		.attr("class", "pcaplot_xaxis")
-		.attr("transform", "translate(0, " + size.rheight + ")")
-		.call(xAxis);
+		var xAxis = _size.setAxis(_data.x, "bottom", { "ticks" : 5 });
+		var yAxis = _size.setAxis(_data.y, "left", { "ticks" : 5 });
 
 		svg.append("g")
 		.attr("class", "pcaplot_2d_pc1label")
@@ -71,16 +43,11 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 		.append("text")
 		.text("PC1");
 
-		var yaxis = svg.append("g")
-		.attr("class", "pcaplot_yaxis")
-		.attr("transform", "translate(" + size.margin.left + ", 0)")
-		.call(yAxis);
+		_size.mkAxis(svg, "pcaplot_xaxis", 0, size.rheight, xAxis);
+		_size.mkAxis(svg, "pcaplot_yaxis", size.margin.left, 0, yAxis);
 
-		xaxis.selectAll("path, line")
-        	.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1").style("shape-rendering", "crispEdges");
-
-        	yaxis.selectAll("path, line")
-        	.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1").style("shape-rendering", "crispEdges");
+		d3.selectAll(".pcaplot_xaxis, .pcaplot_yaxis").selectAll("path, line")
+		.style({"fill" : "none", "stroke" : "#BFBFBF", "stroke-width" : "1", "shape-rendering" : "crispEdges", })
 
 		svg.append("g")
 		.attr("class", "pcaplot_2d_pc2label")
@@ -94,13 +61,12 @@ define(_2D + "view_pcaplot2d", ["utils", "size", _2D + "event_pcaplot2d"], funct
 
 			interfaceFigure(_data, pca.PC1, pca.PC2, svg, _data.type(pca.TYPE).figure)
 			.data([pca])
-			.on("mouseover", _event.m_over)
-			.on("mouseout", _event.m_out)
+			.on({"mouseover" : _event.m_over, "mouseout" : _event.m_out})
 			.style("stroke", function(_d) { 
-				return _utils.colour(pca.TYPE); 
+				return _utils.mutate(pca.TYPE).color; 
 			})
 			.style("fill", function(_d) { 
-				return _utils.colour(pca.TYPE); 
+				return _utils.mutate(pca.TYPE).color; 
 			});
 		}
 	}

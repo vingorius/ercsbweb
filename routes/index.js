@@ -130,24 +130,20 @@ router.get('/logout', function(req, res, next) {
     req.logout();
 
     //Clear Flash Message
-    clearSessionWithoutCookie(req.session);
+    // clearSessionWithoutCookie(req.session);
+    // res.redirect('/');
+    if(req.session.flash) req.session.flash = {};
     res.redirect('/');
-    //res.status(200).send("logout success");
 });
 
 //TODO 세션을 session.destroy()로 완전히 제거 해야하는지 의문이다.
-var clearSessionWithoutCookie = function(session){
-    if(! session) return;
+// var clearSessionWithoutCookie = function(session){
+//     if(! session) return;
+//     if(session.flash) session.flash = {};
+// };
 
-    // for(var property in session){
-    //
-    // }
-    if(session.flash) session.flash = {};
-
-};
-
-router.get('/ping', function(req, res) {
-    res.status(200).send("pong!");
-});
+// router.get('/ping', function(req, res) {
+//     res.status(200).send("pong!");
+// });
 
 module.exports = router;

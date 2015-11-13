@@ -1,3 +1,4 @@
+// 'use strict';
 define("population/comutationplot/group/view_group", ["utils", "size", "population/comutationplot/vo_comutationplot", "population/comutationplot/group/event_group", "population/comutationplot/sort_comutationplot"], function(_utils, _size, _VO, _e, _sort)	{
 	var view = function(_data)	{
 		var size = _data.size;
@@ -37,9 +38,7 @@ define("population/comutationplot/group/view_group", ["utils", "size", "populati
 		.attr("x", function(_d)	{
 			return _range.x(_d.sample);
 		})
-		.attr("y", -_range.y)
-		.attr("width", _range.x.rangeBand())
-		.attr("height", _range.y);
+		.attr({"y" : -_range.y, "width" : _range.x.rangeBand(), "height" : _range.y});
 	}
 
 	var nameView = function(_data)	{
@@ -67,12 +66,10 @@ define("population/comutationplot/group/view_group", ["utils", "size", "populati
 			x : _x,
 			order : true
 		}])
-		.attr("class", "comutationplot_name_group_text")
-		.attr("cursor", "pointer")
+		.attr({"class" : "comutationplot_name_group_text", "cursor" : "pointer"})
 		.text(_name)
-		.style("fill", "#626262").style("font-size", "8px")
-		.on("mouseover", _e.eover)
-		.on("mouseout", _e.mout)
+		.style({"fill" : "#626262", "font-size" : "8px"})
+		.on({"mouseover" : _e.eover, "mouseout" : _e.mout})
 		.on("click", function(_d)	{	
 			var sort_order;
 			var size = _sort.itemCount(_group);
@@ -87,6 +84,7 @@ define("population/comutationplot/group/view_group", ["utils", "size", "populati
 			_e.clickSort(this, sort_order, _d);
 		});
 	}
+	
 	return	{
 		view : view,
 		nameView : nameView

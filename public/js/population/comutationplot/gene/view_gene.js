@@ -1,35 +1,28 @@
+// 'use strict';
 define("population/comutationplot/gene/view_gene", ["utils", "size", "population/comutationplot/gene/event_gene"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
 		var size = _data.size;
 		var svg = _size.mkSvg("#comutationplot_gene", size.width, size.height);
-
-		var xAxis = d3.svg.axis()
-		.scale(_data.x)
-		.orient("bottom")
-		.tickValues([0, (_data.max / 2), _data.max]);
-
-		var yAxis = d3.svg.axis()
-		.scale(_data.y)
-		.orient("right");
-
+		var xAxis = _size.setAxis(_data.x, "bottom", { "tickValues" : [0, _data.max / 2, _data.max]});
+		var yAxis = _size.setAxis(_data.y, "right");
 		var xaxis = _size.mkAxis(svg, "comutationplot_gene_xaxis", 0, (size.height - size.margin.bottom), xAxis);
 		var yaxis = _size.mkAxis(svg, "comutationplot_gene_yaxis", (size.width - size.margin.right), 0, yAxis);
 
 		xaxis.selectAll("text")
-		.style("font-size", "8px").style("fill", "#626262");
+		.style({"font-size" : "8px", "fill" : "#626262"});
 
 		yaxis.selectAll("text")
-		.style("font-size", "8px").style("fill", "#626262")
+		.style({"font-size" : "8px", "fill" : "#626262"})
 		.on("mouseover", _event.axisOver)
 		.on("mouseout", function()	{
 			_event.mouseout(this, "axis");
 		});
 
 		yaxis.selectAll("path, line")
-		.style("fill", "none").style("stroke", "none");
+		.style({"fill" : "none", "stroke" : "none"});
 
 		xaxis.selectAll("path, line")
-		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1px").style("shape-rendering", "crispEdges");
+		.style({"fill" : "none", "stroke" : "#BFBFBF", "stroke-width" : "1px", "shape-rendering" : "crispEdges"});
 
 		var bar_group = svg.selectAll(".comutationplot_gene_bargroup")
 		.data(_data.data)
@@ -45,7 +38,9 @@ define("population/comutationplot/gene/view_gene", ["utils", "size", "population
 		.enter().append("rect")
 		.attr("class", "comutationplot_gene_bars")
 		.style("fill", function(_d) { 
-			return _utils.colour(_utils.defMutName(_d.type)); 
+			if(_utils.mutate(_d.type))	{
+				return _utils.mutate(_d.type).color;
+			}
 		})
 		.on("mouseover", _event.barOver)
 		.on("mouseout", function()	{
@@ -71,12 +66,11 @@ define("population/comutationplot/gene/view_gene", ["utils", "size", "population
 			size : _data.size, 
 			status : false 
 		}])
-		.attr("class", "comutationplot_gene_sort_label")
-		.attr("cursor", "pointer")
+		.attr({"class" : "comutationplot_gene_sort_label", "cursor" : "pointer"})
 		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")")
 		.append("text")
 		.text("#sample count")
-		.style("fill", "#626262").style("font-size", "11px").style("font-weight", "bold").style("font-style", "italic")
+		.style({"fill" : "#626262", "font-size" : "11px", "font-weight" : "bold", "font-style" : "italic"})
 		.on("mouseover", _event.explainOver)
 		.on("mouseout", function()	{
 			_event.mouseout(this, "explain");

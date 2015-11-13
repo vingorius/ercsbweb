@@ -20,6 +20,7 @@
     "express-authorization": "^1.0.0",
     "express-session": "^1.11.3",
     "fs": "0.0.2",
+    "helmet": "^0.14.0",
     "jade": "^1.9.2",
     "mongoose": "^4.0.6",
     "morgan": "~1.5.3",

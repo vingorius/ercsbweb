@@ -1,3 +1,4 @@
+'use strict';
 define("analysis/needleplot/navigation/view_needlenavigation", ["utils", "size", "analysis/needleplot/navigation/event_needlenavigation"], function(_utils, _size, _event)	{
 	var box = function(_svg, _size, _data)	{
 		var box_g = _svg.insert("g", "g")
@@ -7,12 +8,11 @@ define("analysis/needleplot/navigation/view_needlenavigation", ["utils", "size",
 			width : _size.rwidth, 
 			height : _size.height 
 		}])
-		.attr("class", "needleplot_navigation_viewarea")
-		.attr("transform", "translate(0, 0)")
+		.attr({"class" : "needleplot_navigation_viewarea", "transform" : "translate(0, 0)"})
 		.style("fill", "#eaeaea");
 
 		var box = box_g.append("rect")
-		.attr("class", "needleplot_navigation_selectedarea")
+		.attr({"class" : "needleplot_navigation_selectedarea", "cursor" : "move"})
 		.attr("x", function(_d) { 
 			return _d.x + _size.margin.left; 
 		})
@@ -24,8 +24,7 @@ define("analysis/needleplot/navigation/view_needlenavigation", ["utils", "size",
 		})
 		.attr("height", function(_d) { 
 			return _d.height; 
-		})
-		.attr("cursor", "move");
+		});
 
 		var right_border = borderRect(box_g, "rightarea", _size.rwidth, 0, _size.margin.left, _size.height);
 		var left_border = borderRect(box_g, "leftarea", 0, 0, _size.margin.left, _size.height);
@@ -36,7 +35,6 @@ define("analysis/needleplot/navigation/view_needlenavigation", ["utils", "size",
 			size : _size, 
 			data : _data
 		});
-
 		box
 		.call(e.moving);
 		right_border
@@ -47,13 +45,8 @@ define("analysis/needleplot/navigation/view_needlenavigation", ["utils", "size",
 
 	var borderRect = function(_element, _class, _x, _y, _width, _height)		{
 		return _element.append("rect")
-		.attr("class", "needleplot_navigation_" + _class)
-		.attr("x", _x)
-		.attr("y", _y)
-		.attr("width", _width)
-		.attr("height", _height)
-		.attr("cursor", "ew-resize")
-		.style("fill", "#dbdbdb").style("stroke", "#dbdbdb");
+		.attr({"class" : "needleplot_navigation_" + _class, "x" : _x, "y" : _y, "width" : _width, "height" : _height, "cursor" : "ew-resize"})
+		.style({"fill" : "#dbdbdb", "stroke" : "#dbdbdbd"});
 	}
 
 	var view = function(_data)	{

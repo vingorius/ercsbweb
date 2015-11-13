@@ -1,20 +1,16 @@
+// 'use strict';
 define("population/comutationplot/pq/view_pq", ["utils", "size", "population/comutationplot/pq/event_pq"], function(_utils, _size, _event)	{
 	var view = function(_data)	{
 		var size = _data.size;
 		var svg = _size.mkSvg("#comutationplot_pq", size.width, size.height);
-
-		var xAxis = d3.svg.axis()
-		.scale(_data.x)
-		.orient("bottom")
-		.tickValues([0, _data.max / 2, _data.max]);
-
+		var xAxis = _size.setAxis(_data.x, "bottom", { "tickValues" : [0, _data.max / 2, _data.max]});
 		var xaxis = _size.mkAxis(svg, "comutationplot_pq_xaxis", 0, (size.height - size.margin.bottom), xAxis);
 
 		xaxis.selectAll("text")
-		.style("font-size", "8px").style("fill", "#626262");
+		.style({"font-size" : "8px", "fill" : "#626262"});
 
 		xaxis.selectAll("path, line")
-		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1px").style("shape-rendering", "crispEdges");
+		.style({"fill" : "none", "stroke" : "#BFBFBF", "stroke-width" : "1px", "shape-rendering" : "crispEdges"});
 
 		var bar_group = svg.selectAll(".comutationplot_pq_bargroup")
 		.data(_data.data)
@@ -34,8 +30,7 @@ define("population/comutationplot/pq/view_pq", ["utils", "size", "population/com
 		.on("mouseout", function()	{
 			_event.m_out(this, "bar");
 		})
-		.attr("x", size.margin.left)
-		.attr("y", 0)
+		.attr({"x" : size.margin.left, "y" : 0})
 		.attr("width", function(_d) { 
 			return _data.x(_utils.calLog((_d.q || _d.p))) - size.margin.left; 
 		})
@@ -52,18 +47,16 @@ define("population/comutationplot/pq/view_pq", ["utils", "size", "population/com
 			size : _data.size, 
 			status : false 
 		}])
-		.attr("class", "comutationplot_pq_sort_label")
-		.attr("cursor", "pointer")
+		.attr({"class" : "comutationplot_pq_sort_label", "cursor" : "pointer"})
 		.attr("transform", "translate(" + size.margin.left + ", " + size.margin.top + ")")
 		.append("text")
+		.on({"mouseover" : _event.e_over, "mouseout" : _event.m_out, "click" : _event.sortByValue})
 		.text(function(_d) {	
 			return "#" + (_d.data[0].list[0].q ? "q" : "p") + " value";
 		})
-		.style("fill", "#626262").style("font-size", "11px").style("font-weight", "bold").style("font-style", "italic")
-		.on("mouseover", _event.e_over)
-		.on("mouseout", _event.m_out)
-		.on("click", _event.sortByValue);
+		.style({"fill" : "#626262", "font-size" : "11px", "font-weight" : "bold", "font-style" : "italic"});
 	}
+	
 	return {
 		view : view,
 		titleView : titleView

@@ -1,3 +1,4 @@
+"use strict";
 define("chart/legend/view_legend", ["utils", "size", "chart/legend/event_legend"], function(_utils, _size, _event)    {
 	var setFigureData = function()	{
 		this.set = {
@@ -24,35 +25,33 @@ define("chart/legend/view_legend", ["utils", "size", "chart/legend/event_legend"
 	}
 
 	var setFigure = function(_data, _g)	{
-		var chart = _data.chart;
-
 		for(var i = 0, len = _data.data.type_list.length ; i < len ; i++)	{
 			var type = _data.data.type_list[i];
-			var name = _utils.defMutName(type.name);
+			var name = _utils.mutate(type.name).name;
 			var data_set = new setFigureData(_data, name);
 			var arranged = _data.arranged(name, "figure", _data.size_set, _data.size);
 			var info = null;
 
-			switch(chart)	{
+			switch(_data.chart)	{
 				case "comutation" : 
 				if(type.alteration === "CNV")	{
-					info = { id : "cnv", data : data_set.rect(0, 0, 4.5, 15).style("fill", _utils.colour(name)).set, type : "rect" };
+					info = { id : "cnv", data : data_set.rect(0, 0, 4.5, 12).style("fill", _utils.mutate(name).color).set, type : "rect" };
 				}
 				else if(type.alteration === "mRNA Expression (log2FC)")	{
-					info = { id : "exp", data : data_set.rect(0, 0, 4.5, 15).style("stroke", _utils.colour(name)).set, type : "rect" };
+					info = { id : "exp", data : data_set.rect(0, 0, 4.5, 12).style("stroke", _utils.mutate(name).color).set, type : "rect" };
 				}
 				else {
-					info = { id : "somatic", data : data_set.rect(0, 5, 4.5, 5).style("fill", _utils.colour(name)).set, type : "rect" }
+					info = { id : "somatic", data : data_set.rect(0, 3, 4.5, 5).style("fill", _utils.mutate(name).color).set, type : "rect" }
 				}; break;
 				case "pcaplot" : 
 				if(type.name === "Primary Solid Tumor")	{
-					info = { id : "pcaplot", data : data_set.rect(0, 3, 10, 10).style("fill", _utils.colour(type.name)).set, type : "circle"};
+					info = { id : "pcaplot", data : data_set.circle(5, 6.5, 5).style("fill", _utils.mutate(type.name).color).set, type : "circle"};
 				}
 				else if(type.name === "Solid Tissue Normal")	{
-					info = { id : "pcaplot", data : data_set.circle(5, 7.5, 5).style("fill", _utils.colour(type.name)).set, type : "rect"};
+					info = { id : "pcaplot", data : data_set.rect(0, 1, 10, 10).style("fill", _utils.mutate(type.name).color).set, type : "rect"};
 				}; break;
 				case "needleplot" : 
-				info = { id : "needleplot", data : data_set.circle(0, 8, 3).style("fill", _utils.colour(name)).set, type : "circle"}; break;
+				info = { id : "needleplot", data : data_set.circle(0, 6, 3).style("fill", _utils.mutate(name).color).set, type : "circle"}; break;
 			}
 			info.type === "circle" ? figureCircle(_g, info.id, info.data, arranged) : figureRect(_g, info.id, info.data, arranged);
 		}
@@ -60,23 +59,14 @@ define("chart/legend/view_legend", ["utils", "size", "chart/legend/event_legend"
 
 	var figureCircle = function(_element, _id, _data, _arranged)	{
 		return _element.append("circle")
-		.attr("class", "legend_figure_" + _id)
-		.attr("cx", _arranged.x + _data.cx)
-		.attr("cy", _arranged.y + _data.cy)
-		.attr("r", _data.radius)
-		.style("fill", _data.fill ? _data.fill : "none")
-		.style("stroke", _data.stroke ? _data.stroke : "none");
+		.attr({"class" : "legend_figure_" + _id, "cx" : _arranged.x + _data.cx, "cy" : _arranged.y + _data.cy, "r" : _data.radius})
+		.style({"fill" : _data.fill || "none", "stroke" : _data.stroke || "none"});
 	}
 
 	var figureRect = function(_element, _id, _data, _arranged)	{
 		return _element.append("rect")
-		.attr("class", "legend_figure_" + _id)
-		.attr("x", _arranged.x + _data.x)
-		.attr("y", _arranged.y + _data.y)
-		.attr("width", _data.width)
-		.attr("height", _data.height)
-		.style("fill", _data.fill || "none")
-		.style("stroke", _data.stroke || "none");
+		.attr({"class" : "legend_figure_" + _id, "x" : _arranged.x + _data.x, "y" : _arranged.y + _data.y, "width" : _data.width, "height" : _data.height})
+		.style({"fill" : _data.fill || "none", "stroke" : _data.stroke || "none"});
 	}
 
 	var view = function(_data)  {
@@ -91,20 +81,20 @@ define("chart/legend/view_legend", ["utils", "size", "chart/legend/event_legend"
 
 		var text = legendGroup.append("text")
 		.attr("class", "legend_text")
-		.style("font-size", "11px")
-		.on("mouseover", _event.mouseover)
-		.on("mouseout", _event.mouseout)
 		.attr("x", function(_d) { 
 			return _data.arranged(_d.name, "text", _data.size_set, size).x; 
 		})
 		.attr("y", function(_d) { 
 			return _data.arranged(_d.name, "text", _data.size_set, size).y; 
 		})
+		.on({"mouseover" : _event.mouseover, "mouseout" : _event.mouseout})
 		.text(function(_d) { 
 			return _d.name; 
-		});
+		})
+		.style("font-size", "11px");
 		setFigure(_data, legendGroup);
 	}
+	
 	return {
 		view : view
 	}

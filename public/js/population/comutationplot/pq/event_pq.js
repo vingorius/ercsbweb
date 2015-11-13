@@ -1,3 +1,4 @@
+// 'use strict';
 define("population/comutationplot/pq/event_pq", ["utils", "size", "population/comutationplot/vo_comutationplot"], function(_utils, _size, _VO)	{
 	var barMouseover = function(_d)	{
 		var text = (_d.q ? "q" : "p").toUpperCase();
@@ -6,14 +7,12 @@ define("population/comutationplot/pq/event_pq", ["utils", "size", "population/co
 
 		d3.select(this)
 		.transition().duration(50)
-		.style("fill", d3.rgb("#BFBFBF").darker(2))
-		.style("stroke", "#333")
-		.style("stroke-width", 1);
+		.style({"fill" : d3.rgb("#BFBFBF").darker(2), "stroke" : "#333", "stroke-width" : 1});
 	}
 
 	var explainMouseover = function(_d)	{
 		var type = (_d.data[0].list[0].q ? "q" : "p").toUpperCase();
-
+		
 		_utils.tooltip.show(this, "sort by " + type + " value", "rgba(178, 0, 0, 0.6)");
 	}
 
@@ -21,8 +20,7 @@ define("population/comutationplot/pq/event_pq", ["utils", "size", "population/co
 		if(_type === "bar")	{
 			d3.select(_this)
 			.transition().duration(250)
-			.style("fill", "#BFBFBF")
-			.style("stroke-width", 0);
+			.style({"fill" : "#BFBFBF", "stroke-width" : 0});
 		}
 		_utils.tooltip.hide();
 		
@@ -38,15 +36,6 @@ define("population/comutationplot/pq/event_pq", ["utils", "size", "population/co
 		var type = _a.list[0].q ? "q" : "p";
 
 		return (_utils.getSumList(_a.list, type) < _utils.getSumList(_b.list, type)) ? 1 : -1;
-	}
-
-	var sortingByName = function(_sorting_data)	{
-		var result = [];
-
-		for(var i = 0, len = _sorting_data.length ; i < len ; i++)	{
-			result.push(_sorting_data[i].gene);
-		}
-		return result;
 	}
 
 	var redraw = function(_sorting_data, _size)	{
@@ -71,9 +60,10 @@ define("population/comutationplot/pq/event_pq", ["utils", "size", "population/co
 			sort_data =_d.data.sort(descending);
 			_d.status = true;
 		}
-		_VO.VO.setGene(sortingByName(sort_data));
-		redraw(sortingByName(sort_data), _d.size);
+		_VO.VO.setGene(_utils.getOnlyDataObjArray(sort_data, "gene"));
+		redraw(_utils.getOnlyDataObjArray(sort_data, "gene"), _d.size);
 	}
+
 	return {
 		m_over : barMouseover,
 		m_out : commonMouseout,

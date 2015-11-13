@@ -1,3 +1,4 @@
+'use strict';
 define("analysis/needleplot/navigation/setting_needlenavigation", ["utils", "size", "analysis/needleplot/navigation/view_needlenavigation"], function(_utils, _size, _view)	{
 	return function(_data, _stacked, _ymax) 	{
 		var size = _size.initSize("needleplot_navigation", 10, 20, 20, 0, { "graph_width" : 20 });

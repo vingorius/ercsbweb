@@ -57,8 +57,7 @@ module.exports = function(passport) {
                 // find a user whose email is the same as the forms email
                 // we are checking to see if the user trying to login already exists
                 getConnection(function(connection) {
-                    //connection.query("SELECT * FROM users WHERE username = ?", [username], function(err, rows) {
-                    connection.query("call ercsb_cdss.getUserByName(?)", [username], function(err, rows, fields) {
+                    connection.query("call CGIS.sp_getUserByName(?)", [username], function(err, rows, fields) {
                         if (err)
                             return done(err);
 
@@ -73,7 +72,7 @@ module.exports = function(passport) {
                             };
                             //console.log(req.body);
                             //var insertQuery = "INSERT INTO users ( username, password ) values (?,?)";
-                            var insertQuery = 'call ercsb_cdss.insertUser(?,?,?,?,?,?,?,?,?,?)';
+                            var insertQuery = 'call CGIS.sp_insertUser(?,?,?,?,?,?,?,?,?,?)';
                             connection.query(insertQuery, [newUserMysql.username,
                                     newUserMysql.password,
                                     req.body.fullname,
@@ -118,7 +117,7 @@ module.exports = function(passport) {
             },
             function(req, username, password, done) { // callback with email and password from our form
                 getConnection(function(connection) {
-                    connection.query("call ercsb_cdss.getUserByName(?)", [username], function(err, rows, fields) {
+                    connection.query("call CGIS.sp_getUserByName(?)", [username], function(err, rows, fields) {
                         if (err)
                             return done(err);
                         var user = rows[0][0]; //Only One Rows

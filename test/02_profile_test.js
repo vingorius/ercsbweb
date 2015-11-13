@@ -6,7 +6,7 @@ var host = 'http://localhost';
 
 describe('Profile Test Suite', function() {
     var user = {
-        id: 114,
+        id: 159,
         username: 'test2@gmail.com',
         password: 'test2',
     };
@@ -46,7 +46,7 @@ describe('Profile Test Suite', function() {
 
     it('수정된 회사 정보가 DB에 정확히 반영되어 있어야한다.', function(done) {
         getConnection(function(connection) {
-            connection.query('select company_name from ercsb_cdss.users where username = ?', [user.username], function(err, rows, fields) {
+            connection.query('select company_name from CGIS.CG_USERS_TB where username = ?', [user.username], function(err, rows, fields) {
                 if (err) assert(false, err.code); //throw err;
                 assert.equal(new_company_name, rows[0].company_name);
                 done();

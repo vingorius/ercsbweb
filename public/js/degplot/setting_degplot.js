@@ -1,14 +1,7 @@
-var DEG = "degplot/";
-
-define(DEG + "setting_degplot", ["utils", "size", DEG + "view_degplot"], function(_utils, _size, _view)	{
-	var max = function(_log_list, _key)	{
-		return d3.max(_log_list.map(function(_d)	{
-			return _d[_key];
-		}));
-	}
-
-	var min = function(_log_list, _key)	{
-		return d3.min(_log_list.map(function(_d)	{
+"use strict";
+define("degplot/setting_degplot", ["utils", "size", "degplot/view_degplot"], function(_utils, _size, _view)	{
+	var getMinMax = function(_type, _log_list, _key)	{
+		return d3[_type](_log_list.map(function(_d)	{
 			return _d[_key];
 		}));
 	}
@@ -21,15 +14,11 @@ define(DEG + "setting_degplot", ["utils", "size", DEG + "view_degplot"], functio
 		];
 	}
 
-	var hsl = function(_color) 	{
-		return d3.hsl(_color);
-	}
-
 	var backgroundColor = function(_rgb, _value, _min, _max)	{
 		if(_value > _max)	{
 			_value = _max;
 		}
-		var hsl_color = hsl(_rgb);
+		var hsl_color =  d3.hsl(_rgb);
 		var si_color_scale = d3.scale.linear()
 		.domain([_max, _min])
 		.range([hsl_color.l, 1]);
@@ -57,9 +46,11 @@ define(DEG + "setting_degplot", ["utils", "size", DEG + "view_degplot"], functio
 
 		for(var i = 0, len = si.length ; i < len ; i++)	{
 			var a_si = {};
-			_utils.defineProp(a_si, max(_data.data.pathway_list, si[i]), "max");
-			_utils.defineProp(a_si, min(_data.data.pathway_list, si[i]), "min");
-			si_min_max.push(_utils.defineProp({}, a_si, si[i]));
+			a_si[si[i]] = {
+				max : getMinMax("max", _data.data.pathway_list, si[i]),
+				min : getMinMax("min", _data.data.pathway_list, si[i]),
+			}
+			si_min_max.push(a_si);
 		}
 
 		_view.view({
@@ -67,8 +58,6 @@ define(DEG + "setting_degplot", ["utils", "size", DEG + "view_degplot"], functio
 			tbody : document.querySelector(".degplot_tbody"),
 			backgroundcolor : backgroundColor,
 			colors : colour,
-			max : max,
-			min : min,
 			si : si,
 			min_max : si_min_max
 		});

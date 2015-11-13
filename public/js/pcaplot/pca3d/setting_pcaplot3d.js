@@ -1,6 +1,5 @@
-var _3D = "pcaplot/pca3d/";
-
-define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], function(_utils, _size, _view)	{
+"use strict";
+define("pcaplot/pca3d/setting_pcaplot3d", ["utils", "size", "pcaplot/pca3d/view_pcaplot3d"], function(_utils, _size, _view)	{
 	return function(_data, _min_max)	{
 		var size = _size.initSize("pcaplot_view_3d", 30, 30, 30, 30);
 		var x_minmax = _min_max(_data, "PC1");
@@ -10,27 +9,20 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			x : { start : -170, end : 170 },
 			y : { start : -170, end : 170 },
 			z : { start : -170, end : 170 },
-		}
+		};
+		var x = _utils.linearScale(x_minmax.min, x_minmax.max, square_size.x.start, square_size.x.end);
+		var y = _utils.linearScale(y_minmax.min, y_minmax.max, square_size.y.start, square_size.y.end);
+		var z = _utils.linearScale(z_minmax.min, z_minmax.max, square_size.z.start, square_size.z.end);
 
-		var x = _utils.linearScale(x_minmax.min, x_minmax.max,
-			square_size.x.start, square_size.x.end);
-		var y = _utils.linearScale(y_minmax.min, y_minmax.max, 
-			square_size.y.start, square_size.y.end);
-		var z = _utils.linearScale(z_minmax.min, z_minmax.max, 
-			square_size.z.start, square_size.z.end);
-
-		var calculateVector = function(_x, _y, _z)	{
+		var vector = function(_x, _y, _z)	{
 			return new THREE.Vector3(_x, _y, _z);
 		}
 
 		var createFigureCanvas = function()	{
 			var canvas = document.createElement("canvas");
-			
-			var canvas_width = 10;
-			var canvas_height = 10;
 
-			canvas.width = canvas_width;
-			canvas.height = canvas_height;
+			canvas.width = 10;
+			canvas.height = 10;
 
 			return canvas;
 		}
@@ -73,21 +65,18 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 		}
 
 		var figureType = function(_type)	{
-			return {
-				"Primary Solid Tumor" : drawCircle(_utils.colour(_type)),
-				"Solid Tissue Normal" : drawRect(_utils.colour(_type))
-			}[_type];
+			switch(_type)	{
+				case "Primary Solid Tumor" : return drawCircle(_utils.mutate(_type).color); break;
+				case "Solid Tissue Normal" : return drawRect(_utils.mutate(_type).color); break;
+			}
 		}
 
 		var createTextCanvas = function(_text)	{
 			var font_size = (_text.constructor === String) ? 15 : 12;
-			var font_style = (_text.constructor === String) ? "Arial" : "Arial";
 			var font_weight = (_text.constructor === String) ? "bold" : "none";
-			var font_color = (_text.constructor === String) ? "black" : 0xFF0000;
-
 			var canvas = document.createElement("canvas");
 			var canvasText = canvas.getContext('2d');
-			var font_definition = font_weight + " " + font_size + "px " + font_style;
+			var font_definition = font_weight + " " + font_size + "px Arial";
 
 			canvasText.font = font_definition;
 
@@ -98,7 +87,7 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			canvas.height = canvasTextHeight;
 
 			canvasText.font = font_definition;
-			canvasText.fillStyle = font_color;
+			canvasText.fillStyle = (_text.constructor === String) ? "black" : 0xFF0000;
 			canvasText.fillText(_text, 0, font_size);
 
 			return canvas;
@@ -106,7 +95,6 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 
 		var createCanvas = function(_canvas)	{
 			var canvas = _canvas;
-
 			var plane = new THREE.PlaneBufferGeometry(canvas.width, canvas.height);
 			var texture = new THREE.Texture(canvas);
 
@@ -114,28 +102,22 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			texture.minFilter = THREE.LinearFilter;
 
 			var spriteMaterial = new THREE.SpriteMaterial({ map : texture });
-
 			var sprite = new THREE.Sprite(spriteMaterial);
-			sprite.scale.set(canvas.width, canvas.height, 1)
+			sprite.scale.set(canvas.width, canvas.height, 1);
 
 			return sprite;
 		}
 
 		var createFigure = function(_figure)	{
-			var canvas = figureType(_figure);
-
-			return createCanvas(canvas);
+			return createCanvas(figureType(_figure));
 		}
 
 		var createText = function(_text)	{
-			var canvas = createTextCanvas(_text);
-
-			return createCanvas(canvas);
+			return createCanvas(createTextCanvas(_text));
 		}
 
 		var reformValue = function(_json, _value)	{
-			return (_json.constructor === Function) ?
-			_json(_value) : _json;
+			return (_json.constructor === Function) ? _json(_value) : _json;
 		}
 
 		var mkAxis = function(_scene, _axis_list, _position)	{
@@ -163,15 +145,8 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 		var setAxisList = function(_min, _max, _count)	{
 			var number_cal = Math.floor((_max - _min) / _count);
 			var number_format = number_cal * .1;
-			var number_period = 0;
-			var number_multi= 10;
+			var number_period = (number_format & 2 === 0 ? Math.ceil(number_format + 0.1) : Math.ceil(number_format)) * 10;
 
-			if(number_format % 2 === 0)	{
-				number_period = Math.ceil(number_format + 0.1) * number_multi;
-			}
-			else {
-				number_period = Math.ceil(number_format) * number_multi;	 		
-			}
 			return calculatedAxis(number_period, _min, _max);
 		}
 
@@ -193,12 +168,11 @@ define(_3D + "setting_pcaplot3d", ["utils", "size", _3D + "view_pcaplot3d"], fun
 			x : x,
 			y : y,
 			z : z,
-			vector : calculateVector,
+			vector : vector,
 			figure : createFigure,
 			text : createText,
 			scale : setAxisList,
 			axis : mkAxis
 		});
-
 	}
 });

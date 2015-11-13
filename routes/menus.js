@@ -45,9 +45,9 @@ router.get('/analysis/summary', function(req, res, next) {
     };
 
     getConnection(function(connection) {
-        connection.query('CALL omics_data.getPatientInfo(?,?)', [cancer_type, sample_id], function(err, rows) {
+        connection.query('CALL CGIS.sp_getPatientInfo(?,?)', [cancer_type, sample_id], function(err, rows) {
             patient.info = rows[0][0];
-            connection.query('CALL omics_data.getPersonalSummary(?,?)', [cancer_type, sample_id], function(err, rows) {
+            connection.query('CALL CGIS.sp_getPersonalSummary(?,?)', [cancer_type, sample_id], function(err, rows) {
                 if (err) return next(err);
 
                 var list = rows[0];

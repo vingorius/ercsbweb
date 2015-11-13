@@ -1,15 +1,15 @@
 define("analysis/pathwayplot/pathway/view_pathwayplot", ["utils", "size", "analysis/pathwayplot/pathway/event_pathwayplot"], function(_utils, _size, _event)   {
+	"use strict";
 	var makePathway = function(_g, _data)	{
 		for(var i = 0, len = _g.length ; i < len ; i++)	{
-			var g = _g[i];
-			var g_text = g.select("text").text();
-			var gene_in_data = _utils.getObject(g_text, _data.pathway_list, "gene_id");
-			var frequency = !gene_in_data ? null : gene_in_data.frequency;
-			var is_activated = !gene_in_data ? null : gene_in_data.active;
-			var data_set = setData(g_text, frequency, is_activated);
+			var gene = _g[i];
+			var gene_data = _utils.getObject(gene.text.text(), _data.pathway_list, "gene_id");
+			var frequency = !gene_data ? null : gene_data.frequency;
+			var is_activated = !gene_data ? null : gene_data.active;
+			var data_set = setData(gene.text.text(), frequency, is_activated);
 
-			fillRect(g.select("rect"), data_set, $.inArray(g_text, _data.gene_list));
-			fillText(g.select("text"), data_set);
+			fillRect(gene.rect, data_set, $.inArray(gene.text.text(), _data.gene_list));
+			fillText(gene.text, data_set);
 		}
 	}
 
@@ -23,7 +23,6 @@ define("analysis/pathwayplot/pathway/view_pathwayplot", ["utils", "size", "analy
 			width : "",
 			height : "",
 			font_size : "",
-			mouseover : false,
 			child_index : 0,
 		}];
 	}
@@ -35,8 +34,7 @@ define("analysis/pathwayplot/pathway/view_pathwayplot", ["utils", "size", "analy
 			return _d.frequency >= 30 ? "#f2f2f2" : "#333";
 		})
 		.attr("cursor", "pointer")
-		.on("mouseover", _event.m_over)
-		.on("mouseout", _event.m_out);
+		.on({"mouseover" : _event.m_over, "mouseout" : _event.m_out});
 	}
 
 	var fillRect = function(_rect, _data_set, _is_marker)	{
@@ -52,8 +50,7 @@ define("analysis/pathwayplot/pathway/view_pathwayplot", ["utils", "size", "analy
 		.data(_data_set)
 		.style("fill", matchingColor)
 		.attr("cursor", "pointer")
-		.on("mouseover", _event.m_over)
-		.on("mouseout", _event.m_out);
+		.on({"mouseover" : _event.m_over, "mouseout" : _event.m_out});
 	}
 
 	var matchingColor = function(_d)	{
@@ -69,10 +66,9 @@ define("analysis/pathwayplot/pathway/view_pathwayplot", ["utils", "size", "analy
 		makePathway(_data.gene, _data.data);
 
 		_data.drug
-		.on("click", _event.d_click)
-		.on("mouseover", _event.d_over)
-		.on("mouseout", _event.d_out);
+		.on({"click" : _event.d_click, "mouseover" : _event.d_over, "mouseout" : _event.d_out});
 	}
+	
 	return 	{
 		view : view
 	};

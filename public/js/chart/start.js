@@ -1,12 +1,13 @@
+"use strict";
 var chooseUrl = function (_type)	{
-	return {
-		"xy" : "/rest/xyplot",
-		"ma" : "/rest/maplot",
-		"deg" : "/rest/degplot",
-		"pca" : "/datas/PCA.dat.tsv",
-		"needle" : "/rest/needleplot?cancer_type=luad&sample_id=Pat1099&gene=EGFR&transcript=ENST00000275493&classification=All&filter",
-		"comutation" : "/rest/tumorportal_cmp?type=BRCA"
-	}[_type];
+	switch(_type)	{
+		case "xy" : return "/rest/xyplot"; break;
+		case "ma" : return "/rest/maplot"; break;
+		case "deg" : return "/rest/degplot"; break;
+		case "pca" : return "/datas/PCA.dat.tsv"; break;
+		case "needle" : "/rest/needleplot?cancer_type=luad&sample_id=Pat1099&gene=EGFR&transcript=ENST00000275493&classification=All&filer"; break;
+		case "comutation" : return "/rest/tumorportal_cmp?type=BRCA"; break;
+	}
 }
 
 var startChart = function(_type)	{

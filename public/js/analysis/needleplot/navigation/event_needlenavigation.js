@@ -1,3 +1,4 @@
+'use strict';
 define("analysis/needleplot/navigation/event_needlenavigation", ["utils", "size"], function(_utils, _size)	{
 	return function(_element) 	{
 		var size = _element.size;
@@ -13,8 +14,9 @@ define("analysis/needleplot/navigation/event_needlenavigation", ["utils", "size"
 		}
 
 		var disappearItems = function(_position)	{
-			return _position === size.margin.left ? -size.width : 
-			_position === size.rwidth ? size.width * 2 : _position;
+			return _position === size.margin.left ? 
+			-size.width : _position === size.rwidth ? 
+			size.width * 2 : _position;
 		}
 
 		var changeScale = function(_x, _width)    {
@@ -24,8 +26,7 @@ define("analysis/needleplot/navigation/event_needlenavigation", ["utils", "size"
 
 			var xaxis = d3.select(".needleplot_xaxis")
 			.call(d3.svg.axis().scale(loc_x).tickPadding(10))
-			.selectAll("text")
-			.style("font-size", "10px");
+			.selectAll("text").style("font-size", "10px");
 
 			var graph_group = d3.selectAll(".needleplot_graph_group")
 			.attr("transform", function(_d)	{

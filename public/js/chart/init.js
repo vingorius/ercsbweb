@@ -1,3 +1,4 @@
+"use strict";
 var Init = (function()	{
 	return {
 		requireJs : function(_chartName, _dataUrl)	{
@@ -28,8 +29,7 @@ var Init = (function()	{
 			
 			require(["router", "utils"], function(_router, _utils)	{
 				if(_chartName !== "deg")	{
-					$(".chart_container").css("visibility", "hidden");
-					_utils.loading(_chartName, ".chart_container").start();
+					_utils.loading(".chart_container").start();
 				}
 				(function()	{
 					_router(_chartName, _dataUrl);
@@ -46,7 +46,11 @@ var Init = (function()	{
 							url : _dataUrl,
 						})
 						.done(function(_data)	{
-							func(_data);
+							(/pca/i).test(_chartName) ? func(_dataUrl) : func(_data);
+							
+							if(_chartName !== "deg")	{
+								utils.loading(".chart_container").end();
+							}
 						});	
 					}
 
@@ -59,10 +63,6 @@ var Init = (function()	{
 
 					ajaxData();
 					handlerOption();
-
-					if(_chartName !== "deg")	{
-						utils.loading(null, ".chart_container").end();
-					}
 				}
 			})
 		}

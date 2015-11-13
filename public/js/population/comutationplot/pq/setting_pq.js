@@ -1,3 +1,4 @@
+// 'use strict';
 define("population/comutationplot/pq/setting_pq", ["utils", "size", "population/comutationplot/pq/view_pq"], function(_utils, _size, _view)	{
 	var getOnlyPQ = function(_symbol_list)	{
 		var result = [];

@@ -1,3 +1,4 @@
+// 'use strict';
 define("population/comutationplot/vo_comutationplot", ["utils"], function(_utils)	{
 	var VO = (function()	{
 		var init_sample = [];
@@ -88,6 +89,7 @@ define("population/comutationplot/vo_comutationplot", ["utils"], function(_utils
 			},
 		}
 	}());
+
 	return 	{
 		VO : VO
 	}

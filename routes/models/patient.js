@@ -4,7 +4,7 @@ var router = express.Router();
 
 router.get('/getSampleList', function(req, res, next) {
     getConnection(function(connection) {
-        connection.query('CALL omics_data.getSampleReceptionList()', function(err, rows) {
+        connection.query('CALL CGIS.sp_getSampleReceptionList()', function(err, rows) {
             if (err) return next(err);
             res.json(rows[0]);
         });
@@ -72,7 +72,7 @@ router.get('/getSampleVariantList', function(req, res, next) {
 
     getConnection(function(connection) {
         var params = [cancer_type, sample_id, classification, cosmic, driver, frequency, filter_option];
-        connection.query('CALL omics_data.getPersonalVaiantsSummary(?,?,?,?,?,?,?)', params, function(err, rows) {
+        connection.query('CALL CGIS.sp_getPersonalVaiantsSummary(?,?,?,?,?,?,?)', params, function(err, rows) {
             if (err) return next(err);
             res.json(rows[0]);
         });
@@ -83,7 +83,7 @@ router.get('/bg_public', function(req, res, next) {
     var cancer_type = req.query.cancer_type;
 
     getConnection(function(connection) {
-        connection.query('select omics_data.countOfGDACByCancerType(?) cnt', [cancer_type], function(err, rows) {
+        connection.query('select CGIS.sf_countOfGDACByCancerType(?) cnt', [cancer_type], function(err, rows) {
             if (err) return next(err);
             res.json(rows[0].cnt);
         });
@@ -96,7 +96,7 @@ router.get('/bg_filtered_public', function(req, res, next) {
     var filter_option = req.query.filter_option;
     console.log('bg_filtered_public', req.query);
     getConnection(function(connection) {
-        connection.query('CALL omics_data.getPatientCountByFilter(?,?)', [cancer_type, filter_option], function(err, rows) {
+        connection.query('CALL CGIS.sp_getPatientCountByFilter(?,?)', [cancer_type, filter_option], function(err, rows) {
             if (err) return next(err);
             console.log(rows[0][0].cnt);
             res.json(rows[0][0].cnt);

@@ -65,7 +65,7 @@ define(SAMPLE + "view_sample", ["utils", "size", SAMPLE + "event_sample"], funct
 			return (size.height - size.margin.bottom) - data.y(_d.count); 
 		})
 		.style("fill", function(_d) { 
-			return _utils.colour(_d.type); 
+			return _utils.mutate(_d.type).color; 
 		})
 		.on("mouseover", e.m_over)
 		.on("mouseout", e.m_out);

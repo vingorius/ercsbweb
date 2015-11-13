@@ -1,9 +1,7 @@
-var _3D = "pcaplot/pca3d/";
-
-define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
+"use strict";
+define("pcaplot/pca3d/event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 	return function(_renderer, _camera, _scene, _object3d, _raycaster, _ray_mouse, _event_targets, _sizes)	{
 		var tooltip = Object.create(_utils.tooltip);
-		
 		var check_click = false;
 		var ex = 0;
 		var ey = 0;
@@ -21,11 +19,9 @@ define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 		}
 
 		var windowMousemove = function(_event)	{
-			var cx, cy;
-
 			if(check_click)	{
-				cx = _event.clientX - ex;
-				cy = _event.clientY - ey;
+				var cx = _event.clientX - ex;
+				var cy = _event.clientY - ey;
 
 				_object3d.rotation.y += cx * 0.01;
 				_object3d.rotation.x += cy * 0.01;
@@ -53,6 +49,13 @@ define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 			renderRaycaster();
 		}
 
+		var typeColor = function(_type)	{
+			switch(_type)	{
+				case "Primary Solid Tumor" : return "red"; break;
+				case "Solid Tissue Normal" : return "blue"; break;
+			}
+		}
+
 		var renderRaycaster = function()	{
 			_raycaster.setFromCamera(_ray_mouse, _camera);
 			var intersects = _raycaster.intersectObjects(_event_targets, false);
@@ -63,12 +66,11 @@ define(_3D + "event_pcaplot3d", ["utils", "size"], function(_utils, _size)	{
 						var data = intersects[0].object.__data__;
 
 						tooltip.show({ x : tooltip_x, y : tooltip_y }, 
-						"sample : " + data.sample
-						+ "</br> type : " + data.type
-						+ "</br> pc1 : " + Number(data.pc1).toFixed(5)
-						+ "</br> pc2 : " + Number(data.pc2).toFixed(5)
-						+ "</br> pc3 : " + Number(data.pc3).toFixed(5) 
-						, "rgba(15, 15, 15, 0.6)")
+							"<b>" + data.sample + "</b></br><b><span style=color:" + typeColor(data.type) + ";>" + data.type
+							+ "</span></b></br> pc1 : " + Number(data.pc1).toFixed(5)
+							+ "</br> pc2 : " + Number(data.pc2).toFixed(5)
+							+ "</br> pc3 : " + Number(data.pc3).toFixed(5) 
+							, "rgba(15, 15, 15, 0.6)")
 					}
 				}
 			}

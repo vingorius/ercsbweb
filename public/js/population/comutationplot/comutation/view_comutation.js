@@ -1,18 +1,7 @@
+// 'use strict';
 define("population/comutationplot/comutation/view_comutation", ["utils", "size", "population/comutationplot/comutation/event_comutation", "population/comutationplot/vo_comutationplot"], function(_utils, _size, _event, _VO)	{
 	var getAlteration = function(_type)	{
-		return _utils.alterationPrecedence(_utils.defMutName(_type));
-	}
-
-	var makeBorder = function(_svg, _width, _height)	{
-		_svg.append("rect")
-		.attr("id", "comutationplot_heatmap_border_rect")
-		.attr("x", 0)
-		.attr("y", 0)
-		.attr("width", _width)
-		.attr("height", _height)
-		.style("fill", "none")
-		.style("stroke", "#d4d4d4")
-		.style("stroke-width", 1);
+		return _utils.alterationPrecedence(_utils.mutate(_type).name);
 	}
 
 	var view = function(_data)	{
@@ -20,12 +9,11 @@ define("population/comutationplot/comutation/view_comutation", ["utils", "size",
 		var width = _data.is_patient ? size.width :  _VO.VO.getWidth();
 		var svg = _size.mkSvg("#" + _data.class_name + "_heatmap", width, size.height);
 
-		makeBorder(svg, width, size.height);
+		svg.append("rect")
+		.attr({"id" : "comutationplot_heatmap_border_rect", "x" : 0, "y" : 0, "width" : width, "height" : size.height})
+		.style({"fill" : "none", "stroke" : "#d4d4d4", "stroke-width" : 1});
 
-		var yAxis = d3.svg.axis()
-		.scale(_data.y)
-		.orient("left");
-
+		var yAxis = _size.setAxis(_data.y, "left");
 		var cell_group = svg.selectAll("." + _data.class_name + "_cellgroup")
 		.data(_data.all_data)
 		.enter().append("g")
@@ -47,10 +35,9 @@ define("population/comutationplot/comutation/view_comutation", ["utils", "size",
 			return "" + _data.class_name + "_cells " + _d.sample + "-" + _d.gene;	
 		})
 		.style("fill", function(_d) { 
-			return _utils.colour(_utils.defMutName(_d.type)); 
+			return _utils.mutate(_d.type).color;
 		})
-		.on("mouseover", _event.m_over)
-		.on("mouseout", _event.m_out)
+		.on({"mouseover" : _event.m_over, "mouseout" : _event.m_out})
 		.attr("x", 0)
 		.attr("y", function(_d)	{
 			if(getAlteration(_d.type).alteration === "CNV")	{
@@ -69,6 +56,7 @@ define("population/comutationplot/comutation/view_comutation", ["utils", "size",
 		});
 		_event.move_scroll();
 	}
+	
 	return {
 		view : view
 	}

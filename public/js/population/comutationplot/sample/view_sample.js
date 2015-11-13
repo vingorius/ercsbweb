@@ -1,3 +1,4 @@
+// 'use strict';
 define("population/comutationplot/sample/view_sample", ["utils", "size", "population/comutationplot/sample/event_sample", "population/comutationplot/vo_comutationplot"], function(_utils, _size, _event, _VO)	{
 	var view = function(_data)	{
 		var size = _data.size;
@@ -28,7 +29,7 @@ define("population/comutationplot/sample/view_sample", ["utils", "size", "popula
 			return (size.height - (size.margin.bottom / 2)) - _data.y(_d.count); 
 		})
 		.style("fill", function(_d) { 
-			return _utils.colour(_utils.defMutName(_d.type)); 
+			return _utils.mutate(_d.type).color;
 		})
 		.on("mouseover", _event.m_over)
 		.on("mouseout", function(){ 
@@ -39,19 +40,14 @@ define("population/comutationplot/sample/view_sample", ["utils", "size", "popula
 	var titleView = function(_data)	{
 		var size = _data.title_size;
 		var svg = _size.mkSvg("#comutationplot_sample_yaxis_title", size.width, size.height);
-
-		var yAxis = d3.svg.axis()
-		.scale(_data.y)
-		.orient("left")
-		.tickValues([0, _data.max / 2, _data.max]);
-
+		var yAxis = _size.setAxis(_data.y, "left", { "tickValues" : [0, _data.max / 2, _data.max]});
 		var yaxis = _size.mkAxis(svg, "comutationplot_sample_yaxis", (size.width - size.margin.left / 2), 0, yAxis);
 
 		yaxis.selectAll("text")
-		.style("fill", "#626262").style("font-size", "8px");
+		.style({"fill" : "#626262", "font-size" : "8px"});
 
 		yaxis.selectAll("path, line")
-		.style("fill", "none").style("stroke", "#BFBFBF").style("stroke-width", "1px").style("shape-rendering", "crispEdges");
+		.style({"fill" : "none", "stroke" : "#BFBFBF", "stroke-width" : "1px", "shape-rendering" : "crispEdges"});
 
 		svg.append("g")
 		.data([{ 
@@ -59,18 +55,18 @@ define("population/comutationplot/sample/view_sample", ["utils", "size", "popula
 			size : size, 
 			status : false 
 		}])
-		.attr("class", "comutationplot_sample_sort_label")
-		.attr("cursor", "pointer")
+		.attr({"class" : "comutationplot_sample_sort_label", "cursor" : "pointer"})
 		.attr("transform", "translate(" + size.margin.left + ", " + (size.height - size.margin.left / 2) + ")")
 		.append("text")
 		.text("#mutation count")
-		.style("fill", "#626262").style("font-size", "11px").style("font-weight", "bold").style("font-style", "italic")
+		.style({"fill" : "#626262", "font-size" : "11px", "font-weight" : "bold", "font-style" : "italic"})
 		.on("mouseover", _event.e_over)
 		.on("mouseout", function()	{
 			_event.m_out(this, "bar");
 		})
 		.on("click", _event.sortByValue);
 	}
+	
 	return {
 		view : view,
 		titleView : titleView

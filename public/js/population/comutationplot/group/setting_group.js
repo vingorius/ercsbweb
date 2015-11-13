@@ -1,3 +1,4 @@
+// 'use strict';
 define("population/comutationplot/group/setting_group", ["utils", "size", "population/comutationplot/sort_comutationplot", "population/comutationplot/group/view_group"], function(_utils, _size, _sort, _view)	{
 	var setGroupHeight = function(_all_group)	{
 		var height = _all_group.length * 15 + 10 < 30 ? 30 : _all_group.length * 15 + 10;
@@ -19,7 +20,7 @@ define("population/comutationplot/group/setting_group", ["utils", "size", "popul
 				result.push({
 					sample : patient.sample,
 					gene : [ patient.gene ],
-					type : [ patient.type ]
+					type : [ patient.type ],
 				});
 			}
 			else {
@@ -55,8 +56,13 @@ define("population/comutationplot/group/setting_group", ["utils", "size", "popul
 			data : arguments[2],
 			size : arguments[3],
 		};
-		typeof arguments[4] === "function" ? set.colour = arguments[4] : set.name_size = arguments[4];
-		arguments[5] ? set.patients = arguments[5] : set = set;
+
+		typeof arguments[4] === "function" ? 
+		set.colour = arguments[4] : set.name_size = arguments[4];
+		
+		arguments[5] ? 
+		set.patients = arguments[5] : set = set;
+		
 		return set;
 	}
 

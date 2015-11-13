@@ -1,3 +1,4 @@
+"use strict";
 define("utils", ["size"], function(_size)  {
 	var stacked = function(_list, _key, _sort)	{
 		for(var i = 0, len = _list.length ; i < len ; i++)	{
@@ -51,11 +52,12 @@ define("utils", ["size"], function(_size)  {
 
 		for(var i = 0, len = _list.length ; i < len ; i++)	{
 			var item = arguments[2] && typeof arguments[2] === "function" ? 
+				arguments[3] ? arguments[2](_list[i][_obj_key])[arguments[3]] : 
 				arguments[2](_list[i][_obj_key]) : _list[i][_obj_key];
 
 			if($.inArray(item, result) < 0)		{
-				result[arr_idx] = item;
-				arr_idx++;
+				result[arr_idx++] = item;
+				// arr_idx++;
 			}
 		}
 		return result;
@@ -103,81 +105,37 @@ define("utils", ["size"], function(_size)  {
 	}
 
 	var removeSvg = function() {
-		if(arguments.length < 1)    {
+		if(arguments.length < 1 || !d3.selectAll("svg") || d3.selectAll("svg").length < 1)  {
 			return;
 		}
-		else if(!d3.selectAll("svg") || d3.selectAll("svg").length < 1)  {
-			return;
-		}
+		var svg = typeof arguments === "object" ? arguments["0"].split(", ") : arguments;
 
-		for(var i = 0, len = arguments.length ; i < len ; i++)  {
-			d3.selectAll(arguments[i]).remove();
+		for(var i = 0, len = svg.length ; i < len ; i++)  {
+			d3.selectAll(svg[i]).remove();
 		}
 	}
 
-	var alterationPrecedence = function(_alteration)	{
-		if((/(AMPLIFICATION)|(HOMOZYGOUS_DELETION)/i).test(_alteration))	{
-			return { alteration : "CNV", priority : precedence(_alteration) };
-		}
-		else if((/(EXPRESSION)/).test(_alteration))	{
-			return { alteration : "mRNA Expression (log2FC)", priority : precedence(_alteration) };
-		}
-		else {
-			return { alteration : "Somatic Mutation", priority : precedence(_alteration) };
-		}
-	}
+	var loading = function(_target)	{
+		var loading_div = $(".loading");
+		var bcr = document.querySelector(_target).getBoundingClientRect();
+		var default_width = 900;
 
-	var precedence = function(_value)	{
-		switch(_value)	{
-			case "Amplification" : return { idx : 3, order : 12 }; break;
-			case "Homozygous_Deletion" : return { idx : 3, order : 11}; break;
-			case "Nonsense_mutation" : return { idx : 1, order : 9 }; break;
-			case "Splice_Site" : return { idx : 1, order : 8 }; break;
-			case "Translation_Start_Site" : return { idx : 1, order : 7 }; break;
-			case "Missense_mutation" : return { idx : 1, order : 6 }; break;
-			case "Nonstop_mutation" : return { idx : 1, order : 5 }; break;
-			case "Frame_shift_indel" : return { idx : 1, order : 4 }; break;
-			case "In_frame_indel" : return { idx : 1, order : 3 }; break;
-			case "RNA" : return { idx : 1, order : 2 }; break;
-			case "Silent" : return { idx : 1, order : 1 }; break;
-		}
-	}
+		return {
+			start : function()	{
+				loading_div.fadeIn();
 
-	var defMutName = function(_name)  {
-		switch(true)	{
-			case (/MISSENSE/i).test(_name) : return "Missense_mutation"; break;
-			case (/NONSENSE/i).test(_name) : return "Nonsense_mutation"; break;
-			case (/(SPLICE_SITE)|(SPLICE_SITE_SNP)/i).test(_name) : return "Splice_Site"; break;
-			case (/SILENT/i).test(_name) : return "Silent"; break;
-			case (/TRANSLATION/i).test(_name) : return "Translation_Start_Site"; break;
-			case (/RNA/i).test(_name) : return "RNA"; break;
-			case (/FRAME_SHIFT/i).test(_name) : return "Frame_shift_indel"; break;
-			case (/IN_FRAME/i).test(_name) : return "In_frame_indel"; break;
-			case (/NONSTOP/i).test(_name) : return "Nonstop_mutation"; break;
-			case (/AMPLIFICATION/i).test(_name) : return "Amplification"; break;
-			case (/HOMOZYGOUS_DELETION/i).test(_name) : return "Homozygous_Deletion"; break;
-		}
-	}
+				$("#loading_text")
+				.css({"top" : -50, "left" : -20})
+				.text("Loading");
 
-	var colour = function(_value)   {
-		switch(_value)	{
-			case "Amplification" : return "#FFBDE0"; break;
-			case "Homozygous_Deletion" : return "#BDE0FF"; break;
-			case "Nonsense_mutation" : return "#EA3B29"; break;
-			case "Splice_Site" : return "#800080"; break;
-			case "Translation_Start_Site" : return "#aaa8aa"; break;
-			case "Missense_mutation" : return "#3E87C2"; break;
-			case "Nonstop_mutation" : return "#070078"; break;
-			case "Frame_shift_indel" : return "#F68D3B"; break;
-			case "In_frame_indel" : return "#F2EE7E"; break;
-			case "RNA" : return "#ffdf97"; break; 
-			case "Silent" : return "#5CB755"; break;
-			case "pq" : return "#C2C4C9"; break;
-			case "Primary Solid Tumor" : return "#F64747"; break;
-			case "Solid Tissue Normal" : return "#446CB3"; break;
-			case "si_log_p" : return "#ea3b29"; break;
-			case "si_up_log_p" : return "#5cb755"; break;
-			case "si_down_log_p" : return "#3e87c2"; break;
+				loading_div
+				.css("top", (bcr.top + (bcr.height > default_width ? default_width : bcr.height)) / 2)
+				.css("left", (bcr.left > 500 ? bcr.width : bcr.right + bcr.left) / 2);				
+			},
+			end : function()	{
+				$(_target).css('visibility', 'visible').hide().fadeIn();
+				loading_div.fadeOut();
+			}
 		}
 	}
 
@@ -203,10 +161,7 @@ define("utils", ["size"], function(_size)  {
 				posy = _element.y;
 			}
 			chart
-			.css("position", "absolute")
-			.css("background-color", _rgba)
-			.css("left", posx)
-			.css("top", posy)
+			.css({"position" : "absolute", "background-color" : _rgba, "left" : posx, "top" : posy})
 			.html(_contents)
 			.show();
 		},
@@ -227,9 +182,8 @@ define("utils", ["size"], function(_size)  {
 
 	var download = function(_name, _url)	{
 		var a = document.createElement("a");
-		var create_event;
+		var create_event = document.createEvent("MouseEvents");
 
-		create_event = document.createEvent("MouseEvents");
 		create_event.initEvent("click", true, true);
 
 		a.download = _name;
@@ -242,7 +196,13 @@ define("utils", ["size"], function(_size)  {
 	}
 
 	var savePng = function(_obj)	{
-		download("test.png", _obj.data);
+		if(checkIE())	{
+			var blob = _obj.canvas.msToBlob();
+			window.navigator.msSaveBlob(blob, "test.png");
+		}
+		else {
+			download("test.png", _obj.data);
+		}
 	}
 
 	var getImageURL = function(_callback)	{
@@ -250,7 +210,6 @@ define("utils", ["size"], function(_size)  {
 		var width = widthForDownCanvas(svg);
 		var height = heightForDownCanvas(svg);
 		var canvas = document.createElement("canvas");
-		canvas.setAttribute("id", "download_canvas_image")
 		canvas.width = width.width;
 		canvas.height = height.height;
 		var init, pre, left = 0;
@@ -259,7 +218,8 @@ define("utils", ["size"], function(_size)  {
 		for(var i = 0, len = svg.length ; i < len ; i++)	{
 			var item = svg[i];
 			var loc = item.getBoundingClientRect();
-			var source = new XMLSerializer().serializeToString(item);
+			var source = new XMLSerializer().serializeToString(item).replace(/xmlns\:NS\d+=\"\" NS(\d+|)\:/g, "");
+			var url = "data:image/svg+xml;base64,"+ encodeURIComponent(btoa(source));
 
 			if(!init || loc.left === init)	{
 				init = loc.left;
@@ -276,12 +236,6 @@ define("utils", ["size"], function(_size)  {
 			else if((/pq_title$/).test(item.id))	{
 				left = right_pos;
 			}
-
-			if(source.match(/xmlns\:NS\d+=\"\" NS(\d+|)\:/g))	{
-				source = source.replace(/xmlns\:NS\d+=\"\" NS(\d+|)\:/g, "");
-			}
-
-			var url = "data:image/svg+xml;base64,"+ encodeURIComponent(btoa(source));
 			/*
 				FireFox : 적은 수의 svg 를 처리하는데는 문제가 없지만, 많은 수의 svg 를 처리하는데는 아직 오류가 있다.
 				IE : canvas.toDataURL() 에서 SecurityError 발생. IE11 does not appear to support CORS for images in the canvas element use only SVG
@@ -290,50 +244,17 @@ define("utils", ["size"], function(_size)  {
 			img.posx = (left - width.margin);
 			img.posy = (loc.top - height.margin);
 			img.idx = i;
-
+			img.crossOrigin = "use-credentials";
 			img.onload = function(_img)	{
 				var ctx = canvas.getContext("2d");
 
-				if(_img.target.idx === svg.length || _img.target.idx === svg.length - 1)	{
+				ctx.drawImage(_img.target, _img.target.posx, _img.target.posy);
 
-					window.postMessage({
-						url : canvas.toDataURL('image/png'),
-						posx : _img.target.posx,
-						posy : _img.target.posy, 
-					}, window.location.href);
-
-					function receiveMessage(_e)	{
-						getFunc(ctx, canvas, _e.data);
-						// if(!checkIE())	{
-							// ctx.drawImage(_img.target, _e.data.posx, _e.data.posy);
-							// _callback({
-							// 	canvas : canvas,
-							// 	data : _e.data.url,
-							// });
-						// }
-					}
-
-					var getFunc = function(_ctx, _canvas, _e)	{
-						console.log($(img))
-						// ctx.drawImage(img, img.posx, img.posy);
-						_callback({
-							canvas : canvas,
-							data : _e.url,
-						})
-					}
-
-					window.addEventListener("message", receiveMessage, false);
-
-					// if(!checkIE())	{
-						ctx.drawImage(_img.target, _img.target.posx, _img.target.posy);
-						// _callback({
-						// 	canvas : canvas,
-						// 	data : canvas.toDataURL('image/png'),
-						// });
-					// }
-				}
+				_callback({
+					canvas : canvas,
+					data : canvas.toDataURL("image/png"),
+				});
 			}
-			img.crossOrigin = "Anonymous";
 			img.src = url;
 		}
 	}
@@ -410,47 +331,6 @@ define("utils", ["size"], function(_size)  {
 		return result;
 	}
 
-	var loading = function(_name, _target)	{
-		var loading_div = $(".loading");
-		var chart_div = $(_target);
-		var bcr = document.querySelector(_target).getBoundingClientRect();
-		var default_width = 900;
-
-		if(window.Promise)	{
-			var chart_promise = new Promise(function(_resolve, _reject)	{
-				chart_div.css('visibility', 'visible').hide().fadeIn();
-			});
-			var loading_promise = new Promise(function(_resolve, _reject)	{
-				loading_div.fadeOut("slow");
-			});
-		}
-		return {
-			start : function()	{
-				loading_div.fadeIn();
-
-				$("#loading_text")
-				.css("top", -50)
-				.css("left", -20)
-				.text("Loading");
-
-				loading_div
-				.css("top", (bcr.top + (bcr.height > default_width ? default_width : bcr.height)) / 2)
-				.css("left", (bcr.left > 500 ? bcr.width : bcr.right + bcr.left) / 2);				
-			},
-			end : function()	{
-				if(window.Promise)	{
-					chart_promise
-					.catch("Drawing chart error !")
-					.then(loading_promise);
-				}
-				else {
-					chart_div.css('visibility', 'visible').hide().fadeIn();
-					loading_div.fadeOut();
-				}
-			}
-		}
-	}
-
 	var preserveInterrupt = function(_target, _type)	{
 		var target = _type === 0 ? d3.select(_target) : _target;
 
@@ -523,16 +403,42 @@ define("utils", ["size"], function(_size)  {
 		.call(d3.svg.axis().scale(_scale).orient(_way));
 	}
 
-	var defineProp = function(_obj, _value, _key)	{
-		return Object.defineProperty(_obj, _key, {
-			value : _value,
-			writable : true,
-			configurable : true,
-			enumrable : false
-		});
+	var alterationPrecedence = function(_alteration)	{
+		if((/(AMPLIFICATION)|(HOMOZYGOUS_DELETION)/i).test(_alteration))	{
+			return { alteration : "CNV", priority : mutate(_alteration) };
+		}
+		else if((/(EXPRESSION)/).test(_alteration))	{
+			return { alteration : "mRNA Expression (log2FC)", priority : mutate(_alteration) };
+		}
+		else {
+			return { alteration : "Somatic Mutation", priority : mutate(_alteration) };
+		}
 	}
 
-	var defGroup = function(_value)	{
+	var mutate = function(_value)	{
+		switch(true)	{
+			case (/AMPLIFICATION/i).test(_value) : return { name : "Amplification", color : "#FFBDE0", idx : 3, order : 12 }; break;
+			case (/HOMOZYGOUS_DELETION/i).test(_value) : return { name : "Homozygous_Deletion", color : "#BDE0FF", idx : 3, order : 11 }; break;
+			case (/NONSENSE/i).test(_value) : return { name : "Nonsense_mutation", color : "#EA3B29", idx : 1, order : 9 }; break;
+			case (/(SPLICE_SITE)|(SPLICE_SITE_SNP)/i).test(_value) : return { name : "Splice_Site", color : "#800080", idx : 1, order : 8 }; break;
+			case (/TRANSLATION/i).test(_value) : return { name : "Translation_Start_Site", color : "#aaa8aa", idx : 1, order : 7 }; break;
+			case (/MISSENSE/i).test(_value) : return { name : "Missense_mutation", color : "#3E87C2", idx : 1, order : 6 }; break;
+			case (/NONSTOP/i).test(_value) : return { name : "Nonstop_mutation", color : "#070078", idx : 1, order : 5 }; break;
+			case (/FRAME_SHIFT/i).test(_value) : return { name : "Frame_shift_indel", color : "#F68D3B", idx : 1, order : 4 }; break;
+			case (/IN_FRAME/i).test(_value) : return { name : "In_frame_indel", color : "#F2EE7E", idx : 1, order : 3 }; break;
+			case (/RNA/i).test(_value) : return { name : "RNA", color : "#ffdf97", idx : 1, order : 2 }; break;
+			case (/(SILENT)|(SYNONYMOUS)/i).test(_value) : return { name : "Silent", color : "#5CB755", idx : 1, order : 1 }; break;
+			case (/pq/i).test(_value) : return { color : "#C2C4C9" }; break;
+			case (/Primary Solid Tumor/i).test(_value) : return { name : "Primary Solid Tumor", color : "#F64747" }; break;
+			case (/Solid Tissue Normal/i).test(_value) : return { name : "Solid Tissue Normal", color : "#446CB3" }; break;
+			case (/si_log_p/i).test(_value) : return { name : "si_log_p", color : "#ea3b29" }; break;
+			case (/si_up_log_p/i).test(_value) : return { name : "si_up_log_p", color : "#5cb755" }; break;
+			case (/si_down_log_p/i).test(_value) : return { name : "si_down_log_p", color : "#3e87c2" }; break;
+			case (/unknown/i).test(_value) : return { name : "Unknown", color : "#333" }; return;
+		}
+	}
+
+	var definiteGroup = function(_value)	{
 		switch(_value)	{
 			case "Squamoid" : return { value : 0, color : "#05146b" }; break;
 			case "Magnoid" : return { value : 1, color : "#2fcbff" }; break;
@@ -590,7 +496,7 @@ define("utils", ["size"], function(_size)  {
 			case "black or african ame" : return { value : 2, color : "#5B5B5B" }; break;
 			case "american indian or alaska native" : return { value : 3, color : "#4af380" }; break;
 			case "NA" : return { value : 10000, color : "#d5dddd" }; break;
-		}
+		};
 	}
 
 	return {
@@ -607,8 +513,7 @@ define("utils", ["size"], function(_size)  {
 		getObject : getObject,
 		removeSvg : removeSvg,
 		alterationPrecedence : alterationPrecedence,
-		defMutName : defMutName,
-		colour : colour,
+		mutate : mutate,
 		tooltip : tooltip,
 		calLog : calLog,
 		download : download,
@@ -621,8 +526,7 @@ define("utils", ["size"], function(_size)  {
 		attributeXY : attributeXY,
 		attributeSize : attributeSize,
 		callAxis : callAxis,
-		defineProp : defineProp,
-		defGroup : defGroup,
+		defGroup : definiteGroup,
 		checkIE : checkIE
 	};
 });

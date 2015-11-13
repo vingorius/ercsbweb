@@ -1,3 +1,4 @@
+// 'use strict';
 define("population/comutationplot/sort_comutationplot", ["utils", "population/comutationplot/vo_comutationplot"], function(_utils, _VO)	{
 	var loopingGroup = function(_separate)	{
 		var result = [];
@@ -46,7 +47,7 @@ define("population/comutationplot/sort_comutationplot", ["utils", "population/co
 		for(var i = 0, len = _item.length ; i < len ; i++)	{
 			var _i = _item[i];
 			var index = genes_order.indexOf(_i); 
-			var alteration = _utils.alterationPrecedence(_utils.defMutName(_type[i]));
+			var alteration = _utils.alterationPrecedence(_utils.mutate(_type[i]).name);
 			var gene_idx = genes_order.length - genes_order.indexOf(_i);
 			var order = gene_idx + alteration.priority.idx + alteration.priority.order;
 
@@ -73,35 +74,27 @@ define("population/comutationplot/sort_comutationplot", ["utils", "population/co
 	
 	var countOrder = function(_data, _name, _compare)	{
 		var item_list = [];
-
-		if(_compare)	{
-			for(var j = 0, leng = _compare.length ; j < leng ; j++)	{
-				var compare = _compare[j];
-
-				if(!_utils.getObject(compare, _data, _name))	{
-					item_list.push(setCountData(compare, "", 0, 0));
-				}
-			}
-		}
+		var data_set = {};
+		var index = 0;
 
 		for(var i = 0, len = _data.length ; i < len ; i++)	{
 			var item = _data[i];
-			var type = _utils.defMutName(item.type);
-			var is_item = _utils.getObject(item[_name], item_list, "name");
+			var type = _utils.mutate(item.type).name;
 
-			if(!is_item)	{
-				item_list.push(setCountData(item[_name], type, 1, 1));
-			}
-			else {
-				var is_type = _utils.getObject(type, is_item.types, "type");
+			if(typeof data_set[item[_name]] !== "undefined")	{
+				var is_type = _utils.getObject(type, item_list[data_set[item[_name]]].types, "type");
 
 				if(!is_type)	{
-					is_item.types.push(setCountData(item[_name], type, 1));
+					item_list[data_set[item[_name]]].types.push(setCountData(item[_name], type, 1));
 				}
 				else {
 					is_type.count += 1;
 				}
-				is_item.counts += 1;
+				item_list[data_set[item[_name]]].counts += 1;
+			}
+			else {
+				item_list[index] = setCountData(item[_name], type, 1, 1);
+				data_set[item[_name]] = index++;
 			}
 		}
 		return _utils.stacked(item_list, "types", sortMutation);
@@ -123,8 +116,8 @@ define("population/comutationplot/sort_comutationplot", ["utils", "population/co
 
 	var sortMutation = function(_types)	{
 		return _types.sort(function(_a, _b)	{
-			var a = _utils.alterationPrecedence(_utils.defMutName(_a.type)).priority;
-			var b = _utils.alterationPrecedence(_utils.defMutName(_b.type)).priority;
+			var a = _utils.alterationPrecedence(_utils.mutate(_a.type).name).priority;
+			var b = _utils.alterationPrecedence(_utils.mutate(_b.type).name).priority;
 
 			return (a.order > b.order) ? 1 : -1;
 		});
@@ -195,6 +188,7 @@ define("population/comutationplot/sort_comutationplot", ["utils", "population/co
 		}
 		return result;
 	}
+	
 	return {
 		grouped : grouped,
 		separated : separated,

@@ -1,3 +1,4 @@
+// 'use strict';
 var SAMPLE = "population/comutationplot/sample/";
 var VO = "population/comutationplot/vo_comutationplot";
 var SORT = "population/comutationplot/sort_comutationplot";

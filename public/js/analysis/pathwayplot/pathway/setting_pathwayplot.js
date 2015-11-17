@@ -147,6 +147,7 @@ define("analysis/pathwayplot/pathway/setting_pathwayplot", ["utils", "size", "an
 				.attr("transform", "matrix(" + perx + ", 0, 0, " + pery + ", 0, " + ((_height_base - _height) * 2) + ")");
 			}
 		});
+
 		setDrugTable();
 
 		_view.view({
@@ -154,5 +155,8 @@ define("analysis/pathwayplot/pathway/setting_pathwayplot", ["utils", "size", "an
 			gene : getGenes(d3.selectAll("text")[0], _data.data.pathway_list),
 			drug : getDrugs(_data.data.cancer_type)
 		});
+		// 페이지 로드 전 마우스이벤트로 인한 위치값 오류를 방지하기 위한 코드.
+		d3.selectAll("text, rect")
+		.attr("class", "");
 	}
 });

@@ -15,6 +15,10 @@ var startChart = function(_type)	{
 }
 
 var startPathway = function(_type, _id, _seq, _filter)	{
+	// 페이지 새로고침 후 svg가 완전히 로드되지 못한 상태에서 위치값을 가져오지 못해 발생하는 오류를 막기위한 코드.
+	d3.selectAll("text, rect")
+	.attr("class", "preserve_events");
+
 	Init.requireJs("analysis_pathway", "/rest/pathwayplot?cancer_type=" + _type + "&sample_id=" + _id + "&filter=" + _filter);
 }
 

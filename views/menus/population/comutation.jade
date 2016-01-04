@@ -2,9 +2,9 @@ extends ../../layout/analysislayout
 
 block prepend rightcontent
 	div.container.chart_container
-		//- div.btn-group
-		//- 	button#down_png.btn.btn-default.btn-xs(type='button')
-		//- 		i.glyphicon.glyphicon-picture
+		div.btn-group
+			button#down_png.btn.btn-default.btn-xs(type='button')
+				i.glyphicon.glyphicon-picture
 		div.row
 			div#comutationplot_sample_lm
 				svg(width='150', height='100')
@@ -49,6 +49,7 @@ block prepend rightcontent
 		div.double-bounce2
 	div.tooltip_chart(style={ "display" : "none" })
 block append scripts
+	script(src='/bower_components/html2canvas/build/html2canvas.min.js')
 block append require
 	script(src='/js/chart/init.js')
 	script(src='/js/chart/start.js', onload='startComutation("NONE", "#{sample.type}", "#{sample.id}", bg_public.getFilterOption().join(","))')

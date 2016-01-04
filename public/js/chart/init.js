@@ -57,7 +57,13 @@ var Init = (function()	{
 					 function handlerOption()	{
 						$("#down_png")
 						.on("click", function()	{
-							utils.downloadImage("chart_png", "png");
+							html2canvas($('.chart_container'), {
+								onrendered : function(_canvas)	{
+									var url = _canvas.toDataURL('image/png')
+									window.open(url);
+								}
+							});
+							// utils.downloadImage("chart_png", "png");
 						});
 					}
 

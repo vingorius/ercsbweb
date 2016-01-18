@@ -17,7 +17,7 @@ define("population/comutationplot/gene/setting_gene", ["utils", "size", "populat
 		var max = Math.ceil(_utils.getObjectMax(count_gene, "counts") / 10) * 10;
 		var x = _utils.linearScale(0, max, (size.width - size.margin.right), size.margin.left);
 		var y = _utils.ordinalScale(_genes, 0, (size.height - size.margin.bottom));
-
+		
 		_utils.removeSvg("comutationplot_gene");
 
 		_view.view(dataSet(count_gene, size, x, y, max));

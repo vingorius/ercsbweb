@@ -24,7 +24,7 @@ define("population/comutationplot/comutation/setting_comutation", ["utils", "siz
 		var size = _size.initSize("comutationplot_heatmap", 0, 0, 0, 0);
 
 		definePatient(_patient_list, _genes);
-
+		
 		_view.view(dataSet("comutationplot", false, _all_data, _genes, size, 
 			_utils.ordinalScale(_samples, 0, _VO.VO.getWidth()), _utils.ordinalScale(_genes, 0, size.height)));
 	}

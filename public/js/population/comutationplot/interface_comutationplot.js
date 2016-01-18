@@ -72,7 +72,6 @@ define("population/comutationplot/interface_comutationplot", REQUIRE, function(_
 		_VO.VO.setMutation(mutation_list.type_list);
 		_VO.VO.setInitSample(sample_name_list);
 		_VO.VO.setSample(sample_name_list);
-
 		defAreaSize(sample_name_list.length, _data.data.mutation_list);
 
 		_setting_comutation(_data.data.mutation_list, _data.data.patient_list, sample_name_list, geng_name_list);

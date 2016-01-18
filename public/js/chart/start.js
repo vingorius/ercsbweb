@@ -27,6 +27,7 @@ var startComutation = function (_is, _type, _id, _filter)	{
 		Init.requireJs("mutational_landscape_comutation", "/rest/comutationplotForERCSB");
 	}
 	else {
+		console.log(_is, _type, _id, _filter);
 		Init.requireJs("mutational_landscape_comutation", "/rest/comutationplot?cancer_type=" + _type + "&sample_id=" + _id + "&filter=" + _filter);
 	}
 }
